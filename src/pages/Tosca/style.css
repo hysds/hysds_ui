@@ -1,0 +1,59 @@
+.main-container {
+  padding: 25px;
+}
+
+.sidenav {
+  /* margin-top: 250px; */
+  height: 100%;
+  width: 325px;
+  position: fixed;
+  z-index: 1;
+  margin-left: 20px;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  padding-top: 30px;
+}
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  display: block;
+}
+
+.body {
+  margin-left: 325px;
+  margin-top: 25px;
+  /* Same as the width of the sidenav */
+  padding: 0px 10px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+
+  .sidenav a {
+    /* font-size: 18px; */
+  }
+}
+
+.on-demand-button {
+  background-color: #4288ff;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-bottom: 25px;
+  margin-top: 25px;
+  margin-left: 25px;
+}
+
+.on-demand-button:hover {
+  transition: background-color 0.4s ease-out;
+  background-color: #0a45a4;
+}

@@ -1,0 +1,12 @@
+/* required styles for leaflet */
+h1,
+h2,
+p {
+  text-align: center;
+}
+
+.leaflet-container {
+  height: 650px;
+  width: 98%;
+  margin: 0 auto;
+}

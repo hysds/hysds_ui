@@ -2,18 +2,18 @@ import React from 'react';
 import AceEditor from 'react-ace';
 import Select from 'react-select'
 
-import 'brace/mode/json';
-import 'brace/theme/github';
-
-import './style.css';
-
 import { TOSCA_API_BASE, TOSCA_ACTIONS_API, QUEUE_LIST_API } from '../../config.js';
 import { QUEUE_PRIORITIES } from '../../config.js';
 
+import 'brace/mode/json';
+import 'brace/theme/github';
+import './style.css';
+
 /**
  * TODO:
- *    maybe use localstorage to store the curernt state and values (probably not)
- *    make urls dynamic and change depending on query text box and dropdown changes
+ *    1. maybe use localstorage to store the curernt state and values (probably not)
+ *    2. add error validation in the code editor and disable submit button if its invalid
+ *    3. make urls dynamic and change depending on query text box and dropdown changes
  *       window.history.pushState("fjskl", "title", "?dsjkldjslfs")
  *    http://localhost:8080/tosca/on-demand?query=eyJxdWVyeSI6eyJtYXRjaF9hbGwiOnt9fSwic2l6ZSI6MTAsIl9zb3VyY2UiOnsiaW5jbHVkZXMiOlsiKiJdLCJleGNsdWRlcyI6W119LCJmcm9tIjowfQ==&priority=9&queue=system-jobs-queue&action=job-AOI_based_ipf_submitter:release-20190404
  */

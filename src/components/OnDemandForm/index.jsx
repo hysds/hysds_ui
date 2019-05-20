@@ -95,10 +95,8 @@ class OnDemandForm extends React.Component {
       });
   }
 
-  _handleSelectAction(e, v) {
-    const jobType = e.value;
-    const queueListEndpoint = `${TOSCA_API_BASE}/${QUEUE_LIST_API}?job_type=${jobType}`
-    fetch(queueListEndpoint)
+  fetchQueueList(endpoint) {
+    fetch(endpoint)
       .then(res => res.json())
       .then(res => {
         res.queues = res.queues.map(row => ({
@@ -106,14 +104,26 @@ class OnDemandForm extends React.Component {
           value: row,
         }));
 
-        this.setState({
-          queueList: res.queues,
-          selectedQueue: {
-            label: res.recommended[0],
-            value: res.recommended[0],
-          }
-        });
+        if (res.recommended.length > 0) {
+          this.setState({
+            queueList: res.queues,
+            selectedQueue: {
+              label: res.recommended[0],
+              value: res.recommended[0],
+            }
+          });
+        } else {
+          this.setState({
+            queueList: res.queues
+          });
+        }
       });
+  }
+
+  _handleSelectAction(e, v) {
+    const jobType = e.value;
+    const queueListEndpoint = `${TOSCA_API_BASE}/${QUEUE_LIST_API}?job_type=${jobType}`;
+    this.fetchQueueList(queueListEndpoint);
   }
 
   _handleQueueChange(e, v) {
@@ -135,19 +145,8 @@ class OnDemandForm extends React.Component {
 
     if (queueList.length === 0 && selectedAction) {
       const jobType = selectedAction.value;
-      const queueListEndpoint = `${TOSCA_API_BASE}/${QUEUE_LIST_API}?job_type=${jobType}`
-      fetch(queueListEndpoint)
-        .then(res => res.json())
-        .then(res => {
-          res.queues = res.queues.map(row => ({
-            label: row,
-            value: row,
-          }));
-
-          this.setState({
-            queueList: res.queues,
-          });
-        });
+      const queueListEndpoint = `${TOSCA_API_BASE}/${QUEUE_LIST_API}?job_type=${jobType}`;
+      this.fetchQueueList(queueListEndpoint);
     }
     this._retrieveActions();
   }

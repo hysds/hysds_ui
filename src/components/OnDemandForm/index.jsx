@@ -1,5 +1,4 @@
 import React from 'react';
-import brace from 'brace';
 import AceEditor from 'react-ace';
 import Select from 'react-select'
 
@@ -13,41 +12,62 @@ import { QUEUE_PRIORITIES } from '../../config.js';
 
 /**
  * TODO:
- *    maybe use localstorage to store the curernt state and values 
+ *    maybe use localstorage to store the curernt state and values (probably not)
+ *    make urls dynamic and change depending on query text box and dropdown changes
+ *       window.history.pushState("fjskl", "title", "?dsjkldjslfs")
+ *    http://localhost:8080/tosca/on-demand?query=eyJxdWVyeSI6eyJtYXRjaF9hbGwiOnt9fSwic2l6ZSI6MTAsIl9zb3VyY2UiOnsiaW5jbHVkZXMiOlsiKiJdLCJleGNsdWRlcyI6W119LCJmcm9tIjowfQ==&priority=9&queue=system-jobs-queue&action=job-AOI_based_ipf_submitter:release-20190404
  */
+
 class OnDemandForm extends React.Component {
   constructor(props) {
     super(props);
-
-    let queryParam = this.props.match.params.query;
-    queryParam = atob(queryParam);
-    queryParam = JSON.parse(queryParam)
-    delete queryParam.from;
-    delete queryParam.size;
-
     const urlParams = new URLSearchParams(window.location.search);
-    
+
+    let esQurery = urlParams.get('query') || '';
+
+    if (esQurery) {
+      try {
+        esQurery = atob(esQurery);
+        esQurery = JSON.parse(esQurery)
+        delete esQurery.from
+        delete esQurery.size
+        esQurery = JSON.stringify(esQurery, null, 2)
+      } catch (err) {
+        console.error(err);
+        console.log("Unable to parse base64 encoded ElasticSearch query, defaulting to 5 blank lines");
+        esQurery = `\n`;
+      }
+    } else {
+      esQurery = '\n';
+    }
+
     this.state = {
       tags: '', // form fields in the first page
-      query: JSON.stringify(queryParam, null, 2), // prop passed from the parent component (page)
+      query: esQurery, // prop passed from the parent component (page)
+      actionsInfo: [],
       actions: [],
-      defaultAction: urlParams.get('action') ? this._buildDefaultDropdownValue(urlParams.get('action')) : null,
+      selectedAction: urlParams.get('action') ? this._buildDefaultDropdownValue(urlParams.get('action')) : null,
       queueList: [],
-      defaultQueue: urlParams.get('queue') ? this._buildDefaultDropdownValue(urlParams.get('queue')) : null,
+      selectedQueue: urlParams.get('queue') ? this._buildDefaultDropdownValue(urlParams.get('queue')) : null,
       recommendedQueue: null,
       priority: urlParams.get('priority') ? this._buildDefaultDropdownValue(urlParams.get('priority')) : null,
-      
-      // make ajax call to ES to get the required fields for PGE
-      pgeInputs: {} // arguments for the PGE (JSON to make it more dynamic)
+      pgeInputs: {} // arguments for the PGE (JSON to make it more dynamic, idk still need to think about this)
     };
     this._handleChange = this._handleChange.bind(this);
     this._handleTagInput = this._handleTagInput.bind(this);
+    this._handleSelectAction = this._handleSelectAction.bind(this);
+    this._handleQueueChange = this._handleQueueChange.bind(this);
   };
 
   _handleChange(e) {
     this.setState({
       query: e
     });
+    try {
+      console.log(JSON.parse(e));
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   _handleTagInput(e) {
@@ -62,36 +82,47 @@ class OnDemandForm extends React.Component {
     fetch(toscaActionsEndpoint)
       .then(res => res.json())
       .then(res => {
-        res.jobspecs = res.jobspecs.map(row => ({
-          value: row,
-          label: row
+        let resCopy = Object.assign({}, res);
+        resCopy.actions = resCopy.actions.map(row => ({
+          label: row.label,
+          value: row.wiring['job-specification'],
         }));
+
         this.setState({
-          actions: res.jobspecs
+          actionsInfo: res,
+          actions: resCopy.actions,
         });
       });
   }
 
-  _retrieveQueueList() {
-    const queueListEndpoint = `${TOSCA_API_BASE}/${QUEUE_LIST_API}`;
+  _handleSelectAction(e, v) {
+    const jobType = e.value;
+    const queueListEndpoint = `${TOSCA_API_BASE}/${QUEUE_LIST_API}?job_type=${jobType}`
     fetch(queueListEndpoint)
       .then(res => res.json())
       .then(res => {
-        res.result.queues = res.result.queues.map(row => ({
+        res.queues = res.queues.map(row => ({
+          label: row,
           value: row,
-          label: row
         }));
-        
-        this.setState({
-          queueList: res.result.queues
-        });
 
-        if (res.result.recommended.length > 0 && !this.state.defaultQueue) {
-          this.setState({
-            defaultQueue: res.result.recommended[0]
-          })
-        }
-      })
+        this.setState({
+          queueList: res.queues,
+          selectedQueue: {
+            label: res.recommended[0],
+            value: res.recommended[0],
+          }
+        });
+      });
+  }
+
+  _handleQueueChange(e, v) {
+    this.setState({
+      selectedQueue: {
+        label: e.value,
+        value: e.value,
+      }
+    })
   }
 
   _buildDefaultDropdownValue = val => ({
@@ -100,15 +131,30 @@ class OnDemandForm extends React.Component {
   });
 
   componentDidMount() {
+    const { queueList, selectedAction } = this.state;
+
+    if (queueList.length === 0 && selectedAction) {
+      const jobType = selectedAction.value;
+      const queueListEndpoint = `${TOSCA_API_BASE}/${QUEUE_LIST_API}?job_type=${jobType}`
+      fetch(queueListEndpoint)
+        .then(res => res.json())
+        .then(res => {
+          res.queues = res.queues.map(row => ({
+            label: row,
+            value: row,
+          }));
+
+          this.setState({
+            queueList: res.queues,
+          });
+        });
+    }
     this._retrieveActions();
-    this._retrieveQueueList();
   }
 
   render() {
     const { } = this.props;
-    const { query, actions, defaultAction, queueList, defaultQueue, priority } = this.state;
-
-    //http://localhost:8080/tosca/on-demand/eyJxdWVyeSI6eyJib29sIjp7Im11c3QiOlt7ImJvb2wiOnsibXVzdCI6W3sidGVybSI6eyJfaWQiOiJ2Y2p4ZHNrZmpzZGtoZnNkamsifX0seyJ0ZXJtIjp7IkRlc3QiOiJYaSdhbiBYaWFueWFuZyBJbnRlcm5hdGlvbmFsIEFpcnBvcnQifX0seyJ0ZXJtIjp7IkNhcnJpZXIiOiJKZXRCZWF0cyJ9fV19fV19fSwic2l6ZSI6MTAsIl9zb3VyY2UiOnsiaW5jbHVkZXMiOlsiKiJdLCJleGNsdWRlcyI6W119LCJmcm9tIjowfQ==?priority=9&queue=system-jobs-queue&action=job-AOI_based_ipf_submitter:release-20190404
+    const { query, actions, selectedAction, queueList, selectedQueue, priority } = this.state;
 
     return (
       <div>
@@ -149,9 +195,10 @@ class OnDemandForm extends React.Component {
               <div className='on-demand-dropdown-label'>Action:</div>
               <Select
                 label='Select Job and Version'
-                name='Select Job and Version'
+                name='action'
                 options={actions}
-                defaultValue={defaultAction}
+                defaultValue={selectedAction}
+                onChange={this._handleSelectAction}
               />
             </section>
             <br />
@@ -161,9 +208,10 @@ class OnDemandForm extends React.Component {
                 label='Select Queue'
                 name='queue'
                 options={queueList}
-                defaultValue={defaultQueue}
-                onChange={(e, v) => {console.log(e); console.log(v)}}
-                ref='queueRef'
+                defaultValue={selectedQueue}
+                value={selectedQueue}
+                onChange={this._handleQueueChange}
+                isDisabled={!queueList.length > 0}
               />
             </section>
             <br />

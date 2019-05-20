@@ -30,20 +30,22 @@ body {
   padding: 40px 60px 40px 40px;
 }
 
-/* If you want the content centered horizontally and vertically */
-/* .centered {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-} */
+@media (max-width: 950px) {
+  .split {
+    position: static;
+  }
 
-/* Style the image inside the centered container, if needed */
-/* .centered img {
-  width: 150px;
-  border-radius: 50%;
-} */
+  .on-demand-right, .on-demand-left {
+    width: 95%;
+  }
+  .on-demand-left {
+    max-height: 450px;
+  }
+
+  .right-pane-container {
+    min-height: 600px;
+  }
+}
 
 .on-demand-tag-wrapper {
   display: table;

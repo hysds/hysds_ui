@@ -15,7 +15,7 @@ export default function Routes(props) {
         <Route exact path='/tosca' component={Tosca} />
         <Route exact path='/tosca/metadata/:id' component={MetadataViewer} />
         {/* <Route exact path='/tosca/on-demand/:query' component={OnDemand} /> */}
-        <Route exact path='/tosca/on-demand/:query' component={OnDemandForm} />
+        <Route exact path='/tosca/on-demand' component={OnDemandForm} />
       </div>
     </Router>
   );

@@ -92,7 +92,7 @@ export default class Tosca extends React.Component {
 
             <a
               className='on-demand-button'
-              href={`tosca/on-demand/${this.state.query}`}
+              href={`tosca/on-demand?query=${this.state.query}`}
               target='_blank'
             >
               On Demand

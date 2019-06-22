@@ -16,6 +16,7 @@ import './style.css';
  *    3. make urls dynamic and change depending on query text box and dropdown changes
  *       window.history.pushState("fjskl", "title", "?dsjkldjslfs")
  *    http://localhost:8080/tosca/on-demand?query=eyJxdWVyeSI6eyJtYXRjaF9hbGwiOnt9fSwic2l6ZSI6MTAsIl9zb3VyY2UiOnsiaW5jbHVkZXMiOlsiKiJdLCJleGNsdWRlcyI6W119LCJmcm9tIjowfQ==&priority=9&queue=system-jobs-queue&action=job-AOI_based_ipf_submitter:release-20190404
+ *    4. AceEditor onValidate and validate query to disable or re-enable submit button
  */
 
 class OnDemandForm extends React.Component {
@@ -34,11 +35,11 @@ class OnDemandForm extends React.Component {
         esQurery = JSON.stringify(esQurery, null, 2)
       } catch (err) {
         console.error(err);
-        console.log("Unable to parse base64 encoded ElasticSearch query, defaulting to 5 blank lines");
-        esQurery = `\n`;
+        console.log("Unable to parse base64 encoded ElasticSearch query");
+        esQurery = '';
       }
     } else {
-      esQurery = '\n';
+      esQurery = '';
     }
 
     this.state = {
@@ -46,20 +47,21 @@ class OnDemandForm extends React.Component {
       query: esQurery, // prop passed from the parent component (page)
       actionsInfo: [],
       actions: [],
-      selectedAction: urlParams.get('action') ? this._buildDefaultDropdownValue(urlParams.get('action')) : null,
+      selectedAction: urlParams.get('action') ? this.buildDefaultDropdownValue(urlParams.get('action')) : null,
       queueList: [],
-      selectedQueue: urlParams.get('queue') ? this._buildDefaultDropdownValue(urlParams.get('queue')) : null,
+      selectedQueue: urlParams.get('queue') ? this.buildDefaultDropdownValue(urlParams.get('queue')) : null,
       recommendedQueue: null,
-      priority: urlParams.get('priority') ? this._buildDefaultDropdownValue(urlParams.get('priority')) : null,
+      priority: urlParams.get('priority') ? this.buildDefaultDropdownValue(urlParams.get('priority')) : null,
       pgeInputs: {} // arguments for the PGE (JSON to make it more dynamic, idk still need to think about this)
     };
-    this._handleChange = this._handleChange.bind(this);
+    this._handleQueryChange = this._handleQueryChange.bind(this);
     this._handleTagInput = this._handleTagInput.bind(this);
     this._handleSelectAction = this._handleSelectAction.bind(this);
     this._handleQueueChange = this._handleQueueChange.bind(this);
+    this._validateESQuery = this._validateESQuery.bind(this);
   };
 
-  _handleChange(e) {
+  _handleQueryChange(e) {
     this.setState({
       query: e
     });
@@ -68,6 +70,10 @@ class OnDemandForm extends React.Component {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  _validateESQuery(e) {
+    console.log(e);
   }
 
   _handleTagInput(e) {
@@ -135,7 +141,7 @@ class OnDemandForm extends React.Component {
     })
   }
 
-  _buildDefaultDropdownValue = val => ({
+  buildDefaultDropdownValue = val => ({
     value: val,
     label: val
   });
@@ -169,10 +175,11 @@ class OnDemandForm extends React.Component {
               showLineNumbers: true,
               tabSize: 2,
             }}
-            onChange={this._handleChange}
+            onChange={this._handleQueryChange}
             value={query}
             width='100%'
             maxLines={Infinity}
+            onValidate={this._validateESQuery}
           />
         </div>
 

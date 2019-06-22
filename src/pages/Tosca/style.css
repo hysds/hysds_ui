@@ -1,18 +1,18 @@
 .main-container {
-  padding: 25px;
+  /* padding: 25px; */
 }
 
 .sidenav {
-  /* margin-top: 250px; */
   height: 100%;
-  width: 325px;
+  min-width: 320px;
+  /* width: 20%; */
   position: fixed;
+  float: left;
   z-index: 1;
-  margin-left: 20px;
-  top: 0;
-  left: 0;
-  overflow-x: hidden;
-  padding-top: 30px;
+  padding: 25px;
+  /* overflow: scroll; */
+  overflow-y: scroll;
+  background-color: #FFFF;
 }
 
 .sidenav a {
@@ -20,13 +20,16 @@
   text-decoration: none;
   font-size: 25px;
   display: block;
+  height: 100%;
 }
 
 .body {
-  margin-left: 325px;
+  margin-left: 355px;
   margin-top: 25px;
   /* Same as the width of the sidenav */
   padding: 0px 10px;
+  /* width: 80%; */
+  /* float: right; */
 }
 
 @media screen and (max-height: 450px) {
@@ -56,4 +59,12 @@
 .on-demand-button:hover {
   transition: background-color 0.4s ease-out;
   background-color: #0a45a4;
+}
+
+.reactivesearch-input input {
+  height: 37px;
+}
+
+.DayPickerInput input {
+  font-size: 0.9em !important;
 }

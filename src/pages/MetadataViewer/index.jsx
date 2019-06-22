@@ -17,21 +17,11 @@ export default class MetadataViewer extends React.Component {
     this._fetchMetadata = this._fetchMetadata.bind(this);
   }
 
-  _fetchMetadata(id) {
-    const esEndpoint = `${GRQ_ES_URL}/${GRQ_ES_INDICES}/_search`;
-    let query = {
-      query: {
-        term: {
-          _id: id
-        }
-      }
-    }
+  _fetchMetadata(index, id) {
+    const esEndpoint = `${GRQ_ES_URL}/${index}/_doc/${id}`;
     fetch(esEndpoint, {
-      method: 'POST',
-      body: JSON.stringify(query),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
     })
       .then(res => res.json())
       .then(response => {
@@ -49,7 +39,9 @@ export default class MetadataViewer extends React.Component {
   }
 
   componentDidMount() {
-    this._fetchMetadata(this.props.match.params.id);
+    const index = this.props.match.params.index;
+    const id = this.props.match.params.id;
+    this._fetchMetadata(index, id);
   }
 
   render() {

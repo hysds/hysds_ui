@@ -13,7 +13,7 @@ export default function Routes(props) {
       <div>
         <Route exact path='/' render={() => <Redirect to='/tosca' />} />
         <Route exact path='/tosca' component={Tosca} />
-        <Route exact path='/tosca/metadata/:id' component={MetadataViewer} />
+        <Route exact path='/tosca/metadata/:index/:id' component={MetadataViewer} />
         {/* <Route exact path='/tosca/on-demand/:query' component={OnDemand} /> */}
         <Route exact path='/tosca/on-demand' component={OnDemandForm} />
       </div>

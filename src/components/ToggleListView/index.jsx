@@ -1,5 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
+
+import GreenArrow from '../../images/green-arrow.png';
+import RedArrow from '../../images/red-arrow.png';
 
 class ToggleListView extends React.Component {
   constructor(props) {
@@ -21,41 +25,39 @@ class ToggleListView extends React.Component {
     const { res } = this.props; // entire object returned from ES
     const { toggle } = this.state;
 
+    let davLink = res.urls.filter(url => url.startsWith('http'));
+    davLink = davLink.length == 0 ? null : (<button><a style={{ color: 'inherit' }} href={davLink[0]} target='_blank'>Browse</a></button>)
+
     const display = toggle ? (
       <div
-        style={{ margin: 20 }}
+        style={{ display: 'inline-block' }}
         key={res._id}
       >
         <div className='text-head text-overflow full_row'>
-          <span className='text-head-info text-overflow'>
-            {res.Dest ? res.Dest + ' ' : ' '} -
-            </span>
-          <span className='text-head-info text-overflow'>
-            {res.Carrier ? res.Carrier : ''} - {res.Origin ? res.Origin : ''} -
-            </span>
+          <span className='text-head-info text-overflow'></span>
+          <span className='text-head-info text-overflow'></span>
         </div>
         <div className='text-description text-overflow full_row'>
           <ul className='highlight_tags'>
-            {res.AvgTicketPrice ? `Priced: $${Math.round(res.AvgTicketPrice)}` : 'Free Test Drive '} -
-              <a href={`tosca/metadata/${res._id}`} target='_blank'>{res._id}</a>
+            <a style={{ color: 'inherit' }} href={`/tosca/metadata/${res._index}/${res._id}`} target='_blank'>{res._id}</a>
           </ul>
+          <ul>{davLink}</ul>
         </div>
       </div>
     ) : (
-        <div style={{ width: '100%' }}>
-          <a href={`tosca/metadata/${res._id}`} target='_blank'>{res._id}</a>
+        <div style={{ display: 'inline-block' }}>
+          <a style={{ color: 'inherit' }} href={`/tosca/metadata/${res._index}/${res._id}`} target='_blank'>{res._id}</a>
         </div>
       );
 
     return (
       <div
-        style={{ marginTop: 20, marginBottom: 20, marginLeft: 40, marginRight: 40, border: '1px solid black' }}
+        style={{ marginTop: 20, marginBottom: 20, marginLeft: 20, marginRight: 20, padding: 15, border: '1px solid #bebebe' }}
         key={this.props._id}
-        onClick={this._handleToggle}
       >
-        <div>{toggle ? '-' : '+'}</div>
+        <div style={{ display: 'inline-block', marginRight: 10, fontSize: 40, fontWeight: 800 }} onClick={this._handleToggle}>
+          {toggle ? <img src={RedArrow} height={25} /> : <img src={GreenArrow} height={24} />}</div>
         {display}
-        {toggle ? (<div><br /></div>) : null}
       </div>
     );
   }

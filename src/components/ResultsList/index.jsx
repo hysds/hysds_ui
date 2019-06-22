@@ -41,7 +41,7 @@ class ResultsList extends React.Component {
         paginationAt="both"
         // sortBy="asc"
         react={queryParams}
-        renderData={this.resultsListHandler}
+        renderItem={this.resultsListHandler}
         onResultStats={(total, took) => {
           return `Found ${total} results in ${took} ms.`;
         }}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReactiveBase, DataSearch, SingleList, SelectedFilters, ReactiveComponent, ReactiveList } from '@appbaseio/reactivesearch';
+import { ReactiveBase, DataSearch, SingleList, SelectedFilters, DateRange, ReactiveComponent, ReactiveList } from '@appbaseio/reactivesearch';
 
 import { GRQ_ES_URL, GRQ_ES_INDICES } from '../../config';
 
@@ -12,10 +12,14 @@ import './style.css';
 // reactivesearch retrieves data from each component by its componentId
 const ID_SEARCHBAR_COMPONENT_ID = 'ID';
 const SEARCHBAR_COMPONENT_ID = 'query_string';
-const DESTINATION_SEARCH_COMPONENT_ID = 'destination-list';
-const CARRIER_LIST_COMPONENT_ID = 'carrier-list'
-const MAP_COMPONENT_ID = 'polygon-map';
+const DATASET_TYPE_SEARCH_ID = 'dataset_type';
+const SATELLITE_TYPE_ID = 'satellite';
+const MAP_COMPONENT_ID = 'polygon';
 const RESULTS_LIST_COMPONENT_ID = 'results';
+const DATASET_ID = 'dataset';
+const TRACK_NUMBER_ID = 'track_number';
+const START_TIME_ID = 'starttime';
+const END_TIME_ID = 'endtime';
 
 
 export default class Tosca extends React.Component {
@@ -37,12 +41,15 @@ export default class Tosca extends React.Component {
   render() {
     const queryParams = { // query logic for elasticsearch
       'and': [
-        ID_SEARCHBAR_COMPONENT_ID,
-        SEARCHBAR_COMPONENT_ID,
-        DESTINATION_SEARCH_COMPONENT_ID,
-        CARRIER_LIST_COMPONENT_ID,
+        // SEARCHBAR_COMPONENT_ID,
+        DATASET_TYPE_SEARCH_ID,
+        SATELLITE_TYPE_ID,
         MAP_COMPONENT_ID,
-      ],
+        DATASET_ID,
+        TRACK_NUMBER_ID,
+        START_TIME_ID,
+        END_TIME_ID,
+      ]
     };
 
     return (
@@ -54,58 +61,78 @@ export default class Tosca extends React.Component {
           beforeSend={e => console.log(e)}
         >
           <div className='sidenav'>
-            <ReactiveComponent
-              componentId={ID_SEARCHBAR_COMPONENT_ID}
-              URLParams={true}
-            >
-              <IDSearchBar refs='idSearchBar' />
-            </ReactiveComponent>
-
-            <br />
-            <DataSearch
+            {/* <DataSearch
               componentId={SEARCHBAR_COMPONENT_ID}
-              dataField={['Dest', 'Carrier']}
-              placeholder='Search for Airports'
+              dataField={['dataset_type']}
+              placeholder='Dataset Type'
               URLParams={true}
-            />
-            <br />
+            /> */}
+            {/* <br /> */}
             <SingleList
-              componentId={DESTINATION_SEARCH_COMPONENT_ID}
-              dataField='Dest'
-              title='Destinations'
+              componentId={DATASET_ID}
+              dataField='dataset.raw'
+              title='Dataset'
               URLParams={true}
-              style={{ fontSize: 13 }}
+              style={{ fontSize: 12 }}
+              className="reactivesearch-input"
+            />
+            <SingleList
+              componentId={DATASET_TYPE_SEARCH_ID}
+              dataField='dataset_type.raw'
+              title='Dataset Type'
+              URLParams={true}
+              style={{ fontSize: 12 }}
+              className="reactivesearch-input"
             />
 
             <br />
             <SingleList
-              componentId={CARRIER_LIST_COMPONENT_ID}
-              dataField='Carrier'
+              componentId={SATELLITE_TYPE_ID}
+              dataField='metadata.platform.raw'
               title='Carriers'
               URLParams={true}
-              style={{ fontSize: 13 }}
+              style={{ fontSize: 12 }}
+              className="reactivesearch-input"
+            />
+
+            <DateRange
+              componentId={START_TIME_ID}
+              title="Start Time"
+              dataField="starttime"
+              style={{ fontSize: 12 }}
+            />
+            <br />
+            <DateRange
+              componentId={END_TIME_ID}
+              title="End Time"
+              dataField="endtime"
+              style={{ fontSize: 12 }}
+            />
+
+            <br />
+            <br />
+            <SingleList
+              componentId={TRACK_NUMBER_ID}
+              dataField='metadata.trackNumber'
+              title='Track Number'
+              URLParams={true}
+              style={{ fontSize: 12 }}
+              className="reactivesearch-input"
             />
           </div>
 
-          <div className='body' style={{ minWidth: 750 }}>
+          <div className='body'>
             <SelectedFilters className='filterList' />
 
             <a
               className='on-demand-button'
-              href={`tosca/on-demand?query=${this.state.query}`}
+              href={`/tosca/on-demand?query=${this.state.query}`}
               target='_blank'
             >
               On Demand
             </a>
 
-            <ReactiveComponent
-              componentId={MAP_COMPONENT_ID}
-              URLParams={true}
-            >
-              <ReactiveMap
-                dataCoordinates={[]} // pass array of coordinates to draw in the leaflet map
-              />
-            </ReactiveComponent>
+            <ReactiveMap mapComponentId={MAP_COMPONENT_ID} />
             <br />
             <ResultsList
               componentId={RESULTS_LIST_COMPONENT_ID}

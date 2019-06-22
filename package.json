@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@appbaseio/reactivesearch": "3.0.0-beta.13",
+    "@appbaseio/reactivesearch": "^3.0.0-rc.15",
     "@babel/core": "^7.4.0",
     "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/preset-env": "^7.4.2",

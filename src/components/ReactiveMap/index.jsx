@@ -1,4 +1,5 @@
 import React from 'react';
+import { ReactiveComponent } from '@appbaseio/reactivesearch';
 import { Map, TileLayer, FeatureGroup } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw";
 
@@ -15,60 +16,66 @@ import './style.css';
  *    make es query compatible with ReactiveSearch **
  *    collapsable text field on the bottom for coordinates
  */
-export default class ReactiveMap extends React.Component {
+var MapComponent = class ReactiveMap extends React.Component {
   constructor(props) {
     super(props);
-    const coordinates = JSON.parse(props.selectedValue);
-
-    this.state = {
-      coordinates: coordinates || []
-    }
     this.polygonCreateEvent = this.polygonCreateEvent.bind(this);
     this.polygonEditEvent = this.polygonEditEvent.bind(this);
+  }
 
-    if (coordinates) {
-      this.setQuery(props, coordinates); // query on page load
+  componentDidMount() {
+    const { setPolygon } = this.props;
+    if (setPolygon) {
+      const polyArr = JSON.parse(setPolygon);
+      this._setQuery(this.props, polyArr);
     }
   }
 
   componentDidUpdate() {
     // when they clear the facet so it doesnt query with empty coordinates
-    if (!this.props.selectedValue) {
+    if (!this.props.setPolygon) {
       this.props.setQuery({
         query: null,
         value: [], // don't know why it works but as long as query is null we're good
-        selectedValue: null
       });
     }
   }
 
-  setQuery(props, coordinates) { // passing the ES query back to the wrapper: ReactiveComponent
-    props.setQuery({
+  _setQuery(props, coordinates) { // passing the ES query back to the wrapper: ReactiveComponent
+    const query = {
       query: {
-        term: {
-          polygon: coordinates
+        "bool": {
+          "filter": {
+            "geo_shape": {
+              "location": {
+                "shape": {
+                  "type": "polygon",
+                  "coordinates": [coordinates]
+                }
+              }
+            }
+          }
         }
-      },
-      value: coordinates ? JSON.stringify(coordinates) : [],
-      selectedValue: coordinates,
-    });
+      }
+    };
+    props.setQuery({
+      query,
+      value: JSON.stringify(coordinates)
+    })
   }
 
   polygonCreateEvent(e) {
-    const coordinates = e.layer.getLatLngs()[0].map(cord => [cord.lat, cord.lng])
-    this.setState({
-      coordinates: coordinates // keeping track of the coordinates
-    })
-    this.setQuery(this.props, coordinates);
+    const coordinates = e.layer.getLatLngs()[0].map(cord => [cord.lng, cord.lat]);
+    coordinates.push(coordinates[0]); // GEOJSON NEED THE LAST POINT TO BE THE SAME AS THE FIRST POINT
+    this._setQuery(this.props, coordinates);
   }
 
   polygonEditEvent(e) {
     for (var key in e.layers._layers) {
-      let coordinates = e.layers._layers[key]._latlngs[0].map(cord => [cord.lat, cord.lng]);
-      this.setState({
-        coordinates: coordinates
-      })
-      this.setQuery(this.props, coordinates);
+      let coordinates = e.layers._layers[key]._latlngs[0].map(cord => [cord.lng, cord.lat]);
+      coordinates.push(coordinates[0]);
+      
+      this._setQuery(this.props, coordinates);
       break;
     }
   }
@@ -104,6 +111,25 @@ export default class ReactiveMap extends React.Component {
           />
         </FeatureGroup>
       </Map>
+    );
+  }
+}
+
+export default class ReactiveMap extends React.Component {
+  render() {
+    return (
+      <ReactiveComponent
+        componentId={this.props.mapComponentId}
+        URLParams={true}
+        render={({ aggregations, setQuery, value }) => {
+          return (
+            <MapComponent
+              setQuery={setQuery}
+              setPolygon={value}
+            />
+          );
+        }}
+      ></ReactiveComponent>
     );
   }
 }

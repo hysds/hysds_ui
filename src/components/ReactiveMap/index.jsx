@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ReactiveComponent } from '@appbaseio/reactivesearch';
 import { Map, TileLayer, FeatureGroup, Polygon } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw";
@@ -12,18 +13,22 @@ import './style.css';
 /**
  * Map in Tosca to trigger ES searches based on geo location drawing
  * TODO:
- *    migrate data from GRQ to ES 7 (DONE)
+ *    migrate data from GRQ to ES 7 (KIND OF DONE)
  *    make es query compatible with ReactiveSearch ** (DONE)
- *    collapsable text field on the bottom for coordinates (NOT SURE WHAT THIS MEANS)
+ *    collapsable text field on the bottom for coordinates (DONE I THINK)
+ *    add images to the map
  */
 var MapComponent = class ReactiveMap extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      textBoxValue: ''
+    };
 
     this.polygonCreateEvent = this.polygonCreateEvent.bind(this);
-    this.polygonEditEvent = this.polygonEditEvent.bind(this);
     this.removePolygons = this.removePolygons.bind(this);
+    this.polygonTextInput = this.polygonTextInput.bind(this);
+    this.polygonTextChange = this.polygonTextChange.bind(this);
   }
 
   componentDidMount() {
@@ -32,10 +37,11 @@ var MapComponent = class ReactiveMap extends React.Component {
       const polyArr = JSON.parse(setPolygon);
       this._setQuery(this.props, polyArr);
 
-      let defaultPolygon = (setPolygon === null || setPolygon.length === 0) ? null : JSON.parse(setPolygon);
-      defaultPolygon.pop();
+      let inputPolygon = (setPolygon === null || setPolygon.length === 0) ? null : JSON.parse(setPolygon);
+      // inputPolygon.pop();
       this.setState({
-        defaultPolygon: defaultPolygon.map((row) => [row[1], row[0]]) // reversing polygon to be compatible with leaflet
+        inputPolygon: inputPolygon.map((row) => [row[1], row[0]]), // reversing polygon to be compatible with leaflet
+        textBoxValue: JSON.stringify(inputPolygon)
       });
     }
   }
@@ -49,7 +55,8 @@ var MapComponent = class ReactiveMap extends React.Component {
       });
 
       this.setState({
-        defaultPolygon: [] // so we can remove the defualt polygon when we "clear all"
+        inputPolygon: [], // so we can remove the defualt polygon when we "clear all"
+        textBoxValue: ''
       });
 
       this.removePolygons();
@@ -85,17 +92,34 @@ var MapComponent = class ReactiveMap extends React.Component {
     this._setQuery(this.props, polygon);
 
     this.setState({
-      defaultPolygon: null
+      inputPolygon: null,
+      textBoxValue: JSON.stringify(polygon)
     });
   }
 
-  polygonEditEvent(e) {
-    for (var key in e.layers._layers) {
-      let polygon = e.layers._layers[key]._latlngs[0].map(cord => [cord.lng, cord.lat]);
-      polygon.push(polygon[0]);
+  polygonTextChange(e) {
+    this.setState({
+      textBoxValue: e.target.value
+    });
+  }
 
-      this._setQuery(this.props, polygon);
-      break;
+  polygonTextInput(e) {
+    if (e.key === 'Enter' && e.shiftKey) {
+      // e.preventDefault();
+      try {
+        const textValue = e.target.value;
+        if (textValue.trim() === '') return;  // do nothing if text is blank
+
+        let inputPolygon = JSON.parse(textValue);
+        this.setState({
+          inputPolygon: inputPolygon.map((row) => [row[1], row[0]]),
+          textBoxValue: JSON.stringify(inputPolygon)
+        });
+        this.removePolygons();
+        this._setQuery(this.props, inputPolygon);
+      } catch (err) {
+        alert("Not valid JSON")
+      }
     }
   }
 
@@ -112,46 +136,56 @@ var MapComponent = class ReactiveMap extends React.Component {
   }
 
   render() {
-    const { defaultPolygon } = this.state;
+    const { defaultZoom, maxZoom, minZoom } = this.props;
+    const { inputPolygon, textBoxValue } = this.state;
     const position = [36.7783, -119.4179];
 
     return (
-      <Map
-        center={position}
-        zoom={6}
-        minZoom={2}
-        maxZoom={8}
-      >
-        <TileLayer
-          url={LEAFLET_TILELAYER}
-          attribution={LEAFLET_ATTRIBUTION}
-        />
-        <FeatureGroup>
-          <EditControl
-            ref="edit"
-            position='topleft'
-            onDrawStart={this.removePolygons}
-            onCreated={this.polygonCreateEvent}
-            onDeleted={this._onDeleted}
-            onEdited={this.polygonEditEvent}
-            draw={{
-              circle: false,
-              marker: false,
-              polyline: false,
-              circlemarker: false,
-            }}
-            edit={{
-              remove: false,
-              edit: false
-            }}
+      <div className='map-container'>
+        <Map
+          center={position}
+          zoom={defaultZoom}
+          minZoom={minZoom}
+          maxZoom={maxZoom}
+        >
+          <TileLayer
+            url={LEAFLET_TILELAYER}
+            attribution={LEAFLET_ATTRIBUTION}
           />
-        </FeatureGroup>
-        {
-          defaultPolygon !== [] && defaultPolygon !== null && defaultPolygon !== undefined ?
-            (<Polygon positions={defaultPolygon} color="#3388ff" opacity={0.5} />) :
-            null
-        }
-      </Map>
+          <FeatureGroup>
+            <EditControl
+              ref="edit"
+              position='topleft'
+              onDrawStart={this.removePolygons}
+              onCreated={this.polygonCreateEvent}
+              onDeleted={this._onDeleted}
+              draw={{
+                circle: false,
+                marker: false,
+                polyline: false,
+                circlemarker: false,
+              }}
+              edit={{
+                remove: false,
+                edit: false
+              }}
+            />
+          </FeatureGroup>
+          {
+            inputPolygon !== [] && inputPolygon !== null && inputPolygon !== undefined ?
+              (<Polygon positions={inputPolygon} color="#3388ff" opacity={0.5} />) :
+              null
+          }
+        </Map>
+        <textarea
+          className='map-coordinates-textbox'
+          placeholder={`Press SHIFT + ENTER to manually input polygon...\n ex. [ [-125.09335, 42.47589], ... ,[-125.09335, 42.47589] ]`}
+          value={textBoxValue}
+          onChange={this.polygonTextChange}
+          onKeyPress={this.polygonTextInput}
+        >
+        </textarea>
+      </div>
     )
   }
 }
@@ -162,11 +196,19 @@ export default class ReactiveMap extends React.Component {
       <ReactiveComponent
         componentId={this.props.mapComponentId}
         URLParams={true}
-        render={({ aggregations, setQuery, value }) => {
+        onAllData={(data, rawData, aggregations) => {
+          console.log(data);
+          console.log(rawData);
+          console.log(aggregations);
+        }}
+        render={({ setQuery, value }) => {
           return (
             <MapComponent
               setQuery={setQuery}
               setPolygon={value}
+              defaultZoom={this.props.defaultZoom}
+              maxZoom={this.props.maxZoom}
+              minZoom={this.props.minZoom}
             />
           );
         }}
@@ -174,3 +216,13 @@ export default class ReactiveMap extends React.Component {
     );
   }
 }
+
+ReactiveMap.propTypes = {
+  mapComponentId: PropTypes.string.isRequired
+};
+
+ReactiveMap.defaultProps = {
+  defaultZoom: 6,
+  maxZoom: 10,
+  minZoom: 0
+};

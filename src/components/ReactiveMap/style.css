@@ -5,8 +5,22 @@ p {
   text-align: center;
 }
 
+.map-container {
+  margin-bottom: 15px;
+}
+
 .leaflet-container {
   height: 600px;
   width: 90%;
   margin: 0 auto;
+  margin-bottom: 15px;
+}
+
+.map-coordinates-textbox {
+  width: 80%;
+  border: 1px solid #b2b2b2;
+  display: block;
+  font-size: 0.85em;
+  margin: 0 auto;
+  min-height: 80px;
 }

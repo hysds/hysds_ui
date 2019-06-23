@@ -28,6 +28,7 @@
   margin-top: 25px;
   /* Same as the width of the sidenav */
   padding: 0px 10px;
+  min-width: 750px;
   /* width: 80%; */
   /* float: right; */
 }

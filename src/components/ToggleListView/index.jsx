@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import './style.css';
 import GreenArrow from '../../images/green-arrow.png';
 import RedArrow from '../../images/red-arrow.png';
 
@@ -45,17 +46,22 @@ class ToggleListView extends React.Component {
       </div>
     ) : (
         <div style={{ display: 'inline-block' }}>
-          <a style={{ color: 'inherit' }} href={`/tosca/metadata/${res._index}/${res._id}`} target='_blank'>{res._id}</a>
+          <span className='display-box-title'>{res.dataset}</span> - <span className='display-box-subtitle'>{res._id}</span>
         </div>
       );
 
     return (
       <div
-        style={{ marginTop: 20, marginBottom: 20, marginLeft: 20, marginRight: 20, padding: 15, border: '1px solid #bebebe' }}
+        style={{ marginTop: 20, marginBottom: 20, marginLeft: 20, marginRight: 20, padding: 15, border: '1px solid #bebebe', minWidth: 750 }}
         key={this.props._id}
       >
-        <div style={{ display: 'inline-block', marginRight: 10, fontSize: 40, fontWeight: 800 }} onClick={this._handleToggle}>
-          {toggle ? <img src={RedArrow} height={25} /> : <img src={GreenArrow} height={24} />}</div>
+        <div style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'top' }} onClick={this._handleToggle}>
+          {
+            toggle ?
+              <input type='image' className='result-toggle' src={RedArrow} height={25} /> :
+              <input type='image' className='result-toggle' src={GreenArrow} height={24} />
+          }
+        </div>
         {display}
       </div>
     );

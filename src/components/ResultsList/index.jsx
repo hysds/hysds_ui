@@ -37,7 +37,7 @@ class ResultsList extends React.Component {
         pagination={true}
         scrollOnChange={false}
         // onNoResults={}
-        // onError={}
+        onError={() => (<h1>Error!!!</h1>)}
         paginationAt="both"
         // sortBy="asc"
         react={queryParams}

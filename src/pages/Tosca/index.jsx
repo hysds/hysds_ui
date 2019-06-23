@@ -133,7 +133,12 @@ export default class Tosca extends React.Component {
               On Demand
             </a>
 
-            <ReactiveMap mapComponentId={MAP_COMPONENT_ID} />
+            <ReactiveMap
+              mapComponentId={MAP_COMPONENT_ID}
+              defaultZoom={6}
+              maxZoom={8}
+              minZoom={2}
+            />
             <br />
             <ResultsList
               componentId={RESULTS_LIST_COMPONENT_ID}

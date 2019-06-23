@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReactiveComponent } from '@appbaseio/reactivesearch';
-import { Map, TileLayer, FeatureGroup } from 'react-leaflet';
+import { Map, TileLayer, FeatureGroup, Polygon } from 'react-leaflet';
 
 import { EditControl } from "react-leaflet-draw";
 
@@ -13,13 +13,15 @@ import './style.css';
 /**
  * Map in Tosca to trigger ES searches based on geo location drawing
  * TODO:
- *    migrate data from GRQ to ES 6
- *    make es query compatible with ReactiveSearch **
- *    collapsable text field on the bottom for coordinates
+ *    migrate data from GRQ to ES 7 (DONE)
+ *    make es query compatible with ReactiveSearch ** (DONE)
+ *    collapsable text field on the bottom for coordinates (NOT SURE WHAT THIS MEANS)
  */
 var MapComponent = class ReactiveMap extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {};
+
     this.polygonCreateEvent = this.polygonCreateEvent.bind(this);
     this.polygonEditEvent = this.polygonEditEvent.bind(this);
     this.removePolygons = this.removePolygons.bind(this);
@@ -30,6 +32,12 @@ var MapComponent = class ReactiveMap extends React.Component {
     if (setPolygon) {
       const polyArr = JSON.parse(setPolygon);
       this._setQuery(this.props, polyArr);
+
+      let defaultPolygon = (setPolygon === null || setPolygon.length === 0) ? null : JSON.parse(setPolygon);
+      defaultPolygon.pop();
+      this.setState({
+        defaultPolygon: defaultPolygon.map((row) => [row[1], row[0]]) // reversing polygon to be compatible with leaflet
+      });
     }
   }
 
@@ -40,11 +48,16 @@ var MapComponent = class ReactiveMap extends React.Component {
         query: null,
         value: [], // don't know why it works but as long as query is null we're good
       });
+
+      this.setState({
+        defaultPolygon: [] // so we can remove the defualt polygon when we "clear all"
+      });
+
       this.removePolygons();
     }
   }
 
-  _setQuery(props, coordinates) { // passing the ES query back to the wrapper: ReactiveComponent
+  _setQuery(props, polygon) { // passing the ES query back to the wrapper: ReactiveComponent
     const query = {
       query: {
         "bool": {
@@ -53,7 +66,7 @@ var MapComponent = class ReactiveMap extends React.Component {
               "location": {
                 "shape": {
                   "type": "polygon",
-                  "coordinates": [coordinates]
+                  "coordinates": [polygon]
                 }
               }
             }
@@ -63,22 +76,26 @@ var MapComponent = class ReactiveMap extends React.Component {
     };
     props.setQuery({
       query,
-      value: JSON.stringify(coordinates)
+      value: JSON.stringify(polygon)
     })
   }
 
   polygonCreateEvent(e) {
-    const coordinates = e.layer.getLatLngs()[0].map(cord => [cord.lng, cord.lat]);
-    coordinates.push(coordinates[0]); // GEOJSON NEED THE LAST POINT TO BE THE SAME AS THE FIRST POINT
-    this._setQuery(this.props, coordinates);
+    const polygon = e.layer.getLatLngs()[0].map(cord => [cord.lng, cord.lat]);
+    polygon.push(polygon[0]); // GEOJSON NEED THE LAST POINT TO BE THE SAME AS THE FIRST POINT
+    this._setQuery(this.props, polygon);
+
+    this.setState({
+      defaultPolygon: null
+    });
   }
 
   polygonEditEvent(e) {
     for (var key in e.layers._layers) {
-      let coordinates = e.layers._layers[key]._latlngs[0].map(cord => [cord.lng, cord.lat]);
-      coordinates.push(coordinates[0]);
+      let polygon = e.layers._layers[key]._latlngs[0].map(cord => [cord.lng, cord.lat]);
+      polygon.push(polygon[0]);
 
-      this._setQuery(this.props, coordinates);
+      this._setQuery(this.props, polygon);
       break;
     }
   }
@@ -92,11 +109,12 @@ var MapComponent = class ReactiveMap extends React.Component {
     layerIds.forEach(id => {
       var layer = layers[id];
       layerContainer.removeLayer(layer);
-    })
+    });
   }
 
   render() {
-    const position = [51.505, -0.09];
+    const { defaultPolygon } = this.state;
+    const position = [36.7783, -119.4179];
 
     return (
       <Map
@@ -128,6 +146,11 @@ var MapComponent = class ReactiveMap extends React.Component {
             }}
           />
         </FeatureGroup>
+        {
+          defaultPolygon !== [] && defaultPolygon !== null && defaultPolygon !== undefined ?
+            (<Polygon positions={defaultPolygon} color="#3388ff" opacity={0.5} />) :
+            null
+        }
       </Map>
     )
   }

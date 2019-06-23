@@ -28,6 +28,7 @@ export default class Tosca extends React.Component {
     this.state = {
       esQuery: null
     };
+    this._handleTransformRequest = this._handleTransformRequest.bind(this);
   }
 
   _handleTransformRequest(e) { // handles the request to ES (also where to get es query)
@@ -57,7 +58,7 @@ export default class Tosca extends React.Component {
         <ReactiveBase
           app={GRQ_ES_INDICES}
           url={GRQ_ES_URL}
-          transformRequest={this._handleTransformRequest.bind(this)}
+          transformRequest={this._handleTransformRequest}
           beforeSend={e => console.log(e)}
         >
           <div className='sidenav'>

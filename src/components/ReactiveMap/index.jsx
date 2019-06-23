@@ -1,6 +1,7 @@
 import React from 'react';
 import { ReactiveComponent } from '@appbaseio/reactivesearch';
 import { Map, TileLayer, FeatureGroup } from 'react-leaflet';
+
 import { EditControl } from "react-leaflet-draw";
 
 import { LEAFLET_TILELAYER, LEAFLET_ATTRIBUTION } from '../../config.js';
@@ -21,6 +22,7 @@ var MapComponent = class ReactiveMap extends React.Component {
     super(props);
     this.polygonCreateEvent = this.polygonCreateEvent.bind(this);
     this.polygonEditEvent = this.polygonEditEvent.bind(this);
+    this.removePolygons = this.removePolygons.bind(this);
   }
 
   componentDidMount() {
@@ -38,6 +40,7 @@ var MapComponent = class ReactiveMap extends React.Component {
         query: null,
         value: [], // don't know why it works but as long as query is null we're good
       });
+      this.removePolygons();
     }
   }
 
@@ -74,14 +77,27 @@ var MapComponent = class ReactiveMap extends React.Component {
     for (var key in e.layers._layers) {
       let coordinates = e.layers._layers[key]._latlngs[0].map(cord => [cord.lng, cord.lat]);
       coordinates.push(coordinates[0]);
-      
+
       this._setQuery(this.props, coordinates);
       break;
     }
   }
 
+  removePolygons() { // to remove the already drawn polygon if you're drawing a new one
+    const { edit } = this.refs;
+    const layerContainer = edit.leafletElement.options.edit.featureGroup;
+    const layers = layerContainer._layers;
+    const layerIds = Object.keys(layers);
+
+    layerIds.forEach(id => {
+      var layer = layers[id];
+      layerContainer.removeLayer(layer);
+    })
+  }
+
   render() {
     const position = [51.505, -0.09];
+
     return (
       <Map
         center={position}
@@ -95,7 +111,9 @@ var MapComponent = class ReactiveMap extends React.Component {
         />
         <FeatureGroup>
           <EditControl
-            position='topleft' // 'topright'
+            ref="edit"
+            position='topleft'
+            onDrawStart={this.removePolygons}
             onCreated={this.polygonCreateEvent}
             onDeleted={this._onDeleted}
             onEdited={this.polygonEditEvent}
@@ -111,7 +129,7 @@ var MapComponent = class ReactiveMap extends React.Component {
           />
         </FeatureGroup>
       </Map>
-    );
+    )
   }
 }
 

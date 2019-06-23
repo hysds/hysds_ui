@@ -1,7 +1,6 @@
 import React from 'react';
 import { ReactiveComponent } from '@appbaseio/reactivesearch';
 import { Map, TileLayer, FeatureGroup, Polygon } from 'react-leaflet';
-
 import { EditControl } from "react-leaflet-draw";
 
 import { LEAFLET_TILELAYER, LEAFLET_ATTRIBUTION } from '../../config.js';
@@ -119,7 +118,7 @@ var MapComponent = class ReactiveMap extends React.Component {
     return (
       <Map
         center={position}
-        zoom={7}
+        zoom={6}
         minZoom={2}
         maxZoom={8}
       >
@@ -142,7 +141,8 @@ var MapComponent = class ReactiveMap extends React.Component {
               circlemarker: false,
             }}
             edit={{
-              remove: false
+              remove: false,
+              edit: false
             }}
           />
         </FeatureGroup>

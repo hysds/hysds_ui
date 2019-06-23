@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 
 import GreenArrow from '../../images/green-arrow.png';
@@ -26,7 +25,7 @@ class ToggleListView extends React.Component {
     const { toggle } = this.state;
 
     let davLink = res.urls.filter(url => url.startsWith('http'));
-    davLink = davLink.length == 0 ? null : (<button><a style={{ color: 'inherit' }} href={davLink[0]} target='_blank'>Browse</a></button>)
+    davLink = davLink.length == 0 ? null : (<a className='on-demand-button' href={davLink[0]} target='_blank'>Browse</a>)
 
     const display = toggle ? (
       <div

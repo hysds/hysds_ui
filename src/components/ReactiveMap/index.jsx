@@ -152,11 +152,13 @@ var MapComponent = class ReactiveMap extends React.Component {
 
   _extractCoordinates(data) {
     return data.map(row => {
+      const center = row.center.coordinates;
       if (row.location && row.location.coordinates && row.location.coordinates.length > 0) {
         return {
           _id: row._id,
           _index: row._index,
-          polygon: this._switchPolygonCoordinates(row.location.coordinates[0])
+          polygon: this._switchPolygonCoordinates(row.location.coordinates[0]),
+          center: [center[1], center[0]],
         };
       }
     });
@@ -166,10 +168,16 @@ var MapComponent = class ReactiveMap extends React.Component {
     const { defaultZoom, maxZoom, minZoom, facetData } = this.props;
     const { displayMap, inputPolygon, textBoxValue } = this.state;
     const mapContainerStyles = displayMap ? {} : { display: 'none' }; // to toggle the map
-    const position = [36.7783, -119.4179];
 
     // extracting and morphing the coordinates in the data from elasticsearch
     const extractedData = this._extractCoordinates(facetData);
+    const center = extractedData.length === 0 ? [36.7783, -119.4179] : extractedData[0].center;
+
+    let zoomLevel = localStorage.getItem('zoomLevel');
+    if (!zoomLevel) {
+      zoomLevel = defaultZoom;
+      localStorage.setItem('zoomLevel', defaultZoom);
+    }
 
     return (
       <div className="reactive-map-container">
@@ -179,12 +187,13 @@ var MapComponent = class ReactiveMap extends React.Component {
         </button>
         <div className='map-container'>
           <Map
-            center={position}
-            zoom={defaultZoom}
+            ref='map'
+            center={center}
+            zoom={zoomLevel}
             minZoom={minZoom}
             maxZoom={maxZoom}
             style={mapContainerStyles}
-            ref='map'
+            onViewportChange={e => localStorage.setItem('zoomLevel', e.zoom)}
           >
             <TileLayer
               url={LEAFLET_TILELAYER}
@@ -222,7 +231,7 @@ var MapComponent = class ReactiveMap extends React.Component {
                   color="#3388ff"
                   opacity={1}
                   fillOpacity={0}
-                  weight={1.25}
+                  weight={1.1}
                 />
               ))
             }

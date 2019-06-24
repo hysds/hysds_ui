@@ -59,7 +59,6 @@ export default class Tosca extends React.Component {
           app={GRQ_ES_INDICES}
           url={GRQ_ES_URL}
           transformRequest={this._handleTransformRequest}
-          beforeSend={e => console.log(e)}
         >
           <div className='sidenav'>
             {/* <DataSearch

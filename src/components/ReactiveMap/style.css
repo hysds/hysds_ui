@@ -17,7 +17,7 @@ p {
 }
 
 .map-coordinates-textbox {
-  width: 80%;
+  min-width: 80%;
   border: 1px solid #b2b2b2;
   display: block;
   font-size: 0.85em;

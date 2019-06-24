@@ -4,7 +4,7 @@ import { ReactiveComponent } from '@appbaseio/reactivesearch';
 import { Map, TileLayer, FeatureGroup, Polygon } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw";
 
-import { LEAFLET_TILELAYER, LEAFLET_ATTRIBUTION } from '../../config.js';
+import { LEAFLET_TILELAYER, LEAFLET_ATTRIBUTION, DEFAULT_MAP_DISPLAY } from '../../config.js';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
@@ -22,9 +22,11 @@ var MapComponent = class ReactiveMap extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      displayMap: DEFAULT_MAP_DISPLAY,
       textBoxValue: ''
     };
 
+    this.toggleMapDisplay = this.toggleMapDisplay.bind(this);
     this.polygonCreateEvent = this.polygonCreateEvent.bind(this);
     this.removePolygons = this.removePolygons.bind(this);
     this.polygonTextInput = this.polygonTextInput.bind(this);
@@ -38,7 +40,6 @@ var MapComponent = class ReactiveMap extends React.Component {
       this._setQuery(this.props, polyArr);
 
       let inputPolygon = (setPolygon === null || setPolygon.length === 0) ? null : JSON.parse(setPolygon);
-      // inputPolygon.pop();
       this.setState({
         inputPolygon: inputPolygon.map((row) => [row[1], row[0]]), // reversing polygon to be compatible with leaflet
         textBoxValue: JSON.stringify(inputPolygon)
@@ -61,6 +62,15 @@ var MapComponent = class ReactiveMap extends React.Component {
 
       this.removePolygons();
     }
+  }
+
+  toggleMapDisplay() {
+    const { map } = this.refs;
+    this.setState({
+      displayMap: !this.state.displayMap
+    },
+      map.leafletElement._onResize() // this forces leaflet to redraw the map
+    );
   }
 
   _setQuery(props, polygon) { // passing the ES query back to the wrapper: ReactiveComponent
@@ -137,46 +147,55 @@ var MapComponent = class ReactiveMap extends React.Component {
 
   render() {
     const { defaultZoom, maxZoom, minZoom } = this.props;
-    const { inputPolygon, textBoxValue } = this.state;
+    const { displayMap, inputPolygon, textBoxValue } = this.state;
+    const mapContainerStyles = displayMap ? {} : { display: 'none' }; // to toggle the map
     const position = [36.7783, -119.4179];
 
     return (
-      <div className='map-container'>
-        <Map
-          center={position}
-          zoom={defaultZoom}
-          minZoom={minZoom}
-          maxZoom={maxZoom}
-        >
-          <TileLayer
-            url={LEAFLET_TILELAYER}
-            attribution={LEAFLET_ATTRIBUTION}
-          />
-          <FeatureGroup>
-            <EditControl
-              ref="edit"
-              position='topleft'
-              onDrawStart={this.removePolygons}
-              onCreated={this.polygonCreateEvent}
-              onDeleted={this._onDeleted}
-              draw={{
-                circle: false,
-                marker: false,
-                polyline: false,
-                circlemarker: false,
-              }}
-              edit={{
-                remove: false,
-                edit: false
-              }}
+      <div className="reactive-map-container">
+        <button
+          onClick={this.toggleMapDisplay}>
+          {displayMap ? 'Hide Map' : 'Show Map'}
+        </button>
+        <div className='map-container'>
+          <Map
+            center={position}
+            zoom={defaultZoom}
+            minZoom={minZoom}
+            maxZoom={maxZoom}
+            style={mapContainerStyles}
+            ref='map'
+          >
+            <TileLayer
+              url={LEAFLET_TILELAYER}
+              attribution={LEAFLET_ATTRIBUTION}
             />
-          </FeatureGroup>
-          {
-            inputPolygon !== [] && inputPolygon !== null && inputPolygon !== undefined ?
-              (<Polygon positions={inputPolygon} color="#3388ff" opacity={0.5} />) :
-              null
-          }
-        </Map>
+            <FeatureGroup>
+              <EditControl
+                ref="edit"
+                position='topleft'
+                onDrawStart={this.removePolygons}
+                onCreated={this.polygonCreateEvent}
+                onDeleted={this._onDeleted}
+                draw={{
+                  circle: false,
+                  marker: false,
+                  polyline: false,
+                  circlemarker: false,
+                }}
+                edit={{
+                  remove: false,
+                  edit: false
+                }}
+              />
+            </FeatureGroup>
+            {
+              inputPolygon !== [] && inputPolygon !== null && inputPolygon !== undefined ?
+                (<Polygon positions={inputPolygon} color="#3388ff" opacity={0.5} />) :
+                null
+            }
+          </Map>
+        </div>
         <textarea
           className='map-coordinates-textbox'
           placeholder={`Press SHIFT + ENTER to manually input polygon...\n ex. [ [-125.09335, 42.47589], ... ,[-125.09335, 42.47589] ]`}

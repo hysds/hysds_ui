@@ -35,3 +35,5 @@ exports.QUEUE_PRIORITIES = [
   { value: 8, label: 8 },
   { value: 9, label: 9 }
 ];
+
+exports.DEFAULT_MAP_DISPLAY = false;

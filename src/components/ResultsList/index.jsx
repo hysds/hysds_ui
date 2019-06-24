@@ -26,12 +26,12 @@ class ResultsList extends React.Component {
   }
 
   render() {
-    const { componentId, queryParams } = this.props;
+    const { componentId, queryParams, pageSize } = this.props;
     return (
       <ReactiveList
         componentId={componentId}
         dataField="Dest"
-        size={10}
+        size={pageSize}
         pages={7}
         stream={true}
         pagination={true}
@@ -40,6 +40,7 @@ class ResultsList extends React.Component {
         onError={() => (<h1>Error!!!</h1>)}
         paginationAt="both"
         // sortBy="asc"
+        onData={this.props.retrieveData}
         react={queryParams}
         renderItem={this.resultsListHandler}
         onResultStats={(total, took) => {
@@ -53,6 +54,10 @@ class ResultsList extends React.Component {
 ResultsList.propTypes = {
   componentId: PropTypes.string.isRequired,
   queryParams: PropTypes.object.isRequired
+};
+
+ResultsList.defaultProps = {
+  pageSize: 10
 };
 
 export default ResultsList;

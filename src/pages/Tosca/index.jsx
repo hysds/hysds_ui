@@ -26,9 +26,11 @@ export default class Tosca extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      esQuery: null
+      esQuery: null,
+      facetData: []
     };
     this._handleTransformRequest = this._handleTransformRequest.bind(this);
+    this.retrieveData = this.retrieveData.bind(this);
   }
 
   _handleTransformRequest(e) { // handles the request to ES (also where to get es query)
@@ -39,10 +41,17 @@ export default class Tosca extends React.Component {
     return e;
   }
 
+  retrieveData({data, rawData, aggregations}) {
+    this.setState({
+      facetData: data
+    });
+  }
+
   render() {
+    const { facetData } = this.state;
     const queryParams = { // query logic for elasticsearch
       'and': [
-        // SEARCHBAR_COMPONENT_ID,
+        SEARCHBAR_COMPONENT_ID,
         DATASET_TYPE_SEARCH_ID,
         SATELLITE_TYPE_ID,
         MAP_COMPONENT_ID,
@@ -63,7 +72,7 @@ export default class Tosca extends React.Component {
           <div className='sidenav'>
             {/* <DataSearch
               componentId={SEARCHBAR_COMPONENT_ID}
-              dataField={['dataset_type']}
+              dataField={['id']}
               placeholder='Dataset Type'
               URLParams={true}
             /> */}
@@ -137,11 +146,14 @@ export default class Tosca extends React.Component {
               defaultZoom={6}
               maxZoom={8}
               minZoom={2}
+              facetData={facetData}
             />
             <br />
             <ResultsList
               componentId={RESULTS_LIST_COMPONENT_ID}
               queryParams={queryParams}
+              retrieveData={this.retrieveData}
+              pageSize={15}
             />
             <br />
           </div>

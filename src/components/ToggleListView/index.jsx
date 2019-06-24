@@ -31,7 +31,7 @@ class ToggleListView extends React.Component {
     const display = toggle ? (
       <div
         style={{ display: 'inline-block' }}
-        key={res._id}
+        key={`${res._index}/${res._id}`}
       >
         <div className='text-head text-overflow full_row'>
           <span className='text-head-info text-overflow'></span>

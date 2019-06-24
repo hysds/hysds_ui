@@ -41,7 +41,7 @@ var MapComponent = class ReactiveMap extends React.Component {
 
       let inputPolygon = (setPolygon === null || setPolygon.length === 0) ? null : JSON.parse(setPolygon);
       this.setState({
-        inputPolygon: inputPolygon.map((row) => [row[1], row[0]]), // reversing polygon to be compatible with leaflet
+        inputPolygon: this._switchPolygonCoordinates(inputPolygon),
         textBoxValue: JSON.stringify(inputPolygon)
       });
     }
@@ -115,21 +115,22 @@ var MapComponent = class ReactiveMap extends React.Component {
 
   polygonTextInput(e) {
     if (e.key === 'Enter' && e.shiftKey) {
-      // e.preventDefault();
       try {
         const textValue = e.target.value;
         if (textValue.trim() === '') return;  // do nothing if text is blank
 
         let inputPolygon = JSON.parse(textValue);
         this.setState({
-          inputPolygon: inputPolygon.map((row) => [row[1], row[0]]),
+          inputPolygon: this._switchPolygonCoordinates(inputPolygon),
           textBoxValue: JSON.stringify(inputPolygon)
         });
+
         this.removePolygons();
         this._setQuery(this.props, inputPolygon);
       } catch (err) {
-        alert("Not valid JSON")
+        alert("Not valid JSON");
       }
+      e.preventDefault();
     }
   }
 
@@ -145,11 +146,30 @@ var MapComponent = class ReactiveMap extends React.Component {
     });
   }
 
+  _switchPolygonCoordinates(polygon) {
+    return polygon.map((row) => [row[1], row[0]]);
+  }
+
+  _extractCoordinates(data) {
+    return data.map(row => {
+      if (row.location && row.location.coordinates && row.location.coordinates.length > 0) {
+        return {
+          _id: row._id,
+          _index: row._index,
+          polygon: this._switchPolygonCoordinates(row.location.coordinates[0])
+        };
+      }
+    });
+  }
+
   render() {
-    const { defaultZoom, maxZoom, minZoom } = this.props;
+    const { defaultZoom, maxZoom, minZoom, facetData } = this.props;
     const { displayMap, inputPolygon, textBoxValue } = this.state;
     const mapContainerStyles = displayMap ? {} : { display: 'none' }; // to toggle the map
     const position = [36.7783, -119.4179];
+
+    // extracting and morphing the coordinates in the data from elasticsearch
+    const extractedData = this._extractCoordinates(facetData);
 
     return (
       <div className="reactive-map-container">
@@ -191,8 +211,20 @@ var MapComponent = class ReactiveMap extends React.Component {
             </FeatureGroup>
             {
               inputPolygon !== [] && inputPolygon !== null && inputPolygon !== undefined ?
-                (<Polygon positions={inputPolygon} color="#3388ff" opacity={0.5} />) :
+                (<Polygon positions={inputPolygon} color="#3388ff" opacity={0.5} fillOpacity={0.2} />) :
                 null
+            }
+            {
+              extractedData.map(row => (
+                <Polygon
+                  key={`${row._index}/${row._id}`}
+                  positions={row.polygon}
+                  color="#3388ff"
+                  opacity={1}
+                  fillOpacity={0}
+                  weight={1.25}
+                />
+              ))
             }
           </Map>
         </div>
@@ -210,16 +242,16 @@ var MapComponent = class ReactiveMap extends React.Component {
 }
 
 export default class ReactiveMap extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   render() {
     return (
       <ReactiveComponent
         componentId={this.props.mapComponentId}
         URLParams={true}
-        onAllData={(data, rawData, aggregations) => {
-          console.log(data);
-          console.log(rawData);
-          console.log(aggregations);
-        }}
         render={({ setQuery, value }) => {
           return (
             <MapComponent
@@ -228,10 +260,11 @@ export default class ReactiveMap extends React.Component {
               defaultZoom={this.props.defaultZoom}
               maxZoom={this.props.maxZoom}
               minZoom={this.props.minZoom}
+              facetData={this.props.facetData}
             />
           );
         }}
-      ></ReactiveComponent>
+      />
     );
   }
 }
@@ -243,5 +276,6 @@ ReactiveMap.propTypes = {
 ReactiveMap.defaultProps = {
   defaultZoom: 6,
   maxZoom: 10,
-  minZoom: 0
+  minZoom: 0,
+  facetData: []
 };

@@ -9,10 +9,14 @@
   position: fixed;
   float: left;
   z-index: 1;
-  padding: 25px;
+  padding: 20px;
   /* overflow: scroll; */
   overflow-y: scroll;
   background-color: #FFFF;
+}
+
+.facet-container {
+  min-height: 101%;
 }
 
 .sidenav a {
@@ -43,7 +47,11 @@
   }
 }
 
-.on-demand-button {
+.utility-button-container {
+  text-align: center;
+}
+
+.utility-button {
   background-color: #4288ff;
   border: none;
   color: white;

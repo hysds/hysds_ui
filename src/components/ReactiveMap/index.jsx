@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ReactiveComponent } from '@appbaseio/reactivesearch';
-import { Map, TileLayer, FeatureGroup, Polygon } from 'react-leaflet';
+import { Map, TileLayer, FeatureGroup, Polygon, ImageOverlay } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw";
 
 import { LEAFLET_TILELAYER, LEAFLET_ATTRIBUTION, DEFAULT_MAP_DISPLAY } from '../../config.js';
@@ -23,7 +23,8 @@ var MapComponent = class ReactiveMap extends React.Component {
     super(props);
     this.state = {
       displayMap: DEFAULT_MAP_DISPLAY,
-      textBoxValue: ''
+      textBoxValue: '',
+      zoomLevel: props.defaultZoom
     };
 
     this.toggleMapDisplay = this.toggleMapDisplay.bind(this);
@@ -150,7 +151,8 @@ var MapComponent = class ReactiveMap extends React.Component {
     return polygon.map((row) => [row[1], row[0]]);
   }
 
-  _extractCoordinates(data) {
+  // TODO: very hacky way to get the image, need to find proper way of loading image
+  _extractPolygonData(data) {
     return data.map(row => {
       const center = row.center.coordinates;
       if (row.location && row.location.coordinates && row.location.coordinates.length > 0) {
@@ -159,6 +161,7 @@ var MapComponent = class ReactiveMap extends React.Component {
           _index: row._index,
           polygon: this._switchPolygonCoordinates(row.location.coordinates[0]),
           center: [center[1], center[0]],
+          imageUrl: `${row.urls[0]}/${row._id}.interferogram.browse_coarse.png`
         };
       }
     });
@@ -166,18 +169,12 @@ var MapComponent = class ReactiveMap extends React.Component {
 
   render() {
     const { defaultZoom, maxZoom, minZoom, facetData } = this.props;
-    const { displayMap, inputPolygon, textBoxValue } = this.state;
+    const { displayMap, inputPolygon, textBoxValue, zoomLevel } = this.state;
     const mapContainerStyles = displayMap ? {} : { display: 'none' }; // to toggle the map
 
     // extracting and morphing the coordinates in the data from elasticsearch
-    const extractedData = this._extractCoordinates(facetData);
+    const extractedData = this._extractPolygonData(facetData);
     const center = extractedData.length === 0 ? [36.7783, -119.4179] : extractedData[0].center;
-
-    let zoomLevel = localStorage.getItem('zoomLevel');
-    if (!zoomLevel) {
-      zoomLevel = defaultZoom;
-      localStorage.setItem('zoomLevel', defaultZoom);
-    }
 
     return (
       <div className="reactive-map-container">
@@ -193,7 +190,7 @@ var MapComponent = class ReactiveMap extends React.Component {
             minZoom={minZoom}
             maxZoom={maxZoom}
             style={mapContainerStyles}
-            onViewportChange={e => localStorage.setItem('zoomLevel', e.zoom)}
+            onViewportChange={e => this.setState({zoomLevel: e.zoom})}
           >
             <TileLayer
               url={LEAFLET_TILELAYER}
@@ -232,6 +229,16 @@ var MapComponent = class ReactiveMap extends React.Component {
                   opacity={1}
                   fillOpacity={0}
                   weight={1.1}
+                />
+              ))
+            }
+            {
+              extractedData.map(row => (
+                <ImageOverlay
+                  key={`${row._index}/${row._id}_imageOverlay`}
+                  url={row.imageUrl}
+                  bounds={row.polygon}
+                  opacity={1}
                 />
               ))
             }

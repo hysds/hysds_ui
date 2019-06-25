@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReactiveBase, DataSearch, SingleList, SelectedFilters, DateRange, ReactiveComponent, ReactiveList } from '@appbaseio/reactivesearch';
+import { ReactiveBase, DataSearch, SingleList, SelectedFilters, DateRange } from '@appbaseio/reactivesearch';
 
 import { GRQ_ES_URL, GRQ_ES_INDICES } from '../../config';
 
@@ -20,6 +20,8 @@ const DATASET_ID = 'dataset';
 const TRACK_NUMBER_ID = 'track_number';
 const START_TIME_ID = 'starttime';
 const END_TIME_ID = 'endtime';
+const USER_TAGS = 'user_tags';
+const DATASET_VERSION = 'version';
 
 
 export default class Tosca extends React.Component {
@@ -41,7 +43,7 @@ export default class Tosca extends React.Component {
     return e;
   }
 
-  retrieveData({data, rawData, aggregations}) {
+  retrieveData({ data, rawData, aggregations }) {
     this.setState({
       facetData: data
     });
@@ -59,6 +61,8 @@ export default class Tosca extends React.Component {
         TRACK_NUMBER_ID,
         START_TIME_ID,
         END_TIME_ID,
+        USER_TAGS,
+        DATASET_VERSION,
       ]
     };
 
@@ -70,76 +74,99 @@ export default class Tosca extends React.Component {
           transformRequest={this._handleTransformRequest}
         >
           <div className='sidenav'>
-            {/* <DataSearch
-              componentId={SEARCHBAR_COMPONENT_ID}
-              dataField={['id']}
-              placeholder='Dataset Type'
-              URLParams={true}
-            /> */}
-            {/* <br /> */}
-            <SingleList
-              componentId={DATASET_ID}
-              dataField='dataset.raw'
-              title='Dataset'
-              URLParams={true}
-              style={{ fontSize: 12 }}
-              className="reactivesearch-input"
-            />
-            <SingleList
-              componentId={DATASET_TYPE_SEARCH_ID}
-              dataField='dataset_type.raw'
-              title='Dataset Type'
-              URLParams={true}
-              style={{ fontSize: 12 }}
-              className="reactivesearch-input"
-            />
+            <div className='facet-container'>
+              {/* <DataSearch
+                componentId={SEARCHBAR_COMPONENT_ID}
+                dataField={['id']}
+                placeholder='Dataset Type'
+                URLParams={true}
+              /> */}
+              {/* <br /> */}
+              <SingleList
+                componentId={DATASET_ID}
+                dataField='dataset.raw'
+                title='Dataset'
+                URLParams={true}
+                style={{ fontSize: 12 }}
+                className="reactivesearch-input"
+              />
+              <SingleList
+                componentId={DATASET_TYPE_SEARCH_ID}
+                dataField='dataset_type.raw'
+                title='Dataset Type'
+                URLParams={true}
+                style={{ fontSize: 12 }}
+                className="reactivesearch-input"
+              />
 
-            <br />
-            <SingleList
-              componentId={SATELLITE_TYPE_ID}
-              dataField='metadata.platform.raw'
-              title='Carriers'
-              URLParams={true}
-              style={{ fontSize: 12 }}
-              className="reactivesearch-input"
-            />
+              <SingleList
+                componentId={SATELLITE_TYPE_ID}
+                dataField='metadata.platform.raw'
+                title='Platforms'
+                URLParams={true}
+                style={{ fontSize: 12 }}
+                className="reactivesearch-input"
+              />
 
-            <DateRange
-              componentId={START_TIME_ID}
-              title="Start Time"
-              dataField="starttime"
-              style={{ fontSize: 12 }}
-            />
-            <br />
-            <DateRange
-              componentId={END_TIME_ID}
-              title="End Time"
-              dataField="endtime"
-              style={{ fontSize: 12 }}
-            />
+              <SingleList
+                componentId={DATASET_VERSION}
+                dataField='version.raw'
+                title='Version'
+                URLParams={true}
+                style={{ fontSize: 12 }}
+                className="reactivesearch-input"
+              />
 
-            <br />
-            <br />
-            <SingleList
-              componentId={TRACK_NUMBER_ID}
-              dataField='metadata.trackNumber'
-              title='Track Number'
-              URLParams={true}
-              style={{ fontSize: 12 }}
-              className="reactivesearch-input"
-            />
+              <SingleList
+                componentId={USER_TAGS}
+                dataField='metadata.user_tags.raw'
+                title='User Tags'
+                URLParams={true}
+                style={{ fontSize: 12 }}
+                className="reactivesearch-input"
+              />
+
+              <DateRange
+                componentId={START_TIME_ID}
+                title="Start Time"
+                dataField="starttime"
+                style={{ fontSize: 12 }}
+              />
+              <br />
+              <DateRange
+                componentId={END_TIME_ID}
+                title="End Time"
+                dataField="endtime"
+                style={{ fontSize: 12 }}
+              />
+
+              <br />
+              <SingleList
+                componentId={TRACK_NUMBER_ID}
+                dataField='metadata.trackNumber'
+                title='Track Number'
+                URLParams={true}
+                style={{ fontSize: 12 }}
+                className="reactivesearch-input"
+              />
+            </div>
           </div>
 
           <div className='body'>
             <SelectedFilters className='filterList' />
 
-            <a
-              className='on-demand-button'
-              href={`/tosca/on-demand?query=${this.state.query}`}
-              target='_blank'
-            >
-              On Demand
+            <div className='utility-button-container'>
+              <a
+                className='utility-button'
+                href={`/tosca/on-demand?query=${this.state.query}`}
+                target='_blank'
+              >
+                On Demand
             </a>
+              <a className='utility-button' href='#'>
+                Trigger Rules (Work in Progress)
+            </a>
+            </div>
 
             <ReactiveMap
               mapComponentId={MAP_COMPONENT_ID}
@@ -153,7 +180,7 @@ export default class Tosca extends React.Component {
               componentId={RESULTS_LIST_COMPONENT_ID}
               queryParams={queryParams}
               retrieveData={this.retrieveData}
-              pageSize={15}
+              pageSize={10}
             />
             <br />
           </div>

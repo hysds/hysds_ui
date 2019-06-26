@@ -1,7 +1,7 @@
 import React from 'react';
-import { ReactiveBase, DataSearch, SingleList, SelectedFilters, DateRange } from '@appbaseio/reactivesearch';
+import { ReactiveBase, DataSearch, SingleList, SelectedFilters, DateRange, MultiList } from '@appbaseio/reactivesearch';
 
-import { GRQ_ES_URL, GRQ_ES_INDICES } from '../../config';
+import { GRQ_ES_URL, GRQ_ES_INDICES, TOSCA_TABLE_VIEW_DEFAULT } from '../../config';
 
 import IDSearchBar from '../../components/IDSearchBar/index.jsx';
 import ReactiveMap from '../../components/ReactiveMap/index.jsx';
@@ -29,7 +29,8 @@ export default class Tosca extends React.Component {
     super(props);
     this.state = {
       esQuery: null,
-      facetData: []
+      facetData: [],
+      tableView: TOSCA_TABLE_VIEW_DEFAULT, // boolean
     };
     this._handleTransformRequest = this._handleTransformRequest.bind(this);
     this.retrieveData = this.retrieveData.bind(this);
@@ -50,7 +51,7 @@ export default class Tosca extends React.Component {
   }
 
   render() {
-    const { facetData } = this.state;
+    const { facetData, tableView } = this.state;
     const queryParams = { // query logic for elasticsearch
       'and': [
         SEARCHBAR_COMPONENT_ID,
@@ -68,6 +69,12 @@ export default class Tosca extends React.Component {
 
     return (
       <div className='main-container'>
+        <button 
+          className='scroll-top-button'
+          onClick={() => window.scrollTo(0,0)}
+        >
+          Scroll To Top
+        </button>
         <ReactiveBase
           app={GRQ_ES_INDICES}
           url={GRQ_ES_URL}
@@ -141,7 +148,7 @@ export default class Tosca extends React.Component {
               />
 
               <br />
-              <SingleList
+              <MultiList
                 componentId={TRACK_NUMBER_ID}
                 dataField='metadata.trackNumber'
                 title='Track Number'

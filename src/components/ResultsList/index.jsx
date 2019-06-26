@@ -2,6 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ReactiveList } from '@appbaseio/reactivesearch';
 import ToggleListView from '../ToggleListView/index.jsx';
+import Select from 'react-select'
+
+import { TOSCA_TABLE_VIEW_DEFAULT } from '../../config';
+import './style.css';
 
 /**
  * Display results from ES (TOSCA)
@@ -12,12 +16,16 @@ import ToggleListView from '../ToggleListView/index.jsx';
 class ResultsList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      pageSize: props.pageSize,
+      tableView: true
+    };
     this.resultsListHandler = this.resultsListHandler.bind(this);
+    this.renderTable = this.renderTable.bind(this);
+    this.handleTableToggle = this.handleTableToggle.bind(this);
   }
 
   resultsListHandler = res => { // callback function to handle the results from ES
-    // this.props.dataCallback(res);
     return (
       <div key={res._id}>
         <ToggleListView res={res} />
@@ -25,28 +33,86 @@ class ResultsList extends React.Component {
     );
   }
 
+  handleTableToggle(e) {
+    this.setState({
+      tableView: !this.state.tableView
+    });
+  }
+
+  renderTable = ({ data }) => (
+    <table className='custom-table-wrapper'>
+      <tbody>
+        <tr>
+          <th className='custom-table-cell'>_id</th>
+          <th className='custom-table-cell'>dataset</th>
+          <th className='custom-table-cell'>dataset_type</th>
+        </tr>
+        {data.map(item => (
+          <tr key={`${item._index}/${item._id}`}>
+            <td className='custom-table-cell'>{item._id}</td>
+            <td className='custom-table-cell'>{item.dataset}</td>
+            <td className='custom-table-cell'>{item.dataset_type}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
   render() {
-    const { componentId, queryParams, pageSize } = this.props;
+    const { componentId, queryParams } = this.props;
+    const { pageSize, tableView } = this.state;
+
+    const pageSizeOptions = [
+      { value: 10, label: 10 },
+      { value: 25, label: 25 },
+      { value: 50, label: 50 },
+      { value: 100, label: 100 },
+    ];
+
     return (
-      <ReactiveList
-        componentId={componentId}
-        dataField="Dest"
-        size={pageSize}
-        pages={7}
-        stream={true}
-        pagination={true}
-        scrollOnChange={false}
-        // onNoResults={}
-        onError={() => (<h1>Error!!!</h1>)}
-        paginationAt="both"
-        // sortBy="asc"
-        onData={this.props.retrieveData}
-        react={queryParams}
-        renderItem={this.resultsListHandler}
-        onResultStats={(total, took) => {
-          return `Found ${total} results in ${took} ms.`;
-        }}
-      />
+      <div>
+        <div className='results-display-options'>
+          <span>Table View: </span>
+          <label className="switch">
+            <input type="checkbox" value={tableView} onChange={this.handleTableToggle.bind(this)} checked={tableView} />
+            <span className="slider round"></span>
+          </label>
+          <div className='results-page-select-wrapper'>
+            <span>Page Size:</span>
+            <Select
+              label='Page Size: '
+              name='page-size'
+              options={pageSizeOptions}
+              value={{ value: pageSize, label: pageSize }}
+              defaultValue={{ value: pageSize, label: pageSize }}
+              // defaultInputValue={pageSize.toString()}
+              onChange={(e) => this.setState({ pageSize: e.value })}
+            />
+          </div>
+        </div>
+
+        <ReactiveList
+          componentId={componentId}
+          dataField="Dest"
+          size={pageSize}
+          pages={7}
+          stream={true}
+          pagination={true}
+          scrollOnChange={false}
+          // loader='Loading Results..'
+          // onNoResults={}
+          onError={() => (<h1>Error!!!</h1>)}
+          paginationAt="both"
+          // sortBy="asc"
+          onData={this.props.retrieveData}
+          react={queryParams}
+          renderItem={tableView ? null : this.resultsListHandler}
+          render={tableView ? this.renderTable : null}
+          onResultStats={(total, took) => {
+            return `Found ${total} results in ${took} ms.`;
+          }}
+        />
+      </div>
     );
   }
 }

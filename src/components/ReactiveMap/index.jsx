@@ -5,6 +5,7 @@ import { Map, TileLayer, FeatureGroup, Polygon, ImageOverlay } from 'react-leafl
 import { EditControl } from "react-leaflet-draw";
 
 import { LEAFLET_TILELAYER, LEAFLET_ATTRIBUTION, DEFAULT_MAP_DISPLAY } from '../../config.js';
+import { _extractPolygonData, _switchPolygonCoordinates } from './utils.js'
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
@@ -42,7 +43,7 @@ var MapComponent = class ReactiveMap extends React.Component {
 
       let inputPolygon = (setPolygon === null || setPolygon.length === 0) ? null : JSON.parse(setPolygon);
       this.setState({
-        inputPolygon: this._switchPolygonCoordinates(inputPolygon),
+        inputPolygon: _switchPolygonCoordinates(inputPolygon),
         textBoxValue: JSON.stringify(inputPolygon)
       });
     }
@@ -122,7 +123,7 @@ var MapComponent = class ReactiveMap extends React.Component {
 
         let inputPolygon = JSON.parse(textValue);
         this.setState({
-          inputPolygon: this._switchPolygonCoordinates(inputPolygon),
+          inputPolygon: _switchPolygonCoordinates(inputPolygon),
           textBoxValue: JSON.stringify(inputPolygon)
         });
 
@@ -147,33 +148,13 @@ var MapComponent = class ReactiveMap extends React.Component {
     });
   }
 
-  _switchPolygonCoordinates(polygon) {
-    return polygon.map((row) => [row[1], row[0]]);
-  }
-
-  // TODO: very hacky way to get the image, need to find proper way of loading image
-  _extractPolygonData(data) {
-    return data.map(row => {
-      const center = row.center.coordinates;
-      if (row.location && row.location.coordinates && row.location.coordinates.length > 0) {
-        return {
-          _id: row._id,
-          _index: row._index,
-          polygon: this._switchPolygonCoordinates(row.location.coordinates[0]),
-          center: [center[1], center[0]],
-          imageUrl: `${row.urls[0]}/${row._id}.interferogram.browse_coarse.png`
-        };
-      }
-    });
-  }
-
   render() {
     const { defaultZoom, maxZoom, minZoom, facetData } = this.props;
     const { displayMap, inputPolygon, textBoxValue, zoomLevel } = this.state;
     const mapContainerStyles = displayMap ? {} : { display: 'none' }; // to toggle the map
 
     // extracting and morphing the coordinates in the data from elasticsearch
-    const extractedData = this._extractPolygonData(facetData);
+    const extractedData = _extractPolygonData(facetData);
     const center = extractedData.length === 0 ? [36.7783, -119.4179] : extractedData[0].center;
 
     return (
@@ -190,7 +171,7 @@ var MapComponent = class ReactiveMap extends React.Component {
             minZoom={minZoom}
             maxZoom={maxZoom}
             style={mapContainerStyles}
-            onViewportChange={e => this.setState({zoomLevel: e.zoom})}
+            onViewportChange={e => this.setState({ zoomLevel: e.zoom })}
           >
             <TileLayer
               url={LEAFLET_TILELAYER}
@@ -220,28 +201,24 @@ var MapComponent = class ReactiveMap extends React.Component {
                 (<Polygon positions={inputPolygon} color="#3388ff" opacity={0.5} fillOpacity={0.2} />) :
                 null
             }
-            {
-              extractedData.map(row => (
-                <Polygon
-                  key={`${row._index}/${row._id}`}
-                  positions={row.polygon}
-                  color="#3388ff"
-                  opacity={1}
-                  fillOpacity={0}
-                  weight={1.1}
-                />
-              ))
-            }
-            {
-              extractedData.map(row => (
-                <ImageOverlay
-                  key={`${row._index}/${row._id}_imageOverlay`}
-                  url={row.imageUrl}
-                  bounds={row.polygon}
-                  opacity={1}
-                />
-              ))
-            }
+            {extractedData.map(row => (
+              <Polygon
+                key={`${row._index}/${row._id}`}
+                positions={row.polygon}
+                color="#3388ff"
+                opacity={1}
+                fillOpacity={0}
+                weight={1.1}
+              />
+            ))}
+            {extractedData.map(row => (
+              <ImageOverlay
+                key={`${row._index}/${row._id}_imageOverlay`}
+                url={row.imageUrl}
+                bounds={row.polygon}
+                opacity={1}
+              />
+            ))}
           </Map>
         </div>
         <textarea

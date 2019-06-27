@@ -25,8 +25,11 @@ class ToggleListView extends React.Component {
     const { res } = this.props; // entire object returned from ES
     const { toggle } = this.state;
 
-    let davLink = res.urls.filter(url => url.startsWith('http'));
-    davLink = davLink.length == 0 ? null : (<a className='on-demand-button' href={davLink[0]} target='_blank'>Browse</a>)
+    let davLink = null;
+    if (res.urls) {
+      davLink = res.urls.filter(url => url.startsWith('http'));
+      davLink = davLink.length == 0 ? null : (<a className='on-demand-button' href={davLink[0]} target='_blank'>Browse</a>)
+    }
 
     const display = toggle ? (
       <div

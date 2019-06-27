@@ -12,6 +12,8 @@ const columnData = [
   { Header: 'version', accessor: 'version', width: 100 },
   { Header: 'track', accessor: 'metadata.trackNumber', width: 100 },
   { Header: "start_time", accessor: "starttime" },
+  { Header: 'product_creation_date', accessor: 'metadata.processingStop', },
+  { Header: 'dataset_level', accessor: 'dataset_level' },
 ];
 
 export default class DataTable extends React.Component {
@@ -27,6 +29,7 @@ export default class DataTable extends React.Component {
         columns={columnData}
         showPagination={false}
         pageSize={data.length}
+        onSortedChange={this.props.handleSorting}
       />
     );
   }

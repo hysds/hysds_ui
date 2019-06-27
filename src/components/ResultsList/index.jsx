@@ -19,11 +19,14 @@ class ResultsList extends React.Component {
     super(props);
     this.state = {
       pageSize: props.pageSize,
-      tableView: true
+      tableView: true,
+      sortColumn: null,
+      sortOrder: 'asc'
     };
     this.resultsListHandler = this.resultsListHandler.bind(this);
     this.renderTable = this.renderTable.bind(this);
     this.handleTableToggle = this.handleTableToggle.bind(this);
+    this.handleSorting = this.handleSorting.bind(this);
   }
 
   resultsListHandler = res => { // callback function to handle the results from ES
@@ -34,6 +37,14 @@ class ResultsList extends React.Component {
     );
   }
 
+  handleSorting(event, v) {
+    const sortInfo = event[0];
+    this.setState({
+      sortColumn: sortInfo.id,
+      sortOrder: sortInfo.desc ? 'desc' : 'asc'
+    });
+  }
+
   handleTableToggle(e) {
     this.setState({
       tableView: !this.state.tableView
@@ -41,12 +52,13 @@ class ResultsList extends React.Component {
   }
 
   renderTable = ({ data, loading }) => (
-    data.length > 0 ? <DataTable data={data} /> : null
+    data.length > 0 ? <DataTable data={data} handleSorting={this.handleSorting} /> : null
   );
+
 
   render() {
     const { componentId, queryParams } = this.props;
-    const { pageSize, tableView } = this.state;
+    const { pageSize, tableView, sortColumn, sortOrder } = this.state;
 
     const pageSizeOptions = [
       { value: 10, label: 10 },
@@ -71,7 +83,6 @@ class ResultsList extends React.Component {
               options={pageSizeOptions}
               value={{ value: pageSize, label: pageSize }}
               defaultValue={{ value: pageSize, label: pageSize }}
-              // defaultInputValue={pageSize.toString()}
               onChange={(e) => this.setState({ pageSize: e.value })}
             />
           </div>
@@ -86,12 +97,15 @@ class ResultsList extends React.Component {
           pagination={true}
           scrollOnChange={false}
           paginationAt="both"
-          // sortBy="asc"
           onData={this.props.retrieveData}
           react={queryParams}
+          onResultStats={(total, took) => `Found ${total} results in ${took} ms.`}
           renderItem={tableView ? null : this.resultsListHandler}
           render={tableView ? this.renderTable : null}
-          onResultStats={(total, took) => `Found ${total} results in ${took} ms.`}
+          sortOptions={sortColumn ? [{
+            dataField: sortColumn,
+            sortBy: sortOrder
+          }] : null}
         />
       </div>
     );

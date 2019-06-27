@@ -12,8 +12,8 @@ const columnData = [
   { Header: 'version', accessor: 'version', width: 100 },
   // { Header: 'track', accessor: 'metadata.trackNumber', width: 100 },
   { Header: "start_time", accessor: "starttime" },
-  { Header: 'product_creation_date', accessor: 'metadata.processingStop', },
-  { Header: 'dataset_level', accessor: 'dataset_level' },
+  // { Header: 'product_creation_date', accessor: 'metadata.processingStop', },
+  { Header: 'dataset_level', accessor: 'dataset_level', width: 150 },
 ];
 
 export default class DataTable extends React.Component {

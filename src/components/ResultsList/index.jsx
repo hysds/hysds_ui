@@ -51,9 +51,16 @@ class ResultsList extends React.Component {
     });
   }
 
-  renderTable = ({ data, loading }) => (
-    data.length > 0 ? <DataTable data={data} handleSorting={this.handleSorting} /> : null
-  );
+  renderTable = ({ data, loading }) => {
+    const { sortColumn, sortOrder } = this.state;
+    return data.length > 0 ? (
+      <DataTable
+        data={data}
+        handleSorting={this.handleSorting}
+        sortColumn={sortColumn}
+        sortOrder={sortOrder}
+      />) : null
+  };
 
 
   render() {

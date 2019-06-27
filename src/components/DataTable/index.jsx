@@ -29,6 +29,12 @@ export default class DataTable extends React.Component {
         columns={columnData}
         showPagination={false}
         pageSize={data.length}
+        defaultSorted={[
+          {
+            id: this.props.sortColumn,
+            desc: this.props.sortOrder === 'desc' ? true : false
+          }
+        ]}
         onSortedChange={this.props.handleSorting}
       />
     );

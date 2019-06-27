@@ -9,9 +9,20 @@
   width: 90%;
 }
 
+.results-display-options {
+  display: flex;
+  padding-left: 40px;
+  padding-right: 40px;
+  margin-bottom: -50px;
+}
+
+.table-toggle-wrapper {
+  margin-top: 25px;
+}
+
 .results-page-select-wrapper {
-  width: 200px;
-  margin: 0 auto;
+  width: 145px;
+  margin-left: auto;
 }
 
 .switch {

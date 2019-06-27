@@ -20,6 +20,18 @@ _switchPolygonCoordinates = (polygon) => {
 
 exports._switchPolygonCoordinates = _switchPolygonCoordinates;
 
+// custom function to handle how you extract geo spatial information from your data
+/** expected return dataa structure
+ * [
+ *  {
+ *    _id: <es id of document>,
+ *    _index: <index of document>,
+ *    polygon: ec. [ [-125.09335, 42.47589], ... ,[-125.09335, 42.47589] ], **YOU MIGHT NEED TO SWITCH THE COORDINATES TO CONVERT FROM ES TO LEAFLET
+ *    center: [-125.09335, 42.47589],
+ *    imageUrl: <str: url>
+ *  }
+ * ]
+ */
 exports._extractPolygonData = (data) => {
   let mapData = [];
   for (var i = 0; i < data.length; i++) {

@@ -77,11 +77,13 @@ class ResultsList extends React.Component {
     return (
       <div>
         <div className='results-display-options'>
-          <span>Table View: </span>
-          <label className="switch">
-            <input type="checkbox" value={tableView} onChange={this.handleTableToggle.bind(this)} checked={tableView} />
-            <span className="slider round"></span>
-          </label>
+          <div className='table-toggle-wrapper'>
+            <span>Table View: </span>
+            <label className="switch">
+              <input type="checkbox" value={tableView} onChange={this.handleTableToggle.bind(this)} checked={tableView} />
+              <span className="slider round"></span>
+            </label>
+          </div>
           <div className='results-page-select-wrapper'>
             <span>Page Size:</span>
             <Select

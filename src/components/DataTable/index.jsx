@@ -10,7 +10,7 @@ const columnData = [
   { Header: '_id', accessor: '_id' },
   { Header: 'dataset', accessor: 'dataset', width: 250 },
   { Header: 'version', accessor: 'version', width: 100 },
-  { Header: 'track', accessor: 'metadata.trackNumber', width: 100 },
+  // { Header: 'track', accessor: 'metadata.trackNumber', width: 100 },
   { Header: "start_time", accessor: "starttime" },
   { Header: 'product_creation_date', accessor: 'metadata.processingStop', },
   { Header: 'dataset_level', accessor: 'dataset_level' },
@@ -28,6 +28,7 @@ export default class DataTable extends React.Component {
         data={data}
         columns={columnData}
         showPagination={false}
+        showPageSizeOptions={false}
         pageSize={data.length}
         defaultSorted={[
           {

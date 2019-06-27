@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { ReactiveList } from '@appbaseio/reactivesearch';
 import ToggleListView from '../ToggleListView/index.jsx';
 import Select from 'react-select'
+import DataTable from '../DataTable/index.jsx';
 
 import { TOSCA_TABLE_VIEW_DEFAULT } from '../../config';
 import './style.css';
@@ -39,23 +40,8 @@ class ResultsList extends React.Component {
     });
   }
 
-  renderTable = ({ data }) => (
-    <table className='custom-table-wrapper'>
-      <tbody>
-        <tr>
-          <th className='custom-table-cell'>_id</th>
-          <th className='custom-table-cell'>dataset</th>
-          <th className='custom-table-cell'>dataset_type</th>
-        </tr>
-        {data.map(item => (
-          <tr key={`${item._index}/${item._id}`}>
-            <td className='custom-table-cell'>{item._id}</td>
-            <td className='custom-table-cell'>{item.dataset}</td>
-            <td className='custom-table-cell'>{item.dataset_type}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+  renderTable = ({ data, loading }) => (
+    data.length > 0 ? <DataTable data={data} /> : null
   );
 
   render() {
@@ -99,18 +85,13 @@ class ResultsList extends React.Component {
           stream={true}
           pagination={true}
           scrollOnChange={false}
-          // loader='Loading Results..'
-          // onNoResults={}
-          onError={() => (<h1>Error!!!</h1>)}
           paginationAt="both"
           // sortBy="asc"
           onData={this.props.retrieveData}
           react={queryParams}
           renderItem={tableView ? null : this.resultsListHandler}
           render={tableView ? this.renderTable : null}
-          onResultStats={(total, took) => {
-            return `Found ${total} results in ${took} ms.`;
-          }}
+          onResultStats={(total, took) => `Found ${total} results in ${took} ms.`}
         />
       </div>
     );

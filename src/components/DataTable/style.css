@@ -1,0 +1,9 @@
+.ReactTable .rt-thead.-header {
+  /* box-shadow: 0 2px 15px 0 rgba(0,0,0,0.15); */
+  box-shadow: none;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.ReactTable .rt-tbody .rt-td {
+  padding: 10px;
+}

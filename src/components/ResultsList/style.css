@@ -1,3 +1,5 @@
+/******************************/
+/* TABLE STYLING */
 .custom-table-cell {
   border: 1px solid #ddd;
   padding: 14px;
@@ -8,23 +10,66 @@
   text-align: center;
   width: 90%;
 }
+/******************************/
 
+/******************************/
+/* DROPDOWN STYLING */
 .results-display-options {
   display: flex;
   padding-left: 40px;
   padding-right: 40px;
-  margin-bottom: -50px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
-.table-toggle-wrapper {
-  margin-top: 25px;
-}
-
-.results-page-select-wrapper {
-  width: 100px;
+.sort-results-wrapper {
   margin-left: auto;
 }
 
+.results-page-select-wrapper {
+  width: 175px;
+  display: inline-block;
+}
+
+.sort-results-select-wrapper {
+  width: 190px;
+  display: inline-block;
+}
+
+.sort-direction-select-wrapper {
+  width: 130px;
+  display: inline-block;
+}
+
+.sort-column-dropdown, .sort-order-dropdown {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  height: 29px;
+  font-size: 16px;
+  width: 120px;
+  border-radius: 5px;
+  background-color: #ffffff;
+}
+
+.page-size-dropdown {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  height: 29px;
+  font-size: 16px;
+  width: 80px;
+  border-radius: 5px;
+  background-color: #ffffff;
+}
+
+input[name="sort-options"], input[name=sort-options],
+select[name="sort-options"], select[name=sort-options] {
+  display: none !important;
+  outline: 1px solid #ffffff !important;
+}
+/******************************/
+
+/******************************/
+/* TOGGLE SLIDER STYLING */
 .switch {
   position: relative;
   display: inline-block;
@@ -84,3 +129,4 @@ input:checked+.slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+/******************************/

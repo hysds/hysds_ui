@@ -1,20 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactTable from "react-table";
+import ReactTable from 'react-table';
+
+import { TOSCA_DISPLAY_COLUMNS } from '../../config.js';
 
 import "react-table/react-table.css";
 import './style.css';
-
-
-const columnData = [
-  { Header: '_id', accessor: '_id' },
-  { Header: 'dataset', accessor: 'dataset', width: 250 },
-  { Header: 'version', accessor: 'version', width: 100 },
-  // { Header: 'track', accessor: 'metadata.trackNumber', width: 100 },
-  { Header: "start_time", accessor: "starttime" },
-  // { Header: 'product_creation_date', accessor: 'metadata.processingStop', },
-  { Header: 'dataset_level', accessor: 'dataset_level', width: 150 },
-];
 
 export default class DataTable extends React.Component {
   constructor(props) {
@@ -26,18 +17,22 @@ export default class DataTable extends React.Component {
       <ReactTable
         manual
         data={data}
-        columns={columnData}
+        columns={TOSCA_DISPLAY_COLUMNS}
         showPagination={false}
         showPageSizeOptions={false}
         pageSize={data.length}
+        sortable={false}
         defaultSorted={[
           {
             id: this.props.sortColumn,
             desc: this.props.sortOrder === 'desc' ? true : false
           }
         ]}
-        onSortedChange={this.props.handleSorting}
       />
     );
   }
 }
+
+DataTable.propTypes = {
+  data: PropTypes.array.isRequired
+};

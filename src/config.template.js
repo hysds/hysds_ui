@@ -17,10 +17,10 @@ exports.LEAFLET_TILELAYER = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyag
 exports.LEAFLET_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
 // API endpoints to get the available actions for on-demand
-exports.TOSCA_API_BASE = 'http://localhost:5000'; // base url for TOSCA API
-// exports.TOSCA_API_BASE = 'http://c-datasets.aria.hysds.io:8878/api/v0.1/';
-exports.TOSCA_ACTIONS_API = 'user_rules/actions_config';
-// exports.TOSCA_ACTIONS_API = 'hysds_io/list';
+exports.GRQ_API_BASE = 'http://localhost:5000'; // base url for GRQ API
+// exports.GRQ_API_BASE = 'http://c-datasets.aria.hysds.io:8878/api/v0.1/';
+exports.GRQ_ACTIONS_API = 'user_rules/actions_config';
+// exports.GRQ_ACTIONS_API = 'hysds_io/list';
 exports.QUEUE_LIST_API = 'user_rules/get_job_queues';
 
 exports.QUEUE_PRIORITIES = [

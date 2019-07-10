@@ -5,11 +5,11 @@ import ToggleListView from '../ToggleListView/index.jsx';
 import Select from 'react-select'
 import DataTable from '../DataTable/index.jsx';
 
-import { TOSCA_TABLE_VIEW_DEFAULT, SORT_OPTIONS } from '../../config';
+import { GRQ_TABLE_VIEW_DEFAULT, SORT_OPTIONS } from '../../config';
 import './style.css';
 
 /**
- * Display results from ES (TOSCA)
+ * Display results from ES (GRQ)
  *  TODO:
  *    Make compatible with GRQ data (DONE)
  *    Make it expandable to show more info (ToggleListView component) (DONE)
@@ -61,7 +61,7 @@ class ResultsList extends React.Component {
       <div>
         <div className='results-display-options'>
           <div className='table-toggle-wrapper'>
-            <span>Table View: </span>
+            <span className='table-toggle-label'>Table View: </span>
             <label className="switch">
               <input type="checkbox" value={tableView} onChange={this.handleTableToggle.bind(this)} checked={tableView} />
               <span className="slider round"></span>

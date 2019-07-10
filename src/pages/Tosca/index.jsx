@@ -1,7 +1,7 @@
 import React from 'react';
 import { ReactiveBase, DataSearch, SingleList, SelectedFilters, DateRange, MultiList } from '@appbaseio/reactivesearch';
 
-import { GRQ_ES_URL, GRQ_ES_INDICES, TOSCA_TABLE_VIEW_DEFAULT } from '../../config';
+import { GRQ_ES_URL, GRQ_ES_INDICES, GRQ_TABLE_VIEW_DEFAULT } from '../../config';
 
 import IDSearchBar from '../../components/IDSearchBar/index.jsx';
 import ReactiveMap from '../../components/ReactiveMap/index.jsx';
@@ -30,7 +30,7 @@ export default class Tosca extends React.Component {
     this.state = {
       esQuery: null,
       facetData: [],
-      tableView: TOSCA_TABLE_VIEW_DEFAULT, // boolean
+      tableView: GRQ_TABLE_VIEW_DEFAULT, // boolean
     };
     this._handleTransformRequest = this._handleTransformRequest.bind(this);
     this.retrieveData = this.retrieveData.bind(this);
@@ -67,6 +67,7 @@ export default class Tosca extends React.Component {
       ]
     };
 
+    // https://discuss.elastic.co/t/view-surrounding-documents-causes-failed-to-parse-date-field-exception/147234 dateoptionalmapping
     return (
       <div className='main-container'>
         <button 

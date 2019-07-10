@@ -83,6 +83,15 @@ select[name="sort-options"], select[name=sort-options] {
   height: 0;
 }
 
+.table-toggle-wrapper {
+  margin-top: 2px;
+}
+
+.table-toggle-label {
+  position: relative;
+  top: 2px;
+}
+
 .slider {
   position: absolute;
   cursor: pointer;

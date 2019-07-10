@@ -2,7 +2,7 @@ import React from 'react';
 import AceEditor from 'react-ace';
 import Select from 'react-select'
 
-import { TOSCA_API_BASE, TOSCA_ACTIONS_API, QUEUE_LIST_API } from '../../config.js';
+import { GRQ_API_BASE, GRQ_ACTIONS_API, QUEUE_LIST_API, GRQ_JOB_SPECS_ENDPOINT } from '../../config.js';
 import { QUEUE_PRIORITIES } from '../../config.js';
 
 import 'brace/mode/json';
@@ -17,6 +17,8 @@ import './style.css';
  *       window.history.pushState("fjskl", "title", "?dsjkldjslfs")
  *    http://localhost:8080/tosca/on-demand?query=eyJxdWVyeSI6eyJtYXRjaF9hbGwiOnt9fSwic2l6ZSI6MTAsIl9zb3VyY2UiOnsiaW5jbHVkZXMiOlsiKiJdLCJleGNsdWRlcyI6W119LCJmcm9tIjowfQ==&priority=9&queue=system-jobs-queue&action=job-AOI_based_ipf_submitter:release-20190404
  *    4. AceEditor onValidate and validate query to disable or re-enable submit button
+ *    5. need to add jobspec inputs for default values (DONE)
+ *    6. check default values and make it submittable or not
  */
 
 class OnDemandForm extends React.Component {
@@ -25,26 +27,20 @@ class OnDemandForm extends React.Component {
     const urlParams = new URLSearchParams(window.location.search);
 
     let esQurery = urlParams.get('query') || '';
-
-    if (esQurery) {
-      try {
-        esQurery = atob(esQurery);
-        esQurery = JSON.parse(esQurery)
-        delete esQurery.from
-        delete esQurery.size
-        esQurery = JSON.stringify(esQurery, null, 2)
-      } catch (err) {
-        console.error(err);
-        console.log("Unable to parse base64 encoded ElasticSearch query");
-        esQurery = '';
-      }
-    } else {
+    try {
+      esQurery = atob(esQurery);
+      esQurery = JSON.parse(esQurery);
+      esQurery = esQurery.query;
+      esQurery = JSON.stringify(esQurery, null, 2)
+    } catch (err) {
+      console.error(err);
+      console.log("Unable to parse base64 encoded ElasticSearch query");
       esQurery = '';
     }
 
     this.state = {
-      tags: '', // form fields in the first page
-      query: esQurery, // prop passed from the parent component (page)
+      tag: '', // form fields in the first page
+      query: esQurery, // prop psased from the parent component (page)
       actionsInfo: [],
       actions: [],
       selectedAction: urlParams.get('action') ? this.buildDefaultDropdownValue(urlParams.get('action')) : null,
@@ -52,46 +48,63 @@ class OnDemandForm extends React.Component {
       selectedQueue: urlParams.get('queue') ? this.buildDefaultDropdownValue(urlParams.get('queue')) : null,
       recommendedQueue: null,
       priority: urlParams.get('priority') ? this.buildDefaultDropdownValue(urlParams.get('priority')) : null,
-      pgeInputs: {} // arguments for the PGE (JSON to make it more dynamic, idk still need to think about this)
+      jobSpecs: [], // arguments for the PGE (JSON to make it more dynamic, idk still need to think about this)
+      jobSpecsInput: {},
     };
     this._handleQueryChange = this._handleQueryChange.bind(this);
     this._handleTagInput = this._handleTagInput.bind(this);
     this._handleSelectAction = this._handleSelectAction.bind(this);
     this._handleQueueChange = this._handleQueueChange.bind(this);
     this._validateESQuery = this._validateESQuery.bind(this);
+    this._handleQueuePriority = this._handleQueuePriority.bind(this);
+    this.fetchJobSpecs = this.fetchJobSpecs.bind(this);
+    this._handleJobSpecDropdown = this._handleJobSpecDropdown.bind(this);
+    this._handleJobSpecTextInput = this._handleJobSpecTextInput.bind(this);
   };
+
+  componentDidMount() {
+    const { queueList, selectedAction } = this.state;
+
+    if (queueList.length === 0 && selectedAction) {
+      const jobType = selectedAction.value;
+      const queueListEndpoint = `${GRQ_API_BASE}/${QUEUE_LIST_API}?job_type=${jobType}`;
+      this.fetchQueueList(queueListEndpoint);
+    }
+    this._retrieveActions();
+  }
 
   _handleQueryChange(e) {
     this.setState({
       query: e
     });
     try {
-      console.log(JSON.parse(e));
+      // console.log(JSON.parse(e));
     } catch (err) {
       console.error(err);
     }
   }
 
   _validateESQuery(e) {
-    console.log(e);
+    // console.log(e);
   }
 
   _handleTagInput(e) {
     // handle the tag name, if tag is empty then disable the submit button
     this.setState({
-      tags: e.target.value
+      tag: e.target.value
     });
   }
 
   _retrieveActions() {
-    const toscaActionsEndpoint = `${TOSCA_API_BASE}/${TOSCA_ACTIONS_API}`;
+    const toscaActionsEndpoint = `${GRQ_API_BASE}/${GRQ_ACTIONS_API}`;
     fetch(toscaActionsEndpoint)
       .then(res => res.json())
       .then(res => {
         let resCopy = Object.assign({}, res);
         resCopy.actions = resCopy.actions.map(row => ({
           label: row.label,
-          value: row.wiring['job-specification'],
+          // value: row.job_type
+          value: row.wiring['job-specification']
         }));
 
         this.setState({
@@ -126,10 +139,35 @@ class OnDemandForm extends React.Component {
       });
   }
 
+  fetchJobSpecs(job) { // fetches the job specs and sets the state in state.jobSpecss
+    const endpoint = `${GRQ_API_BASE}/${GRQ_JOB_SPECS_ENDPOINT}/${job}`;
+    fetch(endpoint)
+      .then(res => res.json())
+      .then(res => {
+        const filteredRes = res.filter(row => row.from === 'submitter');
+
+        let jobSpecsInput = {}
+        for (var i = 0; i < filteredRes.length; i++) {
+          const jobSpec = filteredRes[i];
+          const defaultVal = (jobSpec.default === 'true' || jobSpec.default === 'false') ? Boolean(jobSpec.default) : jobSpec.default;
+          if (jobSpec.default) jobSpecsInput[jobSpec.name] = defaultVal;
+        }
+
+        this.setState({
+          jobSpecs: filteredRes,
+          jobSpecsInput: jobSpecsInput
+        });
+      });
+  }
+
   _handleSelectAction(e, v) {
     const jobType = e.value;
-    const queueListEndpoint = `${TOSCA_API_BASE}/${QUEUE_LIST_API}?job_type=${jobType}`;
+    const queueListEndpoint = `${GRQ_API_BASE}/${QUEUE_LIST_API}?job_type=${jobType}`;
     this.fetchQueueList(queueListEndpoint);
+    this.fetchJobSpecs(jobType);
+    this.setState({
+      selectedAction: jobType
+    });
   }
 
   _handleQueueChange(e, v) {
@@ -141,25 +179,107 @@ class OnDemandForm extends React.Component {
     })
   }
 
+  _handleQueuePriority(e, v) {
+    this.setState({
+      priority: e.value
+    });
+  }
+
+  _handleJobSpecDropdown(e, v) {
+    let { jobSpecsInput } = this.state;
+    const name = v.name; // job input name
+    const value = e.value; // job input value
+
+    jobSpecsInput[name] = (value === 'true' || value === 'false') ? Boolean(value) : value;
+    this.setState({
+      jobSpecsInput: jobSpecsInput
+    });
+  }
+
+  _handleJobSpecTextInput(e) {
+    let { jobSpecsInput } = this.state;
+    const name = e.target.name;
+    const value = e.target.value;
+
+    if (value.length > 0) jobSpecsInput[name] = value;
+    else delete jobSpecsInput[name];
+
+    this.setState({
+      jobSpecsInput: jobSpecsInput
+    });
+  }
+
   buildDefaultDropdownValue = val => ({
     value: val,
     label: val
   });
 
-  componentDidMount() {
-    const { queueList, selectedAction } = this.state;
-
-    if (queueList.length === 0 && selectedAction) {
-      const jobType = selectedAction.value;
-      const queueListEndpoint = `${TOSCA_API_BASE}/${QUEUE_LIST_API}?job_type=${jobType}`;
-      this.fetchQueueList(queueListEndpoint);
-    }
-    this._retrieveActions();
-  }
-
   render() {
     const { } = this.props;
-    const { query, actions, selectedAction, queueList, selectedQueue, priority } = this.state;
+    const { tag, query, actions, selectedAction, queueList, selectedQueue, priority, jobSpecs } = this.state;
+    console.log(this.state.jobSpecsInput);
+
+    const selectStyles = {
+      container: base => ({
+        ...base,
+        borderColor: 'green',
+        minWidth: '0px'
+      })
+    };
+
+    const submitButton = tag.length > 0 && selectedAction !== null && selectedQueue !== null && priority !== null ?
+      (<button className='on-demand-submit-button'>Submit</button>) :
+      (<button disabled={true} className='on-demand-submit-button-disabled'>Submit</button>);
+
+    const jobSpecsSeparator = jobSpecs.length > 0 ? <span style={{ margin: 20 }}><hr /></span> : null;
+
+    const jobSpecOptions = jobSpecs.map(row => {
+      if (row.type === 'enum') {
+        return (
+          <div key={row.name}>
+            <div className='jobspecs-dropdown-label'>{row.name}: </div>
+            <Select
+              label={row.name}
+              name={row.name}
+              defaultValue={this.buildDefaultDropdownValue(row.default)}
+              options={row.enumerables.map(option => ({ value: option, label: option }))}
+              style={selectStyles}
+              onChange={this._handleJobSpecDropdown}
+            />
+            <br />
+          </div>
+        );
+      } else if (row.type === 'boolean') {
+        return (
+          <div key={row.name}>
+            <div className='jobspecs-dropdown-label'>{row.name}: </div>
+            <Select
+              label={row.name}
+              name={row.name}
+              defaultValue={this.buildDefaultDropdownValue(row.default)}
+              options={['true', 'false'].map(bool => ({ value: bool, label: bool }))}
+              style={selectStyles}
+              onChange={this._handleJobSpecDropdown}
+            />
+          </div>
+        );
+      } else {
+        return (
+          <div key={row.name}>
+            <div className='jobspecs-dropdown-label'>{row.name}: </div>
+            <input
+              type='text'
+              placeholder={row.placeholder}
+              className='on-demand-tag'
+              name={row.name}
+              defaultValue={row.default}
+              onChange={this._handleJobSpecTextInput}
+            />
+            <br />
+          </div>
+        );
+      }
+    });
 
     return (
       <div>
@@ -192,7 +312,7 @@ class OnDemandForm extends React.Component {
                 type='text'
                 placeholder='Required'
                 className='on-demand-tag'
-                name='tags'
+                name='tag'
                 onChange={this._handleTagInput}
               />
             </div>
@@ -205,6 +325,7 @@ class OnDemandForm extends React.Component {
                 options={actions}
                 defaultValue={selectedAction}
                 onChange={this._handleSelectAction}
+                style={selectStyles}
               />
             </section>
             <br />
@@ -218,6 +339,7 @@ class OnDemandForm extends React.Component {
                 value={selectedQueue}
                 onChange={this._handleQueueChange}
                 isDisabled={!queueList.length > 0}
+                style={selectStyles}
               />
             </section>
             <br />
@@ -228,8 +350,18 @@ class OnDemandForm extends React.Component {
                 name='priority'
                 options={QUEUE_PRIORITIES}
                 defaultValue={priority}
+                onChange={this._handleQueuePriority}
+                style={selectStyles}
               />
             </section>
+            <br />
+            {jobSpecsSeparator}
+            <section>
+              {jobSpecOptions}
+            </section>
+            <br />
+            <br />
+            {submitButton}
           </div>
         </div>
       </div>

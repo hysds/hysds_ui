@@ -18,6 +18,7 @@ import './style.css';
  *    make es query compatible with ReactiveSearch ** (DONE)
  *    collapsable text field on the bottom for coordinates (DONE I THINK)
  *    add images to the map
+ *    add highlighting when clicking (need callbacks)
  */
 var MapComponent = class ReactiveMap extends React.Component {
   constructor(props) {
@@ -49,7 +50,13 @@ var MapComponent = class ReactiveMap extends React.Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
+    /**
+     * note: maybe check for if (this.state.inputPolygon) first?
+     * if prevProps.setPolygon === this.props.setPolygon, then its triggered by a click
+     * if prevProps.setPolygon !== this.props.setPolygon, then its triggered by filter change
+     */
+
     // when they clear the facet so it doesnt query with empty coordinates
     if (!this.props.setPolygon) {
       this.props.setQuery({
@@ -63,6 +70,17 @@ var MapComponent = class ReactiveMap extends React.Component {
       });
 
       this.removePolygons();
+    } else if (this.props.setPolygon !== this.state.inputPolygon) {
+      // maybe compare this.state.inputPolygon !== this.props.setPolygon ** NEED TO SWITCH COORDINATES
+      /**
+       * [1,2,3] !== [1,2,3]: true
+       */
+      // console.log('this.props.setPolygon', this.props.setPolygon);
+      // console.log('this.state.inputPolygon', this.state.inputPolygon);
+      // this.setState({
+      //   inputPolygon: this.state.inputPolygon, // so we can remove the defualt polygon when we "clear all"
+      //   textBoxValue: this.state.inputPolygon
+      // });
     }
   }
 
@@ -157,6 +175,7 @@ var MapComponent = class ReactiveMap extends React.Component {
     const extractedData = _extractPolygonData(facetData);
     const center = extractedData.length === 0 ? [36.7783, -119.4179] : extractedData[0].center;
 
+    // console.log(inputPolygon);
     return (
       <div className="reactive-map-container">
         <button

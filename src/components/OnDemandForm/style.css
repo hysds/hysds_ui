@@ -35,9 +35,11 @@ body {
     position: static;
   }
 
-  .on-demand-right, .on-demand-left {
+  .on-demand-right,
+  .on-demand-left {
     width: 95%;
   }
+
   .on-demand-left {
     max-height: 450px;
   }
@@ -71,6 +73,10 @@ body {
   display: table-cell;
 }
 
+.job-spec-input {
+  margin-bottom: 10px;
+}
+
 .on-demand-tag-label {
   display: table-cell;
   width: 73px;
@@ -91,4 +97,50 @@ body {
   margin-top: 10px;
   margin-right: 10px;
   width: 65px;
+}
+
+.jobspecs-dropdown-label {
+  /* float: left; */
+  margin-top: 10px;
+  /* margin-bottom: 10px; */
+  /* margin-right: 10px; */
+  width: 65px;
+}
+
+.on-demand-submit-wrapper {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.on-demand-submit-button {
+  background-color: #4288ff;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  float: right;
+  margin-bottom: 25px;
+}
+
+.on-demand-submit-button-disabled {
+  background-color: #4288ff;
+  opacity: 0.5;
+  /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  float: right;
+  margin-bottom: 25px;
+}
+
+.on-demand-submit-button:hover {
+  transition: background-color 0.4s ease-out;
+  background-color: #0a45a4;
 }

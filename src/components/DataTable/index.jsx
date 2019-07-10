@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTable from 'react-table';
 
-import { TOSCA_DISPLAY_COLUMNS } from '../../config.js';
+import { GRQ_DISPLAY_COLUMNS } from '../../config.js';
 
 import "react-table/react-table.css";
 import './style.css';
@@ -17,7 +17,7 @@ export default class DataTable extends React.Component {
       <ReactTable
         manual
         data={data}
-        columns={TOSCA_DISPLAY_COLUMNS}
+        columns={GRQ_DISPLAY_COLUMNS}
         showPagination={false}
         showPageSizeOptions={false}
         pageSize={data.length}

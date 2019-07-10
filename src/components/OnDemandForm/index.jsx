@@ -59,6 +59,7 @@ class OnDemandForm extends React.Component {
     this._handleQueuePriority = this._handleQueuePriority.bind(this);
     this.fetchJobSpecs = this.fetchJobSpecs.bind(this);
     this._handleJobSpecDropdown = this._handleJobSpecDropdown.bind(this);
+    this._handleJobSpecDropdownBoolean = this._handleJobSpecDropdownBoolean.bind(this);
     this._handleJobSpecTextInput = this._handleJobSpecTextInput.bind(this);
   };
 
@@ -149,7 +150,7 @@ class OnDemandForm extends React.Component {
         let jobSpecsInput = {}
         for (var i = 0; i < filteredRes.length; i++) {
           const jobSpec = filteredRes[i];
-          const defaultVal = (jobSpec.default === 'true' || jobSpec.default === 'false') ? Boolean(jobSpec.default) : jobSpec.default;
+          const defaultVal = (jobSpec.default === 'true' || jobSpec.default === 'false') ? (jobSpec.default === 'true' ? true : false) : jobSpec.default;
           if (jobSpec.default) jobSpecsInput[jobSpec.name] = defaultVal;
         }
 
@@ -190,7 +191,18 @@ class OnDemandForm extends React.Component {
     const name = v.name; // job input name
     const value = e.value; // job input value
 
-    jobSpecsInput[name] = (value === 'true' || value === 'false') ? Boolean(value) : value;
+    jobSpecsInput[name] = value;
+    this.setState({
+      jobSpecsInput: jobSpecsInput
+    });
+  }
+
+  _handleJobSpecDropdownBoolean(e, v) {
+    let { jobSpecsInput } = this.state;
+    const name = v.name; // job input name
+    const value = e.value; // job input value
+
+    jobSpecsInput[name] = (value === 'true') ? true : false;
     this.setState({
       jobSpecsInput: jobSpecsInput
     });
@@ -216,8 +228,8 @@ class OnDemandForm extends React.Component {
 
   render() {
     const { } = this.props;
-    const { tag, query, actions, selectedAction, queueList, selectedQueue, priority, jobSpecs } = this.state;
-    console.log(this.state.jobSpecsInput);
+    const { tag, query, actions, selectedAction, queueList, selectedQueue, priority, jobSpecs, jobSpecsInput } = this.state;
+    console.log(jobSpecsInput);
 
     const selectStyles = {
       container: base => ({
@@ -242,6 +254,7 @@ class OnDemandForm extends React.Component {
               label={row.name}
               name={row.name}
               defaultValue={this.buildDefaultDropdownValue(row.default)}
+              value={this.buildDefaultDropdownValue(jobSpecsInput[row.name])}
               options={row.enumerables.map(option => ({ value: option, label: option }))}
               style={selectStyles}
               onChange={this._handleJobSpecDropdown}
@@ -257,9 +270,10 @@ class OnDemandForm extends React.Component {
               label={row.name}
               name={row.name}
               defaultValue={this.buildDefaultDropdownValue(row.default)}
+              value={this.buildDefaultDropdownValue(jobSpecsInput[row.name].toString())}
               options={['true', 'false'].map(bool => ({ value: bool, label: bool }))}
               style={selectStyles}
-              onChange={this._handleJobSpecDropdown}
+              onChange={this._handleJobSpecDropdownBoolean}
             />
           </div>
         );
@@ -272,7 +286,7 @@ class OnDemandForm extends React.Component {
               placeholder={row.placeholder}
               className='on-demand-tag'
               name={row.name}
-              defaultValue={row.default}
+              value={jobSpecsInput[row.name]}
               onChange={this._handleJobSpecTextInput}
             />
             <br />

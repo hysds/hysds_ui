@@ -4,17 +4,22 @@
 
 .scroll-top-button {
   position: fixed;
-  bottom: 15px;
-  right: 15px;
-  opacity: 0.75;
-  background-color: #4288ff;
+  height: 50px;
+  bottom: 0px;
+  right: 0px;
+  opacity: 0.5;
+  background: none;
   border: none;
-  color: white;
   padding: 7px 15px;
   text-align: center;
   text-decoration: none;
   font-size: 12px;
   z-index: 999;
+  -webkit-transition: opacity 0.25s;
+}
+
+.scroll-top-button:hover {
+  opacity: 1;
 }
 
 .sidenav {

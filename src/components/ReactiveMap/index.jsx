@@ -32,9 +32,9 @@ let MapComponent = class extends React.Component {
 
     this.map = L.map('leaflet-map-id', { // initializing the map
       center: [36.7783, -119.4179],
+      zoom: localStorage.getItem('zoom') || this.props.zoom,
       maxZoom: this.props.maxZoom,
       minZoom: this.props.minZoom,
-      zoom: localStorage.getItem('zoom') || this.props.zoom,
       layers: [L.tileLayer(LEAFLET_TILELAYER, { attribution: LEAFLET_ATTRIBUTION })]
     });
 
@@ -281,21 +281,22 @@ export default class ReactiveMap extends React.Component {
   }
 
   render() {
-    const { componentId, data } = this.props;
+    const { componentId, data, zoom, maxZoom, minZoom } = this.props;
 
     return (
       <ReactiveComponent
         componentId={componentId}
         URLParams={true}
-        render={({ setQuery, value }) => {
-          return (
-            <MapComponent
-              setQuery={setQuery}
-              value={value}
-              data={data}
-            />
-          );
-        }}
+        render={({ setQuery, value }) => (
+          <MapComponent
+            setQuery={setQuery}
+            value={value}
+            data={data}
+            zoom={zoom}
+            maxZoom={maxZoom}
+            minZoom={minZoom}
+          />
+        )}
       />
     );
   }

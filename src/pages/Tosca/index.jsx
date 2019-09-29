@@ -1,9 +1,9 @@
 import React from 'react';
-import { ReactiveBase, DataSearch, SingleList, SelectedFilters, DateRange, MultiList, ReactiveComponent } from '@appbaseio/reactivesearch';
+import { ReactiveBase, SingleList, SelectedFilters, DateRange, MultiList } from '@appbaseio/reactivesearch';
 
 import { GRQ_ES_URL, GRQ_ES_INDICES, GRQ_TABLE_VIEW_DEFAULT } from '../../config';
 
-import IDSearchBar from '../../components/IDSearchBar/index.jsx';
+// import IDSearchBar from '../../components/IDSearchBar/index.jsx';
 import ResultsList from '../../components/ResultsList/index.jsx';
 import ReactiveMap from '../../components/ReactiveMap/index.jsx';
 

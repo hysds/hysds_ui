@@ -29,8 +29,6 @@ let MapComponent = class extends React.Component {
   }
 
   componentDidMount() {
-    const that = this; // so we can run ReactiveComponent methods
-
     this.map = L.map('leaflet-map-id', { // initializing the map
       center: [36.7783, -119.4179],
       zoom: localStorage.getItem('zoom') || this.props.zoom,

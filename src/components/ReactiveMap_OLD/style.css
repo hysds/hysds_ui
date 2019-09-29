@@ -10,10 +10,10 @@ p {
 }
 
 .leaflet-container {
-  /* height: 700px;
+  height: 700px;
   width: 90%;
   margin: 0 auto;
-  margin-bottom: 15px; */
+  margin-bottom: 15px;
 }
 
 .map-coordinates-textbox {
@@ -30,19 +30,7 @@ p {
   white-space: normal;
 }
 
-.leaflet-popup-content {
-  word-break: break-word;
-}
-
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
   box-shadow: none;
 }
-
-/* .leaflet-overlay-pane {
-  z-index: 600;
-} */
-
-/* .leaflet-shadow-pane {
-  z-index: 4;
-} */

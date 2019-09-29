@@ -4,9 +4,8 @@ import { ReactiveBase, DataSearch, SingleList, SelectedFilters, DateRange, Multi
 import { GRQ_ES_URL, GRQ_ES_INDICES, GRQ_TABLE_VIEW_DEFAULT } from '../../config';
 
 import IDSearchBar from '../../components/IDSearchBar/index.jsx';
-// import ReactiveMap from '../../components/ReactiveMap/index.jsx';
 import ResultsList from '../../components/ResultsList/index.jsx';
-import TestMap from '../../components/TestMap/index.jsx';
+import ReactiveMap from '../../components/ReactiveMap/index.jsx';
 
 import './style.css';
 import upArrow from '../../images/arrow-up.png';
@@ -199,16 +198,11 @@ export default class Tosca extends React.Component {
             </a>
             </div>
 
-            {/* <ReactiveMap
-              mapComponentId={MAP_COMPONENT_ID}
-              defaultZoom={6}
-              maxZoom={9}
-              minZoom={3}
-              facetData={facetData}
-              clickIdHandler={this.clickIdHandler}
-            /> */}
-            <TestMap 
-              componentId={MAP_COMPONENT_ID} 
+            <ReactiveMap
+              componentId={MAP_COMPONENT_ID}
+              zoom={5}
+              maxZoom={8}
+              minZoom={2}
               data={facetData}
             />
             <br />

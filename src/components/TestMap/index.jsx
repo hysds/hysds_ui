@@ -19,7 +19,7 @@ let MapComponent = class extends React.Component {
     this.state = {
       displayMap: DEFAULT_MAP_DISPLAY,
       layers: [],
-      value: props.value,
+      value: null,
     };
     this.toggleMapDisplay = this.toggleMapDisplay.bind(this);
   }
@@ -80,46 +80,38 @@ let MapComponent = class extends React.Component {
       polygon = [...polygon, polygon[0]];
       this.drawnItems.addLayer(newLayer, false);
 
-      const query = {
-        query: {
-          "bool": {
-            "filter": {
-              "geo_shape": {
-                "location": {
-                  "shape": {
-                    "type": "polygon",
-                    "coordinates": [polygon]
-                  }
-                }
-              }
-            }
-          }
-        }
-      };
+      // *************************************************************************************
+      // MAYBE MOVE THIS INTO componentDidUpdate?, no need for this logic in 2 places?
+      const query = this._generateQuery(polygon);
       that.props.setQuery({
         query,
+        value: JSON.stringify(polygon)
+      });
+      // *************************************************************************************
+      that.setState({
         value: JSON.stringify(polygon)
       });
     });
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { data, value } = this.props;
-    const layerGroup = this.layerGroup;
-
-    console.log(value);
-    console.log(prevState.value);
-    console.log('');
-    if (value !== prevState.value) {
-      layerGroup.clearLayers(); // clearing all the previous datasets
-
-      this._transformData(data).map(row => {
-        let poly = L.polygon(row.coordinates, { fillOpacity: 0, weight: 1.3 });
-        poly.bindPopup(row._id).addTo(layerGroup).addTo(this.map);
-      });
+  componentDidUpdate() {
+    if (this.props.value !== this.state.value) {
+      if (this.props.value !== null) { // if the page loads with coordinates in the URL
+        let polygon = JSON.parse(this.props.value);
+        const query = this._generateQuery(polygon);
+        this.props.setQuery({
+          query,
+          value: this.props.value
+        });
+      } else { // handles onClear (facets)
+        this.props.setQuery({
+          query: null,
+          value: null
+        });
+      }
 
       this.setState({
-        value: value
+        value: this.props.value
       });
     }
   }
@@ -127,6 +119,23 @@ let MapComponent = class extends React.Component {
   toggleMapDisplay = () => {
     this.setState({ displayMap: !this.state.displayMap }, () => this.map._onResize());
   }
+
+  _generateQuery = (polygon) => ({
+    query: {
+      "bool": {
+        "filter": {
+          "geo_shape": {
+            "location": {
+              "shape": {
+                "type": "polygon",
+                "coordinates": [polygon]
+              }
+            }
+          }
+        }
+      }
+    }
+  });
 
   _switchCoordinates = (polygon) => (polygon.map((row) => [row[1], row[0]]));
 
@@ -146,6 +155,15 @@ let MapComponent = class extends React.Component {
   render() {
     const { data } = this.props;
     const { displayMap } = this.state;
+    const layerGroup = this.layerGroup;
+
+    if (layerGroup) {
+      layerGroup.clearLayers(); // clearing all the previous datasets
+      this._transformData(data).map(row => { // parsing data and rendering map
+        let poly = L.polygon(row.coordinates, { fillOpacity: 0, weight: 1.3 });
+        poly.bindPopup(row._id).addTo(layerGroup).addTo(this.map);
+      });
+    }
 
     // find first occurance of valid center coordinate
     let validCenter = data.find(row => row.center.coordinates)

@@ -25,6 +25,7 @@ let MapComponent = class extends React.Component {
     this._toggleMapDisplay = this._toggleMapDisplay.bind(this);
     this._polygonTextChange = this._polygonTextChange.bind(this);
     this._polygonTextInput = this._polygonTextInput.bind(this);
+    this._handleMapDraw = this._handleMapDraw.bind(this);
   }
 
   componentDidMount() {
@@ -38,15 +39,18 @@ let MapComponent = class extends React.Component {
       layers: [L.tileLayer(LEAFLET_TILELAYER, { attribution: LEAFLET_ATTRIBUTION })]
     });
 
-    this.drawnItems = new L.FeatureGroup();
-    this.map.addLayer(this.drawnItems);
-
+    this.drawnItems = new L.FeatureGroup().addTo(this.map); // store all drawn boox's here
     this.layerGroup = L.layerGroup().addTo(this.map);  // store all dataset panels in this layergroup
 
-    let drawControl = new L.Control.Draw({
+    this.drawControl = new L.Control.Draw({
+      shapeOptions: {
+        showArea: true,
+        clickable: true
+      },
       edit: {
         featureGroup: this.drawnItems,
         remove: false,
+        edit: false,
       },
       draw: {
         circle: false,
@@ -67,32 +71,12 @@ let MapComponent = class extends React.Component {
         },
       },
     });
-    this.map.addControl(drawControl);
+    this.map.addControl(this.drawControl);
 
+    // map event handlers
     this.map.on('zoomend', this._zoomHandler);
     this.map.on('draw:drawstart', this._clearDatasets);
-    this.map.on('draw:created', (event) => {
-      let newLayer = event.layer;
-      newLayer.options = {
-        ...newLayer.options,
-        ...{ weight: DRAW_POLYGON_WEIGHT, color: DRAW_POLYGON_COLOR }
-      };
-      let polygon = newLayer.getLatLngs()[0].map(cord => [cord.lng, cord.lat]);
-      polygon = [...polygon, polygon[0]];
-      this.drawnItems.addLayer(newLayer, false);
-
-      const query = this._generateQuery(polygon);
-      const polygonString = JSON.stringify(polygon);
-
-      that.props.setQuery({
-        query,
-        value: polygonString
-      });
-      that.setState({
-        value: polygonString,
-        polygonTextbox: polygonString,
-      });
-    });
+    this.map.on('draw:created', this._handleMapDraw);
   }
 
   componentDidUpdate() {
@@ -115,14 +99,22 @@ let MapComponent = class extends React.Component {
     }
   }
 
-  sendEmptyQuery = () => { // remove the bbox facet
-    this.drawnItems.clearLayers();
+  _handleMapDraw = (event) => {
+    let newLayer = event.layer;
+    let polygon = newLayer.getLatLngs()[0].map(cord => [cord.lng, cord.lat]);
+    polygon = [...polygon, polygon[0]];
+    this.drawnItems.addLayer(newLayer, false);
+
+    const query = this._generateQuery(polygon);
+    const polygonString = JSON.stringify(polygon);
+
     this.props.setQuery({
-      query: null,
-      value: null
+      query,
+      value: polygonString
     });
     this.setState({
-      polygonTextbox: null
+      value: polygonString,
+      polygonTextbox: polygonString,
     });
   }
 
@@ -163,23 +155,32 @@ let MapComponent = class extends React.Component {
     }
   }
 
-  // utility function to handle the data
   _generateQuery = (polygon) => ({
     query: {
       "bool": {
         "filter": {
           "geo_shape": {
             "location": {
-              "shape": {
-                "type": "polygon",
-                "coordinates": [polygon]
-              }
+              "shape": { "type": "polygon", "coordinates": [polygon] }
             }
           }
         }
       }
     }
   });
+
+  sendEmptyQuery = () => { // remove the bbox facet
+    this.drawnItems.clearLayers();
+    this.props.setQuery({
+      query: null,
+      value: null
+    });
+    this.setState({
+      polygonTextbox: null
+    });
+  }
+
+  // utility function to handle the data
   _switchCoordinates = (polygon) => (polygon.map((row) => [row[1], row[0]]));
   _transformData = (data) => { // transforms data for map
     const displayData = data.map(row => ({
@@ -198,17 +199,15 @@ let MapComponent = class extends React.Component {
     const { value } = this.props;
     const drawnItems = this.drawnItems;
 
-    if (drawnItems) {
+    if (drawnItems && value) {
       drawnItems.clearLayers();
-      if (value) { // manually draw bounding box
-        let coordinates = this._switchCoordinates(JSON.parse(value));
-        let poly = L.polygon(coordinates, {
-          color: DRAW_POLYGON_COLOR,
-          weight: DRAW_POLYGON_WEIGHT,
-          opacity: 0.5,
-        });
-        poly.addTo(drawnItems).addTo(this.map);
-      }
+      let coordinates = this._switchCoordinates(JSON.parse(value));
+      let poly = L.polygon(coordinates, {
+        color: DRAW_POLYGON_COLOR,
+        weight: DRAW_POLYGON_WEIGHT,
+        opacity: 0.5,
+      });
+      poly.addTo(drawnItems).addTo(this.map);
     }
   }
 
@@ -227,7 +226,6 @@ let MapComponent = class extends React.Component {
       });
     }
   }
-
 
   render() {
     const { data, value } = this.props;
@@ -263,7 +261,7 @@ let MapComponent = class extends React.Component {
         <textarea
           className="map-coordinates-textbox"
           placeholder={textboxTooltip}
-          data-tip={textboxTooltip}
+          data-tip={textboxTooltip}  // react tool tip
           value={polygonTextbox || ''}
           onChange={this._polygonTextChange}
           onKeyPress={this._polygonTextInput}

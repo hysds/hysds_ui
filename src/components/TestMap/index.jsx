@@ -21,13 +21,13 @@ let MapComponent = class extends React.Component {
       layers: [],
       value: null,
     };
-    this.toggleMapDisplay = this.toggleMapDisplay.bind(this);
+    this._toggleMapDisplay = this._toggleMapDisplay.bind(this);
   }
 
   componentDidMount() {
     const that = this; // so we can run ReactiveComponent methods
 
-    this.map = L.map('leaflet-map-id', {
+    this.map = L.map('leaflet-map-id', { // initializing the map
       center: [36.7783, -119.4179],
       maxZoom: 8,
       minZoom: 3,
@@ -66,11 +66,9 @@ let MapComponent = class extends React.Component {
     });
     this.map.addControl(drawControl);
 
-    this.map.on('zoomend', () => {
-      localStorage.setItem('zoom', this.map.getZoom());
-    });
-    this.map.on('draw:drawstart', () => this.drawnItems.clearLayers());
-    this.map.on(L.Draw.Event.CREATED, (event) => {
+    this.map.on('zoomend', this._zoomHandler);
+    this.map.on('draw:drawstart', this._clearDatasets);
+    this.map.on('draw:created', (event) => {
       let newLayer = event.layer;
       newLayer.options = {
         ...newLayer.options,
@@ -104,6 +102,7 @@ let MapComponent = class extends React.Component {
           value: this.props.value
         });
       } else { // handles onClear (facets)
+        this.drawnItems.clearLayers();
         this.props.setQuery({
           query: null,
           value: null
@@ -116,10 +115,13 @@ let MapComponent = class extends React.Component {
     }
   }
 
-  toggleMapDisplay = () => {
-    this.setState({ displayMap: !this.state.displayMap }, () => this.map._onResize());
-  }
+  // client side event handlers
+  _clearDatasets = () => this.drawnItems.clearLayers();
+  _zoomHandler = () => localStorage.setItem('zoom', this.map.getZoom());
+  _reRenderMap = () => this.map._onResize();
+  _toggleMapDisplay = () => this.setState({ displayMap: !this.state.displayMap }, this._reRenderMap);
 
+  // utility function to handle the data
   _generateQuery = (polygon) => ({
     query: {
       "bool": {
@@ -136,9 +138,7 @@ let MapComponent = class extends React.Component {
       }
     }
   });
-
   _switchCoordinates = (polygon) => (polygon.map((row) => [row[1], row[0]]));
-
   _transformData = (data) => { // transforms data for map
     const displayData = data.map(row => ({
       _id: row._id,
@@ -151,19 +151,48 @@ let MapComponent = class extends React.Component {
     return displayData
   }
 
+  _renderBbox = () => {
+    // rendering pink bbox if not drawn and specified in facets (for page on load or backwards forwards on browser)
+    const { value } = this.props;
+    const drawnItems = this.drawnItems;
 
-  render() {
+    if (drawnItems) {
+      const numDrawn = this.drawnItems.getLayers().length;
+      if (numDrawn === 0 && value) { // manually draw bounding box
+        let coordinates = this._switchCoordinates(JSON.parse(value));
+        let poly = L.polygon(coordinates, {
+          color: DRAW_POLYGON_COLOR,
+          weight: DRAW_POLYGON_WEIGHT,
+          opacity: 0.5,
+        });
+        poly.addTo(drawnItems).addTo(this.map);
+      }
+    }
+  }
+
+  _renderDatasets = () => {
     const { data } = this.props;
-    const { displayMap } = this.state;
     const layerGroup = this.layerGroup;
 
     if (layerGroup) {
       layerGroup.clearLayers(); // clearing all the previous datasets
       this._transformData(data).map(row => { // parsing data and rendering map
-        let poly = L.polygon(row.coordinates, { fillOpacity: 0, weight: 1.3 });
+        let poly = L.polygon(row.coordinates, {
+          fillOpacity: 0,
+          weight: 1.3
+        });
         poly.bindPopup(row._id).addTo(layerGroup).addTo(this.map);
       });
     }
+  }
+
+
+  render() {
+    const { data, value } = this.props;
+    const { displayMap } = this.state;
+
+    this._renderBbox(); // rendering pink bbox
+    this._renderDatasets(); // rendering dataset panes
 
     // find first occurance of valid center coordinate
     let validCenter = data.find(row => row.center.coordinates)
@@ -173,8 +202,8 @@ let MapComponent = class extends React.Component {
     }
 
     const mapStyle = {
-      width: '100%',
-      height: '700px',
+      width: '95%',
+      height: '59em',
       margin: '0 auto',
       marginBottom: '15px',
       display: displayMap ? 'block' : 'none'
@@ -182,10 +211,10 @@ let MapComponent = class extends React.Component {
 
     return (
       <div className="reactive-map-container">
-        <button onClick={this.toggleMapDisplay}>
+        <button onClick={this._toggleMapDisplay}>
           {displayMap ? 'Hide Map' : 'Show Map'}
         </button>
-        <div id='leaflet-map-id' style={mapStyle} />
+        <div id="leaflet-map-id" style={mapStyle} />
       </div>
     );
   }

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { ReactiveComponent } from '@appbaseio/reactivesearch';
-import { Map, TileLayer, FeatureGroup, Polygon, ImageOverlay } from 'react-leaflet';
+import { Map, TileLayer, FeatureGroup, Polygon, ImageOverlay, Popup, Marker } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw";
 
 import { LEAFLET_TILELAYER, LEAFLET_ATTRIBUTION, DEFAULT_MAP_DISPLAY } from '../../config.js';
@@ -11,16 +11,29 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import './style.css';
 
+import L from 'leaflet';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
+
+const DRAW_POLYGON_COLOR = '#f06eaa';
+const DRAW_POLYGON_WEIGHT = 7;
+
 /**
  * Map in Tosca to trigger ES searches based on geo location drawing
  * TODO:
  *    migrate data from GRQ to ES 7 (KIND OF DONE)
  *    make es query compatible with ReactiveSearch ** (DONE)
  *    collapsable text field on the bottom for coordinates (DONE I THINK)
- *    add images to the map
+ *    add images to the map (DONE)
  *    add highlighting when clicking (need callbacks)
  */
-var MapComponent = class ReactiveMap extends React.Component {
+var MapComponent = class extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -51,12 +64,6 @@ var MapComponent = class ReactiveMap extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    /**
-     * note: maybe check for if (this.state.inputPolygon) first?
-     * if prevProps.setPolygon === this.props.setPolygon, then its triggered by a click
-     * if prevProps.setPolygon !== this.props.setPolygon, then its triggered by filter change
-     */
-
     // when they clear the facet so it doesnt query with empty coordinates
     if (!this.props.setPolygon) {
       this.props.setQuery({
@@ -70,17 +77,6 @@ var MapComponent = class ReactiveMap extends React.Component {
       });
 
       this.removePolygons();
-    } else if (this.props.setPolygon !== this.state.inputPolygon) {
-      // maybe compare this.state.inputPolygon !== this.props.setPolygon ** NEED TO SWITCH COORDINATES
-      /**
-       * [1,2,3] !== [1,2,3]: true
-       */
-      // console.log('this.props.setPolygon', this.props.setPolygon);
-      // console.log('this.state.inputPolygon', this.state.inputPolygon);
-      // this.setState({
-      //   inputPolygon: this.state.inputPolygon, // so we can remove the defualt polygon when we "clear all"
-      //   textBoxValue: this.state.inputPolygon
-      // });
     }
   }
 
@@ -175,7 +171,6 @@ var MapComponent = class ReactiveMap extends React.Component {
     const extractedData = _extractPolygonData(facetData);
     const center = extractedData.length === 0 ? [36.7783, -119.4179] : extractedData[0].center;
 
-    // console.log(inputPolygon);
     return (
       <div className="reactive-map-container">
         <button
@@ -190,7 +185,7 @@ var MapComponent = class ReactiveMap extends React.Component {
             minZoom={minZoom}
             maxZoom={maxZoom}
             style={mapContainerStyles}
-            onViewportChange={e => this.setState({ zoomLevel: e.zoom })}
+          // onViewportChange={e => this.setState({ zoomLevel: e.zoom })}
           >
             <TileLayer
               url={LEAFLET_TILELAYER}
@@ -208,6 +203,20 @@ var MapComponent = class ReactiveMap extends React.Component {
                   marker: false,
                   polyline: false,
                   circlemarker: false,
+                  polygon: {
+                    shapeOptions: {
+                      color: DRAW_POLYGON_COLOR,
+                      weight: DRAW_POLYGON_WEIGHT,
+                      fill: false,
+                    }
+                  },
+                  rectangle: {
+                    shapeOptions: {
+                      color: DRAW_POLYGON_COLOR,
+                      weight: DRAW_POLYGON_WEIGHT,
+                      fill: false,
+                    }
+                  },
                 }}
                 edit={{
                   remove: false,
@@ -221,14 +230,29 @@ var MapComponent = class ReactiveMap extends React.Component {
                 null
             }
             {extractedData.map(row => (
-              <Polygon
-                key={`${row._index}/${row._id}`}
-                positions={row.polygon}
-                color="#3388ff"
-                opacity={1}
-                fillOpacity={0}
-                weight={1.1}
-              />
+              <Fragment>
+                <Polygon
+                  key={`${row._index}/${row._id}`}
+                  positions={row.polygon}
+                  color="#3388ff"
+                  opacity={1}
+                  fillOpacity={0}
+                  weight={1.1}
+                >
+                  <Popup>
+                    <div style={{ wordWrap: 'break-word' }} onClick={this.props.clickIdHandler.bind(this, row._id)}>
+                      {row._id}
+                    </div>
+                  </Popup>
+                </Polygon>
+                {/* <Marker position={row.center}>
+                  <Popup>
+                    <div style={{ wordWrap: 'break-word' }} onClick={this.props.clickIdHandler.bind(this, row._id)}>
+                      {row._id}
+                    </div>
+                  </Popup>
+                </Marker> */}
+              </Fragment>
             ))}
             {extractedData.map(row => (
               <ImageOverlay
@@ -273,6 +297,7 @@ export default class ReactiveMap extends React.Component {
               maxZoom={this.props.maxZoom}
               minZoom={this.props.minZoom}
               facetData={this.props.facetData}
+              clickIdHandler={this.props.clickIdHandler}
             />
           );
         }}
@@ -282,7 +307,8 @@ export default class ReactiveMap extends React.Component {
 }
 
 ReactiveMap.propTypes = {
-  mapComponentId: PropTypes.string.isRequired
+  mapComponentId: PropTypes.string.isRequired,
+  clickIdHandler: PropTypes.func.isRequired,
 };
 
 ReactiveMap.defaultProps = {

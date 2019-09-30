@@ -5,7 +5,7 @@
 .scroll-top-button {
   position: fixed;
   height: 50px;
-  bottom: 0px;
+  /* bottom: 0px; */
   right: 0px;
   opacity: 0.5;
   background: none;
@@ -33,6 +33,7 @@
   /* overflow: scroll; */
   overflow-y: scroll;
   background-color: #FFFF;
+  border-right: solid 1px #0000004d;
 }
 
 .facet-container {

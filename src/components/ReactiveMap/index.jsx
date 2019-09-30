@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { ReactiveComponent } from '@appbaseio/reactivesearch';
-import ReactTooltip from 'react-tooltip'
+import ReactTooltip from 'react-tooltip';
 import L from 'leaflet';
 import 'leaflet-draw';
 
@@ -11,8 +12,9 @@ import './style.css';
 
 import { LEAFLET_TILELAYER, LEAFLET_ATTRIBUTION, DEFAULT_MAP_DISPLAY } from '../../config.js';
 
-const DRAW_POLYGON_COLOR = '#f06eaa';
-const DRAW_POLYGON_WEIGHT = 7;
+const BBOX_COLOR = '#f06eaa';
+const BBOX_WEIGHT = 5;
+const BBOX_OPACITY = 0.3
 
 let MapComponent = class extends React.Component {
   constructor(props) {
@@ -26,6 +28,7 @@ let MapComponent = class extends React.Component {
     this._polygonTextChange = this._polygonTextChange.bind(this);
     this._polygonTextInput = this._polygonTextInput.bind(this);
     this._handleMapDraw = this._handleMapDraw.bind(this);
+    this._handlePolygonEdit = this._handlePolygonEdit.bind(this);
     this._handleMapSizeChange = this._handleMapSizeChange.bind(this);
   }
 
@@ -43,31 +46,19 @@ let MapComponent = class extends React.Component {
     this.layerGroup = L.layerGroup().addTo(this.map);  // store all dataset panels in this layergroup
 
     this.drawControl = new L.Control.Draw({
-      shapeOptions: {
-        showArea: true,
-        clickable: true
-      },
-      edit: {
-        featureGroup: this.drawnItems,
-        remove: false,
-        edit: false,
-      },
+      shapeOptions: { showArea: true, clickable: true },
+      edit: { featureGroup: this.drawnItems, remove: false },
       draw: {
         circle: false,
         marker: false,
         polyline: false,
         circlemarker: false,
         polygon: {
-          shapeOptions: {
-            color: DRAW_POLYGON_COLOR,
-            weight: DRAW_POLYGON_WEIGHT
-          }
+          allowIntersection: false,
+          shapeOptions: { color: BBOX_COLOR, weight: BBOX_WEIGHT, opacity: BBOX_OPACITY }
         },
         rectangle: {
-          shapeOptions: {
-            color: DRAW_POLYGON_COLOR,
-            weight: DRAW_POLYGON_WEIGHT
-          }
+          shapeOptions: { color: BBOX_COLOR, weight: BBOX_WEIGHT, opacity: BBOX_OPACITY }
         },
       },
     });
@@ -75,8 +66,9 @@ let MapComponent = class extends React.Component {
 
     // map event handlers
     this.map.on('zoomend', this._zoomHandler);
-    this.map.on('draw:drawstart', this._clearDatasets);
-    this.map.on('draw:created', this._handleMapDraw);
+    this.map.on(L.Draw.Event.DRAWSTART, this._clearBbox);
+    this.map.on(L.Draw.Event.CREATED, this._handleMapDraw);
+    this.map.on(L.Draw.Event.EDITED, this._handlePolygonEdit);
   }
 
   componentDidUpdate() {
@@ -97,6 +89,9 @@ let MapComponent = class extends React.Component {
         polygonTextbox: this.props.value
       });
     }
+
+    this._renderBbox(); // rendering pink bbox
+    this._renderDatasets(); // rendering dataset panes
   }
 
   _handleMapDraw = (event) => {
@@ -107,26 +102,31 @@ let MapComponent = class extends React.Component {
     const query = this._generateQuery(polygon);
     const polygonString = JSON.stringify(polygon);
 
-    this.props.setQuery({
-      query,
-      value: polygonString
-    });
-    this.setState({
-      value: polygonString,
-      polygonTextbox: polygonString,
+    this.props.setQuery({ query, value: polygonString });  // querying elasticsearch
+    this.setState({ value: polygonString, polygonTextbox: polygonString });
+  }
+
+  _handlePolygonEdit = (event) => {
+    const layers = event.layers.getLayers();
+    layers.map(layer => {
+      let polygon = layer.getLatLngs()[0].map(cord => [cord.lng, cord.lat]);
+      polygon = [...polygon, polygon[0]];
+
+      const query = this._generateQuery(polygon);
+      const polygonString = JSON.stringify(polygon);
+
+      this.props.setQuery({ query, value: polygonString });  // querying elasticsearch
+      this.setState({ value: polygonString, polygonTextbox: polygonString });
     });
   }
 
   // client side event handlers
-  _clearDatasets = () => this.drawnItems.clearLayers();
+  _clearBbox = () => this.drawnItems.clearLayers();
   _zoomHandler = () => localStorage.setItem('zoom', this.map.getZoom());
   _reRenderMap = () => this.map._onResize();
   _toggleMapDisplay = () => this.setState({ displayMap: !this.state.displayMap }, this._reRenderMap);
-  _polygonTextChange = (e) => {
-    this.setState({
-      polygonTextbox: e.target.value
-    });
-  }
+  _polygonTextChange = (e) => this.setState({ polygonTextbox: e.target.value });
+
   _polygonTextInput = (e) => {
     if (e.key === 'Enter' && e.shiftKey) {
       e.preventDefault();
@@ -193,35 +193,42 @@ let MapComponent = class extends React.Component {
     return displayData
   }
 
-  _renderBbox = () => {
-    // rendering pink bbox if not drawn and specified in facets (for page on load or backwards forwards on browser)
-    const { value } = this.props;
-    const drawnItems = this.drawnItems;
+  _validateRectangle = (coord) => {
+    if (coord.length === 5 &&
+      coord[0][0] === coord[3][0] && coord[1][0] === coord[2][0]
+      && coord[0][1] === coord[1][1] && coord[2][1] === coord[3][1]) return true
+    return false;
+  }
 
-    if (drawnItems && value) {
-      drawnItems.clearLayers();
+  _renderBbox = () => {
+    const { value } = this.props;
+
+    if (this.drawnItems && value) {
+      this.drawnItems.clearLayers();
       let coordinates = this._switchCoordinates(JSON.parse(value));
-      let poly = L.polygon(coordinates, {
-        color: DRAW_POLYGON_COLOR,
-        weight: DRAW_POLYGON_WEIGHT,
-        opacity: 0.5,
-      });
-      poly.addTo(drawnItems).addTo(this.map);
+      const isRectangle = this._validateRectangle(coordinates); // checking valid rectangle
+      const drawOptions = { color: BBOX_COLOR, weight: BBOX_WEIGHT, opacity: BBOX_OPACITY };
+      const poly = isRectangle ? L.rectangle(coordinates, drawOptions) : L.polygon(coordinates, drawOptions);
+      poly.addTo(this.drawnItems).addTo(this.map);
     }
   }
 
+  _testEvent = (_id) => alert(`FINALLY GOT THIS SHIT WORKING ${_id}`);
+
   _renderDatasets = () => {
     const { data } = this.props;
-    const layerGroup = this.layerGroup;
 
-    if (layerGroup) {
-      layerGroup.clearLayers(); // clearing all the previous datasets
+    if (this.layerGroup) {
+      this.layerGroup.clearLayers(); // clearing all the previous datasets
       this._transformData(data).map(row => { // parsing data and rendering map
         let poly = L.polygon(row.coordinates, {
           fillOpacity: 0,
           weight: 1.3
         });
-        poly.bindPopup(row._id).addTo(layerGroup).addTo(this.map);
+        const popup = (<div onClick={this._testEvent.bind(this, row._id)}>{row._id}</div>);
+        let popupElement = document.createElement('div');
+        ReactDOM.render(popup, popupElement);
+        poly.bindPopup(popupElement).addTo(this.layerGroup).addTo(this.map);
       });
     }
   }
@@ -235,22 +242,19 @@ let MapComponent = class extends React.Component {
     const { data } = this.props;
     const { displayMap, polygonTextbox } = this.state;
 
-    this._renderBbox(); // rendering pink bbox
-    this._renderDatasets(); // rendering dataset panes
-
     // find first occurance of valid center coordinate
     let validCenter = data.find(row => row.center.coordinates)
     if (validCenter) {
-      const centerCoordinates = validCenter.center.coordinates;
-      this.map.panTo(new L.LatLng(centerCoordinates[1], centerCoordinates[0]));
+      const center = validCenter.center.coordinates;
+      this.map.panTo(new L.LatLng(center[1], center[0]));
     }
 
     const textboxTooltip = `Press SHIFT + ENTER to manually input polygon... ex. [ [-125.09335, 42.47589], ... ,[-125.09335, 42.47589] ]`;
 
     let storedMapHeight = localStorage.getItem('map-container-height');
     const mapContainerStyle = {
-      minHeight: 600,
-      height: storedMapHeight ? `${storedMapHeight}px` : 600,
+      minHeight: 500,
+      height: storedMapHeight ? `${storedMapHeight}px` : 500,
       margin: '10px',
       overflow: 'auto',
       resize: 'vertical',
@@ -258,14 +262,14 @@ let MapComponent = class extends React.Component {
     };
 
     return (
-      <div>
+      <Fragment>
         <button onClick={this._toggleMapDisplay}>
           {displayMap ? 'Hide Map' : 'Show Map'}
         </button>
         <div
           onMouseUp={this._handleMapSizeChange}
           style={mapContainerStyle}
-          ref={(input) => { this.mapContainer = input; }}
+          ref={(input) => this.mapContainer = input}
         >
           <div id="leaflet-map-id" className="leaflet-map" />
         </div>
@@ -280,20 +284,14 @@ let MapComponent = class extends React.Component {
           onKeyPress={this._polygonTextInput}
         >
         </textarea>
-      </div>
+      </Fragment>
     );
   }
 }
 
 export default class ReactiveMap extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
   render() {
     const { componentId, data, zoom, maxZoom, minZoom } = this.props;
-
     return (
       <ReactiveComponent
         componentId={componentId}

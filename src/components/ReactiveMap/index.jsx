@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
-import { renderToString } from 'react-dom/server';
-import ReactDOM, { hydrate } from 'react-dom';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { ReactiveComponent } from '@appbaseio/reactivesearch';
 import ReactTooltip from 'react-tooltip'
@@ -99,6 +98,9 @@ let MapComponent = class extends React.Component {
         polygonTextbox: this.props.value
       });
     }
+
+    this._renderBbox(); // rendering pink bbox
+    this._renderDatasets(); // rendering dataset panes
   }
 
   _handleMapDraw = (event) => {
@@ -244,9 +246,6 @@ let MapComponent = class extends React.Component {
     const { data } = this.props;
     const { displayMap, polygonTextbox } = this.state;
 
-    this._renderBbox(); // rendering pink bbox
-    this._renderDatasets(); // rendering dataset panes
-
     // find first occurance of valid center coordinate
     let validCenter = data.find(row => row.center.coordinates)
     if (validCenter) {
@@ -267,7 +266,7 @@ let MapComponent = class extends React.Component {
     };
 
     return (
-      <div>
+      <Fragment>
         <button onClick={this._toggleMapDisplay}>
           {displayMap ? 'Hide Map' : 'Show Map'}
         </button>
@@ -289,7 +288,7 @@ let MapComponent = class extends React.Component {
           onKeyPress={this._polygonTextInput}
         >
         </textarea>
-      </div>
+      </Fragment>
     );
   }
 }

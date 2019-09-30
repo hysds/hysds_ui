@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { ReactiveComponent } from '@appbaseio/reactivesearch';
 import ReactTooltip from 'react-tooltip'
@@ -26,10 +26,12 @@ let MapComponent = class extends React.Component {
     this._polygonTextChange = this._polygonTextChange.bind(this);
     this._polygonTextInput = this._polygonTextInput.bind(this);
     this._handleMapDraw = this._handleMapDraw.bind(this);
+    this._handleMapSizeChange = this._handleMapSizeChange.bind(this);
   }
 
   componentDidMount() {
     this.map = L.map('leaflet-map-id', { // initializing the map
+      attributionControl: false,
       center: [36.7783, -119.4179],
       zoom: localStorage.getItem('zoom') || this.props.zoom,
       maxZoom: this.props.maxZoom,
@@ -101,7 +103,6 @@ let MapComponent = class extends React.Component {
     let newLayer = event.layer;
     let polygon = newLayer.getLatLngs()[0].map(cord => [cord.lng, cord.lat]);
     polygon = [...polygon, polygon[0]];
-    this.drawnItems.addLayer(newLayer, false);
 
     const query = this._generateQuery(polygon);
     const polygonString = JSON.stringify(polygon);
@@ -225,8 +226,13 @@ let MapComponent = class extends React.Component {
     }
   }
 
+  _handleMapSizeChange = (e) => {
+    this.map.invalidateSize();
+    localStorage.setItem('map-container-height', this.mapContainer.clientHeight);
+  }
+
   render() {
-    const { data, value } = this.props;
+    const { data } = this.props;
     const { displayMap, polygonTextbox } = this.state;
 
     this._renderBbox(); // rendering pink bbox
@@ -240,20 +246,29 @@ let MapComponent = class extends React.Component {
     }
 
     const textboxTooltip = `Press SHIFT + ENTER to manually input polygon... ex. [ [-125.09335, 42.47589], ... ,[-125.09335, 42.47589] ]`;
-    const mapStyle = {
-      width: '95%',
-      height: '59em',
-      margin: '0 auto',
-      marginBottom: '15px',
-      display: displayMap ? 'block' : 'none'
+
+    let storedMapHeight = localStorage.getItem('map-container-height');
+    const mapContainerStyle = {
+      minHeight: 600,
+      height: storedMapHeight ? `${storedMapHeight}px` : 600,
+      margin: '10px',
+      overflow: 'auto',
+      resize: 'vertical',
+      display: displayMap ? 'block' : 'none',
     };
 
     return (
-      <div className="reactive-map-container">
-        <button className="toggle-map-btn" onClick={this._toggleMapDisplay}>
+      <div>
+        <button onClick={this._toggleMapDisplay}>
           {displayMap ? 'Hide Map' : 'Show Map'}
         </button>
-        <div id="leaflet-map-id" style={mapStyle} />
+        <div
+          onMouseUp={this._handleMapSizeChange}
+          style={mapContainerStyle}
+          ref={(input) => { this.mapContainer = input; }}
+        >
+          <div id="leaflet-map-id" className="leaflet-map" />
+        </div>
 
         <ReactTooltip place="top" type="dark" effect="solid" />
         <textarea

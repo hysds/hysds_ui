@@ -180,10 +180,7 @@ export default class Tosca extends React.Component {
           </div>
 
           <div className='body'>
-            <SelectedFilters
-              className='filterList'
-              onLoad={(e, v) => console.log(e, v)}
-            />
+            <SelectedFilters className='filterList' />
 
             <div className='utility-button-container'>
               <a

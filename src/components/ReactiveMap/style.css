@@ -1,29 +1,24 @@
-/* required styles for leaflet */
 h1,
 h2,
 p {
   text-align: center;
 }
 
-.map-container {
-  margin-bottom: 15px;
-}
-
-.leaflet-container {
-  /* height: 700px;
-  width: 90%;
+.leaflet-map {
+  width: 95%;
+  height: inherit;
   margin: 0 auto;
-  margin-bottom: 15px; */
 }
 
 .map-coordinates-textbox {
   min-width: 80%;
   max-width: 80%;
+  min-height: 90px;
   border: 1px solid #b2b2b2;
   display: block;
-  font-size: 0.85em;
   margin: 0 auto;
-  min-height: 80px;
+  font-size: 0.85em;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace !important;
 }
 
 .leaflet-tooltip {
@@ -42,11 +37,3 @@ p {
 .toggle-map-btn {
   margin-bottom: 10px;
 }
-
-/* .leaflet-overlay-pane {
-  z-index: 600;
-} */
-
-/* .leaflet-shadow-pane {
-  z-index: 4;
-} */

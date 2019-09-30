@@ -1,4 +1,6 @@
 import React, { Fragment } from 'react';
+import { renderToString } from 'react-dom/server';
+import ReactDOM, { hydrate } from 'react-dom';
 import PropTypes from 'prop-types';
 import { ReactiveComponent } from '@appbaseio/reactivesearch';
 import ReactTooltip from 'react-tooltip'
@@ -210,6 +212,10 @@ let MapComponent = class extends React.Component {
     }
   }
 
+  _testEvent = (_id) => {
+    console.log('FINALLY GOT THIS SHIT WORKING', _id);
+  }
+
   _renderDatasets = () => {
     const { data } = this.props;
     const layerGroup = this.layerGroup;
@@ -221,7 +227,10 @@ let MapComponent = class extends React.Component {
           fillOpacity: 0,
           weight: 1.3
         });
-        poly.bindPopup(row._id).addTo(layerGroup).addTo(this.map);
+        const popup = (<div onClick={this._testEvent.bind(this, row._id)}>{row._id}</div>);
+        let popupElement = document.createElement('div');
+        ReactDOM.render(popup, popupElement);
+        poly.bindPopup(popupElement).addTo(layerGroup).addTo(this.map);
       });
     }
   }
@@ -249,8 +258,8 @@ let MapComponent = class extends React.Component {
 
     let storedMapHeight = localStorage.getItem('map-container-height');
     const mapContainerStyle = {
-      minHeight: 600,
-      height: storedMapHeight ? `${storedMapHeight}px` : 600,
+      minHeight: 500,
+      height: storedMapHeight ? `${storedMapHeight}px` : 500,
       margin: '10px',
       overflow: 'auto',
       resize: 'vertical',

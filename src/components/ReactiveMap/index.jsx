@@ -114,19 +114,11 @@ let MapComponent = class extends React.Component {
     const query = this._generateQuery(polygon);
     const polygonString = JSON.stringify(polygon);
 
-<<<<<<< HEAD
     this.props.setQuery({ query, value: polygonString }); // querying elasticsearch
     this.setState({ value: polygonString, polygonTextbox: polygonString });
   };
 
   _handlePolygonEdit = event => {
-=======
-    this.props.setQuery({ query, value: polygonString });  // querying elasticsearch
-    this.setState({ value: polygonString, polygonTextbox: polygonString });
-  }
-
-  _handlePolygonEdit = (event) => {
->>>>>>> master
     const layers = event.layers.getLayers();
     layers.map(layer => {
       let polygon = layer.getLatLngs()[0].map(cord => [cord.lng, cord.lat]);
@@ -135,18 +127,13 @@ let MapComponent = class extends React.Component {
       const query = this._generateQuery(polygon);
       const polygonString = JSON.stringify(polygon);
 
-<<<<<<< HEAD
       this.props.setQuery({ query, value: polygonString }); // querying elasticsearch
-=======
-      this.props.setQuery({ query, value: polygonString });  // querying elasticsearch
->>>>>>> master
       this.setState({ value: polygonString, polygonTextbox: polygonString });
     });
   };
 
   // client side event handlers
   _clearBbox = () => this.drawnItems.clearLayers();
-<<<<<<< HEAD
   _zoomHandler = () => localStorage.setItem("zoom", this.map.getZoom());
   _reRenderMap = () => this.map._onResize();
   _toggleMapDisplay = () =>
@@ -155,15 +142,6 @@ let MapComponent = class extends React.Component {
 
   _polygonTextInput = e => {
     if (e.key === "Enter" && e.shiftKey) {
-=======
-  _zoomHandler = () => localStorage.setItem('zoom', this.map.getZoom());
-  _reRenderMap = () => this.map._onResize();
-  _toggleMapDisplay = () => this.setState({ displayMap: !this.state.displayMap }, this._reRenderMap);
-  _polygonTextChange = (e) => this.setState({ polygonTextbox: e.target.value });
-
-  _polygonTextInput = (e) => {
-    if (e.key === 'Enter' && e.shiftKey) {
->>>>>>> master
       e.preventDefault();
       try {
         const polygonString = e.target.value;

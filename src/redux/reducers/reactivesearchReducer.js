@@ -3,16 +3,11 @@ import {
   CLEAR_ALL_CUSTOM_COMPONENTS,
   CLEAR_CUSTOM_COMPONENTS
 } from "../constants.js";
-import { GRQ_TABLE_VIEW_DEFAULT, ID_COMPONENT } from "../../config.js";
+import { ID_COMPONENT } from "../../config.js";
 
 const urlParams = new URLSearchParams(window.location.search);
 
 const initialState = {
-  // states for the tosca page (TODO: need to implement these)
-  esQuery: null,
-  facetData: [],
-  tableView: GRQ_TABLE_VIEW_DEFAULT, // boolean
-
   // custom ReactiveComponent id's
   _id: urlParams.get("_id") ? urlParams.get("_id").replace(/"/g, "") : null
 };

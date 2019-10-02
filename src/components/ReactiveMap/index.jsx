@@ -270,7 +270,9 @@ let ConnectMapComponent = class extends React.Component {
           weight: 1.3
         });
         const popup = (
-          <div onClick={this.clickIdHandler.bind(this, row._id)}>{row._id}</div>
+          <div>
+            <p className="id-popup-link" onClick={this.clickIdHandler.bind(this, row._id)}>{row._id}</p>
+          </div>
         );
         let popupElement = document.createElement("div");
         ReactDOM.render(popup, popupElement);

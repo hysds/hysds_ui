@@ -23,9 +23,14 @@
 .sidenav a {
   padding: 6px 8px 6px 16px;
   text-decoration: none;
-  font-size: 25px;
+  font-size: 20px;
   display: block;
   height: 100%;
+}
+
+.DayPickerInput input {
+  padding: 8px 5px !important;
+  height: 30px !important;
 }
 
 .body {
@@ -56,11 +61,11 @@
   background-color: #4288ff;
   border: none;
   color: white;
-  padding: 10px 25px;
+  padding: 7px 16px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 12px;
   margin-bottom: 25px;
   margin-top: 25px;
   margin-left: 25px;
@@ -73,6 +78,12 @@
 
 .reactivesearch-input input {
   height: 37px;
+}
+
+.filter-list a {
+  /* padding: 0px 8px; */
+  font-size: 11px !important;
+  /* min-height: 27px !important; */
 }
 
 .DayPickerInput input {

@@ -12,6 +12,7 @@ export const getData = n => async dispatch => {
 };
 
 export const clickDatasetId = payload => {
+  console.log("ACTION change dataset _id", payload);
   return {
     type: GET_DATASET_ID,
     payload

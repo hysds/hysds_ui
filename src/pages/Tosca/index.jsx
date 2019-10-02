@@ -35,7 +35,7 @@ import {
 // custom components we built
 import ResultsList from "../../components/ResultsList/index.jsx";
 import ReactiveMap from "../../components/ReactiveMap/index.jsx";
-import IDQueryHandler from "../../components/IDQueryHandler/index.jsx";
+import IdQueryHandler from "../../components/IdQueryHandler/index.jsx";
 
 import ScrollTop from "../../components/ScrollTop/index.jsx";
 
@@ -187,10 +187,11 @@ class ToscaComponent extends React.Component {
 
           <div className="body">
             <SelectedFilters
-              className="filterList"
+              className="filter-list"
               onClear={this._handleClearFilter}
+              style={{ padding: "0px 8px", fontSize: "0.70rem" }}
             />
-            <IDQueryHandler componentId={ID_COMPONENT} />
+            <IdQueryHandler componentId={ID_COMPONENT} />
 
             <div className="utility-button-container">
               <a

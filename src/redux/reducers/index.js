@@ -1,42 +1,48 @@
-import { ADD_ARTICLE, DATA_LOADED, PAGE_SIZE } from "../constants.js";
+import {
+  GET_DATASET_ID,
+  CLEAR_ALL_CUSTOM_COMPONENTS,
+  CLEAR_CUSTOM_COMPONENTS
+} from "../constants.js";
+import { GRQ_TABLE_VIEW_DEFAULT, ID_COMPONENT } from "../../config.js";
 
-import { GRQ_TABLE_VIEW_DEFAULT } from "../../config.js";
+const urlParams = new URLSearchParams(window.location.search);
 
 const initialState = {
-  // test states
-  articles: [],
-  remoteArticles: [],
-  pageSize: 10,
-
-  // real central states
+  // states for the tosca page (TODO: need to implement these)
   esQuery: null,
   facetData: [],
   tableView: GRQ_TABLE_VIEW_DEFAULT, // boolean
-  selectedId: null,
-  _id: null
+
+  // custom ReactiveComponent id's
+  _id: urlParams.get("_id") ? urlParams.get("_id").replace(/"/g, "") : null
 };
 
-function rootReducer(state = initialState, action) {
+/**
+ * TODO: separate reducer => combine reducers
+ */
+const rootReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_ARTICLE:
+    case GET_DATASET_ID:
       return {
         ...state,
-        articles: state.articles.concat(action.payload)
+        _id: action.payload
       };
-    case DATA_LOADED:
+    case CLEAR_ALL_CUSTOM_COMPONENTS: // ADD ALL CUSTOM COMPONENT IDS HERE
       return {
         ...state,
-        // remoteArticles: state.remoteArticles.concat(action.payload)
-        remoteArticles: action.payload
+        [ID_COMPONENT]: null
       };
-    case PAGE_SIZE:
+
+    // CUSTOM COMPONENT HAS A CLEAR EVENT (NEED TO FIGURE OUT TO HANDLE ALL AT ONCE)F
+    case CLEAR_CUSTOM_COMPONENTS:
       return {
         ...state,
-        pageSize: action.payload
+        [action.payload]: null
       };
+
     default:
       return state;
   }
-}
+};
 
 export default rootReducer;

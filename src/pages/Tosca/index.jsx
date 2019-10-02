@@ -6,54 +6,43 @@ import {
   DateRange,
   MultiList
 } from "@appbaseio/reactivesearch";
-
 import { connect } from "react-redux";
+import {
+  clearAllCustomComponents,
+  clearCustomComponent
+} from "../../redux/actions/index";
 
 import {
   GRQ_ES_URL,
   GRQ_ES_INDICES,
-  GRQ_TABLE_VIEW_DEFAULT
+  GRQ_TABLE_VIEW_DEFAULT,
+  // all fields read by Reactivesearch
+  ID_COMPONENT,
+  MAP_COMPONENT_ID,
+  SEARCHBAR_COMPONENT_ID,
+  DATASET_TYPE_SEARCH_ID,
+  SATELLITE_TYPE_ID,
+  RESULTS_LIST_COMPONENT_ID,
+  DATASET_ID,
+  TRACK_NUMBER_ID,
+  TRACK_NUMBER_ID_OLD,
+  START_TIME_ID,
+  END_TIME_ID,
+  DATASET_VERSION,
+  FIELDS // only fields we care about
 } from "../../config";
 
-// import IDSearchBar from '../../components/IDSearchBar/index.jsx';
+// custom components we built
 import ResultsList from "../../components/ResultsList/index.jsx";
 import ReactiveMap from "../../components/ReactiveMap/index.jsx";
 import IDQueryHandler from "../../components/IDQueryHandler/index.jsx";
 
+import ScrollTop from "../../components/ScrollTop/index.jsx";
+
 import "./style.css";
-import upArrow from "../../images/arrow-up.png";
 
-// reactivesearch retrieves data from each component by its componentId
-const ID_COMPONENT = "ID";
-const SEARCHBAR_COMPONENT_ID = "query_string";
-const DATASET_TYPE_SEARCH_ID = "dataset_type";
-const SATELLITE_TYPE_ID = "satellite";
-const MAP_COMPONENT_ID = "polygon";
-const RESULTS_LIST_COMPONENT_ID = "results";
-const DATASET_ID = "dataset";
-const TRACK_NUMBER_ID = "track_number";
-const TRACK_NUMBER_ID_OLD = "trackNumber";
-const START_TIME_ID = "starttime";
-const END_TIME_ID = "endtime";
-const USER_TAGS = "user_tags";
-const DATASET_VERSION = "version";
-const FIELDS = [
-  "starttime",
-  "endtime",
-  "location",
-  "center",
-  "urls",
-  "datasets",
-  "metadata.track_number",
-  "metadata.trackNumber",
-  "metadata.status",
-  "metadata.platform",
-  "metadata.sensoroperationalmode",
-  "metadata.polarisationmode"
-];
-
+// query logic for elasticsearch
 const QUERY_LOGIC = {
-  // query logic for elasticsearch
   and: [
     ID_COMPONENT,
     SEARCHBAR_COMPONENT_ID,
@@ -63,14 +52,17 @@ const QUERY_LOGIC = {
     DATASET_ID,
     START_TIME_ID,
     END_TIME_ID,
-    USER_TAGS,
     DATASET_VERSION
   ],
   or: [TRACK_NUMBER_ID, TRACK_NUMBER_ID_OLD]
 };
 
-const mapStateToProps = state => {
-  return { articles: state.articles };
+// Redux actions
+const mapDispatchToProps = dispatch => {
+  return {
+    clearAllCustomComponents: () => dispatch(clearAllCustomComponents()),
+    clearCustomComponent: component => dispatch(clearCustomComponent(component))
+  };
 };
 
 class ToscaComponent extends React.Component {
@@ -79,19 +71,16 @@ class ToscaComponent extends React.Component {
     this.state = {
       esQuery: null,
       facetData: [],
-      tableView: GRQ_TABLE_VIEW_DEFAULT, // boolean
-      selectedId: null,
-      _id: null
+      tableView: GRQ_TABLE_VIEW_DEFAULT // boolean
     };
   }
 
-  // TODO: add fields to edit the query and put back into the e.body
-  _handleTransformRequest = e => {
-    // handles the request to ES (also where to get es query)
-    const body = e.body.split("\n");
+  _handleTransformRequest = event => {
+    const body = event.body.split("\n");
     const query = body[1];
     let parsedQuery = JSON.parse(query);
 
+    // handles the request to ES (also where to get es query)
     if (parsedQuery._source) {
       parsedQuery._source.includes = FIELDS;
       parsedQuery = JSON.stringify(parsedQuery);
@@ -99,44 +88,32 @@ class ToscaComponent extends React.Component {
       this.setState({
         query: query ? btoa(query) : "" // saving base64 encoded query in state so we can use it 'on demand'
       });
-      e.body = `${body[0]}\n${parsedQuery}\n`;
+      event.body = `${body[0]}\n${parsedQuery}\n`;
     }
-    return e;
+    return event;
   };
 
-  retrieveData = ({ data, rawData, aggregations }) => {
-    this.setState({
-      facetData: data
-    });
-  };
+  retrieveData = ({ data }) => this.setState({ facetData: data });
 
-  clickIdHandler = _id => {
-    // alert(`FINALLY GOT THIS SHIT WORKING ${_id}`)
-    console.log(`FINALLY GOT THIS SHIT WORKING ${_id}`);
-    this.setState({
-      _id: _id
-    });
+  _handleClearFilter = event => {
+    // if user clears specific filter
+    if (event) this.props.clearCustomComponent(event);
+    // if user clicks clear all filters
+    else this.props.clearAllCustomComponents();
   };
 
   render() {
-    const { facetData, tableView, selectedId, _id } = this.state;
+    const { facetData } = this.state;
 
     // https://discuss.elastic.co/t/view-surrounding-documents-causes-failed-to-parse-date-field-exception/147234 dateoptionalmapping
     return (
       <div className="main-container">
-        <button>
-          <img
-            type="image"
-            src={upArrow}
-            className="scroll-top-button"
-            onClick={() => window.scrollTo(0, 0)}
-          />
-        </button>
         <ReactiveBase
           app={GRQ_ES_INDICES}
           url={GRQ_ES_URL}
           transformRequest={this._handleTransformRequest}
         >
+          <ScrollTop />
           <div className="sidenav">
             <div className="facet-container">
               <SingleList
@@ -169,15 +146,6 @@ class ToscaComponent extends React.Component {
                 componentId={DATASET_VERSION}
                 dataField="version.raw"
                 title="Version"
-                URLParams={true}
-                style={{ fontSize: 12 }}
-                className="reactivesearch-input"
-              />
-
-              <SingleList
-                componentId={USER_TAGS}
-                dataField="metadata.user_tags.raw"
-                title="User Tags"
                 URLParams={true}
                 style={{ fontSize: 12 }}
                 className="reactivesearch-input"
@@ -220,10 +188,9 @@ class ToscaComponent extends React.Component {
           <div className="body">
             <SelectedFilters
               className="filterList"
-              onChange={e => console.log("onChange", e)}
-              onClear={e => console.log("onClear", e)}
+              onClear={this._handleClearFilter}
             />
-            <IDQueryHandler componentId={ID_COMPONENT} _id={_id} />
+            <IDQueryHandler componentId={ID_COMPONENT} />
 
             <div className="utility-button-container">
               <a
@@ -244,7 +211,6 @@ class ToscaComponent extends React.Component {
               maxZoom={8}
               minZoom={2}
               data={facetData}
-              clickIdHandler={this.clickIdHandler}
             />
             <br />
             <ResultsList
@@ -261,5 +227,8 @@ class ToscaComponent extends React.Component {
   }
 }
 
-const Tosca = connect(mapStateToProps)(ToscaComponent);
+const Tosca = connect(
+  null,
+  mapDispatchToProps
+)(ToscaComponent);
 export default Tosca;

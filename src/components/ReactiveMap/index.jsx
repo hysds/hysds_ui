@@ -1,26 +1,33 @@
-import React, { Fragment } from "react";
+import React, { Fragment } from "react"; // react imports
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import { ReactiveComponent } from "@appbaseio/reactivesearch";
-import ReactTooltip from "react-tooltip";
-import L from "leaflet";
+import { connect } from "react-redux"; // redux
+import { clickDatasetId } from "../../redux/actions/index";
+import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
+import L from "leaflet"; // lealfet
 import "leaflet-draw";
-
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import "./style.css";
+import ReactTooltip from "react-tooltip"; // UI stuff
 
 import {
   LEAFLET_TILELAYER,
   LEAFLET_ATTRIBUTION,
-  DEFAULT_MAP_DISPLAY
+  DEFAULT_MAP_DISPLAY,
+  BBOX_COLOR,
+  BBOX_WEIGHT,
+  BBOX_OPACITY
 } from "../../config.js";
 
-const BBOX_COLOR = "#f06eaa";
-const BBOX_WEIGHT = 5;
-const BBOX_OPACITY = 0.3;
+// Redux actions 
+const mapDispatchToProps = dispatch => {
+  return {
+    clickDatasetId: _id => dispatch(clickDatasetId(_id))
+  };
+};
 
-let MapComponent = class extends React.Component {
+let ConnectMapComponent = class extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,8 +38,8 @@ let MapComponent = class extends React.Component {
   }
 
   componentDidMount() {
+    // initializing the map
     this.map = L.map("leaflet-map-id", {
-      // initializing the map
       attributionControl: false,
       center: [36.7783, -119.4179],
       zoom: localStorage.getItem("zoom") || this.props.zoom,
@@ -82,7 +89,6 @@ let MapComponent = class extends React.Component {
 
   componentDidUpdate() {
     if (this.props.value !== this.state.value) {
-      // prevent maximum recursion error
       if (this.props.value !== null) {
         // if the page loads with coordinates in the URL
         let polygon = JSON.parse(this.props.value);
@@ -92,8 +98,7 @@ let MapComponent = class extends React.Component {
           value: this.props.value
         });
       } else {
-        // handles onClear (facets)
-        this.sendEmptyQuery();
+        this.sendEmptyQuery(); // handles onClear (facets)
       }
 
       this.setState({
@@ -220,12 +225,17 @@ let MapComponent = class extends React.Component {
     return false;
   };
 
-  _validateRectangle = (coord) => {
-    if (coord.length === 5 &&
-      coord[0][0] === coord[3][0] && coord[1][0] === coord[2][0]
-      && coord[0][1] === coord[1][1] && coord[2][1] === coord[3][1]) return true
+  _validateRectangle = coord => {
+    if (
+      coord.length === 5 &&
+      coord[0][0] === coord[3][0] &&
+      coord[1][0] === coord[2][0] &&
+      coord[0][1] === coord[1][1] &&
+      coord[2][1] === coord[3][1]
+    )
+      return true;
     return false;
-  }
+  };
 
   _renderBbox = () => {
     const { value } = this.props;
@@ -246,7 +256,7 @@ let MapComponent = class extends React.Component {
     }
   };
 
-  _testEvent = (_id) => alert(`FINALLY GOT THIS SHIT WORKING ${_id}`);
+  clickIdHandler = _id => this.props.clickDatasetId(_id); // send to reducer
 
   _renderDatasets = () => {
     const { data } = this.props;
@@ -260,9 +270,7 @@ let MapComponent = class extends React.Component {
           weight: 1.3
         });
         const popup = (
-          <div onClick={this.props.clickIdHandler.bind(this, row._id)}>
-            {row._id}
-          </div>
+          <div onClick={this.clickIdHandler.bind(this, row._id)}>{row._id}</div>
         );
         let popupElement = document.createElement("div");
         ReactDOM.render(popup, popupElement);
@@ -330,6 +338,11 @@ let MapComponent = class extends React.Component {
   }
 };
 
+const MapComponent = connect(
+  null,
+  mapDispatchToProps
+)(ConnectMapComponent);
+
 export default class ReactiveMap extends React.Component {
   render() {
     const { componentId, data, zoom, maxZoom, minZoom } = this.props;
@@ -345,7 +358,6 @@ export default class ReactiveMap extends React.Component {
             zoom={zoom}
             maxZoom={maxZoom}
             minZoom={minZoom}
-            clickIdHandler={this.props.clickIdHandler}
           />
         )}
       />
@@ -354,8 +366,7 @@ export default class ReactiveMap extends React.Component {
 }
 
 ReactiveMap.propTypes = {
-  componentId: PropTypes.string.isRequired,
-  clickIdHandler: PropTypes.func.isRequired
+  componentId: PropTypes.string.isRequired
 };
 
 ReactiveMap.defaultProps = {

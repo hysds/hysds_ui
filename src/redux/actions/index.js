@@ -1,27 +1,33 @@
-export function addArticle(payload) {
+import {
+  GET_DATASET_ID,
+  CLEAR_ALL_CUSTOM_COMPONENTS,
+  CLEAR_CUSTOM_COMPONENTS
+} from "../constants.js";
+
+// example action
+export const getData = n => async dispatch => {
+  let req = fetch("https://jsonplaceholder.typicode.com/posts");
+  const json = req.json();
+  return dispatch({ type: "DATA_LOADED", payload: json.slice(0, n) });
+};
+
+export const clickDatasetId = payload => {
   return {
-    type: "ADD_ARTICLE",
+    type: GET_DATASET_ID,
     payload
   };
-}
+};
 
-export function editPageSize(payload) {
+export const clearAllCustomComponents = payload => {
   return {
-    type: "PAGE_SIZE",
+    type: CLEAR_ALL_CUSTOM_COMPONENTS,
     payload
   };
-}
+};
 
-// our new action creator. Will it work?}
-export function getData(n) {
-  console.log(`page size: ${n}`);
-  return function(dispatch) {
-    console.log("executing get request for posts");
-    return fetch("https://jsonplaceholder.typicode.com/posts")
-      .then(response => response.json())
-      .then(json => {
-        console.log("data fetched and dispatched to reducer");
-        dispatch({ type: "DATA_LOADED", payload: json.slice(0, n) });
-      });
+export const clearCustomComponent = payload => {
+  return {
+    type: CLEAR_CUSTOM_COMPONENTS,
+    payload
   };
-}
+};

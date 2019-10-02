@@ -1,3 +1,4 @@
-export const ADD_ARTICLE = "ADD_ARTICLE";
-export const DATA_LOADED = "DATA_LOADED";
-export const PAGE_SIZE = "PAGE_SIZE";
+// actions to handle the states for custom ReactiveComponents
+export const GET_DATASET_ID = "GET_DATASET_ID";
+export const CLEAR_ALL_CUSTOM_COMPONENTS = "CLEAR_ALL_CUSTOM_COMPONENTS";
+export const CLEAR_CUSTOM_COMPONENTS = "CLEAR_CUSTOM_COMPONENTS";

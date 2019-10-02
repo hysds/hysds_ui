@@ -7,6 +7,8 @@ import {
   MultiList
 } from "@appbaseio/reactivesearch";
 
+import { connect } from "react-redux";
+
 import {
   GRQ_ES_URL,
   GRQ_ES_INDICES,
@@ -67,7 +69,11 @@ const QUERY_LOGIC = {
   or: [TRACK_NUMBER_ID, TRACK_NUMBER_ID_OLD]
 };
 
-export default class Tosca extends React.Component {
+const mapStateToProps = state => {
+  return { articles: state.articles };
+};
+
+class ToscaComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -254,3 +260,6 @@ export default class Tosca extends React.Component {
     );
   }
 }
+
+const Tosca = connect(mapStateToProps)(ToscaComponent);
+export default Tosca;

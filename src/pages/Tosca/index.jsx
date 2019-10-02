@@ -211,6 +211,7 @@ class ToscaComponent extends React.Component {
               maxZoom={8}
               minZoom={2}
               data={facetData}
+              clickIdHandler={this.clickIdHandler}
             />
             <br />
             <ResultsList

@@ -20,7 +20,7 @@ import {
   BBOX_OPACITY
 } from "../../config.js";
 
-// Redux actions 
+// Redux actions
 const mapDispatchToProps = dispatch => {
   return {
     clickDatasetId: _id => dispatch(clickDatasetId(_id))
@@ -358,6 +358,7 @@ export default class ReactiveMap extends React.Component {
             zoom={zoom}
             maxZoom={maxZoom}
             minZoom={minZoom}
+            clickIdHandler={this.props.clickIdHandler}
           />
         )}
       />

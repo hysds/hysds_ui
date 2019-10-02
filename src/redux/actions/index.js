@@ -6,13 +6,12 @@ import {
 
 // example action
 export const getData = n => async dispatch => {
-  let req = fetch("https://jsonplaceholder.typicode.com/posts");
+  let req = await fetch("https://jsonplaceholder.typicode.com/posts");
   const json = req.json();
   return dispatch({ type: "DATA_LOADED", payload: json.slice(0, n) });
 };
 
 export const clickDatasetId = payload => {
-  console.log("ACTION change dataset _id", payload);
   return {
     type: GET_DATASET_ID,
     payload

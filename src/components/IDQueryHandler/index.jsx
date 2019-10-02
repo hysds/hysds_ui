@@ -19,7 +19,7 @@ export default IdQueryHandler;
 
 const mapStateToProps = state => {
   return {
-    _id: state._id
+    _id: state.reactivesearchReducer._id
   };
 };
 
@@ -55,7 +55,6 @@ const ConnectLogicHandler = class extends React.Component {
 
   componentDidUpdate() {
     const { _id } = this.props;
-    console.log(this.props, this.state);
 
     if (this.props._id !== this.state._id) {
       if (!this.state._id) {

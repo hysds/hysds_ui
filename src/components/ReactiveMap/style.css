@@ -25,8 +25,14 @@ p {
   white-space: normal;
 }
 
+.leaflet-popup {
+  border: 1px solid #0000001f;
+  border-radius: 13px;
+}
+
 .leaflet-popup-content {
   word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .leaflet-popup-content-wrapper,
@@ -36,4 +42,13 @@ p {
 
 .toggle-map-btn {
   margin-bottom: 10px;
+}
+
+.id-popup-link {
+  color: #0078a8;
+}
+
+.id-popup-link:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }

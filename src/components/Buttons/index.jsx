@@ -3,10 +3,10 @@ import "./style.css";
 
 import upArrow from "../../images/arrow-up.png";
 
-export const OnDemandButton = ({ query }) => (
+export const OnDemandButton = ({ query, total }) => (
   <a
     className="utility-button"
-    href={`/tosca/on-demand?query=${query}`}
+    href={`/tosca/on-demand?query=${query}&total=${total}`}
     target="_blank"
   >
     On Demand

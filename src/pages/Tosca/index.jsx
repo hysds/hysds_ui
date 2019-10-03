@@ -93,7 +93,7 @@ class Tosca extends React.Component {
   };
 
   render() {
-    const { data, query } = this.props;
+    const { data, dataCount, query } = this.props;
 
     // https://discuss.elastic.co/t/view-surrounding-documents-causes-failed-to-parse-date-field-exception/147234 dateoptionalmapping
     return (
@@ -174,7 +174,7 @@ class Tosca extends React.Component {
             <IdQueryHandler componentId={ID_COMPONENT} />
 
             <div>
-              <OnDemandButton query={query} />
+              <OnDemandButton query={query} total={dataCount} />
               <TriggerRulesButton />
               <ScrollTop />
             </div>
@@ -202,6 +202,7 @@ class Tosca extends React.Component {
 // redux state data
 const mapStateToProps = state => ({
   data: state.toscaReducer.data,
+  dataCount: state.toscaReducer.dataCount,
   query: state.toscaReducer.query
 });
 

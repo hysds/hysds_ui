@@ -41,6 +41,7 @@ class OnDemandForm extends React.Component {
     this.state = {
       tag: '', // form fields in the first page
       query: esQurery, // prop psased from the parent component (page)
+      totalRecords: urlParams.get('total') ? urlParams.get('total') : 0,
       actionsInfo: [],
       actions: [],
       selectedAction: urlParams.get('action') ? this.buildDefaultDropdownValue(urlParams.get('action')) : null,
@@ -320,6 +321,7 @@ class OnDemandForm extends React.Component {
         <div className='split on-demand-right'>
           <div className='right-pane-container'>
             <br />
+            {this.state.totalRecords} Records from query
             <div className='on-demand-tag-wrapper'>
               <div className='on-demand-tag-label'>Tag:</div>
               <input

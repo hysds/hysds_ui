@@ -1,9 +1,9 @@
 import { RETRIEVE_DATA, GET_QUERY } from "../constants";
 
 const initialState = {
-  // states for the tosca page (TODO: need to implement these)
   query: null,
-  data: []
+  data: [],
+  dataCount: 0
 };
 
 const toscaReducer = (state = initialState, action) => {
@@ -11,7 +11,8 @@ const toscaReducer = (state = initialState, action) => {
     case RETRIEVE_DATA:
       return {
         ...state,
-        data: action.payload.data
+        data: action.payload.data,
+        dataCount: action.payload.resultStats.numberOfResults
       };
     case GET_QUERY:
       return {

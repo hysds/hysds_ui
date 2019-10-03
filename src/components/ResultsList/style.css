@@ -12,6 +12,14 @@
 }
 /******************************/
 
+.reactivesearch-results-list a.active {
+  background-color: #2096f3 !important;
+}
+
+.reactivesearch-results-list a {
+  font-size: 13px;
+}
+
 /******************************/
 /* DROPDOWN STYLING */
 .results-display-options {
@@ -41,7 +49,8 @@
   display: inline-block;
 }
 
-.sort-column-dropdown, .sort-order-dropdown {
+.sort-column-dropdown,
+.sort-order-dropdown {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   height: 29px;
@@ -61,8 +70,10 @@
   background-color: #ffffff;
 }
 
-input[name="sort-options"], input[name=sort-options],
-select[name="sort-options"], select[name=sort-options] {
+input[name="sort-options"],
+input[name="sort-options"],
+select[name="sort-options"],
+select[name="sort-options"] {
   display: none !important;
   outline: 1px solid #ffffff !important;
 }
@@ -100,8 +111,8 @@ select[name="sort-options"], select[name=sort-options] {
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -112,19 +123,19 @@ select[name="sort-options"], select[name=sort-options] {
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
-input:checked+.slider {
-  background-color: #2196F3;
+input:checked + .slider {
+  background-color: #2196f3;
 }
 
-input:focus+.slider {
-  box-shadow: 0 0 1px #2196F3;
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
 }
 
-input:checked+.slider:before {
+input:checked + .slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);

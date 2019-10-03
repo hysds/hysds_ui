@@ -129,6 +129,7 @@ class ResultsList extends React.Component {
 
         <ReactiveList
           componentId={componentId}
+          className="reactivesearch-results-list"
           dataField="Dest"
           size={pageSize}
           pages={7}

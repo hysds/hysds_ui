@@ -12,7 +12,7 @@
   padding: 20px;
   /* overflow: scroll; */
   overflow-y: scroll;
-  background-color: #FFFF;
+  background-color: #ffff;
   border-right: solid 1px #0000004d;
 }
 
@@ -35,7 +35,7 @@
 
 .body {
   margin-left: 355px;
-  margin-top: 25px;
+  /* margin-top: 25px; */
   /* Same as the width of the sidenav */
   padding: 0px 10px;
   min-width: 750px;
@@ -53,39 +53,48 @@
   }
 }
 
-.utility-button-container {
-  text-align: center;
-}
-
-.utility-button {
-  background-color: #4288ff;
-  border: none;
-  color: white;
-  padding: 7px 16px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 12px;
-  margin-bottom: 25px;
-  margin-top: 25px;
-  margin-left: 25px;
-}
-
 .on-demand-button:hover {
   transition: background-color 0.4s ease-out;
   background-color: #0a45a4;
 }
 
-.reactivesearch-input input {
-  height: 37px;
+.reactivesearch-date {
+  margin-bottom: 25px;
 }
 
-.filter-list a {
+.reactivesearch-input > input {
+  height: 30px;
+  background: #ffff;
+  font-size: 11px !important;
+}
+
+.reactivesearch-input > h2 {
+  font-size: 0.9em !important;
+  font-weight: 500;
+}
+
+.reactivesearch-input > ul > li {
+  height: 25px;
+  min-height: 25px;
+  font-size: 12px;
+}
+
+.reactivesearch-input > ul > li > label::before {
+  width: calc(12px + 1px);
+  height: 12px;
+}
+
+.reactivesearch-input > ul > li > label::after {
+  top: 9px;
+  left: calc(1px + 0px / 2);
+}
+
+.filter-list > a {
   /* padding: 0px 8px; */
   font-size: 11px !important;
   /* min-height: 27px !important; */
 }
 
-.DayPickerInput input {
-  font-size: 0.9em !important;
+.DayPickerInput > input {
+  font-size: 11px !important;
 }

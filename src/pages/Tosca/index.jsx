@@ -8,6 +8,7 @@ import {
 } from "@appbaseio/reactivesearch";
 import { connect } from "react-redux";
 import {
+  getQuery,
   clearAllCustomComponents,
   clearCustomComponent
 } from "../../redux/actions/index";
@@ -32,14 +33,19 @@ import {
   FIELDS // only fields we care about
 } from "../../config";
 
-// custom components we built
+// custom components we built to handle elasticsearch data
 import ResultsList from "../../components/ResultsList/index.jsx";
 import ReactiveMap from "../../components/ReactiveMap/index.jsx";
 import IdQueryHandler from "../../components/IdQueryHandler/index.jsx";
 
-import ScrollTop from "../../components/ScrollTop/index.jsx";
+// custom utility components
+import {
+  OnDemandButton,
+  TriggerRulesButton,
+  ScrollTop
+} from "../../components/Buttons/index.jsx";
 
-import "./style.css";
+import "./style.css"; // main style sheet for the Toca page
 
 // query logic for elasticsearch
 const QUERY_LOGIC = {
@@ -57,43 +63,27 @@ const QUERY_LOGIC = {
   or: [TRACK_NUMBER_ID, TRACK_NUMBER_ID_OLD]
 };
 
-// Redux actions
-const mapDispatchToProps = dispatch => {
-  return {
-    clearAllCustomComponents: () => dispatch(clearAllCustomComponents()),
-    clearCustomComponent: component => dispatch(clearCustomComponent(component))
-  };
-};
-
-class ToscaComponent extends React.Component {
+class Tosca extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      esQuery: null,
-      facetData: [],
       tableView: GRQ_TABLE_VIEW_DEFAULT // boolean
     };
   }
 
   _handleTransformRequest = event => {
     const body = event.body.split("\n");
-    const query = body[1];
-    let parsedQuery = JSON.parse(query);
+    let [preference, query] = body;
+    query = JSON.parse(query);
 
-    // handles the request to ES (also where to get es query)
-    if (parsedQuery._source) {
-      parsedQuery._source.includes = FIELDS;
-      parsedQuery = JSON.stringify(parsedQuery);
-      JSON.stringify(parsedQuery);
-      this.setState({
-        query: query ? btoa(query) : "" // saving base64 encoded query in state so we can use it 'on demand'
-      });
-      event.body = `${body[0]}\n${parsedQuery}\n`;
+    if (query._source) {
+      query._source.includes = FIELDS;
+      query = JSON.stringify(query);
+      this.props.getQuery(query);
+      event.body = `${preference}\n${query}\n`;
     }
     return event;
   };
-
-  retrieveData = ({ data }) => this.setState({ facetData: data });
 
   _handleClearFilter = event => {
     // if user clears specific filter
@@ -103,7 +93,7 @@ class ToscaComponent extends React.Component {
   };
 
   render() {
-    const { facetData } = this.state;
+    const { data, query } = this.props;
 
     // https://discuss.elastic.co/t/view-surrounding-documents-causes-failed-to-parse-date-field-exception/147234 dateoptionalmapping
     return (
@@ -113,7 +103,6 @@ class ToscaComponent extends React.Component {
           url={GRQ_ES_URL}
           transformRequest={this._handleTransformRequest}
         >
-          <ScrollTop />
           <div className="sidenav">
             <div className="facet-container">
               <SingleList
@@ -121,7 +110,6 @@ class ToscaComponent extends React.Component {
                 dataField="dataset.raw"
                 title="Dataset"
                 URLParams={true}
-                style={{ fontSize: 12 }}
                 className="reactivesearch-input"
               />
               <SingleList
@@ -129,7 +117,6 @@ class ToscaComponent extends React.Component {
                 dataField="dataset_type.raw"
                 title="Dataset Type"
                 URLParams={true}
-                style={{ fontSize: 12 }}
                 className="reactivesearch-input"
               />
 
@@ -138,7 +125,6 @@ class ToscaComponent extends React.Component {
                 dataField="metadata.platform.raw"
                 title="Platforms"
                 URLParams={true}
-                style={{ fontSize: 12 }}
                 className="reactivesearch-input"
               />
 
@@ -147,7 +133,6 @@ class ToscaComponent extends React.Component {
                 dataField="version.raw"
                 title="Version"
                 URLParams={true}
-                style={{ fontSize: 12 }}
                 className="reactivesearch-input"
               />
 
@@ -155,23 +140,20 @@ class ToscaComponent extends React.Component {
                 componentId={START_TIME_ID}
                 title="Start Time"
                 dataField="starttime"
-                style={{ fontSize: 12 }}
+                className="reactivesearch-input reactivesearch-date"
               />
-              <br />
               <DateRange
                 componentId={END_TIME_ID}
                 title="End Time"
                 dataField="endtime"
-                style={{ fontSize: 12 }}
+                className="reactivesearch-input reactivesearch-date"
               />
 
-              <br />
               <MultiList
                 componentId={TRACK_NUMBER_ID}
                 dataField="metadata.track_number"
                 title="Track Number"
                 URLParams={true}
-                style={{ fontSize: 12 }}
                 className="reactivesearch-input"
               />
               <MultiList
@@ -179,7 +161,6 @@ class ToscaComponent extends React.Component {
                 dataField="metadata.trackNumber"
                 title="Track Number (Old)"
                 URLParams={true}
-                style={{ fontSize: 12 }}
                 className="reactivesearch-input"
               />
             </div>
@@ -189,39 +170,28 @@ class ToscaComponent extends React.Component {
             <SelectedFilters
               className="filter-list"
               onClear={this._handleClearFilter}
-              style={{ padding: "0px 8px", fontSize: "0.70rem" }}
             />
             <IdQueryHandler componentId={ID_COMPONENT} />
 
-            <div className="utility-button-container">
-              <a
-                className="utility-button"
-                href={`/tosca/on-demand?query=${this.state.query}`}
-                target="_blank"
-              >
-                On Demand
-              </a>
-              <a className="utility-button" href="#">
-                Trigger Rules (Work in Progress)
-              </a>
+            <div>
+              <OnDemandButton query={query} />
+              <TriggerRulesButton />
+              <ScrollTop />
             </div>
 
             <ReactiveMap
               componentId={MAP_COMPONENT_ID}
               zoom={5}
-              maxZoom={8}
+              maxZoom={20}
               minZoom={2}
-              data={facetData}
-              clickIdHandler={this.clickIdHandler}
+              data={data}
             />
-            <br />
             <ResultsList
               componentId={RESULTS_LIST_COMPONENT_ID}
               queryParams={QUERY_LOGIC}
               retrieveData={this.retrieveData}
               pageSize={10}
             />
-            <br />
           </div>
         </ReactiveBase>
       </div>
@@ -229,8 +199,22 @@ class ToscaComponent extends React.Component {
   }
 }
 
-const Tosca = connect(
-  null,
+// redux state data
+const mapStateToProps = state => ({
+  data: state.toscaReducer.data,
+  query: state.toscaReducer.query
+});
+
+// Redux actions
+const mapDispatchToProps = dispatch => {
+  return {
+    getQuery: query => dispatch(getQuery(query)),
+    clearAllCustomComponents: () => dispatch(clearAllCustomComponents()),
+    clearCustomComponent: component => dispatch(clearCustomComponent(component))
+  };
+};
+
+export default connect(
+  mapStateToProps,
   mapDispatchToProps
-)(ToscaComponent);
-export default Tosca;
+)(Tosca);

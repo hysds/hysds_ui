@@ -4,32 +4,7 @@ import { connect } from "react-redux"; // redux
 import { clickDatasetId } from "../../redux/actions/index";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 
-const IdQueryHandler = ({ componentId }) => {
-  return (
-    <ReactiveComponent
-      componentId={componentId}
-      URLParams={true}
-      render={({ setQuery, value }) => (
-        <LogicHandler setQuery={setQuery} value={value} />
-      )}
-    ></ReactiveComponent>
-  );
-};
-export default IdQueryHandler;
-
-const mapStateToProps = state => {
-  return {
-    _id: state.reactivesearchReducer._id
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    clickDatasetId: _id => dispatch(clickDatasetId(_id))
-  };
-};
-
-const ConnectLogicHandler = class extends React.Component {
+class ConnectLogicHandler extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -76,13 +51,37 @@ const ConnectLogicHandler = class extends React.Component {
       this.setState({ _id: this.props.value });
     }
   }
+  render = () => <Fragment />;
+}
 
-  render() {
-    return <Fragment />;
-  }
-};
+// Redux states and actions
+const mapStateToProps = state => ({
+  _id: state.reactivesearchReducer._id
+});
+
+const mapDispatchToProps = dispatch => ({
+  clickDatasetId: _id => dispatch(clickDatasetId(_id))
+});
 
 const LogicHandler = connect(
   mapStateToProps,
   mapDispatchToProps
 )(ConnectLogicHandler);
+
+const IdQueryHandler = ({ componentId }) => {
+  return (
+    <ReactiveComponent
+      componentId={componentId}
+      URLParams={true}
+      render={({ setQuery, value }) => (
+        <LogicHandler setQuery={setQuery} value={value} />
+      )}
+    ></ReactiveComponent>
+  );
+};
+
+IdQueryHandler.propTypes = {
+  componentId: PropTypes.string.isRequired
+};
+
+export default IdQueryHandler;

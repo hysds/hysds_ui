@@ -20,13 +20,6 @@ import {
   BBOX_OPACITY
 } from "../../config.js";
 
-// Redux actions
-const mapDispatchToProps = dispatch => {
-  return {
-    clickDatasetId: _id => dispatch(clickDatasetId(_id))
-  };
-};
-
 let ConnectMapComponent = class extends React.Component {
   constructor(props) {
     super(props);
@@ -256,7 +249,7 @@ let ConnectMapComponent = class extends React.Component {
     }
   };
 
-  clickIdHandler = _id => this.props.clickDatasetId(_id); // send to reducer
+  clickIdHandler = _id => this.props.clickDatasetId(_id); // send clicked _id to reducer
 
   _renderDatasets = () => {
     const { data } = this.props;
@@ -271,7 +264,12 @@ let ConnectMapComponent = class extends React.Component {
         });
         const popup = (
           <div>
-            <p className="id-popup-link" onClick={this.clickIdHandler.bind(this, row._id)}>{row._id}</p>
+            <p
+              className="id-popup-link"
+              onClick={this.clickIdHandler.bind(this, row._id)}
+            >
+              {row._id}
+            </p>
           </div>
         );
         let popupElement = document.createElement("div");
@@ -340,33 +338,34 @@ let ConnectMapComponent = class extends React.Component {
   }
 };
 
+// Redux actions
+const mapDispatchToProps = dispatch => ({
+  clickDatasetId: _id => dispatch(clickDatasetId(_id))
+});
+
 const MapComponent = connect(
   null,
   mapDispatchToProps
 )(ConnectMapComponent);
 
-export default class ReactiveMap extends React.Component {
-  render() {
-    const { componentId, data, zoom, maxZoom, minZoom } = this.props;
-    return (
-      <ReactiveComponent
-        componentId={componentId}
-        URLParams={true}
-        render={({ setQuery, value }) => (
-          <MapComponent
-            setQuery={setQuery}
-            value={value}
-            data={data}
-            zoom={zoom}
-            maxZoom={maxZoom}
-            minZoom={minZoom}
-            clickIdHandler={this.props.clickIdHandler}
-          />
-        )}
-      />
-    );
-  }
-}
+const ReactiveMap = ({ componentId, data, zoom, maxZoom, minZoom }) => {
+  return (
+    <ReactiveComponent
+      componentId={componentId}
+      URLParams={true}
+      render={({ setQuery, value }) => (
+        <MapComponent
+          setQuery={setQuery}
+          value={value}
+          data={data}
+          zoom={zoom}
+          maxZoom={maxZoom}
+          minZoom={minZoom}
+        />
+      )}
+    />
+  );
+};
 
 ReactiveMap.propTypes = {
   componentId: PropTypes.string.isRequired
@@ -378,3 +377,5 @@ ReactiveMap.defaultProps = {
   minZoom: 0,
   data: []
 };
+
+export default ReactiveMap;

@@ -5,11 +5,21 @@ import {
 } from "../constants.js";
 import { ID_COMPONENT } from "../../config.js";
 
+// reactivesearch puts double quotes around the filters in the URL, need to remove thwm
+const stripEndQuotes = s => {
+  var t = s.length;
+  if (s.charAt(0) == '"') s = s.substring(1, t--);
+  if (s.charAt(--t) == '"') s = s.substring(0, t);
+  return s;
+};
+
+// grabbing custom filters from URL on page load
 const urlParams = new URLSearchParams(window.location.search);
 
+// custom ReactiveComponent id's
 const initialState = {
-  // custom ReactiveComponent id's
-  _id: urlParams.get("_id") ? urlParams.get("_id").replace(/"/g, "") : null
+  // _id: urlParams.get("_id") ? stripEndQuotes(urlParams.get("_id")) : null
+  _id: null
 };
 
 const reactivesearchReducer = (state = initialState, action) => {
@@ -27,7 +37,6 @@ const reactivesearchReducer = (state = initialState, action) => {
         [ID_COMPONENT]: null
       };
 
-    // ADD ALL CUSTOM COMPONENT IDS HERE
     case CLEAR_CUSTOM_COMPONENTS:
       return {
         ...state,

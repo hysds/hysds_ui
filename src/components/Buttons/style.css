@@ -7,9 +7,10 @@
   text-decoration: none;
   display: inline-block;
   font-size: 12px;
-  margin-bottom: 25px;
-  margin-top: 25px;
-  margin-left: 25px;
+  /* margin-bottom: 25px;
+  margin-top: 25px; */
+  /* margin-left: 15px; */
+  margin-right: 20px;
 }
 
 .scroll-top-button {

@@ -1,6 +1,17 @@
-.main-container {
+/****************************************************/
+/* MAIN BODY */
+.body {
+  margin-left: 355px;
+  /* margin-top: 25px; */
+  /* Same as the width of the sidenav */
+  padding: 0px 10px;
+  min-width: 750px;
+  /* width: 80%; */
+  /* float: right; */
 }
 
+/****************************************************/
+/* SIDEBAR */
 .sidenav {
   height: 100%;
   min-width: 320px;
@@ -15,10 +26,6 @@
   border-right: solid 1px #0000004d;
 }
 
-.facet-container {
-  min-height: 101%;
-}
-
 .sidenav a {
   padding: 6px 8px 6px 16px;
   text-decoration: none;
@@ -27,38 +34,46 @@
   height: 100%;
 }
 
-.DayPickerInput input {
-  padding: 8px 5px !important;
-  height: 30px !important;
-}
-
-input:focus {
-  outline: none;
-}
-
-.body {
-  margin-left: 355px;
-  /* margin-top: 25px; */
-  /* Same as the width of the sidenav */
-  padding: 0px 10px;
-  min-width: 750px;
-  /* width: 80%; */
-  /* float: right; */
-}
-
 @media screen and (max-height: 450px) {
   .sidenav {
     padding-top: 15px;
   }
+}
 
-  .sidenav a {
-    /* font-size: 18px; */
-  }
+/****************************************************/
+/* TOP BAR: query string, on demand and trigger rules */
+input:focus {
+  outline: none;
+}
+
+.top-bar-wrapper {
+  margin: 0 auto;
+  display: flex;
+  width: 95%;
+  align-items: center;
+  min-width: 500px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.button-wrapper {
+  margin-left: auto;
 }
 
 .on-demand-button:hover {
   transition: background-color 0.4s ease-out;
   background-color: #0a45a4;
+}
+
+/****************************************************/
+/* STYLES ON FACETS AND FILTERS */
+.DayPickerInput input {
+  padding: 8px 5px !important;
+  height: 30px !important;
+}
+
+.DayPickerInput > input {
+  font-size: 11px !important;
 }
 
 .reactivesearch-date {
@@ -92,12 +107,10 @@ input:focus {
   left: calc(1px + 0px / 2);
 }
 
-.filter-list > a {
-  /* padding: 0px 8px; */
-  font-size: 11px !important;
-  /* min-height: 27px !important; */
+.filter-list {
+  margin-bottom: 20px;
 }
 
-.DayPickerInput > input {
+.filter-list > a {
   font-size: 11px !important;
 }

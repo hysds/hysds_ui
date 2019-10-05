@@ -1,6 +1,7 @@
 .query-input-form {
-  min-width: 350px;
-  width: 100%;
+  min-width: 250px;
+  flex: 1;
+  margin-right: 20px;
 }
 
 .query-input-box {
@@ -11,5 +12,5 @@
   box-shadow: none;
   border: none;
   border: 1px solid #cccccc;
-  width: 75%;
+  width: 100%;
 }

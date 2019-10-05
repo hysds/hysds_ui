@@ -92,7 +92,6 @@ class SearchQueryHandlerConnect extends React.Component {
     return (
       <form className="query-input-form" onSubmit={this._handleSubmit}>
         <label>
-          Query: &nbsp;
           <input
             className="query-input-box"
             type="text"

@@ -90,9 +90,7 @@ let ConnectMapComponent = class extends React.Component {
           query,
           value: this.props.value
         });
-      } else {
-        this.sendEmptyQuery(); // handles onClear (facets)
-      }
+      } else this.sendEmptyQuery(); // handles onClear (facets)
 
       this.setState({
         value: this.props.value, // prevent maximum recursion error
@@ -204,18 +202,6 @@ let ConnectMapComponent = class extends React.Component {
       image: `${row.urls[0]}/${row._id}.interferogram.browse_coarse.png`
     }));
     return displayData;
-  };
-
-  _validateRectangle = coord => {
-    if (
-      coord.length === 5 &&
-      coord[0][0] === coord[3][0] &&
-      coord[1][0] === coord[2][0] &&
-      coord[0][1] === coord[1][1] &&
-      coord[2][1] === coord[3][1]
-    )
-      return true;
-    return false;
   };
 
   _validateRectangle = coord => {

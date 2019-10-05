@@ -34,7 +34,7 @@ const reactivesearchReducer = (state = initialState, action) => {
     case GET_DATASET_ID:
       return {
         ...state,
-        [GET_DATASET_ID]: action.payload
+        [ID_COMPONENT]: action.payload
       };
 
     case UPDATE_SEARCH_QUERY:

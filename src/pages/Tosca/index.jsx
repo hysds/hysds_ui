@@ -103,7 +103,6 @@ class Tosca extends React.Component {
           url={GRQ_ES_URL}
           transformRequest={this._handleTransformRequest}
         >
-          <IdQueryHandler componentId={ID_COMPONENT} />
           <div className="sidenav">
             <SingleList
               componentId={DATASET_ID}
@@ -168,6 +167,7 @@ class Tosca extends React.Component {
           <div className="body">
             <div className="top-bar-wrapper">
               <SearchQuery componentId={QUERY_SEARCH_COMPONENT_ID} />
+              <IdQueryHandler componentId={ID_COMPONENT} />
               <div className="button-wraper">
                 <OnDemandButton query={query} total={dataCount} />
                 <TriggerRulesButton />

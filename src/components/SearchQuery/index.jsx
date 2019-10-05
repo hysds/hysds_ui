@@ -117,6 +117,7 @@ class SearchQueryHandlerConnect extends React.Component {
             type="text"
             value={queryString || ""}
             onChange={this._handleChange}
+            placeholder="Input your query string"
           />
         </label>
       </form>

@@ -1,5 +1,3 @@
-// configuration file
-
 // local or AWS managed ElasticSearch instance
 exports.GRQ_ES_URL = "http://localhost:9200";
 // exports.GRQ_ES_URL = 'http://100.64.134.55:9200';
@@ -28,7 +26,7 @@ exports.ID_COMPONENT = "_id";
 
 // built in Reactivesearch component id
 exports.MAP_COMPONENT_ID = "polygon";
-exports.QUERY_SEARCH_COMPONENT_ID = "query_string";
+exports.QUERY_SEARCH_COMPONENT_ID = "queryString";
 exports.DATASET_TYPE_SEARCH_ID = "dataset_type";
 exports.SATELLITE_TYPE_ID = "satellite";
 exports.RESULTS_LIST_COMPONENT_ID = "results";
@@ -37,6 +35,7 @@ exports.TRACK_NUMBER_ID = "track_number";
 exports.TRACK_NUMBER_ID_OLD = "trackNumber";
 exports.START_TIME_ID = "starttime";
 exports.END_TIME_ID = "endtime";
+
 exports.USER_TAGS = "user_tags";
 exports.DATASET_VERSION = "version";
 // ************************************************************************* //
@@ -56,7 +55,6 @@ exports.FIELDS = [
   "metadata.sensoroperationalmode",
   "metadata.polarisationmode"
 ];
-
 
 // API endpoints to get the available actions for on-demand
 exports.GRQ_API_BASE = "http://localhost:5000"; // base url for GRQ API
@@ -121,7 +119,7 @@ exports.GRQ_DISPLAY_COLUMNS = [
     Header: "start_time",
     accessor: "starttime"
   },
-  { Header: 'end_time', accessor: 'endtime', },
+  { Header: "end_time", accessor: "endtime" },
   // { Header: 'version', accessor: 'version', width: 100 },
   {
     Header: "status",
@@ -144,7 +142,8 @@ exports.GRQ_DISPLAY_COLUMNS = [
   {
     id: "trackNumber",
     Header: "track",
-    accessor: d => (d.metadata) ? (d.metadata.trackNumber || d.metadata.track_number) : null,
+    accessor: d =>
+      d.metadata ? d.metadata.trackNumber || d.metadata.track_number : null,
     width: 80
   },
   {

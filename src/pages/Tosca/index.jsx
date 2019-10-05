@@ -20,7 +20,7 @@ import {
   // all fields read by Reactivesearch
   ID_COMPONENT,
   MAP_COMPONENT_ID,
-  SEARCHBAR_COMPONENT_ID,
+  QUERY_SEARCH_COMPONENT_ID,
   DATASET_TYPE_SEARCH_ID,
   SATELLITE_TYPE_ID,
   RESULTS_LIST_COMPONENT_ID,
@@ -37,6 +37,7 @@ import {
 import ResultsList from "../../components/ResultsList/index.jsx";
 import ReactiveMap from "../../components/ReactiveMap/index.jsx";
 import IdQueryHandler from "../../components/IdQueryHandler/index.jsx";
+import SearchQuery from "../../components/SearchQuery/index.jsx";
 
 // custom utility components
 import {
@@ -51,7 +52,7 @@ import "./style.css"; // main style sheet for the Toca page
 const QUERY_LOGIC = {
   and: [
     ID_COMPONENT,
-    SEARCHBAR_COMPONENT_ID,
+    QUERY_SEARCH_COMPONENT_ID,
     DATASET_TYPE_SEARCH_ID,
     SATELLITE_TYPE_ID,
     MAP_COMPONENT_ID,
@@ -95,7 +96,6 @@ class Tosca extends React.Component {
   render() {
     const { data, dataCount, query } = this.props;
 
-    // https://discuss.elastic.co/t/view-surrounding-documents-causes-failed-to-parse-date-field-exception/147234 dateoptionalmapping
     return (
       <div className="main-container">
         <ReactiveBase
@@ -172,13 +172,14 @@ class Tosca extends React.Component {
               onClear={this._handleClearFilter}
             />
             <IdQueryHandler componentId={ID_COMPONENT} />
-
+            <br />
             <div>
+              <SearchQuery componentId={QUERY_SEARCH_COMPONENT_ID} />
               <OnDemandButton query={query} total={dataCount} />
               <TriggerRulesButton />
-              <ScrollTop />
             </div>
-
+            <ScrollTop />
+            <br />
             <ReactiveMap
               componentId={MAP_COMPONENT_ID}
               zoom={5}

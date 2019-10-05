@@ -1,0 +1,15 @@
+.query-input-form {
+  min-width: 350px;
+  width: 100%;
+}
+
+.query-input-box {
+  height: 30px;
+  padding: 10px;
+  font-size: 12px;
+  border-radius: 5px;
+  box-shadow: none;
+  border: none;
+  border: 1px solid #cccccc;
+  width: 75%;
+}

@@ -1,9 +1,10 @@
 import {
   GET_DATASET_ID,
   CLEAR_ALL_CUSTOM_COMPONENTS,
-  CLEAR_CUSTOM_COMPONENTS
+  CLEAR_CUSTOM_COMPONENTS,
+  UPDATE_SEARCH_QUERY
 } from "../constants.js";
-import { ID_COMPONENT } from "../../config.js";
+import { ID_COMPONENT, QUERY_SEARCH_COMPONENT_ID } from "../../config.js";
 
 // reactivesearch puts double quotes around the filters in the URL, need to remove thwm
 const stripEndQuotes = s => {
@@ -15,11 +16,17 @@ const stripEndQuotes = s => {
 
 // grabbing custom filters from URL on page load
 const urlParams = new URLSearchParams(window.location.search);
+const _id = urlParams.get("_id") ? stripEndQuotes(urlParams.get("_id")) : null;
+const queryString = urlParams.get(QUERY_SEARCH_COMPONENT_ID)
+  ? stripEndQuotes(urlParams.get(QUERY_SEARCH_COMPONENT_ID)).replace(/\\/g, "")
+  : null;
 
 // custom ReactiveComponent id's
 const initialState = {
-  // _id: urlParams.get("_id") ? stripEndQuotes(urlParams.get("_id")) : null
-  _id: null
+  // _id: null,
+  _id: _id,
+  queryString: queryString,
+  userTyping: false // maybe move this to global reducer?
 };
 
 const reactivesearchReducer = (state = initialState, action) => {
@@ -27,20 +34,32 @@ const reactivesearchReducer = (state = initialState, action) => {
     case GET_DATASET_ID:
       return {
         ...state,
-        _id: action.payload
+        [GET_DATASET_ID]: action.payload
+      };
+
+    case UPDATE_SEARCH_QUERY:
+      const queryString = action.payload[QUERY_SEARCH_COMPONENT_ID];
+      const userTyping = action.payload.userTyping;
+      return {
+        ...state,
+        [QUERY_SEARCH_COMPONENT_ID]: queryString,
+        userTyping: userTyping
       };
 
     // CUSTOM COMPONENT HAS A CLEAR EVENT (NEED TO FIGURE OUT TO HANDLE ALL AT ONCE)
     case CLEAR_ALL_CUSTOM_COMPONENTS:
       return {
         ...state,
-        [ID_COMPONENT]: null
+        [ID_COMPONENT]: null,
+        [QUERY_SEARCH_COMPONENT_ID]: null,
+        userTyping: false
       };
 
     case CLEAR_CUSTOM_COMPONENTS:
       return {
         ...state,
-        [action.payload]: null
+        [action.payload]: null,
+        userTyping: false
       };
 
     default:

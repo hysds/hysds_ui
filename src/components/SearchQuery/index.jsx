@@ -17,12 +17,16 @@ const SearchQuery = ({ componentId }) => (
 );
 
 class SearchQueryHandlerConnect extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   componentDidMount() {
     const { queryString } = this.props;
 
-    if (!queryString) {
-      this._sendEmptyQuery();
-    } else {
+    if (!queryString) this._sendEmptyQuery();
+    else {
       const query = SearchQueryHandlerConnect._generateQuery(queryString);
       this.props.setQuery({ query, value: queryString });
     }
@@ -31,9 +35,9 @@ class SearchQueryHandlerConnect extends React.Component {
   static getDerivedStateFromProps(props, state) {
     const queryString = props.value;
 
-    if (!queryString) {
-      props.setQuery({ query: null, value: null });
-    } else {
+    if (!props.value && !props.queryString) return state; // so we dont reset page to 0
+    else if (!queryString) props.setQuery({ query: null, value: null });
+    else {
       if (queryString && !props.userTyping) {
         // page forward and backwards
         const query = SearchQueryHandlerConnect._generateQuery(props.value);
@@ -65,9 +69,8 @@ class SearchQueryHandlerConnect extends React.Component {
     event.preventDefault();
     const { queryString } = this.props;
 
-    if (!queryString) {
-      this._sendEmptyQuery();
-    } else {
+    if (!queryString) this._sendEmptyQuery();
+    else {
       const query = SearchQueryHandlerConnect._generateQuery(queryString);
       this.props.setQuery({ query, value: queryString }); // sending query to elasticsearch
       const dispatchData = {

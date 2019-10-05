@@ -19,7 +19,9 @@ const SearchQuery = ({ componentId }) => (
 class SearchQueryHandlerConnect extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      queryString: props.queryString || props.value
+    };
   }
 
   componentDidMount() {
@@ -27,32 +29,47 @@ class SearchQueryHandlerConnect extends React.Component {
 
     if (!queryString) this._sendEmptyQuery();
     else {
-      const query = SearchQueryHandlerConnect._generateQuery(queryString);
+      const query = this._generateQuery(queryString);
       this.props.setQuery({ query, value: queryString });
     }
   }
 
-  static getDerivedStateFromProps(props, state) {
-    const queryString = props.value;
+  // TODO: need to clean this logic up
+  componentDidUpdate() {
+    const { queryString } = this.props;
 
-    if (!props.value && !props.queryString) return state; // so we dont reset page to 0
-    else if (!queryString) props.setQuery({ query: null, value: null });
-    else {
-      if (queryString && !props.userTyping) {
-        // page forward and backwards
-        const query = SearchQueryHandlerConnect._generateQuery(props.value);
-        props.setQuery({ query, value: props.value }); // sending query to elasticsearch
+    if (!this.props.userTyping) {
+      if (this.props.queryString !== this.state.queryString) {
+        if (!this.state.queryString) {
+          const query = this._generateQuery(this.props.queryString);
+          this.props.setQuery({ query, value: queryString });
+          this.setState({ queryString });
+        } else {
+          this._sendEmptyQuery(); // clearing _id facet
+          this.setState({ queryString: null });
+        }
+      } else if (this.props.queryString !== this.props.value) {
+        // handle page forwards and backwards
+        if (this.props.value) {
+          // page moves to non-empty query_string
+          const query = this._generateQuery(this.props.value);
+          this.props.setQuery({ query, value: this.props.value });
+        } else {
+          // page moves to empty query_string
+          this._sendEmptyQuery();
+          this.setState({ queryString: null });
+        }
         const dispatchData = {
-          queryString: props.value,
+          queryString: this.props.value,
           userTyping: false
         };
-        props.updateSearchQuery(dispatchData);
+        this.props.updateSearchQuery(dispatchData);
+        this.setState({ queryString: this.props.value });
       }
     }
-    return state;
   }
 
-  static _generateQuery = searchQuery => ({
+  _generateQuery = searchQuery => ({
     query: {
       query_string: {
         query: searchQuery,
@@ -71,7 +88,7 @@ class SearchQueryHandlerConnect extends React.Component {
 
     if (!queryString) this._sendEmptyQuery();
     else {
-      const query = SearchQueryHandlerConnect._generateQuery(queryString);
+      const query = this._generateQuery(queryString);
       this.props.setQuery({ query, value: queryString }); // sending query to elasticsearch
       const dispatchData = {
         queryString,

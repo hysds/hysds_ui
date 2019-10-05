@@ -28,7 +28,7 @@ exports.ID_COMPONENT = "_id";
 
 // built in Reactivesearch component id
 exports.MAP_COMPONENT_ID = "polygon";
-exports.SEARCHBAR_COMPONENT_ID = "query_string";
+exports.QUERY_SEARCH_COMPONENT_ID = "query_string";
 exports.DATASET_TYPE_SEARCH_ID = "dataset_type";
 exports.SATELLITE_TYPE_ID = "satellite";
 exports.RESULTS_LIST_COMPONENT_ID = "results";

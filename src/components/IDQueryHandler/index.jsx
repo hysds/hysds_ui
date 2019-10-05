@@ -10,10 +10,13 @@ class ConnectLogicHandler extends React.Component {
     this.state = {
       _id: props._id
     };
+  }
 
-    if (props._id) {
-      const query = this._generateQuery(this.props._id);
-      props.setQuery({ query, value: props._id });
+  componentDidMount() {
+    const { _id } = this.props;
+    if (_id) {
+      const query = this._generateQuery(_id);
+      this.props.setQuery({ query, value: _id });
     }
   }
 
@@ -28,6 +31,10 @@ class ConnectLogicHandler extends React.Component {
     this.setState({ _id: null });
   };
 
+  /**
+   * TODO: clean up this logic
+   * const _id = this.props._id || this.props.value
+   */
   componentDidUpdate() {
     const { _id } = this.props;
 

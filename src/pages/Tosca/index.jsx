@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import {
   ReactiveBase,
   SingleList,
@@ -20,7 +20,7 @@ import {
   // all fields read by Reactivesearch
   ID_COMPONENT,
   MAP_COMPONENT_ID,
-  SEARCHBAR_COMPONENT_ID,
+  QUERY_SEARCH_COMPONENT_ID,
   DATASET_TYPE_SEARCH_ID,
   SATELLITE_TYPE_ID,
   RESULTS_LIST_COMPONENT_ID,
@@ -37,6 +37,7 @@ import {
 import ResultsList from "../../components/ResultsList/index.jsx";
 import ReactiveMap from "../../components/ReactiveMap/index.jsx";
 import IdQueryHandler from "../../components/IdQueryHandler/index.jsx";
+import SearchQuery from "../../components/SearchQuery/index.jsx";
 
 // custom utility components
 import {
@@ -51,7 +52,7 @@ import "./style.css"; // main style sheet for the Toca page
 const QUERY_LOGIC = {
   and: [
     ID_COMPONENT,
-    SEARCHBAR_COMPONENT_ID,
+    QUERY_SEARCH_COMPONENT_ID,
     DATASET_TYPE_SEARCH_ID,
     SATELLITE_TYPE_ID,
     MAP_COMPONENT_ID,
@@ -95,90 +96,90 @@ class Tosca extends React.Component {
   render() {
     const { data, dataCount, query } = this.props;
 
-    // https://discuss.elastic.co/t/view-surrounding-documents-causes-failed-to-parse-date-field-exception/147234 dateoptionalmapping
     return (
-      <div className="main-container">
+      <Fragment>
         <ReactiveBase
           app={GRQ_ES_INDICES}
           url={GRQ_ES_URL}
           transformRequest={this._handleTransformRequest}
         >
+          <IdQueryHandler componentId={ID_COMPONENT} />
           <div className="sidenav">
-            <div className="facet-container">
-              <SingleList
-                componentId={DATASET_ID}
-                dataField="dataset.raw"
-                title="Dataset"
-                URLParams={true}
-                className="reactivesearch-input"
-              />
-              <SingleList
-                componentId={DATASET_TYPE_SEARCH_ID}
-                dataField="dataset_type.raw"
-                title="Dataset Type"
-                URLParams={true}
-                className="reactivesearch-input"
-              />
+            <SingleList
+              componentId={DATASET_ID}
+              dataField="dataset.raw"
+              title="Dataset"
+              URLParams={true}
+              className="reactivesearch-input"
+            />
+            <SingleList
+              componentId={DATASET_TYPE_SEARCH_ID}
+              dataField="dataset_type.raw"
+              title="Dataset Type"
+              URLParams={true}
+              className="reactivesearch-input"
+            />
 
-              <SingleList
-                componentId={SATELLITE_TYPE_ID}
-                dataField="metadata.platform.raw"
-                title="Platforms"
-                URLParams={true}
-                className="reactivesearch-input"
-              />
+            <SingleList
+              componentId={SATELLITE_TYPE_ID}
+              dataField="metadata.platform.raw"
+              title="Platforms"
+              URLParams={true}
+              className="reactivesearch-input"
+            />
 
-              <SingleList
-                componentId={DATASET_VERSION}
-                dataField="version.raw"
-                title="Version"
-                URLParams={true}
-                className="reactivesearch-input"
-              />
+            <SingleList
+              componentId={DATASET_VERSION}
+              dataField="version.raw"
+              title="Version"
+              URLParams={true}
+              className="reactivesearch-input"
+            />
 
-              <DateRange
-                componentId={START_TIME_ID}
-                title="Start Time"
-                dataField="starttime"
-                className="reactivesearch-input reactivesearch-date"
-              />
-              <DateRange
-                componentId={END_TIME_ID}
-                title="End Time"
-                dataField="endtime"
-                className="reactivesearch-input reactivesearch-date"
-              />
+            <DateRange
+              componentId={START_TIME_ID}
+              title="Start Time"
+              dataField="starttime"
+              className="reactivesearch-input reactivesearch-date"
+            />
+            <DateRange
+              componentId={END_TIME_ID}
+              title="End Time"
+              dataField="endtime"
+              className="reactivesearch-input reactivesearch-date"
+            />
 
-              <MultiList
-                componentId={TRACK_NUMBER_ID}
-                dataField="metadata.track_number"
-                title="Track Number"
-                URLParams={true}
-                className="reactivesearch-input"
-              />
-              <MultiList
-                componentId={TRACK_NUMBER_ID_OLD}
-                dataField="metadata.trackNumber"
-                title="Track Number (Old)"
-                URLParams={true}
-                className="reactivesearch-input"
-              />
-            </div>
+            <MultiList
+              componentId={TRACK_NUMBER_ID}
+              dataField="metadata.track_number"
+              title="Track Number"
+              URLParams={true}
+              className="reactivesearch-input"
+            />
+            <MultiList
+              componentId={TRACK_NUMBER_ID_OLD}
+              dataField="metadata.trackNumber"
+              title="Track Number (Old)"
+              URLParams={true}
+              className="reactivesearch-input"
+            />
           </div>
 
           <div className="body">
+            <div className="top-bar-wrapper">
+              <SearchQuery componentId={QUERY_SEARCH_COMPONENT_ID} />
+              <div className="button-wraper">
+                <OnDemandButton query={query} total={dataCount} />
+                <TriggerRulesButton />
+              </div>
+            </div>
             <SelectedFilters
               className="filter-list"
               onClear={this._handleClearFilter}
             />
-            <IdQueryHandler componentId={ID_COMPONENT} />
 
-            <div>
-              <OnDemandButton query={query} total={dataCount} />
-              <TriggerRulesButton />
-              <ScrollTop />
-            </div>
-
+            <ScrollTop />
+            <br />
             <ReactiveMap
               componentId={MAP_COMPONENT_ID}
               zoom={5}
@@ -194,7 +195,7 @@ class Tosca extends React.Component {
             />
           </div>
         </ReactiveBase>
-      </div>
+      </Fragment>
     );
   }
 }

@@ -3,10 +3,11 @@ import {
   CLEAR_ALL_CUSTOM_COMPONENTS,
   CLEAR_CUSTOM_COMPONENTS,
   RETRIEVE_DATA,
-  GET_QUERY
+  GET_QUERY,
+  UPDATE_SEARCH_QUERY
 } from "../constants.js";
 
-// example action
+// example action (in case we need to make API requets)
 export const getData = n => async dispatch => {
   let req = await fetch("https://jsonplaceholder.typicode.com/posts");
   const json = req.json();
@@ -43,3 +44,8 @@ export const getQuery = payload => {
     payload
   };
 };
+
+export const updateSearchQuery = payload => ({
+  type: UPDATE_SEARCH_QUERY,
+  payload
+});

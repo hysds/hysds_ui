@@ -139,12 +139,14 @@ class Tosca extends React.Component {
               componentId={START_TIME_ID}
               title="Start Time"
               dataField="starttime"
+              URLParams={true}
               className="reactivesearch-input reactivesearch-date"
             />
             <DateRange
               componentId={END_TIME_ID}
               title="End Time"
               dataField="endtime"
+              URLParams={true}
               className="reactivesearch-input reactivesearch-date"
             />
 

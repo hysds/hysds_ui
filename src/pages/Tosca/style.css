@@ -67,6 +67,10 @@ input:focus {
 
 /****************************************************/
 /* STYLES ON FACETS AND FILTERS */
+.DayPickerInput-OverlayWrapper {
+  font-size: 11px;
+}
+
 .DayPickerInput input {
   padding: 8px 5px !important;
   height: 30px !important;

@@ -14,7 +14,6 @@ import ReactTooltip from "react-tooltip"; // UI stuff
 import {
   LEAFLET_TILELAYER,
   LEAFLET_ATTRIBUTION,
-  DEFAULT_MAP_DISPLAY,
   BBOX_COLOR,
   BBOX_WEIGHT,
   BBOX_OPACITY
@@ -24,7 +23,7 @@ let ConnectMapComponent = class extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayMap: DEFAULT_MAP_DISPLAY,
+      displayMap: true,
       value: null,
       polygonTextbox: props.value
     };

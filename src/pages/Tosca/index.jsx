@@ -30,7 +30,8 @@ import {
   START_TIME_ID,
   END_TIME_ID,
   DATASET_VERSION,
-  FIELDS // only fields we care about
+  FIELDS, // only fields we care about
+  DISPLAY_MAP // display map or do not render
 } from "../../config";
 
 // custom components we built to handle elasticsearch data
@@ -96,108 +97,110 @@ class Tosca extends React.Component {
   render() {
     const { data, dataCount, query } = this.props;
 
+    const reactiveMap = DISPLAY_MAP ? (
+      <ReactiveMap
+        componentId={MAP_COMPONENT_ID}
+        zoom={5}
+        maxZoom={20}
+        minZoom={2}
+        data={data}
+      />
+    ) : null;
+
     return (
-      <Fragment>
-        <ReactiveBase
-          app={GRQ_ES_INDICES}
-          url={GRQ_ES_URL}
-          transformRequest={this._handleTransformRequest}
-        >
-          <div className="sidenav">
-            <SingleList
-              componentId={DATASET_ID}
-              dataField="dataset.raw"
-              title="Dataset"
-              URLParams={true}
-              className="reactivesearch-input"
-            />
-            <SingleList
-              componentId={DATASET_TYPE_SEARCH_ID}
-              dataField="dataset_type.raw"
-              title="Dataset Type"
-              URLParams={true}
-              className="reactivesearch-input"
-            />
+      <ReactiveBase
+        app={GRQ_ES_INDICES}
+        url={GRQ_ES_URL}
+        transformRequest={this._handleTransformRequest}
+      >
+        <div className="sidenav">
+          <SingleList
+            componentId={DATASET_ID}
+            dataField="dataset.raw"
+            title="Dataset"
+            URLParams={true}
+            className="reactivesearch-input"
+          />
+          <SingleList
+            componentId={DATASET_TYPE_SEARCH_ID}
+            dataField="dataset_type.raw"
+            title="Dataset Type"
+            URLParams={true}
+            className="reactivesearch-input"
+          />
 
-            <SingleList
-              componentId={SATELLITE_TYPE_ID}
-              dataField="metadata.platform.raw"
-              title="Platforms"
-              URLParams={true}
-              className="reactivesearch-input"
-            />
+          <SingleList
+            componentId={SATELLITE_TYPE_ID}
+            dataField="metadata.platform.raw"
+            title="Platforms"
+            URLParams={true}
+            className="reactivesearch-input"
+          />
 
-            <SingleList
-              componentId={DATASET_VERSION}
-              dataField="version.raw"
-              title="Version"
-              URLParams={true}
-              className="reactivesearch-input"
-            />
+          <SingleList
+            componentId={DATASET_VERSION}
+            dataField="version.raw"
+            title="Version"
+            URLParams={true}
+            className="reactivesearch-input"
+          />
 
-            <DateRange
-              componentId={START_TIME_ID}
-              title="Start Time"
-              dataField="starttime"
-              URLParams={true}
-              className="reactivesearch-input reactivesearch-date"
-            />
-            <DateRange
-              componentId={END_TIME_ID}
-              title="End Time"
-              dataField="endtime"
-              URLParams={true}
-              className="reactivesearch-input reactivesearch-date"
-            />
+          <DateRange
+            componentId={START_TIME_ID}
+            title="Start Date"
+            dataField="starttime"
+            URLParams={true}
+            className="reactivesearch-input reactivesearch-date"
+          />
+          <DateRange
+            componentId={END_TIME_ID}
+            title="End Date"
+            dataField="endtime"
+            URLParams={true}
+            className="reactivesearch-input reactivesearch-date"
+          />
 
-            <MultiList
-              componentId={TRACK_NUMBER_ID}
-              dataField="metadata.track_number"
-              title="Track Number"
-              URLParams={true}
-              className="reactivesearch-input"
-            />
-            <MultiList
-              componentId={TRACK_NUMBER_ID_OLD}
-              dataField="metadata.trackNumber"
-              title="Track Number (Old)"
-              URLParams={true}
-              className="reactivesearch-input"
-            />
-          </div>
+          <MultiList
+            componentId={TRACK_NUMBER_ID}
+            dataField="metadata.track_number"
+            title="Track Number"
+            URLParams={true}
+            className="reactivesearch-input"
+          />
+          <MultiList
+            componentId={TRACK_NUMBER_ID_OLD}
+            dataField="metadata.trackNumber"
+            title="Track Number (Old)"
+            URLParams={true}
+            className="reactivesearch-input"
+          />
+        </div>
 
-          <div className="body">
-            <div className="top-bar-wrapper">
-              <SearchQuery componentId={QUERY_SEARCH_COMPONENT_ID} />
-              <IdQueryHandler componentId={ID_COMPONENT} />
-              <div className="button-wraper">
-                <OnDemandButton query={query} total={dataCount} />
-                <TriggerRulesButton />
-              </div>
+        <div className="body">
+          <div className="top-bar-wrapper">
+            <SearchQuery componentId={QUERY_SEARCH_COMPONENT_ID} />
+            <IdQueryHandler componentId={ID_COMPONENT} />
+            <div className="button-wraper">
+              <OnDemandButton query={query} total={dataCount} />
+              <TriggerRulesButton />
             </div>
-            <SelectedFilters
-              className="filter-list"
-              onClear={this._handleClearFilter}
-            />
-
-            <ScrollTop />
-            <br />
-            <ReactiveMap
-              componentId={MAP_COMPONENT_ID}
-              zoom={5}
-              maxZoom={20}
-              minZoom={2}
-              data={data}
-            />
-            <ResultsList
-              componentId={RESULTS_LIST_COMPONENT_ID}
-              queryParams={QUERY_LOGIC}
-              retrieveData={this.retrieveData}
-              pageSize={10}
-            />
           </div>
-        </ReactiveBase>
-      </Fragment>
+          <SelectedFilters
+            className="filter-list"
+            onClear={this._handleClearFilter}
+          />
+
+          <ScrollTop />
+          <br />
+          {reactiveMap}
+          <ResultsList
+            componentId={RESULTS_LIST_COMPONENT_ID}
+            queryParams={QUERY_LOGIC}
+            retrieveData={this.retrieveData}
+            pageSize={10}
+          />
+        </div>
+      </ReactiveBase>
     );
   }
 }

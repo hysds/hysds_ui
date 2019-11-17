@@ -42,7 +42,7 @@ class ToggleListView extends React.Component {
         </div>
         <div className='text-description text-overflow full_row'>
           <ul className='highlight_tags'>
-            <a style={{ color: 'inherit' }} href={`/tosca/metadata/${res._index}/${res._id}`} target='_blank'>{res._id}</a>
+            <a style={{ color: 'inherit' }} href={`/tosca/metadata?index=${res._index}&id=${res._id}`} target='_blank'>{res._id}</a>
           </ul>
           <ul>{davLink}</ul>
         </div>

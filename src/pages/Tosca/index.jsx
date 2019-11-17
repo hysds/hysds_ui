@@ -101,7 +101,7 @@ class Tosca extends React.Component {
       <ReactiveMap
         componentId={MAP_COMPONENT_ID}
         zoom={5}
-        maxZoom={20}
+        maxZoom={10}
         minZoom={2}
         data={data}
       />
@@ -116,14 +116,14 @@ class Tosca extends React.Component {
         <div className="sidenav">
           <SingleList
             componentId={DATASET_ID}
-            dataField="dataset.raw"
+            dataField="dataset.keyword"
             title="Dataset"
             URLParams={true}
             className="reactivesearch-input"
           />
           <SingleList
             componentId={DATASET_TYPE_SEARCH_ID}
-            dataField="dataset_type.raw"
+            dataField="dataset_type.keyword"
             title="Dataset Type"
             URLParams={true}
             className="reactivesearch-input"
@@ -131,7 +131,7 @@ class Tosca extends React.Component {
 
           <SingleList
             componentId={SATELLITE_TYPE_ID}
-            dataField="metadata.platform.raw"
+            dataField="metadata.platform.keyword"
             title="Platforms"
             URLParams={true}
             className="reactivesearch-input"
@@ -139,7 +139,7 @@ class Tosca extends React.Component {
 
           <SingleList
             componentId={DATASET_VERSION}
-            dataField="version.raw"
+            dataField="version.keyword"
             title="Version"
             URLParams={true}
             className="reactivesearch-input"
@@ -149,6 +149,7 @@ class Tosca extends React.Component {
             componentId={START_TIME_ID}
             title="Start Date"
             dataField="starttime"
+            // queryFormat="basic_date_time"
             URLParams={true}
             className="reactivesearch-input reactivesearch-date"
           />
@@ -156,6 +157,7 @@ class Tosca extends React.Component {
             componentId={END_TIME_ID}
             title="End Date"
             dataField="endtime"
+            // queryFormat="basic_date_time"
             URLParams={true}
             className="reactivesearch-input reactivesearch-date"
           />
@@ -221,7 +223,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Tosca);
+export default connect(mapStateToProps, mapDispatchToProps)(Tosca);

@@ -196,9 +196,16 @@ let ConnectMapComponent = class extends React.Component {
       _id: row._id,
       _index: row._index,
       key: `${row._index}/${row._id}`,
-      coordinates: this._switchCoordinates(row.location.coordinates[0]),
-      center: [row.center.coordinates[1], row.center.coordinates[0]],
-      image: `${row.urls[0]}/${row._id}.interferogram.browse_coarse.png`
+      coordinates:
+        !!row.location && !!row.location.coordinates
+          ? this._switchCoordinates(row.location.coordinates[0])
+          : [],
+      center: row.center
+        ? [row.center.coordinates[1], row.center.coordinates[0]]
+        : [],
+      image: row.urls
+        ? `${row.urls[0]}/${row._id}.interferogram.browse_coarse.png`
+        : null
     }));
     return displayData;
   };
@@ -277,7 +284,9 @@ let ConnectMapComponent = class extends React.Component {
     const { displayMap, polygonTextbox } = this.state;
 
     // find first occurance of valid center coordinate
-    let validCenter = data.find(row => row.center.coordinates);
+    let validCenter = data.find(row =>
+      row.center ? row.center.coordinates : null
+    );
     if (validCenter) {
       const center = validCenter.center.coordinates;
       this.map.panTo(new L.LatLng(center[1], center[0]));
@@ -328,10 +337,7 @@ const mapDispatchToProps = dispatch => ({
   clickDatasetId: _id => dispatch(clickDatasetId(_id))
 });
 
-const MapComponent = connect(
-  null,
-  mapDispatchToProps
-)(ConnectMapComponent);
+const MapComponent = connect(null, mapDispatchToProps)(ConnectMapComponent);
 
 const ReactiveMap = ({ componentId, data, zoom, maxZoom, minZoom }) => {
   return (

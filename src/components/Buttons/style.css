@@ -1,15 +1,13 @@
 .utility-button {
   background-color: #4288ff;
   border: none;
+  border-radius: 5px;
   color: white;
   padding: 7px 16px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 12px;
-  /* margin-bottom: 25px;
-  margin-top: 25px; */
-  /* margin-left: 15px; */
   margin-right: 20px;
 }
 

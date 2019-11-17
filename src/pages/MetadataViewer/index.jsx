@@ -1,7 +1,6 @@
-import React from 'react';
-import ReactJson from 'react-json-view'
-import { GRQ_ES_URL, GRQ_ES_INDICES } from '../../config.js';
-
+import React from "react";
+import ReactJson from "react-json-view";
+import { GRQ_ES_URL, GRQ_ES_INDICES } from "../../config.js";
 
 /**
  * add second panel to show the map and webdav link, etc.
@@ -19,9 +18,11 @@ export default class MetadataViewer extends React.Component {
 
   _fetchMetadata(index, id) {
     const esEndpoint = `${GRQ_ES_URL}/${index}/_doc/${id}`;
+    console.log(esEndpoint);
+
     fetch(esEndpoint, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
+      method: "GET",
+      headers: { "Content-Type": "application/json" }
     })
       .then(res => res.json())
       .then(response => {
@@ -34,24 +35,26 @@ export default class MetadataViewer extends React.Component {
         this.setState({
           loading: false
         });
-        console.error('Error:', error);
+        console.error("Error:", error);
       });
   }
 
   componentDidMount() {
-    const index = this.props.match.params.index;
-    const id = this.props.match.params.id;
+    const search = this.props.location.search;
+    const params = new URLSearchParams(search);
+    const index = params.get("index");
+    const id = params.get("id");
     this._fetchMetadata(index, id);
   }
 
   render() {
     const { loading, metadata } = this.state;
-    const results = loading ? 'loading...' : (<ReactJson src={metadata} displayDataTypes={false} />);
-
-    return (
-      <div>
-        {results}
-      </div>
+    const results = loading ? (
+      "loading..."
+    ) : (
+      <ReactJson src={metadata} displayDataTypes={false} />
     );
+
+    return <div>{results}</div>;
   }
 }

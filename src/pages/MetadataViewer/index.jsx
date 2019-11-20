@@ -18,7 +18,6 @@ export default class MetadataViewer extends React.Component {
 
   _fetchMetadata(index, id) {
     const esEndpoint = `${GRQ_ES_URL}/${index}/_doc/${id}`;
-    console.log(esEndpoint);
 
     fetch(esEndpoint, {
       method: "GET",

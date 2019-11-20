@@ -1,7 +1,9 @@
 import { RETRIEVE_DATA, GET_QUERY } from "../constants";
 
+const urlParams = new URLSearchParams(window.location.search);
+
 const initialState = {
-  query: null,
+  onDemandQuery: urlParams.get("query") || null,
   data: [],
   dataCount: 0
 };
@@ -17,7 +19,8 @@ const toscaReducer = (state = initialState, action) => {
     case GET_QUERY:
       return {
         ...state,
-        query: btoa(action.payload) // converting to base64
+        // query: btoa(action.payload) // converting to base64
+        query: action.payload
       };
     default:
       return state;

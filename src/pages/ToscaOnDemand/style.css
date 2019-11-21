@@ -19,5 +19,16 @@
 .on-demand-right {
   right: 0;
   /* background-color: #ffffff; */
-  /* padding: 15px 15px 15px 15px; */
+  padding: 15px 15px 15px 15px;
+}
+
+.on-demand-subitter-wrapper {
+  margin: 20px;
+}
+
+.on-demand-dropdown-label {
+  float: left;
+  margin-top: 10px;
+  margin-right: 10px;
+  width: 65px;
 }

@@ -4,7 +4,9 @@ import {
   CLEAR_CUSTOM_COMPONENTS,
   RETRIEVE_DATA,
   GET_QUERY,
-  UPDATE_SEARCH_QUERY
+  UPDATE_SEARCH_QUERY,
+  EDIT_ON_DEMAND_QUERY,
+  EDIT_ON_DEMAND_PRIORITY
 } from "../constants.js";
 
 // example action (in case we need to make API requets)
@@ -47,5 +49,17 @@ export const getQuery = payload => {
 
 export const updateSearchQuery = payload => ({
   type: UPDATE_SEARCH_QUERY,
+  payload
+});
+
+// ********************************************************************** //
+// TOSCA ON DEMAND ACTIONS
+export const editOnDemandQuery = payload => ({
+  type: EDIT_ON_DEMAND_QUERY,
+  payload
+});
+
+export const editOnDemandPriority = payload => ({
+  type: EDIT_ON_DEMAND_PRIORITY,
   payload
 });

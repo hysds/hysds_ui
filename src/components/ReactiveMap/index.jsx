@@ -298,7 +298,9 @@ let ConnectMapComponent = class extends React.Component {
     const mapContainerStyle = {
       minHeight: 500,
       height: storedMapHeight ? `${storedMapHeight}px` : 500,
-      margin: "10px",
+      marginTop: "10px",
+      marginLeft: "10px",
+      marginRight: "10px",
       overflow: "auto",
       resize: "vertical",
       display: displayMap ? "block" : "none"

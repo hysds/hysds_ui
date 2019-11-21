@@ -1,9 +1,15 @@
-import { RETRIEVE_DATA, GET_QUERY } from "../constants";
+import {
+  RETRIEVE_DATA,
+  GET_QUERY,
+  EDIT_ON_DEMAND_QUERY,
+  EDIT_ON_DEMAND_PRIORITY
+} from "../constants";
 
 const urlParams = new URLSearchParams(window.location.search);
 
 const initialState = {
   onDemandQuery: urlParams.get("query") || null,
+  onDemandPriority: urlParams.get("priority") || 0,
   data: [],
   dataCount: 0
 };
@@ -19,8 +25,17 @@ const toscaReducer = (state = initialState, action) => {
     case GET_QUERY:
       return {
         ...state,
-        // query: btoa(action.payload) // converting to base64
         query: action.payload
+      };
+    case EDIT_ON_DEMAND_QUERY:
+      return {
+        ...state,
+        onDemandQuery: action.payload
+      };
+    case EDIT_ON_DEMAND_PRIORITY:
+      return {
+        ...state,
+        onDemandPriority: action.payload
       };
     default:
       return state;

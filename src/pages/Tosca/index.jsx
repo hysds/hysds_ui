@@ -78,8 +78,11 @@ class Tosca extends React.Component {
     let [preference, query] = body;
     query = JSON.parse(query);
 
+    // main query ran to get the data
     if (query._source) {
       query._source.includes = FIELDS;
+
+      query = query.query;
       query = JSON.stringify(query);
       this.props.getQuery(query);
       event.body = `${preference}\n${query}\n`;

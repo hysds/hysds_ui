@@ -6,8 +6,14 @@ import {
   GET_QUERY,
   UPDATE_SEARCH_QUERY,
   EDIT_ON_DEMAND_QUERY,
-  EDIT_ON_DEMAND_PRIORITY
+  EDIT_PRIORITY,
+  LOAD_JOBS,
+  CHANGE_JOB_TYPE,
+  LOAD_QUEUE_LIST,
+  CHANGE_QUEUE
 } from "../constants.js";
+
+import { GRQ_REST_API_V1, MOZART_REST_API_V2 } from "../../config";
 
 // example action (in case we need to make API requets)
 export const getData = n => async dispatch => {
@@ -60,6 +66,42 @@ export const editOnDemandQuery = payload => ({
 });
 
 export const editOnDemandPriority = payload => ({
-  type: EDIT_ON_DEMAND_PRIORITY,
+  type: EDIT_PRIORITY,
+  payload
+});
+
+export const getOnDemandJobs = () => dispatch => {
+  const getJobsEndpoint = `${GRQ_REST_API_V1}/grq/on-demand`;
+
+  return fetch(getJobsEndpoint)
+    .then(res => res.json())
+    .then(data =>
+      dispatch({
+        type: LOAD_JOBS,
+        payload: data.result
+      })
+    );
+};
+
+export const changeJobType = payload => ({
+  type: CHANGE_JOB_TYPE,
+  payload
+});
+
+export const getQueueList = jobType => dispatch => {
+  const getQueuesEndpoint = `${MOZART_REST_API_V2}/queue/list?id=${jobType}`;
+
+  return fetch(getQueuesEndpoint)
+    .then(res => res.json())
+    .then(data =>
+      dispatch({
+        type: LOAD_QUEUE_LIST,
+        payload: data.result
+      })
+    );
+};
+
+export const changeQueue = payload => ({
+  type: CHANGE_QUEUE,
   payload
 });

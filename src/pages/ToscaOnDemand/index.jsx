@@ -4,13 +4,24 @@ import OnDemandQueryEditor from "../../components/OnDemandQueryEditor/index.jsx"
 import OnDemandJobSubmitter from "../../components/OnDemandJobSubmitter/index.jsx";
 
 import { connect } from "react-redux";
-import { editOnDemandQuery, editOnDemandPriority } from "../../redux/actions";
+import {
+  editOnDemandQuery,
+  editOnDemandPriority,
+  getOnDemandJobs,
+  changeJobType,
+  getQueueList,
+  changeQueue
+} from "../../redux/actions";
 
 import "./style.css";
 
 class ToscaOnDemand extends React.Component {
+  componentDidMount() {
+    this.props.getOnDemandJobs();
+  }
+
   render() {
-    let { query } = this.props;
+    let { query, jobs, queueList, queue } = this.props;
 
     return (
       <Fragment>
@@ -23,7 +34,15 @@ class ToscaOnDemand extends React.Component {
 
         <div className="split on-demand-right">
           <div className="on-demand-subitter-wrapper">
-            <OnDemandJobSubmitter editOnDemandPriority={editOnDemandPriority} />
+            <OnDemandJobSubmitter
+              changeJobType={changeJobType}
+              getQueueList={getQueueList}
+              changeQueue={changeQueue}
+              editOnDemandPriority={editOnDemandPriority}
+              jobs={jobs}
+              queueList={queueList}
+              queue={queue}
+            />
           </div>
         </div>
       </Fragment>
@@ -32,7 +51,16 @@ class ToscaOnDemand extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  query: state.toscaReducer.onDemandQuery
+  query: state.toscaReducer.onDemandQuery,
+  jobs: state.toscaReducer.jobList,
+  jobType: state.toscaReducer.jobType,
+  queueList: state.toscaReducer.queueList,
+  queue: state.toscaReducer.queue,
+  priority: state.toscaReducer.priority
 });
 
-export default connect(mapStateToProps, null)(ToscaOnDemand);
+const mapDispatchToProps = dispatch => ({
+  getOnDemandJobs: () => dispatch(getOnDemandJobs())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ToscaOnDemand);

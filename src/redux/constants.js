@@ -10,4 +10,8 @@ export const GET_QUERY = "GET_QUERY";
 
 // Tosca on demand actions
 export const EDIT_ON_DEMAND_QUERY = "EDIT_ON_DEMAND_QUERY";
-export const EDIT_ON_DEMAND_PRIORITY = "EDIT_ON_DEMAND_PRIORITY";
+export const EDIT_PRIORITY = "EDIT_PRIORITY";
+export const LOAD_JOBS = "LOAD_JOBS";
+export const CHANGE_JOB_TYPE = "CHANGE_JOB_TYPE";
+export const LOAD_QUEUE_LIST = "LOAD_QUEUE_LIST";
+export const CHANGE_QUEUE = "CHANGE_QUEUE";

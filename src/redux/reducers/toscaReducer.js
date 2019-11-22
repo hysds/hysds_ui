@@ -26,8 +26,8 @@ const initialState = {
   jobType: null,
   queueList: [],
   queue: null,
-  jobParamsList: [],
-  jobParams: {},
+  paramsList: [],
+  params: {},
   tags: null
 };
 
@@ -64,8 +64,8 @@ const toscaReducer = (state = initialState, action) => {
       );
       return {
         ...state,
-        jobParamsList: action.payload,
-        jobParams: defaultParams
+        paramsList: action.payload,
+        params: defaultParams
       };
     case CHANGE_JOB_TYPE:
       return {
@@ -99,15 +99,13 @@ const toscaReducer = (state = initialState, action) => {
         tags: action.payload
       };
     case EDIT_JOB_PARAMS:
-      // const newParams = state.jobParams;
-      // newParams[action.payload.name] = action.payload.value;
       const newParams = {
-        ...state.jobParams,
+        ...state.params,
         ...{ [action.payload.name]: action.payload.value }
       };
       return {
         ...state,
-        jobParams: newParams
+        params: newParams
       };
     default:
       return state;

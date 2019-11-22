@@ -16,6 +16,7 @@ body {
 @media (max-width: 950px) {
   .split {
     position: static;
+    width: 100%;
   }
 }
 

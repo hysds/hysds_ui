@@ -108,9 +108,9 @@ export const changeQueue = payload => ({
 });
 
 // /job-params
-export const getjobParamsList = jobType => dispatch => {
-  const getjobParamsListEndpoint = `${GRQ_REST_API_V1}/grq/job-params?job_type=${jobType}`;
-  return fetch(getjobParamsListEndpoint)
+export const getParamsList = jobType => dispatch => {
+  const getParamsListEndpoint = `${GRQ_REST_API_V1}/grq/job-params?job_type=${jobType}`;
+  return fetch(getParamsListEndpoint)
     .then(res => res.json())
     .then(data => {
       dispatch({
@@ -125,7 +125,7 @@ export const editTags = payload => ({
   payload
 });
 
-export const editJobParams = payload => ({
+export const editParams = payload => ({
   type: EDIT_JOB_PARAMS,
   payload
 });

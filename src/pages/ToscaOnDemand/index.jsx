@@ -10,8 +10,8 @@ import {
   editJobPriority,
   getOnDemandJobs,
   changeJobType,
-  getjobParamsList,
-  editJobParams,
+  getParamsList,
+  editParams,
   getQueueList,
   changeQueue,
   editTags
@@ -25,8 +25,8 @@ class ToscaOnDemand extends React.Component {
   }
 
   render() {
-    let { query, jobParams } = this.props;
-    console.log(jobParams);
+    let { query, params } = this.props;
+    console.log(params);
 
     return (
       <Fragment>
@@ -41,8 +41,8 @@ class ToscaOnDemand extends React.Component {
           <div className="on-demand-submitter-wrapper">
             <OnDemandJobSubmitter
               changeJobType={changeJobType} // all redux actions
-              getjobParamsList={getjobParamsList}
-              editJobParams={editJobParams}
+              getParamsList={getParamsList}
+              editParams={editParams}
               getQueueList={getQueueList}
               changeQueue={changeQueue}
               editJobPriority={editJobPriority}
@@ -64,8 +64,8 @@ const mapStateToProps = state => ({
   queueList: state.toscaReducer.queueList,
   queue: state.toscaReducer.queue,
   priority: state.toscaReducer.priority,
-  jobParamsList: state.toscaReducer.jobParamsList,
-  jobParams: state.toscaReducer.jobParams,
+  paramsList: state.toscaReducer.paramsList,
+  params: state.toscaReducer.params,
   tags: state.toscaReducer.tags
 });
 

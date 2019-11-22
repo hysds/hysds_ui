@@ -49,12 +49,12 @@ body {
   }
 }
 
-.on-demand-tag-wrapper {
+.on-demand-input-wrapper {
   display: table;
   width: 100%;
 }
 
-.on-demand-tag {
+.on-demand-input {
   box-sizing: border-box;
   margin-left: 2px;
   margin-right: 2px;
@@ -77,12 +77,12 @@ body {
   margin-bottom: 10px;
 }
 
-.on-demand-tag-label {
+.on-demand-input-label {
   display: table-cell;
   width: 73px;
 }
 
-.on-demand-tag:focus {
+.on-demand-input:focus {
   border-color: #1c7ce4;
   border-width: 2px;
 }

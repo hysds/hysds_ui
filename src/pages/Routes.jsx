@@ -9,7 +9,7 @@ import {
 import Tosca from "./Tosca/index.jsx";
 import MetadataViewer from "./MetadataViewer/index.jsx";
 // import OnDemand from "./OnDemand/index.jsx";
-import OnDemandForm from "../components/OnDemandForm/index.jsx";
+// import OnDemandForm from "../components/OnDemandForm/index.jsx";
 import ToscaOnDemand from "../pages/ToscaOnDemand/index.jsx";
 
 export default function Routes(props) {

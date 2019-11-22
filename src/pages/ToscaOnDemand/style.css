@@ -1,3 +1,7 @@
+body {
+  font-family: "Oswald", sans-serif !important;
+}
+
 /* Split the screen in half */
 .split {
   height: 100%;
@@ -7,6 +11,12 @@
   z-index: 1;
   top: 0;
   overflow-x: hidden;
+}
+
+@media (max-width: 950px) {
+  .split {
+    position: static;
+  }
 }
 
 /* Control the left side */
@@ -20,53 +30,4 @@
   right: 0;
   /* background-color: #ffffff; */
   padding: 15px 15px 15px 15px;
-}
-
-.on-demand-tag-wrapper {
-  display: table;
-  width: 100%;
-}
-
-.on-demand-tag {
-  box-sizing: border-box;
-  margin-left: 2px;
-  margin-right: 2px;
-  background-color: hsl(0, 0%, 100%);
-  border-color: hsl(0, 0%, 80%);
-  border-radius: 4px;
-  border-style: solid;
-  border-width: 1px;
-  min-height: 38px;
-  outline: 0 !important;
-  font-size: 15px;
-  padding-left: 10px;
-  width: 100%;
-  /* min-width: 350px; */
-  /* display: flex; */
-  display: table-cell;
-}
-
-.job-spec-input {
-  margin-bottom: 10px;
-}
-
-.on-demand-tag-label {
-  display: table-cell;
-  width: 73px;
-}
-
-.on-demand-tag:focus {
-  border-color: #1c7ce4;
-  border-width: 2px;
-}
-
-.on-demand-subitter-wrapper {
-  margin: 20px;
-}
-
-.on-demand-dropdown-label {
-  float: left;
-  margin-top: 10px;
-  margin-right: 10px;
-  width: 65px;
 }

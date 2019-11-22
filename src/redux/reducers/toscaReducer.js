@@ -3,10 +3,13 @@ import {
   GET_QUERY,
   EDIT_ON_DEMAND_QUERY,
   EDIT_PRIORITY,
-  LOAD_JOBS,
+  GET_JOB_LIST,
+  LOAD_JOB_PARAMS,
+  EDIT_JOB_PARAMS,
   CHANGE_JOB_TYPE,
   LOAD_QUEUE_LIST,
-  CHANGE_QUEUE
+  CHANGE_QUEUE,
+  EDIT_ON_DEMAND_TAG
 } from "../constants";
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -17,12 +20,15 @@ const initialState = {
   dataCount: 0,
 
   // on-demand
-  onDemandQuery: urlParams.get("query") || null,
-  priority: urlParams.get("priority") || null,
+  query: urlParams.get("query") || null,
+  priority: null,
   jobList: [],
-  jobType: urlParams.get("job") || null,
+  jobType: null,
   queueList: [],
-  queue: urlParams.get("queue") || null
+  queue: null,
+  jobParamsList: [],
+  jobParams: {},
+  tags: null
 };
 
 const toscaReducer = (state = initialState, action) => {
@@ -44,12 +50,22 @@ const toscaReducer = (state = initialState, action) => {
     case EDIT_ON_DEMAND_QUERY:
       return {
         ...state,
-        onDemandQuery: action.payload
+        query: action.payload
       };
-    case LOAD_JOBS:
+    case GET_JOB_LIST:
       return {
         ...state,
         jobList: action.payload
+      };
+    case LOAD_JOB_PARAMS:
+      let defaultParams = {};
+      action.payload.map(
+        param => (defaultParams[[param.name]] = param.default || null)
+      );
+      return {
+        ...state,
+        jobParamsList: action.payload,
+        jobParams: defaultParams
       };
     case CHANGE_JOB_TYPE:
       return {
@@ -76,6 +92,22 @@ const toscaReducer = (state = initialState, action) => {
       return {
         ...state,
         priority: action.payload
+      };
+    case EDIT_ON_DEMAND_TAG:
+      return {
+        ...state,
+        tags: action.payload
+      };
+    case EDIT_JOB_PARAMS:
+      // const newParams = state.jobParams;
+      // newParams[action.payload.name] = action.payload.value;
+      const newParams = {
+        ...state.jobParams,
+        ...{ [action.payload.name]: action.payload.value }
+      };
+      return {
+        ...state,
+        jobParams: newParams
       };
     default:
       return state;

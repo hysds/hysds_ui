@@ -11,6 +11,11 @@
   margin-right: 20px;
 }
 
+.utility-button:hover {
+  transition: background-color 0.2s;
+  background-color: #1f54b0;
+}
+
 .scroll-top-button {
   position: fixed;
   height: 50px;
@@ -25,6 +30,28 @@
   font-size: 12px;
   z-index: 999;
   -webkit-transition: opacity 0.25s;
+}
+
+.submit-button {
+  background-color: #4288ff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 15px;
+  margin-right: 20px;
+}
+
+.submit-button:hover {
+  transition: background-color 0.2s;
+  background-color: #1f54b0;
+}
+
+.submit-button:focus {
+  outline: 0;
 }
 
 .scroll-top-button:hover {

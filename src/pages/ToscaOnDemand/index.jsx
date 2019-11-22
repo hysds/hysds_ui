@@ -2,15 +2,19 @@ import React, { Fragment } from "react";
 
 import OnDemandQueryEditor from "../../components/OnDemandQueryEditor/index.jsx";
 import OnDemandJobSubmitter from "../../components/OnDemandJobSubmitter/index.jsx";
+import { SubmitButton } from "../../components/Buttons/index.jsx";
 
 import { connect } from "react-redux";
 import {
   editOnDemandQuery,
-  editOnDemandPriority,
+  editJobPriority,
   getOnDemandJobs,
   changeJobType,
+  getjobParamsList,
+  editJobParams,
   getQueueList,
-  changeQueue
+  changeQueue,
+  editTags
 } from "../../redux/actions";
 
 import "./style.css";
@@ -21,7 +25,8 @@ class ToscaOnDemand extends React.Component {
   }
 
   render() {
-    let { query, jobs, queueList, queue } = this.props;
+    let { query, jobParams } = this.props;
+    console.log(jobParams);
 
     return (
       <Fragment>
@@ -33,17 +38,19 @@ class ToscaOnDemand extends React.Component {
         </div>
 
         <div className="split on-demand-right">
-          <div className="on-demand-subitter-wrapper">
+          <div className="on-demand-submitter-wrapper">
             <OnDemandJobSubmitter
-              changeJobType={changeJobType}
+              changeJobType={changeJobType} // all redux actions
+              getjobParamsList={getjobParamsList}
+              editJobParams={editJobParams}
               getQueueList={getQueueList}
               changeQueue={changeQueue}
-              editOnDemandPriority={editOnDemandPriority}
-              jobs={jobs}
-              queueList={queueList}
-              queue={queue}
+              editJobPriority={editJobPriority}
+              editTags={editTags}
+              {...this.props}
             />
           </div>
+          <SubmitButton />
         </div>
       </Fragment>
     );
@@ -51,12 +58,15 @@ class ToscaOnDemand extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  query: state.toscaReducer.onDemandQuery,
+  query: state.toscaReducer.query,
   jobs: state.toscaReducer.jobList,
   jobType: state.toscaReducer.jobType,
   queueList: state.toscaReducer.queueList,
   queue: state.toscaReducer.queue,
-  priority: state.toscaReducer.priority
+  priority: state.toscaReducer.priority,
+  jobParamsList: state.toscaReducer.jobParamsList,
+  jobParams: state.toscaReducer.jobParams,
+  tags: state.toscaReducer.tags
 });
 
 const mapDispatchToProps = dispatch => ({

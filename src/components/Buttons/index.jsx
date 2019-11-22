@@ -26,3 +26,7 @@ export const ScrollTop = () => (
     onClick={() => window.scrollTo(0, 0)}
   />
 );
+
+export const SubmitButton = () => (
+  <button className="submit-button">Submit</button>
+);

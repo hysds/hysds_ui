@@ -82,10 +82,10 @@ class Tosca extends React.Component {
     if (query._source) {
       query._source.includes = FIELDS;
 
-      query = query.query;
-      query = JSON.stringify(query);
-      this.props.getQuery(query);
-      event.body = `${preference}\n${query}\n`;
+      let onDemandQuery = query.query;
+      onDemandQuery = JSON.stringify(onDemandQuery);
+      this.props.getQuery(onDemandQuery);
+      event.body = `${preference}\n${JSON.stringify(query)}\n`;
     }
     return event;
   };

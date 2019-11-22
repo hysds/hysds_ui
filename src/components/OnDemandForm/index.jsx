@@ -339,7 +339,7 @@ class OnDemandForm extends React.Component {
             <input
               type="text"
               placeholder={row.placeholder}
-              className="on-demand-tag"
+              className="on-demand-input"
               name={row.name}
               value={jobSpecsInput[row.name]}
               onChange={this._handleJobSpecTextInput}
@@ -376,12 +376,12 @@ class OnDemandForm extends React.Component {
           <div className="right-pane-container">
             <br />
             {this.state.totalRecords} Records from query
-            <div className="on-demand-tag-wrapper">
-              <div className="on-demand-tag-label">Tag:</div>
+            <div className="on-demand-input-wrapper">
+              <div className="on-demand-input-label">Tag:</div>
               <input
                 type="text"
                 placeholder="Required"
-                className="on-demand-tag"
+                className="on-demand-input"
                 name="tag"
                 onChange={this._handleTagInput}
               />

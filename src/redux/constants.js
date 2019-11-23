@@ -9,12 +9,13 @@ export const RETRIEVE_DATA = "RETRIEVE_DATA";
 export const GET_QUERY = "GET_QUERY";
 
 // Tosca on demand actions
-export const EDIT_ON_DEMAND_QUERY = "EDIT_ON_DEMAND_QUERY";
+export const EDIT_QUERY = "EDIT_QUERY";
+export const VALIDATE_QUERY = "VALIDATE_QUERY";
 export const EDIT_PRIORITY = "EDIT_PRIORITY";
 export const GET_JOB_LIST = "GET_JOB_LIST";
 export const LOAD_JOB_PARAMS = "LOAD_JOB_PARAMS";
 export const CHANGE_JOB_TYPE = "CHANGE_JOB_TYPE";
 export const LOAD_QUEUE_LIST = "LOAD_QUEUE_LIST";
 export const CHANGE_QUEUE = "CHANGE_QUEUE";
-export const EDIT_ON_DEMAND_TAG = "EDIT_ON_DEMAND_TAG";
+export const EDIT_TAG = "EDIT_TAG";
 export const EDIT_JOB_PARAMS = "EDIT_JOB_PARAMS";

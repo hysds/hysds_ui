@@ -8,8 +8,6 @@ import {
 
 import Tosca from "./Tosca/index.jsx";
 import MetadataViewer from "./MetadataViewer/index.jsx";
-// import OnDemand from "./OnDemand/index.jsx";
-// import OnDemandForm from "../components/OnDemandForm/index.jsx";
 import ToscaOnDemand from "../pages/ToscaOnDemand/index.jsx";
 
 export default function Routes(props) {
@@ -18,8 +16,6 @@ export default function Routes(props) {
       <Route exact path="/" render={() => <Redirect to="/tosca" />} />
       <Route exact path="/tosca" component={Tosca} />
       <Route exact path="/tosca/metadata" component={MetadataViewer} />
-      {/* <Route exact path='/tosca/on-demand/:query' component={OnDemand} /> */}
-      {/* <Route exact path="/tosca/on-demand" component={OnDemandForm} /> */}
       <Route exact path="/tosca/on-demand" component={ToscaOnDemand} />
     </Router>
   );

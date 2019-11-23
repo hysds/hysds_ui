@@ -5,7 +5,8 @@ import {
   RETRIEVE_DATA,
   GET_QUERY,
   UPDATE_SEARCH_QUERY,
-  EDIT_ON_DEMAND_QUERY,
+  EDIT_QUERY,
+  VALIDATE_QUERY,
   EDIT_PRIORITY,
   GET_JOB_LIST,
   LOAD_JOB_PARAMS,
@@ -13,7 +14,7 @@ import {
   CHANGE_JOB_TYPE,
   LOAD_QUEUE_LIST,
   CHANGE_QUEUE,
-  EDIT_ON_DEMAND_TAG
+  EDIT_TAG
 } from "../constants.js";
 
 import { GRQ_REST_API_V1, MOZART_REST_API_V2 } from "../../config";
@@ -63,8 +64,13 @@ export const updateSearchQuery = payload => ({
 
 // ********************************************************************** //
 // TOSCA ON DEMAND ACTIONS
-export const editOnDemandQuery = payload => ({
-  type: EDIT_ON_DEMAND_QUERY,
+export const editQuery = payload => ({
+  type: EDIT_QUERY,
+  payload
+});
+
+export const validateQuery = payload => ({
+  type: VALIDATE_QUERY,
   payload
 });
 
@@ -121,7 +127,7 @@ export const getParamsList = jobType => dispatch => {
 };
 
 export const editTags = payload => ({
-  type: EDIT_ON_DEMAND_TAG,
+  type: EDIT_TAG,
   payload
 });
 

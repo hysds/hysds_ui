@@ -6,7 +6,8 @@ import { SubmitButton } from "../../components/Buttons/index.jsx";
 
 import { connect } from "react-redux";
 import {
-  editOnDemandQuery,
+  editQuery,
+  validateQuery,
   editJobPriority,
   getOnDemandJobs,
   changeJobType,
@@ -25,10 +26,18 @@ class ToscaOnDemand extends React.Component {
   }
 
   _validateSubmission = () => {
-    let { jobType, tags, priority, params, paramsList } = this.props;
+    let {
+      validQuery,
+      jobType,
+      tags,
+      priority,
+      params,
+      paramsList
+    } = this.props;
 
     let validSubmission = true;
     if (!tags || !jobType || !priority) validSubmission = false;
+    if (!validQuery) validSubmission = false;
 
     paramsList.map(param => {
       const paramName = param.name;
@@ -48,7 +57,8 @@ class ToscaOnDemand extends React.Component {
         <div className="split on-demand-left">
           <QueryEditor
             query={query}
-            editOnDemandQuery={editOnDemandQuery} // redux action
+            editQuery={editQuery} // redux action
+            validateQuery={validateQuery}
           />
         </div>
 
@@ -75,6 +85,7 @@ class ToscaOnDemand extends React.Component {
 
 const mapStateToProps = state => ({
   query: state.toscaReducer.query,
+  validQuery: state.toscaReducer.validQuery,
   jobs: state.toscaReducer.jobList,
   jobType: state.toscaReducer.jobType,
   queueList: state.toscaReducer.queueList,

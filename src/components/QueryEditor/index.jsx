@@ -7,18 +7,19 @@ import AceEditor from "react-ace";
 import "brace/mode/json";
 import "brace/theme/github";
 
-class OnDemandJsonEditor extends React.Component {
+class JsonEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
   }
 
   // redux action to change the on demand query
-  _handleQueryChange = val => this.props.editOnDemandQuery(val);
+  _handleQueryChange = val => this.props.editQuery(val);
 
   _validateESQuery = err => {
     // disable submit job button
-    if (err.length > 0) console.log(err);
+    // if (err.length > 0) console.log(err);
+    const isValid = err.length > 0 ? false : true;
+    this.props.validateQuery(isValid);
   };
 
   render() {
@@ -54,13 +55,15 @@ class OnDemandJsonEditor extends React.Component {
   }
 }
 
-OnDemandJsonEditor.propTypes = {
-  editOnDemandQuery: PropTypes.func.isRequired
+JsonEditor.propTypes = {
+  editQuery: PropTypes.func.isRequired,
+  validateQuery: PropTypes.func.isRequired
 };
 
 // Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  editOnDemandQuery: query => dispatch(ownProps.editOnDemandQuery(query))
+  editQuery: query => dispatch(ownProps.editQuery(query)),
+  validateQuery: validQuery => dispatch(ownProps.validateQuery(validQuery))
 });
 
-export default connect(null, mapDispatchToProps)(OnDemandJsonEditor);
+export default connect(null, mapDispatchToProps)(JsonEditor);

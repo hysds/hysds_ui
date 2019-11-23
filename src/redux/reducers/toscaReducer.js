@@ -1,7 +1,8 @@
 import {
   RETRIEVE_DATA,
   GET_QUERY,
-  EDIT_ON_DEMAND_QUERY,
+  EDIT_QUERY,
+  VALIDATE_QUERY,
   EDIT_PRIORITY,
   GET_JOB_LIST,
   LOAD_JOB_PARAMS,
@@ -9,7 +10,7 @@ import {
   CHANGE_JOB_TYPE,
   LOAD_QUEUE_LIST,
   CHANGE_QUEUE,
-  EDIT_ON_DEMAND_TAG
+  EDIT_TAG
 } from "../constants";
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -21,6 +22,7 @@ const initialState = {
 
   // on-demand
   query: urlParams.get("query") || null,
+  validQuery: true,
   priority: null,
   jobList: [],
   jobType: null,
@@ -47,10 +49,15 @@ const toscaReducer = (state = initialState, action) => {
       };
 
     // on-demand page
-    case EDIT_ON_DEMAND_QUERY:
+    case EDIT_QUERY:
       return {
         ...state,
         query: action.payload
+      };
+    case VALIDATE_QUERY:
+      return {
+        ...state,
+        validQuery: action.payload
       };
     case GET_JOB_LIST:
       return {
@@ -93,7 +100,7 @@ const toscaReducer = (state = initialState, action) => {
         ...state,
         priority: action.payload
       };
-    case EDIT_ON_DEMAND_TAG:
+    case EDIT_TAG:
       return {
         ...state,
         tags: action.payload

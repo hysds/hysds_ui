@@ -66,6 +66,7 @@ class JobSubmitter extends React.Component {
                 name={paramName}
                 onChange={this._handleJobParamInputChange}
                 className="on-demand-input"
+                required={param.optional ? false : true}
               />
             </div>
           );
@@ -98,6 +99,7 @@ class JobSubmitter extends React.Component {
                 placeholder="Required"
                 onChange={this._handleJobParamInputChange}
                 className="on-demand-input"
+                required={param.optional ? false : true}
               />
             </div>
           );
@@ -122,6 +124,7 @@ class JobSubmitter extends React.Component {
             name="tag"
             onChange={this._handleTagInput}
             className="on-demand-input"
+            required
           />
         </div>
 

@@ -36,8 +36,7 @@ class ToscaOnDemand extends React.Component {
     } = this.props;
 
     let validSubmission = true;
-    if (!tags || !jobType || !priority) validSubmission = false;
-    if (!validQuery) validSubmission = false;
+    if (!validQuery || !tags || !jobType || !priority) validSubmission = false;
 
     paramsList.map(param => {
       const paramName = param.name;
@@ -75,8 +74,8 @@ class ToscaOnDemand extends React.Component {
               editTags={editTags}
               {...this.props}
             />
+            <SubmitButton disabled={!validSubmission} />
           </div>
-          <SubmitButton disabled={!validSubmission} />
         </div>
       </Fragment>
     );

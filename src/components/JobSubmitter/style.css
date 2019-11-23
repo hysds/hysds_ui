@@ -48,6 +48,10 @@
   border-width: 2px;
 }
 
+input:invalid {
+  border: 2px solid red;
+}
+
 .on-demand-submitter-wrapper {
   margin: 20px;
 }

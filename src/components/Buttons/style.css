@@ -45,15 +45,19 @@
   margin-right: 20px;
 }
 
-.submit-button:hover {
-  transition: background-color 0.2s;
-  background-color: #1f54b0;
-}
-
 .submit-button:focus {
   outline: 0;
 }
 
 .scroll-top-button:hover {
   opacity: 1;
+}
+
+.disabled {
+  opacity: 0.5;
+}
+
+.active:hover {
+  transition: background-color 0.2s;
+  background-color: #1f54b0;
 }

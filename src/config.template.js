@@ -1,10 +1,10 @@
 // DEFINING THE ELASTICSEARCH CONNECTION OPTIONS
 /*******************************************************************************/
 // local or AWS managed ElasticSearch instance
-exports.GRQ_ES_URL = "http://localhost:9200";
+// exports.GRQ_ES_URL = "http://localhost:9200";
+exports.GRQ_ES_URL = "http://localhost:9999";
 
-// exports.GRQ_ES_INDICES = '_all';
-exports.GRQ_ES_INDICES = "grq_v1.1_s1-iw_slc2,grq_v2.0.2_s1-gunw2";
+exports.GRQ_ES_INDICES = "grq";
 
 // DEFINING THE OPTIONS FOR THE LEAFLET MAP
 /*******************************************************************************/
@@ -75,54 +75,18 @@ exports.FIELDS = [
 ];
 
 // API endpoints to get the available actions for on-demand
-exports.GRQ_API_BASE = "http://localhost:5000"; // base url for GRQ API
+exports.GRQ_API_BASE = "http://localhost:8878"; // base url for GRQ API
+exports.GRQ_REST_API_V1 = `${this.GRQ_API_BASE}/api/v0.1`;
+exports.GRQ_REST_API_V2 = `${this.GRQ_API_BASE}/api/v0.2`;
 exports.GRQ_ACTIONS_API = "user_rules/actions_config";
 exports.GRQ_JOB_SPECS_ENDPOINT = "job_specs";
 // exports.GRQ_ACTIONS_API = 'hysds_io/list';
-exports.QUEUE_LIST_API = "user_rules/get_job_queues";
 
-exports.QUEUE_PRIORITIES = [
-  {
-    value: 0,
-    label: 0
-  },
-  {
-    value: 1,
-    label: 1
-  },
-  {
-    value: 2,
-    label: 2
-  },
-  {
-    value: 3,
-    label: 3
-  },
-  {
-    value: 4,
-    label: 4
-  },
-  {
-    value: 5,
-    label: 5
-  },
-  {
-    value: 6,
-    label: 6
-  },
-  {
-    value: 7,
-    label: 7
-  },
-  {
-    value: 8,
-    label: 8
-  },
-  {
-    value: 9,
-    label: 9
-  }
-];
+exports.MOZART_REST_API_BASE = "http://localhost:8888";
+exports.MOZART_REST_API_V1 = `${this.MOZART_REST_API_BASE}/api/v0.1`;
+exports.MOZART_REST_API_V2 = `${this.MOZART_REST_API_BASE}/api/v0.2`;
+
+exports.QUEUE_LIST_API = "user_rules/get_job_queues";
 
 exports.GRQ_TABLE_VIEW_DEFAULT = true;
 
@@ -137,7 +101,6 @@ exports.GRQ_DISPLAY_COLUMNS = [
     accessor: "starttime"
   },
   { Header: "end_time", accessor: "endtime" },
-  // { Header: 'version', accessor: 'version', width: 100 },
   {
     Header: "status",
     accessor: "metadata.status"

@@ -4,14 +4,14 @@
   margin-bottom: 35px;
 }
 
-.on-demand-input-wrapper {
+.input-wrapper {
   display: table;
   width: 100%;
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
-.on-demand-dropdown-wrapper {
+.dropdown-wrapper {
   display: flex;
   margin-top: 20px;
   margin-bottom: 20px;
@@ -31,8 +31,6 @@
   font-size: 15px;
   padding-left: 10px;
   width: 100%;
-  /* min-width: 350px; */
-  /* display: flex; */
   display: table-cell;
 }
 
@@ -40,7 +38,7 @@
   margin-bottom: 10px;
 }
 
-.on-demand-input-label {
+.input-label {
   display: table-cell;
   width: 73px;
 }
@@ -54,7 +52,7 @@
   margin: 20px;
 }
 
-.on-demand-dropdown-label {
+.dropdown-label {
   float: left;
   margin-top: 10px;
   margin-right: 10px;

@@ -23,12 +23,9 @@ body {
 /* Control the left side */
 .on-demand-left {
   left: 0;
-  /* padding: 15px 15px 15px 15px; */
 }
 
 /* Control the right side */
 .on-demand-right {
   right: 0;
-  /* background-color: #ffffff; */
-  padding: 15px 15px 15px 15px;
 }

@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 
-import OnDemandQueryEditor from "../../components/OnDemandQueryEditor/index.jsx";
-import OnDemandJobSubmitter from "../../components/OnDemandJobSubmitter/index.jsx";
+import QueryEditor from "../../components/QueryEditor/index.jsx";
+import JobSubmitter from "../../components/JobSubmitter/index.jsx";
 import { SubmitButton } from "../../components/Buttons/index.jsx";
 
 import { connect } from "react-redux";
@@ -24,14 +24,29 @@ class ToscaOnDemand extends React.Component {
     this.props.getOnDemandJobs();
   }
 
+  _validateSubmission = () => {
+    let { jobType, tags, priority, params, paramsList } = this.props;
+
+    let validSubmission = true;
+    if (!tags || !jobType || !priority) validSubmission = false;
+
+    paramsList.map(param => {
+      const paramName = param.name;
+      if (!(param.optional === true)) {
+        if (!params[paramName]) validSubmission = false;
+      }
+    });
+    return validSubmission;
+  };
+
   render() {
-    let { query, params } = this.props;
-    console.log(params);
+    let { query } = this.props;
+    const validSubmission = this._validateSubmission();
 
     return (
       <Fragment>
         <div className="split on-demand-left">
-          <OnDemandQueryEditor
+          <QueryEditor
             query={query}
             editOnDemandQuery={editOnDemandQuery} // redux action
           />
@@ -39,7 +54,8 @@ class ToscaOnDemand extends React.Component {
 
         <div className="split on-demand-right">
           <div className="on-demand-submitter-wrapper">
-            <OnDemandJobSubmitter
+            total records: {this.props.dataCount}
+            <JobSubmitter
               changeJobType={changeJobType} // all redux actions
               getParamsList={getParamsList}
               editParams={editParams}
@@ -50,7 +66,7 @@ class ToscaOnDemand extends React.Component {
               {...this.props}
             />
           </div>
-          <SubmitButton />
+          <SubmitButton disabled={!validSubmission} />
         </div>
       </Fragment>
     );
@@ -66,7 +82,8 @@ const mapStateToProps = state => ({
   priority: state.toscaReducer.priority,
   paramsList: state.toscaReducer.paramsList,
   params: state.toscaReducer.params,
-  tags: state.toscaReducer.tags
+  tags: state.toscaReducer.tags,
+  dataCount: state.toscaReducer.dataCount
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 
 import Select from "react-select";
 
+import { Border } from "../miscellaneous/index.jsx";
+
 import "./style.css";
 
 /**
@@ -13,7 +15,7 @@ import "./style.css";
 const generatePriorityList = n =>
   [...Array(n).keys()].map(num => ({ value: num, label: num }));
 
-class OnDemandJobSubmitter extends React.Component {
+class JobSubmitter extends React.Component {
   constructor(props) {
     super(props);
     this.priorityList = generatePriorityList(10);
@@ -21,9 +23,10 @@ class OnDemandJobSubmitter extends React.Component {
 
   _handleTagInput = e => this.props.editTags(e.target.value);
   _handleJobChange = e => {
-    this.props.changeJobType(e.value);
-    this.props.getQueueList(e.value);
-    this.props.getParamsList(e.value);
+    const job = e.value;
+    this.props.changeJobType(job);
+    this.props.getQueueList(job);
+    this.props.getParamsList(job);
   };
   _handleQueueChange = e => this.props.changeQueue(e.value);
   _handleEditPriority = e => this.props.editJobPriority(e.value);
@@ -48,18 +51,19 @@ class OnDemandJobSubmitter extends React.Component {
     const { params } = this.props;
 
     return this.props.paramsList.map(param => {
-      const value = params[param.name];
+      const paramName = param.name;
+      const value = params[paramName];
 
       switch (param.type) {
         case "number":
           return (
-            <div className="on-demand-input-wrapper" key={param.name}>
-              <div className="on-demand-input-label">{param.name}:</div>
+            <div className="input-wrapper" key={paramName}>
+              <div className="input-label">{paramName}:</div>
               <input
                 type="number"
                 step="1"
                 value={value || ""}
-                name={param.name}
+                name={paramName}
                 onChange={this._handleJobParamInputChange}
                 className="on-demand-input"
               />
@@ -67,13 +71,13 @@ class OnDemandJobSubmitter extends React.Component {
           );
         case "enum":
           return (
-            <section className="on-demand-dropdown-wrapper" key={param.name}>
-              <div className="on-demand-dropdown-label">{param.name}:</div>
+            <section className="dropdown-wrapper" key={paramName}>
+              <div className="dropdown-label">{paramName}:</div>
               <div className="react-select-wrapper">
                 <Select
-                  label={param.name}
+                  label={paramName}
                   value={value ? { label: value, value: value || "" } : null}
-                  name={param.name}
+                  name={paramName}
                   options={param.enumerables.map(option => ({
                     label: option,
                     value: option
@@ -85,12 +89,12 @@ class OnDemandJobSubmitter extends React.Component {
           );
         default:
           return (
-            <div className="on-demand-input-wrapper" key={param.name}>
-              <div className="on-demand-input-label">{param.name}:</div>
+            <div className="input-wrapper" key={paramName}>
+              <div className="input-label">{paramName}:</div>
               <input
                 type="text"
                 value={value || ""}
-                name={param.name}
+                name={paramName}
                 placeholder="Required"
                 onChange={this._handleJobParamInputChange}
                 className="on-demand-input"
@@ -106,24 +110,23 @@ class OnDemandJobSubmitter extends React.Component {
 
     const renderedParamsList = this._renderParamsList();
 
-    const divider =
-      paramsList.length > 0 ? <hr className="job-param-border" /> : null;
+    const divider = paramsList.length > 0 ? <Border /> : null;
 
     return (
       <Fragment>
-        <div className="on-demand-input-wrapper">
-          <div className="on-demand-input-label">Tag:</div>
+        <div className="input-wrapper">
+          <div className="input-label">Tag:</div>
           <input
             type="text"
             placeholder="Required"
-            className="on-demand-input"
             name="tag"
             onChange={this._handleTagInput}
+            className="on-demand-input"
           />
         </div>
 
-        <section className="on-demand-dropdown-wrapper">
-          <div className="on-demand-dropdown-label">Jobs:</div>
+        <section className="dropdown-wrapper">
+          <div className="dropdown-label">Jobs:</div>
           <div className="react-select-wrapper">
             <Select
               label="Select Job"
@@ -134,8 +137,8 @@ class OnDemandJobSubmitter extends React.Component {
           </div>
         </section>
 
-        <section className="on-demand-dropdown-wrapper">
-          <div className="on-demand-dropdown-label">Queue:</div>
+        <section className="dropdown-wrapper">
+          <div className="dropdown-label">Queue:</div>
           <div className="react-select-wrapper">
             <Select
               label="Queue"
@@ -148,14 +151,13 @@ class OnDemandJobSubmitter extends React.Component {
           </div>
         </section>
 
-        <section className="on-demand-dropdown-wrapper">
-          <div className="on-demand-dropdown-label">Priority:</div>
+        <section className="dropdown-wrapper">
+          <div className="dropdown-label">Priority:</div>
           <div className="react-select-wrapper">
             <Select
               label="Priority"
               name="priority"
               options={this.priorityList}
-              // value={}
               onChange={this._handleEditPriority}
             />
           </div>
@@ -168,7 +170,7 @@ class OnDemandJobSubmitter extends React.Component {
   }
 }
 
-OnDemandJobSubmitter.propTypes = {
+JobSubmitter.propTypes = {
   changeJobType: PropTypes.func.isRequired,
   getQueueList: PropTypes.func.isRequired,
   changeQueue: PropTypes.func.isRequired,
@@ -187,4 +189,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   editJobPriority: query => dispatch(ownProps.editJobPriority(query))
 });
 
-export default connect(null, mapDispatchToProps)(OnDemandJobSubmitter);
+export default connect(null, mapDispatchToProps)(JobSubmitter);

@@ -17,7 +17,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const initialState = {
   // main page
   data: [],
-  dataCount: 0,
+  dataCount: urlParams.get("total") || 0,
 
   // on-demand
   query: urlParams.get("query") || null,

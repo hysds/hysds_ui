@@ -13,12 +13,6 @@ class OnDemandJsonEditor extends React.Component {
     this.state = {};
   }
 
-  /**
-   * TODO:
-   *    handle changing of the query (action passed as prop)
-   *    validate ES query (probably put it in the handling of the query)
-   */
-
   // redux action to change the on demand query
   _handleQueryChange = val => this.props.editOnDemandQuery(val);
 

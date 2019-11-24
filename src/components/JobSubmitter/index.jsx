@@ -15,6 +15,13 @@ import "./style.css";
 const generatePriorityList = n =>
   [...Array(n).keys()].map(num => ({ value: num, label: num }));
 
+const customSelectStyles = {
+  control: (base, value) => ({
+    ...base,
+    border: value.hasValue ? null : "2px solid red"
+  })
+};
+
 class JobSubmitter extends React.Component {
   constructor(props) {
     super(props);
@@ -84,6 +91,7 @@ class JobSubmitter extends React.Component {
                     value: option
                   }))}
                   onChange={this._handleJobParamDropdownChange}
+                  styles={param.optional ? null : customSelectStyles}
                 />
               </div>
             </section>
@@ -136,6 +144,7 @@ class JobSubmitter extends React.Component {
               name="job"
               options={jobs}
               onChange={this._handleJobChange}
+              styles={customSelectStyles}
             />
           </div>
         </section>
@@ -150,6 +159,7 @@ class JobSubmitter extends React.Component {
               value={{ label: queue, value: queue }}
               onChange={this._handleQueueChange}
               isDisabled={!(queueList.length > 0)}
+              styles={customSelectStyles}
             />
           </div>
         </section>
@@ -162,6 +172,7 @@ class JobSubmitter extends React.Component {
               name="priority"
               options={this.priorityList}
               onChange={this._handleEditPriority}
+              styles={customSelectStyles}
             />
           </div>
         </section>

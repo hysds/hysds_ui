@@ -26,6 +26,10 @@
   border-right: solid 1px #0000004d;
 }
 
+li.active:hover {
+  background-color: #ffff !important;
+}
+
 .sidenav a {
   padding: 6px 8px 6px 16px;
   text-decoration: none;

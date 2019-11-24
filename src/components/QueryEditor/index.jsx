@@ -35,6 +35,7 @@ class JsonEditor extends React.Component {
         <AceEditor
           mode="json"
           theme="github"
+          placeholder="Enter your Elasticsearch _search query"
           fontSize={12}
           showPrintMargin={false}
           showGutter={true}

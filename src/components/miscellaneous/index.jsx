@@ -13,5 +13,9 @@ export const SubmitStatusBar = props => {
 
   const className = `job-submit-status-bar ${visible} ${status}`;
 
-  return <div className={className}>{label}</div>;
+  return (
+    <div className={className} {...props}>
+      {label}
+    </div>
+  );
 };

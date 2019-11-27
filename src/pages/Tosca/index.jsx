@@ -190,13 +190,14 @@ class Tosca extends React.Component {
               <TriggerRulesButton />
             </div>
           </div>
-          <SelectedFilters
-            className="filter-list"
-            onClear={this._handleClearFilter}
-          />
+          <div className="filter-list-wrapper">
+            <SelectedFilters
+              className="filter-list"
+              onClear={this._handleClearFilter}
+            />
+          </div>
 
           <ScrollTop />
-          <br />
           {reactiveMap}
           <ResultsList
             componentId={RESULTS_LIST_COMPONENT_ID}

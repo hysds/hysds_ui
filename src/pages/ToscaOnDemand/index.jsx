@@ -73,6 +73,7 @@ class ToscaOnDemand extends React.Component {
     let { query, paramsList, params, hysdsio } = this.props;
     const validSubmission = this._validateSubmission();
     const divider = paramsList.length > 0 ? <Border /> : null;
+    const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
 
     return (
       <Fragment>
@@ -98,7 +99,7 @@ class ToscaOnDemand extends React.Component {
               {...this.props}
             />
             {divider}
-            <h2>{hysdsio}</h2>
+            {hysdsioLabel}
             <JobParams
               editParams={editParams}
               paramsList={paramsList}

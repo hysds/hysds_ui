@@ -60,6 +60,10 @@ input:focus {
   margin-bottom: 15px;
 }
 
+.filter-list-wrapper {
+  margin-bottom: 20px;
+}
+
 .button-wrapper {
   margin-left: auto;
 }

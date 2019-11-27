@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import ReactTable from 'react-table';
+import React from "react";
+import PropTypes from "prop-types";
+import ReactTable from "react-table";
 
-import { GRQ_DISPLAY_COLUMNS } from '../../config.js';
+import { GRQ_DISPLAY_COLUMNS } from "../../config.js";
 
 import "react-table/react-table.css";
-import './style.css';
+import "./style.css";
 
 export default class DataTable extends React.Component {
   constructor(props) {
@@ -25,7 +25,7 @@ export default class DataTable extends React.Component {
         defaultSorted={[
           {
             id: this.props.sortColumn,
-            desc: this.props.sortOrder === 'desc' ? true : false
+            desc: this.props.sortOrder === "desc" ? true : false
           }
         ]}
       />

@@ -35,17 +35,17 @@ import {
 } from "../../config";
 
 // custom components we built to handle elasticsearch data
-import ResultsList from "../../components/ResultsList/index.jsx";
-import ReactiveMap from "../../components/ReactiveMap/index.jsx";
-import IdQueryHandler from "../../components/IdQueryHandler/index.jsx";
-import SearchQuery from "../../components/SearchQuery/index.jsx";
+import ResultsList from "../../components/ResultsList";
+import ReactiveMap from "../../components/ReactiveMap";
+import IdQueryHandler from "../../components/IdQueryHandler";
+import SearchQuery from "../../components/SearchQuery";
 
 // custom utility components
 import {
   OnDemandButton,
   TriggerRulesButton,
   ScrollTop
-} from "../../components/Buttons/index.jsx";
+} from "../../components/Buttons";
 
 import "./style.css"; // main style sheet for the Toca page
 

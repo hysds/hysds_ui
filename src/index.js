@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Routes from "./pages/Routes.jsx";
+import Routes from "./pages/Routes";
 
 import { Provider } from "react-redux";
-import store from "./redux/store/index.js";
+import store from "./redux/store";
 
 const Application = (
   <Provider store={store}>

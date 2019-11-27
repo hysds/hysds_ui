@@ -6,9 +6,9 @@ import {
   Redirect
 } from "react-router-dom";
 
-import Tosca from "./Tosca/index.jsx";
-import MetadataViewer from "./MetadataViewer/index.jsx";
-import ToscaOnDemand from "../pages/ToscaOnDemand/index.jsx";
+import Tosca from "./Tosca";
+import MetadataViewer from "./MetadataViewer";
+import ToscaOnDemand from "../pages/ToscaOnDemand";
 
 export default function Routes(props) {
   let router = (

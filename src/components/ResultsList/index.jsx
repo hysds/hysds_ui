@@ -5,8 +5,8 @@ import { connect } from "react-redux"; // redux
 import { retrieveData } from "../../redux/actions/index";
 
 import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
-import ToggleListView from "../ToggleListView/index.jsx";
-import DataTable from "../DataTable/index.jsx";
+import ToggleListView from "../ToggleListView";
+import DataTable from "../DataTable";
 
 import { SORT_OPTIONS } from "../../config";
 import "./style.css";
@@ -176,7 +176,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(ResultsList);
+export default connect(null, mapDispatchToProps)(ResultsList);

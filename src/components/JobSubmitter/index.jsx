@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import Select from "react-select";
 
-import { Border } from "../miscellaneous/index.jsx";
+import { Border } from "../miscellaneous";
 
 import "./style.css";
 

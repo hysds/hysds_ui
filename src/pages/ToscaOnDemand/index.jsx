@@ -1,13 +1,13 @@
 import React, { Fragment } from "react";
 
-import QueryEditor from "../../components/QueryEditor/index.jsx";
-import JobSubmitter from "../../components/JobSubmitter/index.jsx";
-import JobParams from "../../components/JobParams/index.jsx";
+import QueryEditor from "../../components/QueryEditor";
+import JobSubmitter from "../../components/JobSubmitter";
+import JobParams from "../../components/JobParams";
 import {
   Border,
   SubmitStatusBar
-} from "../../components/miscellaneous/index.jsx";
-import { SubmitOnDemandJobButton } from "../../components/Buttons/index.jsx";
+} from "../../components/miscellaneous";
+import { SubmitOnDemandJobButton } from "../../components/Buttons";
 
 import { connect } from "react-redux";
 import {

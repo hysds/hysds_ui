@@ -121,7 +121,7 @@ export const getParamsList = jobType => dispatch => {
     .then(data => {
       dispatch({
         type: LOAD_JOB_PARAMS,
-        payload: data.result
+        payload: data
       });
     });
 };

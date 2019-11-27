@@ -5,7 +5,8 @@
 }
 
 .input-wrapper {
-  display: table;
+  /* display: table; */
+  display: flex;
   width: 100%;
   margin-top: 20px;
   margin-bottom: 20px;
@@ -18,6 +19,7 @@
 }
 
 .on-demand-input {
+  flex: 1;
   box-sizing: border-box;
   margin-left: 2px;
   margin-right: 2px;
@@ -39,8 +41,10 @@
 }
 
 .input-label {
-  display: table-cell;
-  width: 73px;
+  display: flex;
+  margin-top: 10px;
+  margin-right: 10px;
+  min-width: 73px;
 }
 
 .on-demand-input:focus {

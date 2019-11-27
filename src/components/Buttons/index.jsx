@@ -27,12 +27,13 @@ export const ScrollTop = () => (
   />
 );
 
-export const SubmitButton = props => {
-  const onClick = () => console.log("job submission button clicked");
-  const className = props.disabled ? "submit-button disabled" : "submit-button active";
+export const SubmitOnDemandJobButton = props => {
+  const className = props.disabled
+    ? "submit-button disabled"
+    : "submit-button active";
 
   return (
-    <button disabled={props.disabled} onClick={onClick} className={className}>
+    <button disabled={props.disabled} className={className} {...props}>
       Submit
     </button>
   );

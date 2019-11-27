@@ -38,89 +38,8 @@ class JobSubmitter extends React.Component {
   _handleQueueChange = e => this.props.changeQueue(e.value);
   _handleEditPriority = e => this.props.editJobPriority(e.value);
 
-  _handleJobParamInputChange = e => {
-    const payload = {
-      name: e.target.name,
-      value: e.target.value
-    };
-    this.props.editParams(payload);
-  };
-
-  _handleJobParamDropdownChange = (e, v) => {
-    const payload = {
-      name: v.name,
-      value: e.value
-    };
-    this.props.editParams(payload);
-  };
-
-  _renderParamsList = () => {
-    const { params } = this.props;
-
-    return this.props.paramsList.map(param => {
-      const paramName = param.name;
-      const value = params[paramName];
-
-      switch (param.type) {
-        case "number":
-          return (
-            <div className="input-wrapper" key={paramName}>
-              <div className="input-label">{paramName}:</div>
-              <input
-                type="number"
-                step="1"
-                value={value || ""}
-                name={paramName}
-                onChange={this._handleJobParamInputChange}
-                className="on-demand-input"
-                required={param.optional ? false : true}
-              />
-            </div>
-          );
-        case "enum":
-          return (
-            <section className="dropdown-wrapper" key={paramName}>
-              <div className="dropdown-label">{paramName}:</div>
-              <div className="react-select-wrapper">
-                <Select
-                  label={paramName}
-                  value={value ? { label: value, value: value || "" } : null}
-                  name={paramName}
-                  options={param.enumerables.map(option => ({
-                    label: option,
-                    value: option
-                  }))}
-                  onChange={this._handleJobParamDropdownChange}
-                  styles={param.optional ? null : customSelectStyles}
-                />
-              </div>
-            </section>
-          );
-        default:
-          return (
-            <div className="input-wrapper" key={paramName}>
-              <div className="input-label">{paramName}:</div>
-              <input
-                type="text"
-                value={value || ""}
-                name={paramName}
-                placeholder="Required"
-                onChange={this._handleJobParamInputChange}
-                className="on-demand-input"
-                required={param.optional ? false : true}
-              />
-            </div>
-          );
-      }
-    });
-  };
-
   render() {
-    const { jobs, queueList, queue, paramsList } = this.props;
-
-    const renderedParamsList = this._renderParamsList();
-
-    const divider = paramsList.length > 0 ? <Border /> : null;
+    const { jobs, queueList, queue } = this.props;
 
     return (
       <Fragment>
@@ -176,9 +95,6 @@ class JobSubmitter extends React.Component {
             />
           </div>
         </section>
-
-        {divider}
-        {renderedParamsList}
       </Fragment>
     );
   }
@@ -196,7 +112,6 @@ JobSubmitter.propTypes = {
 const mapDispatchToProps = (dispatch, ownProps) => ({
   changeJobType: jobType => dispatch(ownProps.changeJobType(jobType)),
   getParamsList: jobType => dispatch(ownProps.getParamsList(jobType)),
-  editParams: param => dispatch(ownProps.editParams(param)),
   getQueueList: jobType => dispatch(ownProps.getQueueList(jobType)),
   changeQueue: queue => dispatch(ownProps.changeQueue(queue)),
   editTags: tag => dispatch(ownProps.editTags(tag)),

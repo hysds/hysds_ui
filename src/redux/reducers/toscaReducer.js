@@ -26,10 +26,12 @@ const initialState = {
   priority: null,
   jobList: [],
   jobType: null,
+  hysdsio: null,
   queueList: [],
   queue: null,
   paramsList: [],
   params: {},
+  submissionType: null,
   tags: null
 };
 
@@ -60,18 +62,25 @@ const toscaReducer = (state = initialState, action) => {
         validQuery: action.payload
       };
     case GET_JOB_LIST:
+      const jobList = action.payload.map(job => ({
+        label: job.version ? `${job.label} [${job.version}]` : job.label,
+        value: job.value
+      }));
       return {
         ...state,
-        jobList: action.payload
+        jobList
       };
     case LOAD_JOB_PARAMS:
+      const params = action.payload.params;
+
       let defaultParams = {};
-      action.payload.map(
-        param => (defaultParams[[param.name]] = param.default || null)
-      );
+      params.map(p => (defaultParams[p.name] = p.default || null));
+
       return {
         ...state,
-        paramsList: action.payload,
+        paramsList: params,
+        submissionType: action.payload.submission_type,
+        hysdsio: action.payload.hysds_io,
         params: defaultParams
       };
     case CHANGE_JOB_TYPE:

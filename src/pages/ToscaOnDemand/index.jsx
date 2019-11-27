@@ -3,6 +3,7 @@ import React, { Fragment } from "react";
 import QueryEditor from "../../components/QueryEditor/index.jsx";
 import JobSubmitter from "../../components/JobSubmitter/index.jsx";
 import JobParams from "../../components/JobParams/index.jsx";
+import { Border } from "../../components/miscellaneous/index.jsx";
 import { SubmitOnDemandJobButton } from "../../components/Buttons/index.jsx";
 
 import { connect } from "react-redux";
@@ -71,6 +72,7 @@ class ToscaOnDemand extends React.Component {
   render() {
     let { query, paramsList, params, hysdsio } = this.props;
     const validSubmission = this._validateSubmission();
+    const divider = paramsList.length > 0 ? <Border /> : null;
 
     return (
       <Fragment>
@@ -95,6 +97,8 @@ class ToscaOnDemand extends React.Component {
               editTags={editTags}
               {...this.props}
             />
+            {divider}
+            <h2>{hysdsio}</h2>
             <JobParams
               editParams={editParams}
               paramsList={paramsList}

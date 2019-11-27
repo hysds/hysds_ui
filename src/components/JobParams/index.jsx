@@ -1,10 +1,8 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import Select from "react-select";
-
-import { Border } from "../miscellaneous/index.jsx";
 
 import "./style.css";
 
@@ -111,18 +109,8 @@ class JobParams extends React.Component {
   };
 
   render() {
-    const { paramsList, hysdsio } = this.props;
-
     const renderedParamsList = this._renderParamsList();
-    const divider = paramsList.length > 0 ? <Border /> : null;
-
-    return (
-      <Fragment>
-        {divider}
-        <h2>{hysdsio}</h2>
-        {renderedParamsList}
-      </Fragment>
-    );
+    return renderedParamsList;
   }
 }
 

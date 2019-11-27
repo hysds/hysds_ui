@@ -3,7 +3,10 @@ import React, { Fragment } from "react";
 import QueryEditor from "../../components/QueryEditor/index.jsx";
 import JobSubmitter from "../../components/JobSubmitter/index.jsx";
 import JobParams from "../../components/JobParams/index.jsx";
-import { Border } from "../../components/miscellaneous/index.jsx";
+import {
+  Border,
+  SubmitStatusBar
+} from "../../components/miscellaneous/index.jsx";
 import { SubmitOnDemandJobButton } from "../../components/Buttons/index.jsx";
 
 import { connect } from "react-redux";
@@ -25,6 +28,15 @@ import { GRQ_REST_API_V1 } from "../../config";
 import "./style.css";
 
 class ToscaOnDemand extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      submitInProgress: 0,
+      submitSuccess: 0,
+      submitFailed: 0
+    };
+  }
+
   componentDidMount() {
     this.props.getOnDemandJobs();
   }
@@ -40,7 +52,7 @@ class ToscaOnDemand extends React.Component {
     } = this.props;
 
     let validSubmission = true;
-    if (!validQuery || !tags || !jobType || !priority) validSubmission = false;
+    if (!validQuery || !tags || !jobType || !priority) return false;
 
     paramsList.map(param => {
       const paramName = param.name;
@@ -51,6 +63,8 @@ class ToscaOnDemand extends React.Component {
   };
 
   _handleJobSubmit = () => {
+    this.setState({ submitInProgress: 1 });
+
     const headers = { "Content-Type": "application/json" };
     const data = {
       tags: this.props.tags,
@@ -66,14 +80,26 @@ class ToscaOnDemand extends React.Component {
     const jobSubmitUrl = `${GRQ_REST_API_V1}/grq/on-demand`;
     fetch(jobSubmitUrl, { method: "POST", headers, body: JSON.stringify(data) })
       .then(res => res.json())
-      .then(data => console.log(data));
+      .then(data => {
+        console.log(data);
+        this.setState({ submitInProgress: 0, submitSuccess: 1 });
+        setTimeout(() => this.setState({ submitSuccess: 0 }), 3000);
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({ submitInProgress: 0, submitFailed: 1 });
+        setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
+      });
   };
 
   render() {
     let { query, paramsList, params, hysdsio } = this.props;
-    const validSubmission = this._validateSubmission();
+    const { submitInProgress, submitSuccess, submitFailed } = this.state;
+
     const divider = paramsList.length > 0 ? <Border /> : null;
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
+
+    const validSubmission = this._validateSubmission();
 
     return (
       <Fragment>
@@ -104,14 +130,20 @@ class ToscaOnDemand extends React.Component {
               editParams={editParams}
               paramsList={paramsList}
               params={params}
-              hysdsio={hysdsio}
             />
             <SubmitOnDemandJobButton
               disabled={!validSubmission}
               onClick={this._handleJobSubmit}
+              loading={submitInProgress}
             />
           </div>
         </div>
+        <SubmitStatusBar label="Job Submitted!" visible={submitSuccess} />
+        <SubmitStatusBar
+          label="Job Submission Failed"
+          visible={submitFailed}
+          status="failed"
+        />
       </Fragment>
     );
   }

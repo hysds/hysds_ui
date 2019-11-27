@@ -1,5 +1,33 @@
+/* Border */
 .job-param-border {
   border: 1px solid #000000b0;
   margin-top: 35px;
   margin-bottom: 35px;
+}
+
+/* Status Bar */
+.job-submit-status-bar {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  text-align: center;
+  color: #ffffff;
+  z-index: 100;
+  font-size: 35px;
+  width: 100%;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.success {
+  background: #19b519;
+}
+
+.failed {
+  background: red;
+}
+
+.status-hidden {
+  opacity: 0;
+  transition: all 400ms linear;
 }

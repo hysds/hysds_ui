@@ -1,4 +1,6 @@
 import React from "react";
+
+import "font-awesome/css/font-awesome.min.css";
 import "./style.css";
 
 import upArrow from "../../images/arrow-up.png";
@@ -32,9 +34,16 @@ export const SubmitOnDemandJobButton = props => {
     ? "submit-button disabled"
     : "submit-button active";
 
+  let label = props.label || "Submit";
+  label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
+
   return (
-    <button disabled={props.disabled} className={className} {...props}>
-      Submit
+    <button
+      disabled={props.disabled || props.loading}
+      className={className}
+      {...props}
+    >
+      {label}
     </button>
   );
 };

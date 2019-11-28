@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { connect } from "react-redux"; // redux
-import { retrieveData } from "../../redux/actions/index";
+import { retrieveData } from "../../redux/actions";
 
 import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
 import ToggleListView from "../ToggleListView";

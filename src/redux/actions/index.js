@@ -19,13 +19,6 @@ import {
 
 import { GRQ_REST_API_V1, MOZART_REST_API_V2 } from "../../config";
 
-// example action (in case we need to make API requets)
-export const getData = n => async dispatch => {
-  let req = await fetch("https://jsonplaceholder.typicode.com/posts");
-  const json = req.json();
-  return dispatch({ type: "DATA_LOADED", payload: json.slice(0, n) });
-};
-
 // ********************************************************************** //
 // REACTIVESEARCH ACTIONS
 export const clickDatasetId = payload => ({

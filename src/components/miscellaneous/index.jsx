@@ -1,9 +1,7 @@
 import React from "react";
 import "./style.css";
 
-export const Border = () => {
-  return <hr className="job-param-border" />;
-};
+export const Border = () => <hr className="job-param-border" />;
 
 export const SubmitStatusBar = props => {
   const label = props.label || "Please input label";

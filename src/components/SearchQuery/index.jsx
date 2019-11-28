@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux"; // redux
-import { updateSearchQuery } from "../../redux/actions/index";
+import { updateSearchQuery } from "../../redux/actions";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 
 import "./style.css";

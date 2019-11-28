@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux"; // redux
-import { clickDatasetId } from "../../redux/actions/index";
+import { clickDatasetId } from "../../redux/actions";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 
 class ConnectLogicHandler extends React.Component {

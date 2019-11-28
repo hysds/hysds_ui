@@ -11,7 +11,7 @@ import {
   getQuery,
   clearAllCustomComponents,
   clearCustomComponent
-} from "../../redux/actions/index";
+} from "../../redux/actions";
 
 import {
   GRQ_ES_URL,

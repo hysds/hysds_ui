@@ -3,10 +3,7 @@ import React, { Fragment } from "react";
 import QueryEditor from "../../components/QueryEditor";
 import JobSubmitter from "../../components/JobSubmitter";
 import JobParams from "../../components/JobParams";
-import {
-  Border,
-  SubmitStatusBar
-} from "../../components/miscellaneous";
+import { Border, SubmitStatusBar } from "../../components/miscellaneous";
 import { SubmitOnDemandJobButton } from "../../components/Buttons";
 
 import { connect } from "react-redux";
@@ -133,6 +130,7 @@ class ToscaOnDemand extends React.Component {
             />
             <SubmitOnDemandJobButton
               disabled={!validSubmission}
+              // disabled={!validSubmission || submitInProgress}
               onClick={this._handleJobSubmit}
               loading={submitInProgress}
             />

@@ -39,7 +39,7 @@ class JobSubmitter extends React.Component {
   _handleEditPriority = e => this.props.editJobPriority(e.value);
 
   render() {
-    const { jobs, queueList, queue } = this.props;
+    const { jobType, jobs, queueList, queue, priority, tags } = this.props;
 
     return (
       <Fragment>
@@ -50,6 +50,7 @@ class JobSubmitter extends React.Component {
             placeholder="Required"
             name="tag"
             onChange={this._handleTagInput}
+            value={tags || ""}
             className="on-demand-input"
             required
           />
@@ -62,6 +63,10 @@ class JobSubmitter extends React.Component {
               label="Select Job"
               name="job"
               options={jobs}
+              value={{
+                label: jobType || "",
+                value: jobType || ""
+              }}
               onChange={this._handleJobChange}
               styles={customSelectStyles}
             />
@@ -89,6 +94,10 @@ class JobSubmitter extends React.Component {
             <Select
               label="Priority"
               name="priority"
+              value={{
+                label: priority || "",
+                value: priority || ""
+              }}
               options={this.priorityList}
               onChange={this._handleEditPriority}
               styles={customSelectStyles}

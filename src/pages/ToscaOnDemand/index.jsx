@@ -36,6 +36,8 @@ class ToscaOnDemand extends React.Component {
 
   componentDidMount() {
     this.props.getOnDemandJobs();
+    this.props.getQueueList(this.props.jobType);
+    this.props.getParamsList(this.props.jobType);
   }
 
   _validateSubmission = () => {
@@ -98,6 +100,8 @@ class ToscaOnDemand extends React.Component {
 
     const validSubmission = this._validateSubmission();
 
+    // console.log(this.props);
+
     return (
       <Fragment>
         <div className="split on-demand-left">
@@ -110,7 +114,7 @@ class ToscaOnDemand extends React.Component {
 
         <div className="split on-demand-right">
           <div className="on-demand-submitter-wrapper">
-            total records: {this.props.dataCount}
+            <h1>Total Records: {this.props.dataCount}</h1>
             <JobSubmitter
               changeJobType={changeJobType} // all redux actions
               getParamsList={getParamsList}
@@ -119,7 +123,19 @@ class ToscaOnDemand extends React.Component {
               changeQueue={changeQueue}
               editJobPriority={editJobPriority}
               editTags={editTags}
-              {...this.props}
+              query={this.props.query}
+              validQuery={this.props.validQuery}
+              jobs={this.props.jobs}
+              jobType={this.props.jobType}
+              hysdsio={this.props.hysdsio}
+              queueList={this.props.queueList}
+              queue={this.props.queue}
+              priority={this.props.priority}
+              paramsList={this.props.paramsList}
+              params={this.props.params}
+              tags={this.props.tags}
+              submissionType={this.props.submissionType}
+              dataCount={this.props.dataCount}
             />
             {divider}
             {hysdsioLabel}
@@ -128,12 +144,15 @@ class ToscaOnDemand extends React.Component {
               paramsList={paramsList}
               params={params}
             />
-            <SubmitOnDemandJobButton
-              disabled={!validSubmission}
-              // disabled={!validSubmission || submitInProgress}
-              onClick={this._handleJobSubmit}
-              loading={submitInProgress}
-            />
+            <div className="on-demand-button-wrapper">
+              <SubmitOnDemandJobButton
+                // disabled={!validSubmission}
+                disabled={!validSubmission || submitInProgress}
+                onClick={this._handleJobSubmit}
+                loading={submitInProgress}
+              />
+              <button className="query-checker-button">Query Checker</button>
+            </div>
           </div>
         </div>
         <SubmitStatusBar label="Job Submitted!" visible={submitSuccess} />
@@ -164,7 +183,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  getOnDemandJobs: () => dispatch(getOnDemandJobs())
+  getOnDemandJobs: () => dispatch(getOnDemandJobs()),
+  getQueueList: jobType => dispatch(getQueueList(jobType)),
+  getParamsList: jobType => dispatch(getParamsList(jobType))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ToscaOnDemand);

@@ -33,3 +33,7 @@ body {
 .on-demand-right {
   right: 0;
 }
+
+.on-demand-button-wrapper {
+  padding: 10px;
+}

@@ -43,6 +43,7 @@
   display: inline-block;
   font-size: 15px;
   min-width: 100px;
+  margin: 10px;
 }
 
 .submit-button:focus {
@@ -55,6 +56,25 @@
 
 .disabled {
   opacity: 0.5;
+}
+
+.query-checker-button {
+  background: #48a748;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  font-size: 15px;
+  border-radius: 5px;
+  margin: 10px;
+}
+
+.query-checker-button:focus {
+  outline: 0;
+}
+
+.query-checker-button:hover {
+  transition: background-color 0.2s;
+  background: #1a711a;
 }
 
 .active:hover {

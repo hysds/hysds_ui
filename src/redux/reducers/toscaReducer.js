@@ -13,7 +13,12 @@ import {
   EDIT_TAG
 } from "../constants";
 
+import { constructUrl, sanitizePriority } from "../../utils";
+
 const urlParams = new URLSearchParams(window.location.search);
+
+let priority = urlParams.get("priority");
+priority = sanitizePriority(priority);
 
 const initialState = {
   // main page
@@ -23,16 +28,16 @@ const initialState = {
   // on-demand
   query: urlParams.get("query") || null,
   validQuery: true,
-  priority: null,
+  priority: priority || null,
   jobList: [],
-  jobType: null,
+  jobType: urlParams.get("job_type") || null,
   hysdsio: null,
   queueList: [],
   queue: null,
   paramsList: [],
   params: {},
   submissionType: null,
-  tags: null
+  tags: urlParams.get("tags") || null
 };
 
 const toscaReducer = (state = initialState, action) => {
@@ -84,9 +89,13 @@ const toscaReducer = (state = initialState, action) => {
         params: defaultParams
       };
     case CHANGE_JOB_TYPE:
+      const jobType = action.payload;
+      urlParams.set("job_type", jobType);
+      history.pushState({}, "", constructUrl(urlParams));
+
       return {
         ...state,
-        jobType: action.payload
+        jobType
       };
     case LOAD_QUEUE_LIST:
       const queueList = action.payload.queues;
@@ -105,14 +114,22 @@ const toscaReducer = (state = initialState, action) => {
         queue: action.payload
       };
     case EDIT_PRIORITY:
+      const priority = action.payload;
+      urlParams.set("priority", priority);
+      history.pushState({}, "", constructUrl(urlParams));
+
       return {
         ...state,
-        priority: action.payload
+        priority
       };
     case EDIT_TAG:
+      const tags = action.payload;
+      urlParams.set("tags", tags);
+      history.pushState({}, "", constructUrl(urlParams));
+
       return {
         ...state,
-        tags: action.payload
+        tags
       };
     case EDIT_JOB_PARAMS:
       const newParams = {

@@ -10,7 +10,8 @@ import {
   CHANGE_JOB_TYPE,
   LOAD_QUEUE_LIST,
   CHANGE_QUEUE,
-  EDIT_TAG
+  EDIT_TAG,
+  EDIT_DATA_COUNT
 } from "../constants";
 
 import {
@@ -154,10 +155,14 @@ const toscaReducer = (state = initialState, action) => {
         ...{ [action.payload.name]: action.payload.value }
       };
       editUrlJobParam(action.payload.name, action.payload.value);
-
       return {
         ...state,
         params: newParams
+      };
+    case EDIT_DATA_COUNT:
+      return {
+        ...state,
+        dataCount: action.payload
       };
     default:
       return state;

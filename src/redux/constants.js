@@ -19,3 +19,4 @@ export const LOAD_QUEUE_LIST = "LOAD_QUEUE_LIST";
 export const CHANGE_QUEUE = "CHANGE_QUEUE";
 export const EDIT_TAG = "EDIT_TAG";
 export const EDIT_JOB_PARAMS = "EDIT_JOB_PARAMS";
+export const EDIT_DATA_COUNT = "EDIT_DATA_COUNT";

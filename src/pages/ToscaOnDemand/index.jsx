@@ -4,7 +4,10 @@ import QueryEditor from "../../components/QueryEditor";
 import JobSubmitter from "../../components/JobSubmitter";
 import JobParams from "../../components/JobParams";
 import { Border, SubmitStatusBar } from "../../components/miscellaneous";
-import { SubmitOnDemandJobButton } from "../../components/Buttons";
+import {
+  SubmitOnDemandJobButton,
+  QueryCheckerButton
+} from "../../components/Buttons";
 
 import { connect } from "react-redux";
 import {
@@ -17,7 +20,8 @@ import {
   editParams,
   getQueueList,
   changeQueue,
-  editTags
+  editTags,
+  editDataCount
 } from "../../redux/actions";
 
 import { GRQ_REST_API_V1 } from "../../config";
@@ -64,6 +68,10 @@ class ToscaOnDemand extends React.Component {
     return validSubmission;
   };
 
+  _checkQueryDataCount = () => {
+    this.props.editDataCount(this.props.query);
+  };
+
   _handleJobSubmit = () => {
     this.setState({ submitInProgress: 1 });
 
@@ -95,15 +103,13 @@ class ToscaOnDemand extends React.Component {
   };
 
   render() {
-    let { query, paramsList, params, hysdsio } = this.props;
+    let { query, paramsList, params, hysdsio, validQuery } = this.props;
     const { submitInProgress, submitSuccess, submitFailed } = this.state;
 
     const divider = paramsList.length > 0 ? <Border /> : null;
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
 
     const validSubmission = this._validateSubmission();
-
-    // console.log(this.props);
 
     return (
       <Fragment>
@@ -117,7 +123,11 @@ class ToscaOnDemand extends React.Component {
 
         <div className="split on-demand-right">
           <div className="on-demand-submitter-wrapper">
-            <h1>Total Records: {this.props.dataCount}</h1>
+            <div className="data-count-header">
+              {/* <p> */}
+              Total Records: {this.props.dataCount || "N/A"}
+              {/* </p> */}
+            </div>
             <JobSubmitter
               changeJobType={changeJobType} // all redux actions
               getParamsList={getParamsList}
@@ -149,12 +159,14 @@ class ToscaOnDemand extends React.Component {
             />
             <div className="on-demand-button-wrapper">
               <SubmitOnDemandJobButton
-                // disabled={!validSubmission}
                 disabled={!validSubmission || submitInProgress}
                 onClick={this._handleJobSubmit}
                 loading={submitInProgress}
               />
-              <button className="query-checker-button">Query Checker</button>
+              <QueryCheckerButton
+                onClick={this._checkQueryDataCount}
+                disabled={!validQuery}
+              />
             </div>
           </div>
         </div>
@@ -188,7 +200,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getOnDemandJobs: () => dispatch(getOnDemandJobs()),
   getQueueList: jobType => dispatch(getQueueList(jobType)),
-  getParamsList: jobType => dispatch(getParamsList(jobType))
+  getParamsList: jobType => dispatch(getParamsList(jobType)),
+  editDataCount: query => dispatch(editDataCount(query))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ToscaOnDemand);

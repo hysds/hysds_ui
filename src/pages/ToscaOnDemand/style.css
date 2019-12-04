@@ -37,3 +37,9 @@ body {
 .on-demand-button-wrapper {
   padding: 10px;
 }
+
+.data-count-header {
+  font-size: 25px;
+  /* font-weight: 500; */
+  padding: 15px;
+}

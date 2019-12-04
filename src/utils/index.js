@@ -73,7 +73,7 @@ exports.validateUrlQueryParam = query => {
     let parsedQuery = JSON.parse(query);
     urlQueryParam = JSON.stringify(parsedQuery);
   } catch (err) {
-    urlQueryParam = JSON.stringify({ match_all: {} });
+    urlQueryParam = query;
   }
   params.set("query", urlQueryParam);
   const newUrl = `${location.origin}${location.pathname}?${params.toString()}`;

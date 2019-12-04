@@ -39,11 +39,27 @@ export const SubmitOnDemandJobButton = props => {
 
   return (
     <button
-      disabled={props.disabled || props.loading}
       className={className}
+      disabled={props.disabled || props.loading}
       {...props}
     >
       {label}
+    </button>
+  );
+};
+
+export const QueryCheckerButton = props => {
+  let className = "query-checker-button";
+  if (props.disabled) className = `${className} disabled`;
+
+  const label = props.loading ? (
+    <i className="fa fa-spinner fa-spin"></i>
+  ) : (
+    label
+  );
+  return (
+    <button className={className} disabled={props.disabled} {...props}>
+      Data Count Check
     </button>
   );
 };

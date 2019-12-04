@@ -10,10 +10,26 @@ import {
   CHANGE_JOB_TYPE,
   LOAD_QUEUE_LIST,
   CHANGE_QUEUE,
-  EDIT_TAG
+  EDIT_TAG,
+  EDIT_DATA_COUNT
 } from "../constants";
 
+import {
+  constructUrl,
+  sanitizePriority,
+  validateUrlJob,
+  extractJobParams,
+  clearUrlJobParams,
+  editUrlJobParam,
+  validateUrlQueryParam
+} from "../../utils";
+
 const urlParams = new URLSearchParams(window.location.search);
+
+let priority = urlParams.get("priority");
+priority = sanitizePriority(priority);
+
+let defaultUrlJobParams = extractJobParams(urlParams);
 
 const initialState = {
   // main page
@@ -23,16 +39,16 @@ const initialState = {
   // on-demand
   query: urlParams.get("query") || null,
   validQuery: true,
-  priority: null,
+  priority: priority || null,
   jobList: [],
-  jobType: null,
+  jobType: urlParams.get("job_type") || null,
   hysdsio: null,
   queueList: [],
   queue: null,
   paramsList: [],
-  params: {},
+  params: defaultUrlJobParams || {},
   submissionType: null,
-  tags: null
+  tags: urlParams.get("tags") || null
 };
 
 const toscaReducer = (state = initialState, action) => {
@@ -52,6 +68,7 @@ const toscaReducer = (state = initialState, action) => {
 
     // on-demand page
     case EDIT_QUERY:
+      validateUrlQueryParam(action.payload);
       return {
         ...state,
         query: action.payload
@@ -66,15 +83,22 @@ const toscaReducer = (state = initialState, action) => {
         label: job.version ? `${job.label} [${job.version}]` : job.label,
         value: job.value
       }));
+
       return {
         ...state,
-        jobList
+        jobList,
+        jobType: validateUrlJob(state.jobType, action.payload)
+          ? state.jobType
+          : ""
       };
     case LOAD_JOB_PARAMS:
-      const params = action.payload.params;
+      const params = action.payload.params || [];
 
       let defaultParams = {};
-      params.map(p => (defaultParams[p.name] = p.default || null));
+      params.map(p => {
+        let name = p.name;
+        defaultParams[name] = p.default || state.params[name] || null; // THIS IS THE BUG
+      });
 
       return {
         ...state,
@@ -84,9 +108,14 @@ const toscaReducer = (state = initialState, action) => {
         params: defaultParams
       };
     case CHANGE_JOB_TYPE:
+      const newJobType = action.payload;
+      clearUrlJobParams(urlParams);
+      constructUrl("job_type", newJobType);
+
       return {
         ...state,
-        jobType: action.payload
+        jobType: newJobType,
+        params: {}
       };
     case LOAD_QUEUE_LIST:
       const queueList = action.payload.queues;
@@ -105,23 +134,35 @@ const toscaReducer = (state = initialState, action) => {
         queue: action.payload
       };
     case EDIT_PRIORITY:
+      const priority = action.payload;
+      constructUrl("priority", priority);
+
       return {
         ...state,
-        priority: action.payload
+        priority
       };
     case EDIT_TAG:
+      const tags = action.payload;
+      constructUrl("tags", tags);
+
       return {
         ...state,
-        tags: action.payload
+        tags
       };
     case EDIT_JOB_PARAMS:
       const newParams = {
         ...state.params,
         ...{ [action.payload.name]: action.payload.value }
       };
+      editUrlJobParam(action.payload.name, action.payload.value);
       return {
         ...state,
         params: newParams
+      };
+    case EDIT_DATA_COUNT:
+      return {
+        ...state,
+        dataCount: action.payload
       };
     default:
       return state;

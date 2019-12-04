@@ -14,10 +14,16 @@ import {
   CHANGE_JOB_TYPE,
   LOAD_QUEUE_LIST,
   CHANGE_QUEUE,
-  EDIT_TAG
+  EDIT_TAG,
+  EDIT_DATA_COUNT
 } from "../constants.js";
 
-import { GRQ_REST_API_V1, MOZART_REST_API_V2 } from "../../config";
+import {
+  GRQ_REST_API_V1,
+  MOZART_REST_API_V2,
+  GRQ_ES_URL,
+  GRQ_ES_INDICES
+} from "../../config";
 
 // ********************************************************************** //
 // REACTIVESEARCH ACTIONS
@@ -128,3 +134,28 @@ export const editParams = payload => ({
   type: EDIT_JOB_PARAMS,
   payload
 });
+
+export const editDataCount = query => dispatch => {
+  const ES_QUERY_DATA_COUNT_ENDPOINT = `${GRQ_ES_URL}/${GRQ_ES_INDICES}/_search?size=0`;
+
+  try {
+    let parsedQuery = { query: JSON.parse(query) };
+
+    const headers = {
+      headers: { "Content-Type": "application/json" },
+      method: "POST",
+      body: JSON.stringify(parsedQuery)
+    };
+
+    fetch(ES_QUERY_DATA_COUNT_ENDPOINT, headers)
+      .then(res => res.json())
+      .then(data => {
+        if (data.status && data.status != 200)
+          dispatch({ type: EDIT_DATA_COUNT, payload: null });
+        else
+          dispatch({ type: EDIT_DATA_COUNT, payload: data.hits.total.value });
+      });
+  } catch (err) {
+    dispatch({ type: EDIT_DATA_COUNT, payload: null });
+  }
+};

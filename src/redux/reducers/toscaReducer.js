@@ -19,7 +19,8 @@ import {
   validateUrlJob,
   extractJobParams,
   clearUrlJobParams,
-  editUrlJobParam
+  editUrlJobParam,
+  validateUrlQueryParam
 } from "../../utils";
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -66,6 +67,7 @@ const toscaReducer = (state = initialState, action) => {
 
     // on-demand page
     case EDIT_QUERY:
+      validateUrlQueryParam(action.payload);
       return {
         ...state,
         query: action.payload

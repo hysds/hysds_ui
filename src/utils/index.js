@@ -65,3 +65,17 @@ exports.editUrlJobParam = (key, value) => {
   const newUrl = `${location.origin}${location.pathname}?${params.toString()}`;
   history.pushState({}, "", newUrl);
 };
+
+exports.validateUrlQueryParam = query => {
+  const params = new URLSearchParams(location.search);
+  let urlQueryParam;
+  try {
+    let parsedQuery = JSON.parse(query);
+    urlQueryParam = JSON.stringify(parsedQuery);
+  } catch (err) {
+    urlQueryParam = JSON.stringify({ match_all: {} });
+  }
+  params.set("query", urlQueryParam);
+  const newUrl = `${location.origin}${location.pathname}?${params.toString()}`;
+  history.pushState({}, "", newUrl);
+};

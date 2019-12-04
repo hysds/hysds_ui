@@ -17,7 +17,6 @@ class JsonEditor extends React.Component {
 
   _validateESQuery = err => {
     // disable submit job button
-    // if (err.length > 0) console.log(err);
     const isValid = err.length > 0 ? false : true;
     this.props.validateQuery(isValid);
   };

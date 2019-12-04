@@ -47,13 +47,14 @@ class ToscaOnDemand extends React.Component {
       validQuery,
       jobType,
       tags,
+      queue,
       priority,
       params,
       paramsList
     } = this.props;
 
     let validSubmission = true;
-    if (!validQuery || !tags || !jobType || !priority) return false;
+    if (!validQuery || !tags || !jobType || !priority || !queue) return false;
 
     paramsList.map(param => {
       const paramName = param.name;

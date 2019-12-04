@@ -36,8 +36,10 @@ class ToscaOnDemand extends React.Component {
 
   componentDidMount() {
     this.props.getOnDemandJobs();
-    this.props.getQueueList(this.props.jobType);
-    this.props.getParamsList(this.props.jobType);
+    if (this.props.jobType) {
+      this.props.getQueueList(this.props.jobType);
+      this.props.getParamsList(this.props.jobType);
+    }
   }
 
   _validateSubmission = () => {

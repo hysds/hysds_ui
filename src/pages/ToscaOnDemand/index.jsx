@@ -78,12 +78,12 @@ class ToscaOnDemand extends React.Component {
     const headers = { "Content-Type": "application/json" };
     const data = {
       tags: this.props.tags,
-      job_type: this.props.jobType,
+      job_type: this.props.hysdsio,
       hysds_io: this.props.hysdsio,
       queue: this.props.queue,
       priority: this.props.priority,
       query: this.props.query,
-      kwargs: this.props.params
+      kwargs: JSON.stringify(this.props.params)
     };
     console.log(data);
 

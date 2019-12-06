@@ -171,14 +171,14 @@ class Tosca extends React.Component {
               dataField="metadata.track_number"
               title="Track Number"
               URLParams={true}
-              className="reactivesearch-input"
+              className="reactivesearch-input reactivesearch-multilist"
             />
             <MultiList
               componentId={TRACK_NUMBER_ID_OLD}
               dataField="metadata.trackNumber"
               title="Track Number (Old)"
               URLParams={true}
-              className="reactivesearch-input"
+              className="reactivesearch-input reactivesearch-multilist"
             />
           </div>
 

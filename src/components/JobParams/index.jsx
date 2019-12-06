@@ -13,31 +13,27 @@ const customSelectStyles = {
   })
 };
 
-class JobParams extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  _handleJobParamInputChange = e => {
+const JobParams = props => {
+  const _handleJobParamInputChange = e => {
     const payload = {
       name: e.target.name,
       value: e.target.value
     };
-    this.props.editParams(payload);
+    props.editParams(payload);
   };
 
-  _handleJobParamDropdownChange = (e, v) => {
+  const _handleJobParamDropdownChange = (e, v) => {
     const payload = {
       name: v.name,
       value: e.value
     };
-    this.props.editParams(payload);
+    props.editParams(payload);
   };
 
-  _renderParamsList = () => {
-    const { params } = this.props;
+  const _renderParamsList = () => {
+    const { params } = props;
 
-    return this.props.paramsList.map(param => {
+    return props.paramsList.map(param => {
       const paramName = param.name;
       const value = params[paramName];
 
@@ -51,7 +47,7 @@ class JobParams extends React.Component {
                 step="1"
                 value={value || ""}
                 name={paramName}
-                onChange={this._handleJobParamInputChange}
+                onChange={_handleJobParamInputChange}
                 className="params-input"
                 required={param.optional ? false : true}
               />
@@ -70,7 +66,7 @@ class JobParams extends React.Component {
                     label: option,
                     value: option
                   }))}
-                  onChange={this._handleJobParamDropdownChange}
+                  onChange={_handleJobParamDropdownChange}
                   styles={param.optional ? null : customSelectStyles}
                 />
               </div>
@@ -78,8 +74,7 @@ class JobParams extends React.Component {
           );
         case "textarea":
           let className = "params-textarea";
-          if (!param.optional && !value)
-            className = `${className} required`;
+          if (!param.optional && !value) className = `${className} required`;
 
           return (
             <div className="params-textarea-wrapper" key={paramName}>
@@ -88,7 +83,7 @@ class JobParams extends React.Component {
                 className={className}
                 name={paramName}
                 value={value || ""}
-                onChange={this._handleJobParamInputChange}
+                onChange={_handleJobParamInputChange}
               ></textarea>
             </div>
           );
@@ -101,7 +96,7 @@ class JobParams extends React.Component {
                 value={value || ""}
                 name={paramName}
                 placeholder="Required"
-                onChange={this._handleJobParamInputChange}
+                onChange={_handleJobParamInputChange}
                 className="params-input"
                 required={param.optional ? false : true}
               />
@@ -111,11 +106,9 @@ class JobParams extends React.Component {
     });
   };
 
-  render() {
-    const renderedParamsList = this._renderParamsList();
-    return renderedParamsList;
-  }
-}
+  const renderedParamsList = _renderParamsList();
+  return renderedParamsList;
+};
 
 JobParams.propTypes = {
   editParams: PropTypes.func.isRequired

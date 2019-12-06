@@ -4,8 +4,6 @@ import PropTypes from "prop-types";
 
 import Select from "react-select";
 
-import { Border } from "../miscellaneous";
-
 import "./style.css";
 
 /**
@@ -22,92 +20,87 @@ const customSelectStyles = {
   })
 };
 
-class JobSubmitter extends React.Component {
-  constructor(props) {
-    super(props);
-    this.priorityList = generatePriorityList(10);
-  }
+const JobSubmitter = props => {
+  const priorityList = generatePriorityList(10);
 
-  _handleTagInput = e => this.props.editTags(e.target.value);
-  _handleJobChange = e => {
+  const _handleTagInput = e => props.editTags(e.target.value);
+  const _handleJobChange = e => {
     const job = e.value;
-    this.props.changeJobType(job);
-    this.props.getQueueList(job);
-    this.props.getParamsList(job);
+    props.changeJobType(job);
+    props.getQueueList(job);
+    props.getParamsList(job);
   };
-  _handleQueueChange = e => this.props.changeQueue(e.value);
-  _handleEditPriority = e => this.props.editJobPriority(e.value);
+  const _handleQueueChange = e => props.changeQueue(e.value);
+  const _handleEditPriority = e => props.editJobPriority(e.value);
 
-  render() {
-    const { jobType, jobs, queueList, queue, priority, tags } = this.props;
+  const { jobType, jobs, queueList, queue, priority, tags } = props;
 
-    return (
-      <Fragment>
-        <div className="input-wrapper">
-          <div className="input-label">Tag:</div>
-          <input
-            type="text"
-            placeholder="Required"
-            name="tag"
-            onChange={this._handleTagInput}
-            value={tags || ""}
-            className="params-input"
-            required
+  return (
+    <Fragment>
+      <div className="input-wrapper">
+        <div className="input-label">Tag:</div>
+        <input
+          type="text"
+          placeholder="Required"
+          name="tag"
+          onChange={_handleTagInput}
+          value={tags || ""}
+          className="params-input"
+          required
+        />
+      </div>
+
+      <section className="dropdown-wrapper">
+        <div className="dropdown-label">Jobs:</div>
+        <div className="react-select-wrapper">
+          <Select
+            label="Select Job"
+            name="job"
+            options={jobs}
+            value={{
+              label: jobType || "",
+              value: jobType || ""
+            }}
+            onChange={_handleJobChange}
+            styles={customSelectStyles}
           />
         </div>
+      </section>
 
-        <section className="dropdown-wrapper">
-          <div className="dropdown-label">Jobs:</div>
-          <div className="react-select-wrapper">
-            <Select
-              label="Select Job"
-              name="job"
-              options={jobs}
-              value={{
-                label: jobType || "",
-                value: jobType || ""
-              }}
-              onChange={this._handleJobChange}
-              styles={customSelectStyles}
-            />
-          </div>
-        </section>
+      <section className="dropdown-wrapper">
+        <div className="dropdown-label">Queue:</div>
+        <div className="react-select-wrapper">
+          <Select
+            label="Queue"
+            name="queue"
+            options={queueList}
+            value={{ label: queue, value: queue }}
+            onChange={_handleQueueChange}
+            isDisabled={!(queueList.length > 0)}
+            styles={customSelectStyles}
+          />
+        </div>
+      </section>
 
-        <section className="dropdown-wrapper">
-          <div className="dropdown-label">Queue:</div>
-          <div className="react-select-wrapper">
-            <Select
-              label="Queue"
-              name="queue"
-              options={queueList}
-              value={{ label: queue, value: queue }}
-              onChange={this._handleQueueChange}
-              isDisabled={!(queueList.length > 0)}
-              styles={customSelectStyles}
-            />
-          </div>
-        </section>
-
-        <section className="dropdown-wrapper">
-          <div className="dropdown-label">Priority:</div>
-          <div className="react-select-wrapper">
-            <Select
-              label="Priority"
-              name="priority"
-              value={{
-                label: priority || "",
-                value: priority || ""
-              }}
-              options={this.priorityList}
-              onChange={this._handleEditPriority}
-              styles={customSelectStyles}
-            />
-          </div>
-        </section>
-      </Fragment>
-    );
-  }
-}
+      <section className="dropdown-wrapper">
+        <div className="dropdown-label">Priority:</div>
+        <div className="react-select-wrapper">
+          <Select
+            label="Priority"
+            name="priority"
+            value={{
+              label: priority || "",
+              value: priority || ""
+            }}
+            options={priorityList}
+            onChange={_handleEditPriority}
+            styles={customSelectStyles}
+          />
+        </div>
+      </section>
+    </Fragment>
+  );
+};
 
 JobSubmitter.propTypes = {
   changeJobType: PropTypes.func.isRequired,

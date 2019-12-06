@@ -18,7 +18,7 @@
   margin-bottom: 20px;
 }
 
-.on-demand-input {
+.params-input {
   flex: 1;
   box-sizing: border-box;
   margin-left: 2px;
@@ -47,7 +47,7 @@
   min-width: 73px;
 }
 
-.on-demand-input:focus {
+.params-input:focus {
   border-color: #1c7ce4;
   border-width: 2px;
 }

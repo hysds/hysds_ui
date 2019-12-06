@@ -15,7 +15,7 @@
 /****************************************************/
 /* SIDEBAR */
 .sidenav {
-  flex: 1;
+  flex: 0;
   min-width: 320px;
   z-index: 1;
   padding: 20px;

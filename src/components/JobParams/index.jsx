@@ -52,7 +52,7 @@ class JobParams extends React.Component {
                 value={value || ""}
                 name={paramName}
                 onChange={this._handleJobParamInputChange}
-                className="on-demand-input"
+                className="params-input"
                 required={param.optional ? false : true}
               />
             </div>
@@ -77,15 +77,18 @@ class JobParams extends React.Component {
             </section>
           );
         case "textarea":
+          let className = "params-textarea";
+          if (!param.optional && !value)
+            className = `${className} required`;
+
           return (
-            <div className="on-demand-textarea-wrapper" key={paramName}>
-              <label className="on-demand-textarea-label">{paramName}:</label>
+            <div className="params-textarea-wrapper" key={paramName}>
+              <label className="params-textarea-label">{paramName}:</label>
               <textarea
-                className="on-demand-textarea"
+                className={className}
                 name={paramName}
                 value={value || ""}
                 onChange={this._handleJobParamInputChange}
-                required={param.optional ? false : true}
               ></textarea>
             </div>
           );
@@ -99,7 +102,7 @@ class JobParams extends React.Component {
                 name={paramName}
                 placeholder="Required"
                 onChange={this._handleJobParamInputChange}
-                className="on-demand-input"
+                className="params-input"
                 required={param.optional ? false : true}
               />
             </div>

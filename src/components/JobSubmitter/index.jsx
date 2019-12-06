@@ -51,7 +51,7 @@ class JobSubmitter extends React.Component {
             name="tag"
             onChange={this._handleTagInput}
             value={tags || ""}
-            className="on-demand-input"
+            className="params-input"
             required
           />
         </div>

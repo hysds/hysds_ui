@@ -116,95 +116,97 @@ class Tosca extends React.Component {
         url={GRQ_ES_URL}
         transformRequest={this._handleTransformRequest}
       >
-        <div className="sidenav">
-          <SingleList
-            componentId={DATASET_ID}
-            dataField="dataset.keyword"
-            title="Dataset"
-            URLParams={true}
-            className="reactivesearch-input"
-          />
-          <SingleList
-            componentId={DATASET_TYPE_SEARCH_ID}
-            dataField="dataset_type.keyword"
-            title="Dataset Type"
-            URLParams={true}
-            className="reactivesearch-input"
-          />
+        <div className="tosca-body-wrapper">
+          <div className="sidenav">
+            <SingleList
+              componentId={DATASET_ID}
+              dataField="dataset.keyword"
+              title="Dataset"
+              URLParams={true}
+              className="reactivesearch-input"
+            />
+            <SingleList
+              componentId={DATASET_TYPE_SEARCH_ID}
+              dataField="dataset_type.keyword"
+              title="Dataset Type"
+              URLParams={true}
+              className="reactivesearch-input"
+            />
 
-          <SingleList
-            componentId={SATELLITE_TYPE_ID}
-            dataField="metadata.platform.keyword"
-            title="Platforms"
-            URLParams={true}
-            className="reactivesearch-input"
-          />
+            <SingleList
+              componentId={SATELLITE_TYPE_ID}
+              dataField="metadata.platform.keyword"
+              title="Platforms"
+              URLParams={true}
+              className="reactivesearch-input"
+            />
 
-          <SingleList
-            componentId={DATASET_VERSION}
-            dataField="version.keyword"
-            title="Version"
-            URLParams={true}
-            className="reactivesearch-input"
-          />
+            <SingleList
+              componentId={DATASET_VERSION}
+              dataField="version.keyword"
+              title="Version"
+              URLParams={true}
+              className="reactivesearch-input"
+            />
 
-          <DateRange
-            componentId={START_TIME_ID}
-            title="Start Date"
-            dataField="starttime"
-            // queryFormat="basic_date_time"
-            URLParams={true}
-            className="reactivesearch-input reactivesearch-date"
-          />
-          <DateRange
-            componentId={END_TIME_ID}
-            title="End Date"
-            dataField="endtime"
-            // queryFormat="basic_date_time"
-            URLParams={true}
-            className="reactivesearch-input reactivesearch-date"
-          />
+            <DateRange
+              componentId={START_TIME_ID}
+              title="Start Date"
+              dataField="starttime"
+              // queryFormat="basic_date_time"
+              URLParams={true}
+              className="reactivesearch-input reactivesearch-date"
+            />
+            <DateRange
+              componentId={END_TIME_ID}
+              title="End Date"
+              dataField="endtime"
+              // queryFormat="basic_date_time"
+              URLParams={true}
+              className="reactivesearch-input reactivesearch-date"
+            />
 
-          <MultiList
-            componentId={TRACK_NUMBER_ID}
-            dataField="metadata.track_number"
-            title="Track Number"
-            URLParams={true}
-            className="reactivesearch-input"
-          />
-          <MultiList
-            componentId={TRACK_NUMBER_ID_OLD}
-            dataField="metadata.trackNumber"
-            title="Track Number (Old)"
-            URLParams={true}
-            className="reactivesearch-input"
-          />
-        </div>
-
-        <div className="body">
-          <div className="top-bar-wrapper">
-            <SearchQuery componentId={QUERY_SEARCH_COMPONENT_ID} />
-            <IdQueryHandler componentId={ID_COMPONENT} />
-            <div className="button-wraper">
-              <OnDemandButton query={query} total={dataCount} />
-              <TriggerRulesButton />
-            </div>
-          </div>
-          <div className="filter-list-wrapper">
-            <SelectedFilters
-              className="filter-list"
-              onClear={this._handleClearFilter}
+            <MultiList
+              componentId={TRACK_NUMBER_ID}
+              dataField="metadata.track_number"
+              title="Track Number"
+              URLParams={true}
+              className="reactivesearch-input"
+            />
+            <MultiList
+              componentId={TRACK_NUMBER_ID_OLD}
+              dataField="metadata.trackNumber"
+              title="Track Number (Old)"
+              URLParams={true}
+              className="reactivesearch-input"
             />
           </div>
 
-          <ScrollTop />
-          {reactiveMap}
-          <ResultsList
-            componentId={RESULTS_LIST_COMPONENT_ID}
-            queryParams={QUERY_LOGIC}
-            retrieveData={this.retrieveData}
-            pageSize={10}
-          />
+          <div className="body">
+            <div className="top-bar-wrapper">
+              <SearchQuery componentId={QUERY_SEARCH_COMPONENT_ID} />
+              <IdQueryHandler componentId={ID_COMPONENT} />
+              <div className="button-wraper">
+                <OnDemandButton query={query} total={dataCount} />
+                <TriggerRulesButton />
+              </div>
+            </div>
+            <div className="filter-list-wrapper">
+              <SelectedFilters
+                className="filter-list"
+                onClear={this._handleClearFilter}
+              />
+            </div>
+
+            <ScrollTop />
+            {reactiveMap}
+            <ResultsList
+              componentId={RESULTS_LIST_COMPONENT_ID}
+              queryParams={QUERY_LOGIC}
+              retrieveData={this.retrieveData}
+              pageSize={10}
+            />
+          </div>
         </div>
       </ReactiveBase>
     );

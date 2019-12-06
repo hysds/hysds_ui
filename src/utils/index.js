@@ -79,3 +79,10 @@ exports.validateUrlQueryParam = query => {
   const newUrl = `${location.origin}${location.pathname}?${params.toString()}`;
   history.pushState({}, "", newUrl);
 };
+
+exports.editUrlDataCount = count => {
+  const params = new URLSearchParams(location.search);
+  params.set("total", count);
+  const newUrl = `${location.origin}${location.pathname}?${params.toString()}`;
+  history.pushState({}, "", newUrl);
+};

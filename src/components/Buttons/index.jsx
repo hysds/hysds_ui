@@ -9,7 +9,7 @@ export const OnDemandButton = ({ query, total }) => (
   <a
     className="utility-button"
     href={`/tosca/on-demand?query=${query}&total=${total}`}
-    target="_blank"
+    target="on-demand-tosca"
   >
     On Demand
   </a>

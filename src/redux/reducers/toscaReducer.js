@@ -21,7 +21,8 @@ import {
   extractJobParams,
   clearUrlJobParams,
   editUrlJobParam,
-  validateUrlQueryParam
+  validateUrlQueryParam,
+  editUrlDataCount
 } from "../../utils";
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -79,14 +80,14 @@ const toscaReducer = (state = initialState, action) => {
         validQuery: action.payload
       };
     case GET_JOB_LIST:
-      const jobList = action.payload.map(job => ({
+      const newJobList = action.payload.map(job => ({
         label: job.version ? `${job.label} [${job.version}]` : job.label,
         value: job.value
       }));
 
       return {
         ...state,
-        jobList,
+        jobList: newJobList,
         jobType: validateUrlJob(state.jobType, action.payload)
           ? state.jobType
           : ""
@@ -108,13 +109,11 @@ const toscaReducer = (state = initialState, action) => {
         params: defaultParams
       };
     case CHANGE_JOB_TYPE:
-      const newJobType = action.payload;
-      clearUrlJobParams(urlParams);
-      constructUrl("job_type", newJobType);
-
+      clearUrlJobParams(action.payload);
+      constructUrl("job_type", action.payload);
       return {
         ...state,
-        jobType: newJobType,
+        jobType: action.payload,
         params: {}
       };
     case LOAD_QUEUE_LIST:
@@ -134,20 +133,17 @@ const toscaReducer = (state = initialState, action) => {
         queue: action.payload
       };
     case EDIT_PRIORITY:
-      const priority = action.payload;
-      constructUrl("priority", priority);
-
+      constructUrl("priority", action.payload);
       return {
         ...state,
-        priority
+        priority: action.payload
       };
     case EDIT_TAG:
-      const tags = action.payload;
-      constructUrl("tags", tags);
+      constructUrl("tags", action.payload);
 
       return {
         ...state,
-        tags
+        tags: action.payload
       };
     case EDIT_JOB_PARAMS:
       const newParams = {
@@ -160,6 +156,7 @@ const toscaReducer = (state = initialState, action) => {
         params: newParams
       };
     case EDIT_DATA_COUNT:
+      editUrlDataCount(action.payload);
       return {
         ...state,
         dataCount: action.payload

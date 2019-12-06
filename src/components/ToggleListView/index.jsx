@@ -47,7 +47,7 @@ class ToggleListView extends React.Component {
             <a
               style={{ color: "inherit" }}
               href={`/tosca/metadata?index=${res._index}&id=${res._id}`}
-              target="_blank"
+              target="tosca-metadata-viewer"
             >
               {res._id}
             </a>

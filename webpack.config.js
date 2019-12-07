@@ -52,8 +52,8 @@ module.exports = {
   ],
   performance: {
     hints: false
+  },
+  resolve: {
+    extensions: ['.js', '.jsx']
   }
-  // resolve: {
-  //   extensions: ['.js', '.jsx']
-  // }
 };

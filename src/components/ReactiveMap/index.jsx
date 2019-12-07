@@ -2,7 +2,7 @@ import React, { Fragment } from "react"; // react imports
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux"; // redux
-import { clickDatasetId } from "../../redux/actions/index";
+import { clickDatasetId } from "../../redux/actions";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 import L from "leaflet"; // lealfet
 import "leaflet-draw";
@@ -298,7 +298,9 @@ let ConnectMapComponent = class extends React.Component {
     const mapContainerStyle = {
       minHeight: 500,
       height: storedMapHeight ? `${storedMapHeight}px` : 500,
-      margin: "10px",
+      marginTop: "10px",
+      marginLeft: "10px",
+      marginRight: "10px",
       overflow: "auto",
       resize: "vertical",
       display: displayMap ? "block" : "none"

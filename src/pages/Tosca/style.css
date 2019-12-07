@@ -1,7 +1,9 @@
 /****************************************************/
 /* MAIN BODY */
 .body {
-  padding: 5px 15px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 35px;
   min-width: 750px;
   flex: 5;
   overflow: auto;
@@ -9,7 +11,7 @@
 
 .tosca-body-wrapper {
   display: flex;
-  height: 100vh;
+  height: 95vh;
 }
 
 /****************************************************/

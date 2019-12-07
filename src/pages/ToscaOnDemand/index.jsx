@@ -112,7 +112,7 @@ class ToscaOnDemand extends React.Component {
     const validSubmission = this._validateSubmission();
 
     return (
-      <Fragment>
+      <div className="tosca-on-demand">
         <div className="split on-demand-left">
           <QueryEditor
             query={query}
@@ -176,7 +176,7 @@ class ToscaOnDemand extends React.Component {
           visible={submitFailed}
           status="failed"
         />
-      </Fragment>
+      </div>
     );
   }
 }

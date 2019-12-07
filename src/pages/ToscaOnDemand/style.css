@@ -2,36 +2,37 @@ body {
   font-family: "Oswald", sans-serif !important;
 }
 
+.tosca-on-demand {
+  display: flex;
+}
+
 /* Split the screen in half */
 .split {
-  height: 100%;
-  width: 50%;
-  min-width: 500px;
-  position: fixed;
-  /* z-index: 1; */
-  top: 0;
-  overflow-x: hidden;
+  height: 96vh;
 }
 
 @media (max-width: 950px) {
-  .split {
-    position: static;
-    width: 100%;
+  .tosca-on-demand {
+    display: block;
+    overflow: auto;
+    height: 96vh;
   }
 
-  .on-demand-right {
-    padding-bottom: 100px;
+  .split {
+    height: auto;
   }
 }
 
 /* Control the left side */
 .on-demand-left {
-  left: 0;
+  flex: 1;
+  overflow: auto;
 }
 
 /* Control the right side */
 .on-demand-right {
-  right: 0;
+  flex: 1;
+  overflow: auto;
 }
 
 .on-demand-button-wrapper {
@@ -40,6 +41,5 @@ body {
 
 .data-count-header {
   font-size: 25px;
-  /* font-weight: 500; */
   padding: 15px;
 }

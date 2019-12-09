@@ -1,11 +1,12 @@
 {
-  "name": "tosca_v2",
+  "name": "hysds_ui",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --open --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "prod": "webpack-dev-server --open --mode production"
   },
   "keywords": [],
   "author": "",

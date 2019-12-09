@@ -20,20 +20,12 @@ const style = {
 
 export default function Routes(props) {
   let router = (
-    <Fragment>
-      <div style={style}>
-        <div style={{ flex: 1, paddingLeft: 5, paddingRight: 5 }}>Tosca</div>
-        <div style={{ flex: 0, paddingLeft: 5, paddingRight: 5 }}>stuff</div>
-        <div style={{ flex: 0, paddingLeft: 5, paddingRight: 5 }}>stuff</div>
-        <div style={{ flex: 0, paddingLeft: 5, paddingRight: 5 }}>stuff</div>
-      </div>
-      <Router>
-        <Route exact path="/" render={() => <Redirect to="/tosca" />} />
-        <Route exact path="/tosca" component={Tosca} />
-        <Route exact path="/tosca/metadata" component={MetadataViewer} />
-        <Route exact path="/tosca/on-demand" component={ToscaOnDemand} />
-      </Router>
-    </Fragment>
+    <Router>
+      <Route exact path="/" render={() => <Redirect to="/tosca" />} />
+      <Route exact path="/tosca" component={Tosca} />
+      <Route exact path="/tosca/metadata" component={MetadataViewer} />
+      <Route exact path="/tosca/on-demand" component={ToscaOnDemand} />
+    </Router>
   );
   return router;
 }

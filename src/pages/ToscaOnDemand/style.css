@@ -8,14 +8,14 @@ body {
 
 /* Split the screen in half */
 .split {
-  height: 96vh;
+  height: 100vh;
 }
 
 @media (max-width: 950px) {
   .tosca-on-demand {
     display: block;
     overflow: auto;
-    height: 96vh;
+    height: 100vh;
   }
 
   .split {

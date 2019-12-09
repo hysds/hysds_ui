@@ -30,7 +30,8 @@ exports.extractJobParams = urlParams => {
     "job_type",
     "queue",
     "priority",
-    "total"
+    "total",
+    "tags"
   ];
   const params = {};
   urlParams.forEach((value, key) => {
@@ -46,7 +47,8 @@ exports.clearUrlJobParams = () => {
     "job_type",
     "queue",
     "priority",
-    "total"
+    "total",
+    "tags"
   ];
   const params = new URLSearchParams(location.search);
   const toDelete = [];

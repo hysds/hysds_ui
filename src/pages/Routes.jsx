@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import {
   Route,
   // Link,
@@ -9,14 +9,6 @@ import {
 import Tosca from "./Tosca";
 import MetadataViewer from "./MetadataViewer";
 import ToscaOnDemand from "../pages/ToscaOnDemand";
-
-const style = {
-  // width: "100%",
-  background: "#4387ff",
-  color: "#ffff",
-  display: "flex",
-  padding: 10
-};
 
 export default function Routes(props) {
   let router = (

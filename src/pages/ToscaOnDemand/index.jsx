@@ -103,11 +103,24 @@ class ToscaOnDemand extends React.Component {
   };
 
   render() {
-    let { query, paramsList, params, hysdsio, validQuery } = this.props;
+    let {
+      query,
+      paramsList,
+      params,
+      hysdsio,
+      validQuery,
+      submissionType
+    } = this.props;
     const { submitInProgress, submitSuccess, submitFailed } = this.state;
 
     const divider = paramsList.length > 0 ? <Border /> : null;
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
+
+    const submissionTypeLabel = this.props.jobType ? (
+      <button className="on-demand-submission-type">
+        Submit Type: <strong>{submissionType || "iteration"}</strong>
+      </button>
+    ) : null;
 
     const validSubmission = this._validateSubmission();
 
@@ -167,6 +180,7 @@ class ToscaOnDemand extends React.Component {
                 onClick={this._checkQueryDataCount}
                 disabled={!validQuery}
               />
+              {submissionTypeLabel}
             </div>
           </div>
         </div>

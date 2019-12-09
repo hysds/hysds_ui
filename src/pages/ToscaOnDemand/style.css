@@ -39,6 +39,16 @@ body {
   padding: 10px;
 }
 
+.on-demand-submission-type {
+  padding-left: 10px;
+  border: none;
+  font-size: 15px;
+}
+
+.on-demand-submission-type:focus {
+  outline: 0;
+}
+
 .data-count-header {
   font-size: 25px;
   padding: 15px;

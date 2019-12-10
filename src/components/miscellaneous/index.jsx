@@ -1,4 +1,5 @@
-import React from "react";
+import React, { Fragment } from "react";
+import "font-awesome/css/font-awesome.min.css";
 import "./style.css";
 
 export const Border = () => <hr className="job-param-border" />;
@@ -15,5 +16,15 @@ export const SubmitStatusBar = props => {
     <div className={className} {...props}>
       {label}
     </div>
+  );
+};
+
+export const HelperLink = props => {
+  return (
+    <Fragment>
+      <a href={props.link} target="_none" className="helper-link">
+        <i className="fa fa-info"></i>
+      </a>
+    </Fragment>
   );
 };

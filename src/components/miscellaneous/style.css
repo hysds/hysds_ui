@@ -36,3 +36,16 @@
 .status-visible {
   z-index: 999;
 }
+
+.helper-link {
+  font-size: 12px;
+  width: 23px;
+  height: 23px;
+  text-align: center;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid #4387ff;
+  color: #4386ff;
+  border-radius: 50%;
+  margin-right: 10px;
+}

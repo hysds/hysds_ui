@@ -118,6 +118,7 @@ class Tosca extends React.Component {
       >
         <div className="tosca-body-wrapper">
           <div className="sidenav">
+            <div className="sidenav-title">Filters</div>
             <SingleList
               componentId={DATASET_ID}
               dataField="dataset.keyword"

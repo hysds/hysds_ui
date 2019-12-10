@@ -1,7 +1,8 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux"; // redux
 import { updateSearchQuery } from "../../redux/actions";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
+import { HelperLink } from "../miscellaneous";
 
 import "./style.css";
 
@@ -110,17 +111,18 @@ class SearchQueryHandlerConnect extends React.Component {
   render() {
     const { queryString } = this.props;
     return (
-      <form className="query-input-form" onSubmit={this._handleSubmit}>
-        <label>
+      <Fragment>
+        <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
+        <form className="query-input-form" onSubmit={this._handleSubmit}>
           <input
             className="query-input-box"
             type="text"
             value={queryString || ""}
             onChange={this._handleChange}
-            placeholder="Input your query string"
+            placeholder="Input Elasticsearch query string..."
           />
-        </label>
-      </form>
+        </form>
+      </Fragment>
     );
   }
 }

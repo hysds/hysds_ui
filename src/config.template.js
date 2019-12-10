@@ -1,8 +1,7 @@
 // DEFINING THE ELASTICSEARCH CONNECTION OPTIONS
 /*******************************************************************************/
 // local or AWS managed ElasticSearch instance
-// exports.GRQ_ES_URL = "http://localhost:9200";
-exports.GRQ_ES_URL = "http://localhost:9999";
+exports.GRQ_ES_URL = "http://localhost:9200";
 
 exports.GRQ_ES_INDICES = "grq";
 
@@ -21,41 +20,23 @@ exports.BBOX_OPACITY = 0.3;
 /*******************************************************************************/
 
 // ************************************************************************* //
-// // custom Reactivesearch component
-ID_COMPONENT = "_id";
-QUERY_SEARCH_COMPONENT_ID = "queryString";
-MAP_COMPONENT_ID = "polygon";
-
-// built in Reactivesearch component id
-DATASET_ID = "dataset";
-DATASET_TYPE_SEARCH_ID = "dataset_type";
-SATELLITE_TYPE_ID = "satellite";
-RESULTS_LIST_COMPONENT_ID = "results";
-TRACK_NUMBER_ID = "track_number";
-TRACK_NUMBER_ID_OLD = "trackNumber";
-START_TIME_ID = "starttime";
-END_TIME_ID = "endtime";
-USER_TAGS = "user_tags";
-DATASET_VERSION = "version";
-
-// ************************************************************************* //
 // reactivesearch retrieves data from each component by its componentId
 // custom Reactivesearch component
-exports.ID_COMPONENT = ID_COMPONENT;
-exports.QUERY_SEARCH_COMPONENT_ID = QUERY_SEARCH_COMPONENT_ID;
-exports.MAP_COMPONENT_ID = MAP_COMPONENT_ID;
+exports.ID_COMPONENT = "_id";
+exports.QUERY_SEARCH_COMPONENT_ID = "queryString";
+exports.MAP_COMPONENT_ID = "polygon";
 
 // built in Reactivesearch component id
-exports.DATASET_TYPE_SEARCH_ID = DATASET_TYPE_SEARCH_ID;
-exports.SATELLITE_TYPE_ID = SATELLITE_TYPE_ID;
-exports.RESULTS_LIST_COMPONENT_ID = RESULTS_LIST_COMPONENT_ID;
-exports.DATASET_ID = DATASET_ID;
-exports.TRACK_NUMBER_ID = TRACK_NUMBER_ID;
-exports.TRACK_NUMBER_ID_OLD = TRACK_NUMBER_ID_OLD;
-exports.START_TIME_ID = START_TIME_ID;
-exports.END_TIME_ID = END_TIME_ID;
-exports.USER_TAGS = USER_TAGS;
-exports.DATASET_VERSION = DATASET_VERSION;
+exports.DATASET_TYPE_SEARCH_ID = "dataset_type";
+exports.SATELLITE_TYPE_ID = "satellite";
+exports.RESULTS_LIST_COMPONENT_ID = "results";
+exports.DATASET_ID = "dataset";
+exports.TRACK_NUMBER_ID = "track_number";
+exports.TRACK_NUMBER_ID_OLD = "trackNumber";
+exports.START_TIME_ID = "starttime";
+exports.END_TIME_ID = "endtime";
+exports.USER_TAGS = "user_tags";
+exports.DATASET_VERSION = "version";
 // ************************************************************************* //
 
 // fields returned by Elasticsearch (less fields = faster UI)

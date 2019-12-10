@@ -47,6 +47,8 @@ import {
   ScrollTop
 } from "../../components/Buttons";
 
+import { HelperLink } from "../../components/miscellaneous";
+
 import "./style.css"; // main style sheet for the Toca page
 
 // query logic for elasticsearch
@@ -185,6 +187,7 @@ class Tosca extends React.Component {
 
           <div className="body">
             <div className="top-bar-wrapper">
+              <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
               <SearchQuery componentId={QUERY_SEARCH_COMPONENT_ID} />
               <IdQueryHandler componentId={ID_COMPONENT} />
               <div className="button-wraper">

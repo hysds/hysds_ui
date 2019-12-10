@@ -2,7 +2,6 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux"; // redux
 import { updateSearchQuery } from "../../redux/actions";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
-import { HelperLink } from "../miscellaneous";
 
 import "./style.css";
 
@@ -112,7 +111,6 @@ class SearchQueryHandlerConnect extends React.Component {
     const { queryString } = this.props;
     return (
       <Fragment>
-        <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
         <form className="query-input-form" onSubmit={this._handleSubmit}>
           <input
             className="query-input-box"

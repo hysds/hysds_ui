@@ -38,11 +38,10 @@
 }
 
 .helper-link {
-  font-size: 12px;
   width: 23px;
   height: 23px;
+  font-size: 12px;
   text-align: center;
-  align-items: center;
   padding: 5px;
   border: 1px solid #4387ff;
   color: #4386ff;

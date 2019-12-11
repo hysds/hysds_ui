@@ -15,9 +15,9 @@ export const OnDemandButton = ({ query, total }) => (
   </a>
 );
 
-export const TriggerRulesButton = () => (
-  <a className="utility-button" href="#">
-    Trigger Rules (Work in Progress)
+export const TriggerRulesButton = props => (
+  <a className="utility-button" href={props.link} {...props}>
+    Trigger Rules
   </a>
 );
 

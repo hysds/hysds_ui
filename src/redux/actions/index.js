@@ -15,7 +15,8 @@ import {
   LOAD_QUEUE_LIST,
   CHANGE_QUEUE,
   EDIT_TAG,
-  EDIT_DATA_COUNT
+  EDIT_DATA_COUNT,
+  LOAD_USER_RULES
 } from "../constants.js";
 
 import {
@@ -158,4 +159,16 @@ export const editDataCount = query => dispatch => {
   } catch (err) {
     dispatch({ type: EDIT_DATA_COUNT, payload: null });
   }
+};
+
+export const getUserRules = () => dispatch => {
+  const getUserRulesEndpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
+  return fetch(getUserRulesEndpoint)
+    .then(res => res.json())
+    .then(data =>
+      dispatch({
+        type: LOAD_USER_RULES,
+        payload: data.rules
+      })
+    );
 };

@@ -11,7 +11,8 @@ import {
   LOAD_QUEUE_LIST,
   CHANGE_QUEUE,
   EDIT_TAG,
-  EDIT_DATA_COUNT
+  EDIT_DATA_COUNT,
+  LOAD_USER_RULES
 } from "../constants";
 
 import {
@@ -49,7 +50,8 @@ const initialState = {
   paramsList: [],
   params: defaultUrlJobParams || {},
   submissionType: null,
-  tags: urlParams.get("tags") || null
+  tags: urlParams.get("tags") || null,
+  userRules: []
 };
 
 const toscaReducer = (state = initialState, action) => {
@@ -161,6 +163,13 @@ const toscaReducer = (state = initialState, action) => {
         ...state,
         dataCount: action.payload
       };
+    case LOAD_USER_RULES:
+      console.log(LOAD_USER_RULES, action.payload);
+      return {
+        ...state,
+        userRules: action.payload
+      };
+
     default:
       return state;
   }

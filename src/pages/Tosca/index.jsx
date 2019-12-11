@@ -192,7 +192,10 @@ class Tosca extends React.Component {
               <IdQueryHandler componentId={ID_COMPONENT} />
               <div className="button-wraper">
                 <OnDemandButton query={query} total={dataCount} />
-                <TriggerRulesButton />
+                <TriggerRulesButton
+                  link="tosca/trigger-rules"
+                  target="tosca-user-rules"
+                />
               </div>
             </div>
             <div className="filter-list-wrapper">

@@ -1,0 +1,5 @@
+/* react-table styles */
+.ReactTable .rt-tbody .rt-td {
+  text-align: center;
+  font-size: 12px;
+}

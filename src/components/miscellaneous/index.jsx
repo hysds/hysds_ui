@@ -28,3 +28,12 @@ export const HelperLink = props => {
     </Fragment>
   );
 };
+
+export const TableToggle = props => (
+  <Fragment>
+    <label className="switch">
+      <input type="checkbox" {...props} />
+      <span className="slider round"></span>
+    </label>
+  </Fragment>
+);

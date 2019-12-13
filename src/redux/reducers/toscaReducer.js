@@ -12,7 +12,8 @@ import {
   CHANGE_QUEUE,
   EDIT_TAG,
   EDIT_DATA_COUNT,
-  LOAD_USER_RULES
+  LOAD_USER_RULES,
+  TOGGLE_USER_RULE
 } from "../constants";
 
 import {
@@ -51,7 +52,9 @@ const initialState = {
   params: defaultUrlJobParams || {},
   submissionType: null,
   tags: urlParams.get("tags") || null,
-  userRules: []
+  userRules: [],
+
+  toggle: false
 };
 
 const toscaReducer = (state = initialState, action) => {
@@ -82,7 +85,7 @@ const toscaReducer = (state = initialState, action) => {
         validQuery: action.payload
       };
     case GET_JOB_LIST:
-      const newJobList = action.payload.map(job => ({
+      var newJobList = action.payload.map(job => ({
         label: job.version ? `${job.label} [${job.version}]` : job.label,
         value: job.value
       }));
@@ -95,9 +98,9 @@ const toscaReducer = (state = initialState, action) => {
           : ""
       };
     case LOAD_JOB_PARAMS:
-      const params = action.payload.params || [];
+      var params = action.payload.params || [];
 
-      let defaultParams = {};
+      var defaultParams = {};
       params.map(p => {
         let name = p.name;
         defaultParams[name] = p.default || state.params[name] || null; // THIS IS THE BUG
@@ -119,9 +122,9 @@ const toscaReducer = (state = initialState, action) => {
         params: {}
       };
     case LOAD_QUEUE_LIST:
-      const queueList = action.payload.queues;
-      const recommendedQueues = action.payload.recommended;
-      let defaultQueue =
+      var queueList = action.payload.queues;
+      var recommendedQueues = action.payload.recommended;
+      var defaultQueue =
         recommendedQueues.length > 0 ? recommendedQueues[0] : null;
 
       return {
@@ -148,7 +151,7 @@ const toscaReducer = (state = initialState, action) => {
         tags: action.payload
       };
     case EDIT_JOB_PARAMS:
-      const newParams = {
+      var newParams = {
         ...state.params,
         ...{ [action.payload.name]: action.payload.value }
       };
@@ -164,12 +167,26 @@ const toscaReducer = (state = initialState, action) => {
         dataCount: action.payload
       };
     case LOAD_USER_RULES:
-      console.log(LOAD_USER_RULES, action.payload);
       return {
         ...state,
         userRules: action.payload
       };
-
+    case TOGGLE_USER_RULE:
+      var userRules = state.userRules;
+      var loc = userRules.findIndex(r => r._id === action.payload.id);
+      if (loc > -1) {
+        var foundRule = userRules[loc];
+        foundRule.enabled = action.payload.updated.enabled;
+        userRules = [
+          ...userRules.slice(0, loc),
+          foundRule,
+          ...userRules.slice(loc + 1)
+        ];
+      }
+      return {
+        ...state,
+        userRules: userRules
+      };
     default:
       return state;
   }

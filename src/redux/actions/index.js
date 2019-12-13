@@ -1,10 +1,13 @@
 import {
+  // reactivesearch
   GET_DATASET_ID,
   CLEAR_ALL_CUSTOM_COMPONENTS,
   CLEAR_CUSTOM_COMPONENTS,
   RETRIEVE_DATA,
   GET_QUERY,
   UPDATE_SEARCH_QUERY,
+
+  // on-demand
   EDIT_QUERY,
   VALIDATE_QUERY,
   EDIT_PRIORITY,
@@ -16,7 +19,10 @@ import {
   CHANGE_QUEUE,
   EDIT_TAG,
   EDIT_DATA_COUNT,
-  LOAD_USER_RULES
+
+  // user-rules
+  LOAD_USER_RULES,
+  TOGGLE_USER_RULE
 } from "../constants.js";
 
 import {
@@ -141,7 +147,6 @@ export const editDataCount = query => dispatch => {
 
   try {
     let parsedQuery = { query: JSON.parse(query) };
-
     const headers = {
       headers: { "Content-Type": "application/json" },
       method: "POST",
@@ -171,4 +176,26 @@ export const getUserRules = () => dispatch => {
         payload: data.rules
       })
     );
+};
+
+export const toggleUserRule = (ruleId, enabled) => dispatch => {
+  const toggleUserRuleEndpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
+  const payload = {
+    id: ruleId,
+    enabled
+  };
+  const headers = {
+    headers: { "Content-Type": "application/json" },
+    method: "PUT",
+    body: JSON.stringify(payload)
+  };
+
+  return fetch(toggleUserRuleEndpoint, headers)
+    .then(res => res.json())
+    .then(data => {
+      dispatch({
+        type: TOGGLE_USER_RULE,
+        payload: data
+      });
+    });
 };

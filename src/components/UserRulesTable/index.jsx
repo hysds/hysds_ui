@@ -67,6 +67,20 @@ const UserRulesTable = props => {
       columns={columns}
       showPagination={true}
       toggleUserRule={props.toggleUserRule}
+      SubComponent={row => {
+        let query;
+        try {
+          query = JSON.parse(row.original.query_string);
+          query = JSON.stringify(query, null, 2);
+          console.log(query);
+        } catch (err) {}
+
+        return (
+          <div className="user-rules-table-query-string">
+            <pre>{query}</pre>
+          </div>
+        );
+      }}
     />
   );
 };

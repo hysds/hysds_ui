@@ -3,3 +3,10 @@
   text-align: center;
   font-size: 12px;
 }
+
+.user-rules-table-query-string {
+  padding-left: 35px;
+  padding-right: 35px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}

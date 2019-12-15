@@ -37,3 +37,9 @@ export const TableToggle = props => (
     </label>
   </Fragment>
 );
+
+export const Checkbox = props => (
+  <Fragment>
+    <input className="miscellaneous-checkbox" type="checkbox" {...props} />
+  </Fragment>
+);

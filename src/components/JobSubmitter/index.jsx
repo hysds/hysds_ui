@@ -110,14 +110,21 @@ JobSubmitter.propTypes = {
   editTags: PropTypes.func.isRequired
 };
 
+JobSubmitter.defaultProps = {
+  url: false
+};
+
 // Redux actions
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  changeJobType: jobType => dispatch(ownProps.changeJobType(jobType)),
-  getParamsList: jobType => dispatch(ownProps.getParamsList(jobType)),
-  getQueueList: jobType => dispatch(ownProps.getQueueList(jobType)),
-  changeQueue: queue => dispatch(ownProps.changeQueue(queue)),
-  editTags: tag => dispatch(ownProps.editTags(tag)),
-  editJobPriority: query => dispatch(ownProps.editJobPriority(query))
-});
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { url } = ownProps;
+  return {
+    changeJobType: jobType => dispatch(ownProps.changeJobType(jobType, url)),
+    getParamsList: jobType => dispatch(ownProps.getParamsList(jobType)),
+    getQueueList: jobType => dispatch(ownProps.getQueueList(jobType)),
+    changeQueue: queue => dispatch(ownProps.changeQueue(queue)),
+    editTags: tag => dispatch(ownProps.editTags(tag, url)),
+    editJobPriority: query => dispatch(ownProps.editJobPriority(query, url))
+  };
+};
 
 export default connect(null, mapDispatchToProps)(JobSubmitter);

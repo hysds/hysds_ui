@@ -1,9 +1,10 @@
 import React, { Fragment } from "react";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import ReactTable from "react-table";
 import PropTypes from "prop-types";
 
-import { TableToggle } from "../miscellaneous";
+import { TableToggle, Checkbox } from "../miscellaneous";
 
 import "./style.css";
 
@@ -39,15 +40,24 @@ const UserRulesTable = props => {
     {
       Header: "Enabled",
       accessor: "enabled",
+      width: 100,
       Cell: state => (
-        <TableToggle
+        <Checkbox
           checked={state.row.enabled}
           onChange={() =>
             props.toggleUserRule(state.row._id, !state.row.enabled)
           }
         />
-      ),
-      width: 100
+      )
+    },
+    {
+      Header: null,
+      width: 100,
+      Cell: state => (
+        <Link to={`${props.link}/${state.row._id}`}>
+          <button type="button">Edit</button>
+        </Link>
+      )
     },
     {
       Header: "Created",
@@ -87,7 +97,8 @@ const UserRulesTable = props => {
 
 UserRulesTable.propTypes = {
   rules: PropTypes.array.isRequired,
-  toggleUserRule: PropTypes.func.isRequired
+  toggleUserRule: PropTypes.func.isRequired,
+  link: PropTypes.string.isRequired
 };
 
 // redux state data
@@ -96,12 +107,12 @@ const mapStateToProps = state => ({
 });
 
 // Redux actions
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    getUserRules: () => dispatch(getUserRules()),
-    toggleUserRule: (ruleId, enabled) =>
-      dispatch(ownProps.toggleUserRule(ruleId, enabled))
-  };
-};
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  getUserRules: () => dispatch(getUserRules()),
+  toggleUserRule: (ruleId, enabled) =>
+    dispatch(ownProps.toggleUserRule(ruleId, enabled)),
+  tesEditToggle: (ruleId, enabled) =>
+    dispatch(ownProps.tesEditToggle(ruleId, enabled))
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserRulesTable);

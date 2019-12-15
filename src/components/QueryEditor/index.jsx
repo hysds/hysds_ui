@@ -7,7 +7,7 @@ import AceEditor from "react-ace";
 import "brace/mode/json";
 import "brace/theme/github";
 
-const JsonEditor = props => {
+const QueryEditor = props => {
   // redux action to change the on demand query
   const _handleQueryChange = val => props.editQuery(val);
 
@@ -49,15 +49,23 @@ const JsonEditor = props => {
   );
 };
 
-JsonEditor.propTypes = {
+QueryEditor.propTypes = {
   editQuery: PropTypes.func.isRequired,
   validateQuery: PropTypes.func.isRequired
 };
 
-// Redux actions
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  editQuery: query => dispatch(ownProps.editQuery(query)),
-  validateQuery: validQuery => dispatch(ownProps.validateQuery(validQuery))
-});
+QueryEditor.defaultProps = {
+  url: false
+};
 
-export default connect(null, mapDispatchToProps)(JsonEditor);
+// Redux actions
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { url } = ownProps;
+  const { editQuery, validateQuery } = ownProps; // actions
+  return {
+    editQuery: query => dispatch(editQuery(query, url)),
+    validateQuery: validQuery => dispatch(validateQuery(validQuery))
+  };
+};
+
+export default connect(null, mapDispatchToProps)(QueryEditor);

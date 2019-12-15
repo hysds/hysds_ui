@@ -114,9 +114,16 @@ JobParams.propTypes = {
   editParams: PropTypes.func.isRequired
 };
 
+JobParams.defaultProps = {
+  url: false
+};
+
 // Redux actions
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  editParams: param => dispatch(ownProps.editParams(param))
-});
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { url } = ownProps;
+  return {
+    editParams: param => dispatch(ownProps.editParams(param, url))
+  };
+};
 
 export default connect(null, mapDispatchToProps)(JobParams);

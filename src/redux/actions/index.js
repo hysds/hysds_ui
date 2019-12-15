@@ -1,14 +1,11 @@
 import {
-  // reactivesearch
-  GET_DATASET_ID,
+  GET_DATASET_ID, // reactivesearch
   CLEAR_ALL_CUSTOM_COMPONENTS,
   CLEAR_CUSTOM_COMPONENTS,
   RETRIEVE_DATA,
   GET_QUERY,
   UPDATE_SEARCH_QUERY,
-
-  // on-demand
-  EDIT_QUERY,
+  EDIT_QUERY, // on-demand
   VALIDATE_QUERY,
   EDIT_PRIORITY,
   GET_JOB_LIST,
@@ -19,11 +16,18 @@ import {
   CHANGE_QUEUE,
   EDIT_TAG,
   EDIT_DATA_COUNT,
-
-  // user-rules
-  LOAD_USER_RULES,
+  LOAD_USER_RULES, // user-rules
+  LOAD_USER_RULE,
   TOGGLE_USER_RULE
 } from "../constants.js";
+
+import {
+  constructUrl,
+  clearUrlJobParams,
+  editUrlJobParam,
+  validateUrlQueryParam,
+  editUrlDataCount
+} from "../../utils";
 
 import {
   GRQ_REST_API_V1,
@@ -70,20 +74,26 @@ export const updateSearchQuery = payload => ({
 
 // ********************************************************************** //
 // TOSCA ON DEMAND ACTIONS
-export const editQuery = payload => ({
-  type: EDIT_QUERY,
-  payload
-});
+export const editQuery = (payload, url = false) => {
+  if (url) validateUrlQueryParam(payload);
+  return {
+    type: EDIT_QUERY,
+    payload
+  };
+};
 
 export const validateQuery = payload => ({
   type: VALIDATE_QUERY,
   payload
 });
 
-export const editJobPriority = payload => ({
-  type: EDIT_PRIORITY,
-  payload
-});
+export const editJobPriority = (payload, url = false) => {
+  if (url) constructUrl("priority", payload);
+  return {
+    type: EDIT_PRIORITY,
+    payload
+  };
+};
 
 export const getOnDemandJobs = () => dispatch => {
   const getJobsEndpoint = `${GRQ_REST_API_V1}/grq/on-demand`;
@@ -97,10 +107,16 @@ export const getOnDemandJobs = () => dispatch => {
     );
 };
 
-export const changeJobType = payload => ({
-  type: CHANGE_JOB_TYPE,
-  payload
-});
+export const changeJobType = (payload, url = false) => {
+  if (url) {
+    clearUrlJobParams(payload);
+    constructUrl("job_type", payload);
+  }
+  return {
+    type: CHANGE_JOB_TYPE,
+    payload
+  };
+};
 
 export const getQueueList = jobType => dispatch => {
   const getQueuesEndpoint = `${MOZART_REST_API_V2}/queue/list?id=${jobType}`;
@@ -132,15 +148,21 @@ export const getParamsList = jobType => dispatch => {
     });
 };
 
-export const editTags = payload => ({
-  type: EDIT_TAG,
-  payload
-});
+export const editTags = (payload, url = false) => {
+  if (url) constructUrl("tags", payload);
+  return {
+    type: EDIT_TAG,
+    payload
+  };
+};
 
-export const editParams = payload => ({
-  type: EDIT_JOB_PARAMS,
-  payload
-});
+export const editParams = (payload, url = false) => {
+  if (url) editUrlJobParam(payload.name, payload.value);
+  return {
+    type: EDIT_JOB_PARAMS,
+    payload
+  };
+};
 
 export const editDataCount = query => dispatch => {
   const ES_QUERY_DATA_COUNT_ENDPOINT = `${GRQ_ES_URL}/${GRQ_ES_INDICES}/_search?size=0`;
@@ -156,16 +178,22 @@ export const editDataCount = query => dispatch => {
     fetch(ES_QUERY_DATA_COUNT_ENDPOINT, headers)
       .then(res => res.json())
       .then(data => {
-        if (data.status && data.status != 200)
+        if (data.status && data.status != 200) {
+          editUrlDataCount(null);
           dispatch({ type: EDIT_DATA_COUNT, payload: null });
-        else
+        } else {
+          editUrlDataCount(data.hits.total.value);
           dispatch({ type: EDIT_DATA_COUNT, payload: data.hits.total.value });
+        }
       });
   } catch (err) {
+    editUrlDataCount(null);
     dispatch({ type: EDIT_DATA_COUNT, payload: null });
   }
 };
 
+// ********************************************************************** //
+// TOSCA USER RULES ACTIONS
 export const getUserRules = () => dispatch => {
   const getUserRulesEndpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
   return fetch(getUserRulesEndpoint)
@@ -174,6 +202,18 @@ export const getUserRules = () => dispatch => {
       dispatch({
         type: LOAD_USER_RULES,
         payload: data.rules
+      })
+    );
+};
+
+export const getUserRule = id => dispatch => {
+  const getUserRuleEndpoint = `${GRQ_REST_API_V1}/grq/user-rules?id=${id}`;
+  return fetch(getUserRuleEndpoint)
+    .then(res => res.json())
+    .then(data =>
+      dispatch({
+        type: LOAD_USER_RULE,
+        payload: data.rule
       })
     );
 };

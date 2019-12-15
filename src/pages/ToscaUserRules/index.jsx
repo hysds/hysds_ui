@@ -19,7 +19,11 @@ const ToscaUserRules = class extends React.Component {
     const { userRules } = this.props;
     return (
       <Fragment>
-        <UserRulesTable rules={userRules} toggleUserRule={toggleUserRule} />
+        <UserRulesTable
+          rules={userRules}
+          toggleUserRule={toggleUserRule}
+          link="/tosca/user-rule"
+        />
       </Fragment>
     );
   }

@@ -128,6 +128,7 @@ class ToscaOnDemand extends React.Component {
       <div className="tosca-on-demand">
         <div className="split on-demand-left">
           <QueryEditor
+            url={true} // update query params in url
             query={query}
             editQuery={editQuery} // redux action
             validateQuery={validateQuery}
@@ -142,6 +143,7 @@ class ToscaOnDemand extends React.Component {
               {/* </p> */}
             </div>
             <JobSubmitter
+              url={true} // update query params in url
               changeJobType={changeJobType} // all redux actions
               getParamsList={getParamsList}
               editParams={editParams}
@@ -166,6 +168,7 @@ class ToscaOnDemand extends React.Component {
             {divider}
             {hysdsioLabel}
             <JobParams
+              url={true} // update query params in url
               editParams={editParams}
               paramsList={paramsList}
               params={params}

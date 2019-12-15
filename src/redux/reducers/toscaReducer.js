@@ -13,18 +13,14 @@ import {
   EDIT_TAG,
   EDIT_DATA_COUNT,
   LOAD_USER_RULES,
-  TOGGLE_USER_RULE
+  TOGGLE_USER_RULE,
+  LOAD_USER_RULE
 } from "../constants";
 
 import {
-  constructUrl,
   sanitizePriority,
   validateUrlJob,
-  extractJobParams,
-  clearUrlJobParams,
-  editUrlJobParam,
-  validateUrlQueryParam,
-  editUrlDataCount
+  extractJobParams
 } from "../../utils";
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -74,7 +70,6 @@ const toscaReducer = (state = initialState, action) => {
 
     // on-demand page
     case EDIT_QUERY:
-      validateUrlQueryParam(action.payload);
       return {
         ...state,
         query: action.payload
@@ -114,8 +109,6 @@ const toscaReducer = (state = initialState, action) => {
         params: defaultParams
       };
     case CHANGE_JOB_TYPE:
-      clearUrlJobParams(action.payload);
-      constructUrl("job_type", action.payload);
       return {
         ...state,
         jobType: action.payload,
@@ -138,14 +131,11 @@ const toscaReducer = (state = initialState, action) => {
         queue: action.payload
       };
     case EDIT_PRIORITY:
-      constructUrl("priority", action.payload);
       return {
         ...state,
         priority: action.payload
       };
     case EDIT_TAG:
-      constructUrl("tags", action.payload);
-
       return {
         ...state,
         tags: action.payload
@@ -155,13 +145,12 @@ const toscaReducer = (state = initialState, action) => {
         ...state.params,
         ...{ [action.payload.name]: action.payload.value }
       };
-      editUrlJobParam(action.payload.name, action.payload.value);
+      // editUrlJobParam(action.payload.name, action.payload.value);
       return {
         ...state,
         params: newParams
       };
     case EDIT_DATA_COUNT:
-      editUrlDataCount(action.payload);
       return {
         ...state,
         dataCount: action.payload
@@ -170,6 +159,13 @@ const toscaReducer = (state = initialState, action) => {
       return {
         ...state,
         userRules: action.payload
+      };
+    case LOAD_USER_RULE:
+      console.log(LOAD_USER_RULE, action.payload);
+      var payload = action.payload;
+      return {
+        ...state,
+        query: payload.query_string
       };
     case TOGGLE_USER_RULE:
       var userRules = state.userRules;

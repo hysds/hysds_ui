@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import ReactTable from "react-table";
 import PropTypes from "prop-types";
@@ -71,18 +71,25 @@ const UserRulesTable = props => {
     }
   ];
 
+  const defaultSorted = [
+    {
+      id: "modified_time",
+      desc: true
+    }
+  ];
+
   return (
     <ReactTable
       data={props.rules}
       columns={columns}
       showPagination={true}
       toggleUserRule={props.toggleUserRule}
+      defaultSorted={defaultSorted}
       SubComponent={row => {
         let query;
         try {
           query = JSON.parse(row.original.query_string);
           query = JSON.stringify(query, null, 2);
-          console.log(query);
         } catch (err) {}
 
         return (

@@ -1,0 +1,10 @@
+.priority-label {
+  float: left;
+  margin-top: 10px;
+  margin-right: 10px;
+  min-width: 65px;
+}
+
+.priority-dropdown-wrapper {
+  flex: 1;
+}

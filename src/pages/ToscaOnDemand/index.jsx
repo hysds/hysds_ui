@@ -1,9 +1,14 @@
 import React, { Fragment } from "react";
 
 import QueryEditor from "../../components/QueryEditor";
-import JobSubmitter from "../../components/JobSubmitter";
+import JobInput from "../../components/JobInput";
 import JobParams from "../../components/JobParams";
 import { Border, SubmitStatusBar } from "../../components/miscellaneous";
+
+import TagInput from "../../components/TagInput";
+import PriorityInput from "../../components/PriorityInput";
+import QueueInput from "../../components/QueueInput";
+
 import {
   SubmitOnDemandJobButton,
   QueryCheckerButton
@@ -85,7 +90,6 @@ class ToscaOnDemand extends React.Component {
       query: this.props.query,
       kwargs: JSON.stringify(this.props.params)
     };
-    console.log(data);
 
     const jobSubmitUrl = `${GRQ_REST_API_V1}/grq/on-demand`;
     fetch(jobSubmitUrl, { method: "POST", headers, body: JSON.stringify(data) })
@@ -138,32 +142,26 @@ class ToscaOnDemand extends React.Component {
         <div className="split on-demand-right">
           <div className="on-demand-submitter-wrapper">
             <div className="data-count-header">
-              {/* <p> */}
               Total Records: {this.props.dataCount || "N/A"}
-              {/* </p> */}
             </div>
-            <JobSubmitter
+            <TagInput url={true} tags={this.props.tags} editTags={editTags} />
+            <JobInput
               url={true} // update query params in url
               changeJobType={changeJobType} // all redux actions
               getParamsList={getParamsList}
-              editParams={editParams}
               getQueueList={getQueueList}
-              changeQueue={changeQueue}
-              editJobPriority={editJobPriority}
-              editTags={editTags}
-              query={this.props.query}
-              validQuery={this.props.validQuery}
               jobs={this.props.jobs}
               jobType={this.props.jobType}
-              hysdsio={this.props.hysdsio}
-              queueList={this.props.queueList}
+            />
+            <QueueInput
               queue={this.props.queue}
+              queueList={this.props.queueList}
+              changeQueue={changeQueue}
+            />
+            <PriorityInput
+              url={true}
               priority={this.props.priority}
-              paramsList={this.props.paramsList}
-              params={this.props.params}
-              tags={this.props.tags}
-              submissionType={this.props.submissionType}
-              dataCount={this.props.dataCount}
+              editJobPriority={editJobPriority}
             />
             {divider}
             {hysdsioLabel}

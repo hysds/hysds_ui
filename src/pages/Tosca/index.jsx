@@ -122,13 +122,6 @@ class Tosca extends React.Component {
           <div className="sidenav">
             <div className="sidenav-title">Filters</div>
             <SingleList
-              componentId={DATASET_ID}
-              dataField="dataset.keyword"
-              title="Dataset"
-              URLParams={true}
-              className="reactivesearch-input"
-            />
-            <SingleList
               componentId={DATASET_TYPE_SEARCH_ID}
               dataField="dataset_type.keyword"
               title="Dataset Type"

@@ -82,9 +82,10 @@ const toscaReducer = (state = initialState, action) => {
     case GET_JOB_LIST:
       var newJobList = action.payload.map(job => ({
         label: job.version ? `${job.label} [${job.version}]` : job.label,
-        value: job.value
+        value: job.job_spec
       }));
 
+      console.log(action.payload);
       return {
         ...state,
         jobList: newJobList,
@@ -165,7 +166,9 @@ const toscaReducer = (state = initialState, action) => {
       var payload = action.payload;
       return {
         ...state,
-        query: payload.query_string
+        query: payload.query_string,
+        jobType: payload.job_type,
+        params: JSON.parse(payload.kwargs)
       };
     case TOGGLE_USER_RULE:
       var userRules = state.userRules;

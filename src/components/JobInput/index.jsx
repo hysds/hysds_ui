@@ -15,7 +15,6 @@ const JobInput = props => {
   };
 
   const _handleJobChange = e => {
-    console.log(e);
     props.changeJobType(e, props.url);
     props.getQueueList(e.jobType);
     props.getParamsList(e.jobType);

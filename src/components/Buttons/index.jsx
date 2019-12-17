@@ -29,7 +29,7 @@ export const ScrollTop = () => (
   />
 );
 
-export const SubmitOnDemandJobButton = props => {
+export const SubmitButton = props => {
   const className = props.disabled
     ? "submit-button disabled"
     : "submit-button active";

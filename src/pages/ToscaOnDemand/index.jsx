@@ -10,7 +10,7 @@ import QueueInput from "../../components/QueueInput";
 import PriorityInput from "../../components/PriorityInput";
 
 import {
-  SubmitOnDemandJobButton,
+  SubmitButton,
   QueryCheckerButton
 } from "../../components/Buttons";
 
@@ -174,7 +174,7 @@ class ToscaOnDemand extends React.Component {
               params={params}
             />
             <div className="on-demand-button-wrapper">
-              <SubmitOnDemandJobButton
+              <SubmitButton
                 disabled={!validSubmission || submitInProgress}
                 onClick={this._handleJobSubmit}
                 loading={submitInProgress}

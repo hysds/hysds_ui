@@ -9,7 +9,12 @@ import UserRuleNameInput from "../../components/UserRuleNameInput";
 import QueueInput from "../../components/QueueInput";
 import PriorityInput from "../../components/PriorityInput";
 
+import { SubmitButton } from "../../components/Buttons";
 import { Border } from "../../components/miscellaneous";
+
+import { Redirect } from "react-router-dom";
+
+import { GRQ_REST_API_V1 } from "../../config";
 
 import {
   getUserRule,
@@ -31,7 +36,13 @@ import "./style.css";
 class ToscaUserRuleEditor extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      submitInProgress: false,
+      submitSuccess: false
+    };
   }
+
+  // TODO: VALIDATE IF USER RULE IS VALID TO SUBMIT
 
   componentDidMount() {
     const params = this.props.match.params;
@@ -42,11 +53,44 @@ class ToscaUserRuleEditor extends React.Component {
     this.props.getOnDemandJobs();
   }
 
-  // TODO: need to not override default job params in user rules editor
-  // MAY NEED TO UPDATE JobParams COMPONENT
+  _handleUserRuleEditSubmit = () => {
+    const ruleId = this.props.match.params.rule;
+    const editUserRulesEndpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
+
+    const headers = { "Content-Type": "application/json" };
+    const data = {
+      id: ruleId,
+      rule_name: this.props.ruleName,
+      query_string: this.props.query,
+      priority: this.props.priority,
+      workflow: this.props.hysdsio,
+      job_spec: this.props.jobType,
+      queue: this.props.queue,
+      kwargs: JSON.stringify(this.props.params)
+    };
+    console.log(data);
+
+    this.setState({ submitInProgress: true });
+
+    fetch(editUserRulesEndpoint, {
+      method: "PUT",
+      headers,
+      body: JSON.stringify(data)
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        this.setState({
+          submitInProgress: false,
+          submitSuccess: true
+        });
+      });
+  };
 
   render() {
     const divider = this.props.paramsList.length > 0 ? <Border /> : null;
+
+    if (this.state.submitSuccess) return <Redirect to="/tosca/user-rules" />;
 
     return (
       <div className="tosca-user-rule-editor">
@@ -60,7 +104,6 @@ class ToscaUserRuleEditor extends React.Component {
 
         <div className="split user-rule-editor-right">
           <div className="user-rule-editor-right-wrapper">
-            <h1>{this.props.match.params.rule}</h1>
             <UserRuleNameInput
               editRuleName={editRuleName}
               ruleName={this.props.ruleName}
@@ -89,6 +132,11 @@ class ToscaUserRuleEditor extends React.Component {
               params={this.props.params}
             />
 
+            <SubmitButton
+              label="Save Changes"
+              onClick={this._handleUserRuleEditSubmit}
+              loading={this.state.submitInProgress}
+            />
             <Link to="/tosca/user-rules">
               <button
                 className="user-rules-editor-cancel-button"

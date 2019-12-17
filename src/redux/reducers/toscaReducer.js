@@ -98,7 +98,7 @@ const toscaReducer = (state = initialState, action) => {
       var defaultParams = {};
       params.map(p => {
         let name = p.name;
-        defaultParams[name] = p.default || state.params[name] || null; // THIS IS THE BUG
+        defaultParams[name] = state.params[name] || p.default || null; // THIS IS THE BUG
       });
 
       return {

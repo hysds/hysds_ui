@@ -13,12 +13,15 @@ import {
   EDIT_JOB_PARAMS,
   CHANGE_JOB_TYPE,
   LOAD_QUEUE_LIST,
+  lOAD_QUEUE,
   CHANGE_QUEUE,
   EDIT_TAG,
   EDIT_DATA_COUNT,
   LOAD_USER_RULES, // user-rules
   LOAD_USER_RULE,
-  TOGGLE_USER_RULE
+  TOGGLE_USER_RULE,
+  CLEAR_JOB_PARAMS,
+  EDIT_RULE_NAME
 } from "../constants.js";
 
 import {
@@ -110,7 +113,8 @@ export const getOnDemandJobs = () => dispatch => {
 export const changeJobType = (payload, url = false) => {
   if (url) {
     clearUrlJobParams(payload);
-    constructUrl("job_type", payload);
+    constructUrl("job_type", payload.jobType);
+    constructUrl("hysds_io", payload.hysdsio);
   }
   return {
     type: CHANGE_JOB_TYPE,
@@ -122,12 +126,10 @@ export const getQueueList = jobType => dispatch => {
   const getQueuesEndpoint = `${MOZART_REST_API_V2}/queue/list?id=${jobType}`;
   return fetch(getQueuesEndpoint)
     .then(res => res.json())
-    .then(data =>
-      dispatch({
-        type: LOAD_QUEUE_LIST,
-        payload: data.result
-      })
-    );
+    .then(data => {
+      dispatch({ type: LOAD_QUEUE_LIST, payload: data.result.queues });
+      dispatch({ type: lOAD_QUEUE, payload: data.result.recommended });
+    });
 };
 
 export const changeQueue = payload => ({
@@ -210,12 +212,34 @@ export const getUserRule = id => dispatch => {
   const getUserRuleEndpoint = `${GRQ_REST_API_V1}/grq/user-rules?id=${id}`;
   return fetch(getUserRuleEndpoint)
     .then(res => res.json())
-    .then(data =>
+    .then(data => {
       dispatch({
         type: LOAD_USER_RULE,
         payload: data.rule
-      })
-    );
+      });
+      const jobSpec = data.rule.job_spec;
+
+      const getQueuesEndpoint = `${MOZART_REST_API_V2}/queue/list?id=${jobSpec}`;
+      fetch(getQueuesEndpoint) // fetching the queue list for this job
+        .then(res => res.json())
+        .then(data =>
+          dispatch({
+            type: LOAD_QUEUE_LIST,
+            payload: data.result.queues
+          })
+        )
+        .catch(err => console.error(err));
+
+      const getParamsListEndpoint = `${GRQ_REST_API_V1}/grq/job-params?job_type=${jobSpec}`;
+      fetch(getParamsListEndpoint)
+        .then(res => res.json())
+        .then(data =>
+          dispatch({
+            type: LOAD_JOB_PARAMS,
+            payload: data
+          })
+        );
+    });
 };
 
 export const toggleUserRule = (ruleId, enabled) => dispatch => {
@@ -238,4 +262,17 @@ export const toggleUserRule = (ruleId, enabled) => dispatch => {
         payload: data
       });
     });
+};
+
+export const clearJobParams = payload => ({
+  type: CLEAR_JOB_PARAMS,
+  payload
+});
+
+export const editRuleName = (payload, url = false) => {
+  if (url) constructUrl("rule_name", payload);
+  return {
+    type: EDIT_RULE_NAME,
+    payload
+  };
 };

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -9,7 +9,6 @@ const TagInput = props => {
   const _handleTagInput = e => props.editTags(e.target.value);
 
   return (
-    <Fragment>
       <div className="tag-input-wrapper">
         <div className="tag-input-label">Tag:</div>
         <input
@@ -22,7 +21,6 @@ const TagInput = props => {
           required
         />
       </div>
-    </Fragment>
   );
 };
 

@@ -55,7 +55,7 @@ const JobParams = props => {
           );
         case "enum":
           return (
-            <section className="dropdown-wrapper" key={paramName}>
+            <section className="params-dropdown-wrapper" key={paramName}>
               <div className="job-params-label">{paramName}:</div>
               <div className="react-select-wrapper">
                 <Select

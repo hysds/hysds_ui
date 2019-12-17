@@ -15,13 +15,13 @@ const JobInput = props => {
   };
 
   const _handleJobChange = e => {
-    const job = e.value;
-    props.changeJobType(job);
-    props.getQueueList(job);
-    props.getParamsList(job);
+    console.log(e);
+    props.changeJobType(e, props.url);
+    props.getQueueList(e.jobType);
+    props.getParamsList(e.jobType);
   };
 
-  const { jobType, jobs } = props;
+  const { jobType, jobLabel, jobs } = props;
 
   return (
     <Fragment>
@@ -33,8 +33,8 @@ const JobInput = props => {
             name="job"
             options={jobs}
             value={{
-              label: "" || jobType,
-              value: "" || jobType
+              label: jobLabel || jobType || "",
+              value: jobType || ""
             }}
             onChange={_handleJobChange}
             styles={customSelectStyles}
@@ -58,7 +58,8 @@ JobInput.defaultProps = {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { changeJobType, getParamsList, getQueueList, url } = ownProps;
   return {
-    changeJobType: jobType => dispatch(changeJobType(jobType, url)),
+    changeJobType: (jobType, hysdsio) =>
+      dispatch(changeJobType(jobType, hysdsio, url)),
     getParamsList: jobType => dispatch(getParamsList(jobType)),
     getQueueList: jobType => dispatch(getQueueList(jobType))
   };

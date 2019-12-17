@@ -9,17 +9,21 @@ import {
   EDIT_JOB_PARAMS,
   CHANGE_JOB_TYPE,
   LOAD_QUEUE_LIST,
+  lOAD_QUEUE,
   CHANGE_QUEUE,
   EDIT_TAG,
   EDIT_DATA_COUNT,
   LOAD_USER_RULES,
   TOGGLE_USER_RULE,
-  LOAD_USER_RULE
+  LOAD_USER_RULE,
+  CLEAR_JOB_PARAMS,
+  EDIT_RULE_NAME
 } from "../constants";
 
 import {
+  makeDropdownOptions,
   sanitizePriority,
-  validateUrlJob,
+  // validateUrlJob,
   extractJobParams
 } from "../../utils";
 
@@ -40,14 +44,16 @@ const initialState = {
   validQuery: true,
   priority: priority || null,
   jobList: [],
+  jobLabel: null,
   jobType: urlParams.get("job_type") || null,
-  hysdsio: null,
+  hysdsio: urlParams.get("hysds_io") || null,
   queueList: [],
   queue: null,
   paramsList: [],
   params: defaultUrlJobParams || {},
   submissionType: null,
   tags: urlParams.get("tags") || null,
+  ruleName: null,
   userRules: [],
 
   toggle: false
@@ -80,18 +86,11 @@ const toscaReducer = (state = initialState, action) => {
         validQuery: action.payload
       };
     case GET_JOB_LIST:
-      var newJobList = action.payload.map(job => ({
-        label: job.version ? `${job.label} [${job.version}]` : job.label,
-        value: job.job_spec
-      }));
+      var newJobList = makeDropdownOptions(action.payload);
 
-      console.log(action.payload);
       return {
         ...state,
-        jobList: newJobList,
-        jobType: validateUrlJob(state.jobType, action.payload)
-          ? state.jobType
-          : ""
+        jobList: newJobList
       };
     case LOAD_JOB_PARAMS:
       var params = action.payload.params || [];
@@ -106,25 +105,28 @@ const toscaReducer = (state = initialState, action) => {
         ...state,
         paramsList: params,
         submissionType: action.payload.submission_type,
-        hysdsio: action.payload.hysds_io,
         params: defaultParams
       };
     case CHANGE_JOB_TYPE:
       return {
         ...state,
-        jobType: action.payload,
+        jobType: action.payload.jobType,
+        jobLabel: action.payload.label,
+        hysdsio: action.payload.hysdsio,
         params: {}
       };
     case LOAD_QUEUE_LIST:
-      var queueList = action.payload.queues;
-      var recommendedQueues = action.payload.recommended;
-      var defaultQueue =
-        recommendedQueues.length > 0 ? recommendedQueues[0] : null;
-
+      var queueList = action.payload;
       return {
         ...state,
-        queueList: queueList.map(queue => ({ label: queue, value: queue })),
-        queue: defaultQueue
+        queueList: queueList.map(queue => ({ label: queue, value: queue }))
+      };
+    case lOAD_QUEUE:
+      var queues = action.payload;
+      var recommendedQueue = queues.length > 0 ? queues[0] : state.queue;
+      return {
+        ...state,
+        queue: recommendedQueue
       };
     case CHANGE_QUEUE:
       return {
@@ -162,13 +164,16 @@ const toscaReducer = (state = initialState, action) => {
         userRules: action.payload
       };
     case LOAD_USER_RULE:
-      console.log(LOAD_USER_RULE, action.payload);
       var payload = action.payload;
       return {
         ...state,
         query: payload.query_string,
-        jobType: payload.job_type,
-        params: JSON.parse(payload.kwargs)
+        jobType: payload.job_spec,
+        hysdsio: payload.job_type,
+        params: JSON.parse(payload.kwargs),
+        ruleName: payload.rule_name,
+        queue: payload.queue,
+        priority: payload.priority
       };
     case TOGGLE_USER_RULE:
       var userRules = state.userRules;
@@ -185,6 +190,22 @@ const toscaReducer = (state = initialState, action) => {
       return {
         ...state,
         userRules: userRules
+      };
+    case CLEAR_JOB_PARAMS:
+      return {
+        ...state,
+        jobType: null,
+        hysdsio: null,
+        queue: null,
+        queueList: [],
+        queue: null,
+        params: {},
+        paramsList: []
+      };
+    case EDIT_RULE_NAME:
+      return {
+        ...state,
+        ruleName: action.payload
       };
     default:
       return state;

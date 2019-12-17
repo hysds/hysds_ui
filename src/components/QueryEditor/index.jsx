@@ -39,7 +39,7 @@ const QueryEditor = props => {
           tabSize: 2
         }}
         onChange={_handleQueryChange}
-        value={"" || query}
+        value={query || ""}
         wrapEnabled={true}
         width="100%"
         maxLines={Infinity}

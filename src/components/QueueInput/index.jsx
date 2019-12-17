@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -26,7 +26,10 @@ const QueueInput = props => {
           label="Queue"
           name="queue"
           options={queueList}
-          value={{ label: queue, value: "" || queue }}
+          value={{
+            label: queue || "",
+            value: queue || ""
+          }}
           onChange={_handleQueueChange}
           isDisabled={!(queueList.length > 0)}
           styles={customSelectStyles}

@@ -8,3 +8,9 @@
 .priority-dropdown-wrapper {
   flex: 1;
 }
+
+.priority-input-wrapper {
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 import QueryEditor from "../../components/QueryEditor";
 import JobInput from "../../components/JobInput";
@@ -6,8 +6,8 @@ import JobParams from "../../components/JobParams";
 import { Border, SubmitStatusBar } from "../../components/miscellaneous";
 
 import TagInput from "../../components/TagInput";
-import PriorityInput from "../../components/PriorityInput";
 import QueueInput from "../../components/QueueInput";
+import PriorityInput from "../../components/PriorityInput";
 
 import {
   SubmitOnDemandJobButton,
@@ -90,6 +90,7 @@ class ToscaOnDemand extends React.Component {
       query: this.props.query,
       kwargs: JSON.stringify(this.props.params)
     };
+    console.log(data);
 
     const jobSubmitUrl = `${GRQ_REST_API_V1}/grq/on-demand`;
     fetch(jobSubmitUrl, { method: "POST", headers, body: JSON.stringify(data) })
@@ -152,6 +153,7 @@ class ToscaOnDemand extends React.Component {
               getQueueList={getQueueList}
               jobs={this.props.jobs}
               jobType={this.props.jobType}
+              jobLabel={this.props.jobLabel}
             />
             <QueueInput
               queue={this.props.queue}
@@ -201,6 +203,7 @@ const mapStateToProps = state => ({
   validQuery: state.toscaReducer.validQuery,
   jobs: state.toscaReducer.jobList,
   jobType: state.toscaReducer.jobType,
+  jobLabel: state.toscaReducer.jobLabel,
   hysdsio: state.toscaReducer.hysdsio,
   queueList: state.toscaReducer.queueList,
   queue: state.toscaReducer.queue,

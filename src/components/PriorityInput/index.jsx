@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -30,22 +30,22 @@ const PriorityInput = props => {
   const _handleEditPriority = e => props.editJobPriority(e.value);
 
   return (
-    <Fragment>
+    <section className="priority-input-wrapper">
       <div className="priority-label">Priority:</div>
       <div className="priority-dropdown-wrapper">
         <Select
           label="Priority"
           name="priority"
           value={{
-            label: "" || priority,
-            value: "" || priority
+            label: priority || "",
+            value: priority || ""
           }}
           options={priorityList}
           onChange={_handleEditPriority}
           styles={customSelectStyles}
         />
       </div>
-    </Fragment>
+    </section>
   );
 };
 

@@ -24,6 +24,11 @@ const UserRulesTable = props => {
       accessor: "workflow"
     },
     {
+      Header: "Job Specification",
+      accessor: "job_spec",
+      show: false
+    },
+    {
       Header: "Queue",
       accessor: "queue"
     },

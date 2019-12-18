@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import QueryEditor from "../../components/QueryEditor";
@@ -11,8 +11,6 @@ import PriorityInput from "../../components/PriorityInput";
 
 import { SubmitButton } from "../../components/Buttons";
 import { Border } from "../../components/miscellaneous";
-
-import { Redirect } from "react-router-dom";
 
 import { GRQ_REST_API_V1 } from "../../config";
 
@@ -33,16 +31,14 @@ import {
 
 import "./style.css";
 
-class ToscaUserRuleEditor extends React.Component {
+class ToscaRuleEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      submitInProgress: false,
+      submitInProgress: null,
       submitSuccess: false
     };
   }
-
-  // TODO: VALIDATE IF USER RULE IS VALID TO SUBMIT
 
   componentDidMount() {
     const params = this.props.match.params;
@@ -53,11 +49,32 @@ class ToscaUserRuleEditor extends React.Component {
     this.props.getOnDemandJobs();
   }
 
+  // TODO: VALIDATE IF USER RULE IS VALID TO SUBMIT
+  _validateSubmission = () => {
+    let {
+      validQuery,
+      jobType,
+      ruleName,
+      queue,
+      priority,
+      params,
+      paramsList
+    } = this.props;
+
+    let validSubmission = true;
+    if (!validQuery || !ruleName || !jobType || !priority || !queue)
+      return false;
+
+    paramsList.map(param => {
+      const paramName = param.name;
+      if (!(param.optional === true) && !params[paramName])
+        validSubmission = false;
+    });
+    return validSubmission;
+  };
+
   _handleUserRuleEditSubmit = () => {
     const ruleId = this.props.match.params.rule;
-    const editUserRulesEndpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
-
-    const headers = { "Content-Type": "application/json" };
     const data = {
       id: ruleId,
       rule_name: this.props.ruleName,
@@ -68,29 +85,29 @@ class ToscaUserRuleEditor extends React.Component {
       queue: this.props.queue,
       kwargs: JSON.stringify(this.props.params)
     };
-    console.log(data);
 
-    this.setState({ submitInProgress: true });
+    const editRuleEndpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
+    this.setState({ submitInProgress: "loading" });
 
-    fetch(editUserRulesEndpoint, {
+    const headers = { "Content-Type": "application/json" };
+    fetch(editRuleEndpoint, {
       method: "PUT",
       headers,
       body: JSON.stringify(data)
     })
       .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        this.setState({
-          submitInProgress: false,
-          submitSuccess: true
-        });
-      });
+      .then(() =>
+        this.setState({ submitInProgress: null, submitSuccess: true })
+      );
   };
 
   render() {
-    const divider = this.props.paramsList.length > 0 ? <Border /> : null;
-
     if (this.state.submitSuccess) return <Redirect to="/tosca/user-rules" />;
+    const hysdsioLabel =
+      this.props.paramsList.length > 0 ? <h2>{this.props.hysdsio}</h2> : null;
+
+    const divider = this.props.paramsList.length > 0 ? <Border /> : null;
+    const validSubmission = this._validateSubmission();
 
     return (
       <div className="tosca-user-rule-editor">
@@ -126,25 +143,32 @@ class ToscaUserRuleEditor extends React.Component {
               editJobPriority={editJobPriority}
             />
             {divider}
+            {hysdsioLabel}
             <JobParams
               editParams={editParams}
               paramsList={this.props.paramsList}
               params={this.props.params}
             />
 
-            <SubmitButton
-              label="Save Changes"
-              onClick={this._handleUserRuleEditSubmit}
-              loading={this.state.submitInProgress}
-            />
-            <Link to="/tosca/user-rules">
-              <button
-                className="user-rules-editor-cancel-button"
-                onClick={() => this.props.clearJobParams()}
+            <div className="user-rule-buttons-wrapper">
+              <SubmitButton
+                label="Save Changes"
+                onClick={this._handleUserRuleEditSubmit}
+                loading={this.state.submitInProgress}
+                disabled={!validSubmission}
+              />
+              <Link
+                to="/tosca/user-rules"
+                className="user-rules-editor-cancel-button-wrapper"
               >
-                Cancel
-              </button>
-            </Link>
+                <button
+                  className="user-rules-editor-cancel-button"
+                  onClick={() => this.props.clearJobParams()}
+                >
+                  Cancel
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -166,20 +190,15 @@ const mapStateToProps = state => ({
   priority: state.toscaReducer.priority,
   paramsList: state.toscaReducer.paramsList,
   params: state.toscaReducer.params,
-  ruleName: state.toscaReducer.ruleName,
-  submissionType: state.toscaReducer.submissionType,
-  dataCount: state.toscaReducer.dataCount
+  ruleName: state.toscaReducer.ruleName
 });
 
 // Redux actions
-const mapDispatchToProps = (dispatch, ownProps) => ({
+const mapDispatchToProps = dispatch => ({
   getUserRule: id => dispatch(getUserRule(id)),
   getOnDemandJobs: () => dispatch(getOnDemandJobs()),
   clearJobParams: () => dispatch(clearJobParams()),
   getQueueList: jobType => dispatch(getQueueList(jobType))
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ToscaUserRuleEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(ToscaRuleEditor);

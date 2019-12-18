@@ -72,3 +72,11 @@ body {
   border: none;
   -moz-outline-style: none;
 }
+
+.user-rules-editor-cancel-button-wrapper {
+  padding: 10px;
+}
+
+.user-rule-buttons-wrapper {
+  display: flex;
+}

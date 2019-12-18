@@ -10,7 +10,7 @@ import Tosca from "./Tosca";
 import MetadataViewer from "./MetadataViewer";
 import ToscaOnDemand from "../pages/ToscaOnDemand";
 import ToscaUserRules from "../pages/ToscaUserRules";
-import ToscaUserRuleEditor from "../pages/ToscaUserRuleEditor";
+import ToscaRuleEditor from "../pages/ToscaRuleEditor";
 
 const Routes = () => {
   let router = (
@@ -21,11 +21,11 @@ const Routes = () => {
         <Route exact path="/tosca/metadata" component={MetadataViewer} />
         <Route exact path="/tosca/on-demand" component={ToscaOnDemand} />
         <Route exact path="/tosca/user-rules" component={ToscaUserRules} />
-        <Route exact path="/tosca/user-rule" component={ToscaUserRuleEditor} />
+        <Route exact path="/tosca/user-rule" component={ToscaRuleEditor} />
         <Route
           exact
           path="/tosca/user-rule/:rule"
-          component={ToscaUserRuleEditor}
+          component={ToscaRuleEditor}
         />
       </Switch>
     </Router>

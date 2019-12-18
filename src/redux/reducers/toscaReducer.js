@@ -113,6 +113,8 @@ const toscaReducer = (state = initialState, action) => {
         jobType: action.payload.jobType,
         jobLabel: action.payload.label,
         hysdsio: action.payload.hysdsio,
+        queue: null,
+        queueList: [],
         params: {}
       };
     case LOAD_QUEUE_LIST:

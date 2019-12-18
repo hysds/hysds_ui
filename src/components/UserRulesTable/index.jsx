@@ -5,6 +5,7 @@ import ReactTable from "react-table";
 import PropTypes from "prop-types";
 
 import { TableToggle, Checkbox } from "../miscellaneous";
+import { ToggleButton, DeleteButton } from "../../components/Buttons";
 
 import "./style.css";
 
@@ -17,11 +18,13 @@ const UserRulesTable = props => {
     },
     {
       Header: "Name",
-      accessor: "rule_name"
+      accessor: "rule_name",
+      width: 200
     },
     {
       Header: "Action",
-      accessor: "job_type"
+      accessor: "job_type",
+      width: 150
     },
     {
       Header: "Job Specification",
@@ -56,12 +59,32 @@ const UserRulesTable = props => {
       )
     },
     {
+      Header: "Enabled",
+      accessor: "enabled",
+      width: 100,
+      Cell: state => (
+        <ToggleButton
+          loading={state.original.loading ? 1 : 0}
+          enabled={state.row.enabled ? 1 : 0}
+        />
+      )
+    },
+    {
       Header: null,
       width: 100,
       Cell: state => (
         <Link to={`${props.link}/${state.row._id}`}>
           <button type="button">Edit</button>
         </Link>
+      )
+    },
+    {
+      Header: null,
+      width: 100,
+      Cell: state => (
+        <DeleteButton
+          onClick={() => console.log("clicked delete button!", state)}
+        />
       )
     },
     {
@@ -83,6 +106,31 @@ const UserRulesTable = props => {
     }
   ];
 
+  const _renderSubComponent = data => {
+    let query, kwargs;
+    try {
+      query = JSON.parse(data.original.query_string);
+      query = JSON.stringify(query, null, 2);
+      kwargs = JSON.parse(data.original.kwargs);
+      kwargs = JSON.stringify(kwargs, null, 2);
+    } catch (err) {}
+
+    return (
+      <table className="user-rules-table-query-string">
+        <tbody>
+          <tr>
+            <td>
+              <pre>{query}</pre>
+            </td>
+            <td>
+              <pre>{kwargs}</pre>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    );
+  };
+
   return (
     <ReactTable
       data={props.rules}
@@ -90,19 +138,7 @@ const UserRulesTable = props => {
       showPagination={true}
       toggleUserRule={props.toggleUserRule}
       defaultSorted={defaultSorted}
-      SubComponent={row => {
-        let query;
-        try {
-          query = JSON.parse(row.original.query_string);
-          query = JSON.stringify(query, null, 2);
-        } catch (err) {}
-
-        return (
-          <div className="user-rules-table-query-string">
-            <pre>{query}</pre>
-          </div>
-        );
-      }}
+      SubComponent={row => _renderSubComponent(row)}
     />
   );
 };

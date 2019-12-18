@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import "font-awesome/css/font-awesome.min.css";
 import "./style.css";
@@ -60,6 +61,30 @@ export const QueryCheckerButton = props => {
   return (
     <button className={className} disabled={props.disabled} {...props}>
       Data Count Check
+    </button>
+  );
+};
+
+export const ToggleButton = props => {
+  let label = props.enabled ? "On" : "Off";
+  label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
+
+  const style = {
+    background: props.enabled ? "#5cb85c" : "#dc3545"
+  };
+
+  return (
+    <button className="toggle-button" style={style} {...props}>
+      {label}
+    </button>
+  );
+};
+
+export const DeleteButton = props => {
+  let label = props.label || "Delete";
+  return (
+    <button className="delete-button" {...props}>
+      {label}
     </button>
   );
 };

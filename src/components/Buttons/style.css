@@ -82,3 +82,40 @@
   transition: background-color 0.2s;
   background-color: #1f54b0;
 }
+
+.toggle-button {
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+}
+
+.toggle-button:focus {
+  outline: 0;
+}
+
+.delete-button {
+  border: none;
+  border-radius: 5px;
+  color: white;
+  background-color: #dc3545;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+}
+
+.delete-button:focus {
+  outline: 0;
+}

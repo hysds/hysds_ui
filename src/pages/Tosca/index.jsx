@@ -186,6 +186,12 @@ class Tosca extends React.Component {
               <div className="button-wraper">
                 <OnDemandButton query={query} total={dataCount} />
                 <TriggerRulesButton
+                  label="Create New Rule"
+                  link={`tosca/user-rule?query=${query}`}
+                  target="tosca-user-rules"
+                />
+                <TriggerRulesButton
+                  label="View Rules"
                   link="tosca/user-rules"
                   target="tosca-user-rules"
                 />

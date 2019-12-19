@@ -36,7 +36,9 @@ class ToscaRuleEditor extends React.Component {
     super(props);
     this.state = {
       submitInProgress: null,
-      submitSuccess: false
+      submitSuccess: false,
+      // using the same component for creating new rules and editing existing rules
+      editMode: props.match.params.rule ? true : false
     };
   }
 
@@ -73,7 +75,7 @@ class ToscaRuleEditor extends React.Component {
     return validSubmission;
   };
 
-  _handleUserRuleEditSubmit = () => {
+  _handleUserRuleSubmit = () => {
     const ruleId = this.props.match.params.rule;
     const data = {
       id: ruleId,
@@ -91,7 +93,7 @@ class ToscaRuleEditor extends React.Component {
 
     const headers = { "Content-Type": "application/json" };
     fetch(editRuleEndpoint, {
-      method: "PUT",
+      method: this.state.editMode ? "PUT" : "POST",
       headers,
       body: JSON.stringify(data)
     })
@@ -113,6 +115,7 @@ class ToscaRuleEditor extends React.Component {
       <div className="tosca-user-rule-editor">
         <div className="split user-rule-editor-left">
           <QueryEditor
+            url={!this.state.editMode}
             editQuery={editQuery}
             validateQuery={validateQuery}
             query={this.props.query}
@@ -152,8 +155,8 @@ class ToscaRuleEditor extends React.Component {
 
             <div className="user-rule-buttons-wrapper">
               <SubmitButton
-                label="Save Changes"
-                onClick={this._handleUserRuleEditSubmit}
+                label={this.state.editMode ? "Save Changes" : "Save"}
+                onClick={this._handleUserRuleSubmit}
                 loading={this.state.submitInProgress}
                 disabled={!validSubmission}
               />

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import ReactTable from "react-table";
 import PropTypes from "prop-types";
-
 import {
   ToggleButton,
   EditButton,
@@ -11,6 +10,13 @@ import {
 } from "../../components/Buttons";
 
 import "./style.css";
+
+const buttonCellStyle = {
+  style: {
+    paddingTop: 5,
+    paddingBottom: 0
+  }
+};
 
 const UserRulesTable = props => {
   const columns = [
@@ -52,6 +58,7 @@ const UserRulesTable = props => {
       Header: "Enabled",
       accessor: "enabled",
       width: 100,
+      getProps: () => buttonCellStyle,
       Cell: state => (
         <ToggleButton
           loading={state.original.loading ? 1 : 0}
@@ -65,6 +72,7 @@ const UserRulesTable = props => {
     {
       Header: null,
       width: 100,
+      getProps: () => buttonCellStyle,
       Cell: state => (
         <Link to={`${props.link}/${state.row._id}`}>
           <EditButton />
@@ -74,6 +82,7 @@ const UserRulesTable = props => {
     {
       Header: null,
       width: 100,
+      getProps: () => buttonCellStyle,
       Cell: state => (
         <DeleteButton
           loading={state.original.loading ? 1 : 0}

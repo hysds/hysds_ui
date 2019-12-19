@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import "font-awesome/css/font-awesome.min.css";
 import "./style.css";
@@ -16,11 +15,14 @@ export const OnDemandButton = ({ query, total }) => (
   </a>
 );
 
-export const TriggerRulesButton = props => (
-  <a className="utility-button" href={props.link} {...props}>
-    Trigger Rules
-  </a>
-);
+export const TriggerRulesButton = props => {
+  let label = props.label || "Trigger Rules";
+  return (
+    <a className="utility-button" href={props.link} {...props}>
+      {label}
+    </a>
+  );
+};
 
 export const ScrollTop = () => (
   <img

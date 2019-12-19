@@ -34,10 +34,14 @@ const ToscaUserRules = class extends React.Component {
   }
 };
 
+ToscaUserRules.propTypes = {
+  getUserRules: PropTypes.func.isRequired,
+  userRules: PropTypes.array.isRequired
+};
+
 // redux state data
 const mapStateToProps = state => ({
-  userRules: state.toscaReducer.userRules,
-  toggle: state.toscaReducer.state
+  userRules: state.toscaReducer.userRules
 });
 
 // Redux actions

@@ -82,8 +82,19 @@ export const ToggleButton = props => {
 
 export const DeleteButton = props => {
   let label = props.label || "Delete";
+  label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
   return (
     <button className="delete-button" {...props}>
+      {label}
+    </button>
+  );
+};
+
+export const EditButton = props => {
+  let label = props.label || "Edit";
+  label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
+  return (
+    <button className="edit-button" {...props}>
       {label}
     </button>
   );

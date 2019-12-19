@@ -24,5 +24,7 @@ export const EDIT_DATA_COUNT = "EDIT_DATA_COUNT";
 export const LOAD_USER_RULES = "LOAD_USER_RULES";
 export const LOAD_USER_RULE = "LOAD_USER_RULE";
 export const TOGGLE_USER_RULE = "TOGGLE_USER_RULE";
+export const USER_RULE_ACTION_LOADING = "USER_RULE_ACTION_LOADING"; // tag the user rule in the array with loading: true
 export const CLEAR_JOB_PARAMS = "CLEAR_JOB_PARAMS";
 export const EDIT_RULE_NAME = "EDIT_RULE_NAME";
+export const DELETE_USER_RULE = "DELETE_USER_RULE";

@@ -1,11 +1,14 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import ReactTable from "react-table";
 import PropTypes from "prop-types";
 
-import { TableToggle, Checkbox } from "../miscellaneous";
-import { ToggleButton, DeleteButton } from "../../components/Buttons";
+import {
+  ToggleButton,
+  EditButton,
+  DeleteButton
+} from "../../components/Buttons";
 
 import "./style.css";
 
@@ -50,22 +53,12 @@ const UserRulesTable = props => {
       accessor: "enabled",
       width: 100,
       Cell: state => (
-        <Checkbox
-          checked={state.row.enabled}
-          onChange={() =>
-            props.toggleUserRule(state.row._id, !state.row.enabled)
-          }
-        />
-      )
-    },
-    {
-      Header: "Enabled",
-      accessor: "enabled",
-      width: 100,
-      Cell: state => (
         <ToggleButton
           loading={state.original.loading ? 1 : 0}
           enabled={state.row.enabled ? 1 : 0}
+          onClick={() =>
+            props.toggleUserRule(state.row._id, !state.row.enabled)
+          }
         />
       )
     },
@@ -74,7 +67,7 @@ const UserRulesTable = props => {
       width: 100,
       Cell: state => (
         <Link to={`${props.link}/${state.row._id}`}>
-          <button type="button">Edit</button>
+          <EditButton />
         </Link>
       )
     },
@@ -83,7 +76,11 @@ const UserRulesTable = props => {
       width: 100,
       Cell: state => (
         <DeleteButton
-          onClick={() => console.log("clicked delete button!", state)}
+          loading={state.original.loading ? 1 : 0}
+          onClick={() => {
+            var confirmDelete = confirm(`Delete rule? ${state.row.rule_name}`);
+            if (confirmDelete) props.deleteUserRule(state.row._id);
+          }}
         />
       )
     },
@@ -144,9 +141,10 @@ const UserRulesTable = props => {
 };
 
 UserRulesTable.propTypes = {
+  link: PropTypes.string.isRequired,
   rules: PropTypes.array.isRequired,
   toggleUserRule: PropTypes.func.isRequired,
-  link: PropTypes.string.isRequired
+  deleteUserRule: PropTypes.func.isRequired
 };
 
 // redux state data
@@ -155,12 +153,13 @@ const mapStateToProps = state => ({
 });
 
 // Redux actions
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  getUserRules: () => dispatch(getUserRules()),
-  toggleUserRule: (ruleId, enabled) =>
-    dispatch(ownProps.toggleUserRule(ruleId, enabled)),
-  tesEditToggle: (ruleId, enabled) =>
-    dispatch(ownProps.tesEditToggle(ruleId, enabled))
-});
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { toggleUserRule, deleteUserRule } = ownProps;
+  return {
+    toggleUserRule: (ruleId, enabled) =>
+      dispatch(toggleUserRule(ruleId, enabled)),
+    deleteUserRule: id => dispatch(deleteUserRule(id))
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserRulesTable);

@@ -15,9 +15,11 @@ import {
   EDIT_DATA_COUNT,
   LOAD_USER_RULES,
   TOGGLE_USER_RULE,
+  USER_RULE_ACTION_LOADING,
   LOAD_USER_RULE,
   CLEAR_JOB_PARAMS,
-  EDIT_RULE_NAME
+  EDIT_RULE_NAME,
+  DELETE_USER_RULE
 } from "../constants";
 
 import {
@@ -177,12 +179,13 @@ const toscaReducer = (state = initialState, action) => {
         queue: payload.queue,
         priority: payload.priority
       };
-    case TOGGLE_USER_RULE:
+    case USER_RULE_ACTION_LOADING:
       var userRules = state.userRules;
-      var loc = userRules.findIndex(r => r._id === action.payload.id);
+      const id = action.payload;
+      var loc = userRules.findIndex(r => r._id === id);
       if (loc > -1) {
         var foundRule = userRules[loc];
-        foundRule.enabled = action.payload.updated.enabled;
+        foundRule.loading = true;
         userRules = [
           ...userRules.slice(0, loc),
           foundRule,
@@ -191,7 +194,24 @@ const toscaReducer = (state = initialState, action) => {
       }
       return {
         ...state,
-        userRules: userRules
+        userRules
+      };
+    case TOGGLE_USER_RULE:
+      var userRules = state.userRules;
+      var loc = userRules.findIndex(r => r._id === action.payload.id);
+      if (loc > -1) {
+        var foundRule = userRules[loc];
+        foundRule.enabled = action.payload.updated.enabled;
+        foundRule.loading = false;
+        userRules = [
+          ...userRules.slice(0, loc),
+          foundRule,
+          ...userRules.slice(loc + 1)
+        ];
+      }
+      return {
+        ...state,
+        userRules
       };
     case CLEAR_JOB_PARAMS:
       return {
@@ -208,6 +228,16 @@ const toscaReducer = (state = initialState, action) => {
       return {
         ...state,
         ruleName: action.payload
+      };
+    case DELETE_USER_RULE:
+      var userRules = state.userRules;
+      var loc = userRules.findIndex(r => r._id === action.payload);
+      if (loc > -1)
+        userRules = [...userRules.slice(0, loc), ...userRules.slice(loc + 1)];
+
+      return {
+        ...state,
+        userRules
       };
     default:
       return state;

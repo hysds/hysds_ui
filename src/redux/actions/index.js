@@ -20,8 +20,10 @@ import {
   LOAD_USER_RULES, // user-rules
   LOAD_USER_RULE,
   TOGGLE_USER_RULE,
+  USER_RULE_ACTION_LOADING,
   CLEAR_JOB_PARAMS,
-  EDIT_RULE_NAME
+  EDIT_RULE_NAME,
+  DELETE_USER_RULE
 } from "../constants.js";
 
 import {
@@ -242,10 +244,15 @@ export const getUserRule = id => dispatch => {
     });
 };
 
-export const toggleUserRule = (ruleId, enabled) => dispatch => {
+export const toggleUserRule = (id, enabled) => dispatch => {
+  dispatch({
+    type: USER_RULE_ACTION_LOADING,
+    payload: id
+  });
+
   const toggleUserRuleEndpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
   const payload = {
-    id: ruleId,
+    id: id,
     enabled
   };
   const headers = {
@@ -275,4 +282,21 @@ export const editRuleName = (payload, url = false) => {
     type: EDIT_RULE_NAME,
     payload
   };
+};
+
+export const deleteUserRule = id => dispatch => {
+  dispatch({
+    type: USER_RULE_ACTION_LOADING,
+    payload: id
+  });
+
+  const deleteRuleEndpoint = `${GRQ_REST_API_V1}/grq/user-rules?id=${id}`;
+  return fetch(deleteRuleEndpoint, { method: "DELETE" })
+    .then(res => res.json())
+    .then(data =>
+      dispatch({
+        type: DELETE_USER_RULE,
+        payload: id
+      })
+    );
 };

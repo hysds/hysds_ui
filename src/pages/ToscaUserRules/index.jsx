@@ -2,7 +2,11 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import UserRulesTable from "../../components/UserRulesTable";
-import { getUserRules, toggleUserRule } from "../../redux/actions";
+import {
+  getUserRules,
+  toggleUserRule,
+  deleteUserRule
+} from "../../redux/actions";
 
 import "./style.css";
 
@@ -22,6 +26,7 @@ const ToscaUserRules = class extends React.Component {
         <UserRulesTable
           rules={userRules}
           toggleUserRule={toggleUserRule}
+          deleteUserRule={deleteUserRule}
           link="/tosca/user-rule"
         />
       </Fragment>

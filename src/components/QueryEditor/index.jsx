@@ -44,6 +44,7 @@ const QueryEditor = props => {
         width="100%"
         maxLines={Infinity}
         onValidate={_validateESQuery}
+        editorProps={{ $blockScrolling: Infinity }}
       />
     </Fragment>
   );

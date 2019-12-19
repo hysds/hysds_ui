@@ -28,12 +28,12 @@ const UserRulesTable = props => {
     {
       Header: "Name",
       accessor: "rule_name",
-      width: 200
+      // width: 200
     },
     {
       Header: "Action",
       accessor: "job_type",
-      width: 150
+      // width: 250
     },
     {
       Header: "Job Specification",
@@ -96,12 +96,12 @@ const UserRulesTable = props => {
     {
       Header: "Created",
       accessor: "creation_time",
-      width: 175
+      width: 145
     },
     {
       Header: "Modified",
       accessor: "modified_time",
-      width: 175
+      width: 145
     }
   ];
 

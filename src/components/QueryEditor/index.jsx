@@ -7,7 +7,6 @@ import AceEditor from "react-ace";
 import "brace/mode/json";
 
 const QueryEditor = props => {
-  // redux action to change the on demand query
   const _handleQueryChange = val => props.editQuery(val);
 
   // disable submit job button

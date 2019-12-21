@@ -4,32 +4,29 @@ body {
 
 .tosca-on-demand {
   display: flex;
+  padding-top: 47px;
+  height: calc(100vh - 47px);
 }
 
 /* Split the screen in half */
 .split {
-  height: 100vh;
+  overflow: auto;
 }
 
 @media (max-width: 950px) {
   .tosca-on-demand {
+    padding-top: 47px;
     display: block;
     overflow: auto;
-    height: 100vh;
   }
 
   .split {
-    height: auto;
+    /* height: auto; */
   }
 }
 
-/* Control the left side */
-.on-demand-left {
-  flex: 1;
-  overflow: auto;
-}
-
-/* Control the right side */
+/* Control the left and right side */
+.on-demand-left,
 .on-demand-right {
   flex: 1;
   overflow: auto;

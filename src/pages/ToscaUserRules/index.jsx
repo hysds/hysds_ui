@@ -1,6 +1,8 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+
+import { GenericButtonLink } from "../../components/Buttons";
 import UserRulesTable from "../../components/UserRulesTable";
 import {
   getUserRules,
@@ -23,12 +25,20 @@ const ToscaUserRules = class extends React.Component {
     const { userRules } = this.props;
     return (
       <Fragment>
-        <UserRulesTable
-          rules={userRules}
-          toggleUserRule={toggleUserRule}
-          deleteUserRule={deleteUserRule}
-          link="/tosca/user-rule"
-        />
+        <div className="user-rules-body">
+          <div className="user-rules-options-wrapper">
+            <GenericButtonLink href="/tosca/user-rule" label="Create Rule" />
+          </div>
+
+          <div className="user-rules-table-wrapper">
+            <UserRulesTable
+              rules={userRules}
+              toggleUserRule={toggleUserRule}
+              deleteUserRule={deleteUserRule}
+              link="/tosca/user-rule"
+            />
+          </div>
+        </div>
       </Fragment>
     );
   }

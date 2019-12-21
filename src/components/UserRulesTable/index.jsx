@@ -28,12 +28,12 @@ const UserRulesTable = props => {
     {
       Header: "Name",
       accessor: "rule_name",
-      // width: 200
+      filterable: true
     },
     {
       Header: "Action",
       accessor: "job_type",
-      // width: 250
+      filterable: true
     },
     {
       Header: "Job Specification",
@@ -42,36 +42,46 @@ const UserRulesTable = props => {
     },
     {
       Header: "Queue",
-      accessor: "queue"
+      accessor: "queue",
+      filterable: true
     },
     {
       Header: "Priority",
       accessor: "priority",
-      width: 65
+      width: 65,
+      resizable: false
     },
     {
       Header: "User",
       accessor: "username",
+      filterable: true,
       width: 150
     },
     {
       Header: "Enabled",
       accessor: "enabled",
       width: 100,
+      resizable: false,
       getProps: () => buttonCellStyle,
       Cell: state => (
         <ToggleButton
-          loading={state.original.loading ? 1 : 0}
+          loading={state.original.toggleLoading ? 1 : 0}
           enabled={state.row.enabled ? 1 : 0}
-          onClick={() =>
-            props.toggleUserRule(state.row._id, !state.row.enabled)
-          }
+          onClick={() => {
+            props.toggleUserRule(
+              state.row._index,
+              state.row._id,
+              !state.row.enabled
+            );
+          }}
         />
       )
     },
     {
       Header: null,
       width: 100,
+      resizable: false,
+      sortable: false,
       getProps: () => buttonCellStyle,
       Cell: state => (
         <Link to={`${props.link}/${state.row._id}`}>
@@ -82,13 +92,16 @@ const UserRulesTable = props => {
     {
       Header: null,
       width: 100,
+      resizable: false,
+      sortable: false,
       getProps: () => buttonCellStyle,
       Cell: state => (
         <DeleteButton
           loading={state.original.loading ? 1 : 0}
           onClick={() => {
             var confirmDelete = confirm(`Delete rule? ${state.row.rule_name}`);
-            if (confirmDelete) props.deleteUserRule(state.row._id);
+            if (confirmDelete)
+              props.deleteUserRule(state.row._index, state.row._id);
           }}
         />
       )
@@ -96,12 +109,14 @@ const UserRulesTable = props => {
     {
       Header: "Created",
       accessor: "creation_time",
-      width: 145
+      width: 145,
+      resizable: false
     },
     {
       Header: "Modified",
       accessor: "modified_time",
-      width: 145
+      width: 145,
+      resizable: false
     }
   ];
 
@@ -113,11 +128,15 @@ const UserRulesTable = props => {
   ];
 
   const _renderSubComponent = data => {
-    let query, kwargs;
+    let query = data.original.query;
+    let kwargs = data.original.kwargs;
     try {
-      query = JSON.parse(data.original.query_string);
-      query = JSON.stringify(query, null, 2);
-      kwargs = JSON.parse(data.original.kwargs);
+      query = JSON.stringify(data.original.query, null, 2);
+    } catch (err) {
+      query = data.original.query_string;
+    }
+    try {
+      kwargs = JSON.parse(kwargs);
       kwargs = JSON.stringify(kwargs, null, 2);
     } catch (err) {}
 
@@ -145,6 +164,7 @@ const UserRulesTable = props => {
       toggleUserRule={props.toggleUserRule}
       defaultSorted={defaultSorted}
       SubComponent={row => _renderSubComponent(row)}
+      {...props}
     />
   );
 };
@@ -165,9 +185,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { toggleUserRule, deleteUserRule } = ownProps;
   return {
-    toggleUserRule: (ruleId, enabled) =>
-      dispatch(toggleUserRule(ruleId, enabled)),
-    deleteUserRule: id => dispatch(deleteUserRule(id))
+    toggleUserRule: (index, ruleId, enabled) =>
+      dispatch(toggleUserRule(index, ruleId, enabled)),
+    deleteUserRule: (index, id) => dispatch(deleteUserRule(index, id))
   };
 };
 

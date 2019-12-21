@@ -41,13 +41,10 @@ import IdQueryHandler from "../../components/IdQueryHandler";
 import SearchQuery from "../../components/SearchQuery";
 
 // custom utility components
-import {
-  OnDemandButton,
-  TriggerRulesButton,
-  ScrollTop
-} from "../../components/Buttons";
+import { OnDemandButton, TriggerRulesButton } from "../../components/Buttons";
 
 import { HelperLink } from "../../components/miscellaneous";
+import HeaderBar from "../../components/HeaderBar";
 
 import "./style.css"; // main style sheet for the Toca page
 
@@ -93,10 +90,9 @@ class Tosca extends React.Component {
   };
 
   _handleClearFilter = event => {
-    // if user clears specific filter
+    // clears specific filter
     if (event) this.props.clearCustomComponent(event);
-    // if user clicks clear all filters
-    else this.props.clearAllCustomComponents();
+    else this.props.clearAllCustomComponents(); // clear all filters
   };
 
   render() {
@@ -118,6 +114,7 @@ class Tosca extends React.Component {
         url={GRQ_ES_URL}
         transformRequest={this._handleTransformRequest}
       >
+        <HeaderBar title="HySDS" />
         <div className="tosca-body-wrapper">
           <div className="sidenav">
             <div className="sidenav-title">Filters</div>

@@ -180,38 +180,31 @@ const toscaReducer = (state = initialState, action) => {
         priority: payload.priority
       };
     case USER_RULE_ACTION_LOADING:
-      var userRules = state.userRules;
-      const id = action.payload;
-      var loc = userRules.findIndex(r => r._id === id);
-      if (loc > -1) {
-        var foundRule = userRules[loc];
-        foundRule.loading = true;
-        userRules = [
-          ...userRules.slice(0, loc),
-          foundRule,
-          ...userRules.slice(loc + 1)
-        ];
-      }
+      var index = action.payload;
+      var foundRule = state.userRules[index];
+      foundRule.toggleLoading = true;
+
       return {
         ...state,
-        userRules
+        userRules: [
+          ...state.userRules.slice(0, index),
+          foundRule,
+          ...state.userRules.slice(index + 1)
+        ]
       };
     case TOGGLE_USER_RULE:
-      var userRules = state.userRules;
-      var loc = userRules.findIndex(r => r._id === action.payload.id);
-      if (loc > -1) {
-        var foundRule = userRules[loc];
-        foundRule.enabled = action.payload.updated.enabled;
-        foundRule.loading = false;
-        userRules = [
-          ...userRules.slice(0, loc),
-          foundRule,
-          ...userRules.slice(loc + 1)
-        ];
-      }
+      var index = action.payload.index;
+      var foundRule = state.userRules[index];
+      foundRule.enabled = action.payload.updated.enabled;
+      foundRule.toggleLoading = false;
+
       return {
         ...state,
-        userRules
+        userRules: [
+          ...state.userRules.slice(0, index),
+          foundRule,
+          ...state.userRules.slice(index + 1)
+        ]
       };
     case CLEAR_JOB_PARAMS:
       return {
@@ -230,14 +223,13 @@ const toscaReducer = (state = initialState, action) => {
         ruleName: action.payload
       };
     case DELETE_USER_RULE:
-      var userRules = state.userRules;
-      var loc = userRules.findIndex(r => r._id === action.payload);
-      if (loc > -1)
-        userRules = [...userRules.slice(0, loc), ...userRules.slice(loc + 1)];
-
+      var { index, id } = action.payload;
       return {
         ...state,
-        userRules
+        userRules: [
+          ...state.userRules.slice(0, index),
+          ...state.userRules.slice(index + 1)
+        ]
       };
     default:
       return state;

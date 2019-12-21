@@ -43,9 +43,9 @@ import {
 
 // ********************************************************************** //
 // REACTIVESEARCH ACTIONS
-export const clickDatasetId = payload => ({
+export const clickDatasetId = id => ({
   type: GET_DATASET_ID,
-  payload
+  payload: id
 });
 
 export const clearAllCustomComponents = payload => ({
@@ -53,28 +53,28 @@ export const clearAllCustomComponents = payload => ({
   payload
 });
 
-export const clearCustomComponent = payload => ({
+export const clearCustomComponent = id => ({
   type: CLEAR_CUSTOM_COMPONENTS,
-  payload
+  payload: id
 });
 
 // ********************************************************************** //
 // TOSCA ACTIONS
-export const retrieveData = payload => ({
+export const retrieveData = data => ({
   type: RETRIEVE_DATA,
-  payload
+  payload: data
 });
 
-export const getQuery = payload => {
+export const getQuery = query => {
   return {
     type: GET_QUERY,
-    payload
+    payload: query
   };
 };
 
-export const updateSearchQuery = payload => ({
+export const updateSearchQuery = queryString => ({
   type: UPDATE_SEARCH_QUERY,
-  payload
+  payload: queryString
 });
 
 // ********************************************************************** //
@@ -129,8 +129,14 @@ export const getQueueList = jobType => dispatch => {
   return fetch(getQueuesEndpoint)
     .then(res => res.json())
     .then(data => {
-      dispatch({ type: LOAD_QUEUE_LIST, payload: data.result.queues });
-      dispatch({ type: lOAD_QUEUE, payload: data.result.recommended });
+      dispatch({
+        type: LOAD_QUEUE_LIST,
+        payload: data.result.queues
+      });
+      dispatch({
+        type: lOAD_QUEUE,
+        payload: data.result.recommended
+      });
     });
 };
 
@@ -244,10 +250,10 @@ export const getUserRule = id => dispatch => {
     });
 };
 
-export const toggleUserRule = (id, enabled) => dispatch => {
+export const toggleUserRule = (index, id, enabled) => dispatch => {
   dispatch({
     type: USER_RULE_ACTION_LOADING,
-    payload: id
+    payload: index
   });
 
   const toggleUserRuleEndpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
@@ -266,7 +272,7 @@ export const toggleUserRule = (id, enabled) => dispatch => {
     .then(data => {
       dispatch({
         type: TOGGLE_USER_RULE,
-        payload: data
+        payload: { ...data, index }
       });
     });
 };
@@ -284,11 +290,11 @@ export const editRuleName = (payload, url = false) => {
   };
 };
 
-export const deleteUserRule = id => dispatch => {
-  dispatch({
-    type: USER_RULE_ACTION_LOADING,
-    payload: id
-  });
+export const deleteUserRule = (index, id) => dispatch => {
+  // dispatch({
+  //   type: USER_RULE_ACTION_LOADING,
+  //   payload: { index, id }
+  // });
 
   const deleteRuleEndpoint = `${GRQ_REST_API_V1}/grq/user-rules?id=${id}`;
   return fetch(deleteRuleEndpoint, { method: "DELETE" })
@@ -296,7 +302,7 @@ export const deleteUserRule = id => dispatch => {
     .then(data =>
       dispatch({
         type: DELETE_USER_RULE,
-        payload: id
+        payload: { index, id }
       })
     );
 };

@@ -51,7 +51,6 @@ class ToscaRuleEditor extends React.Component {
     this.props.getOnDemandJobs();
   }
 
-  // TODO: VALIDATE IF USER RULE IS VALID TO SUBMIT
   _validateSubmission = () => {
     let {
       validQuery,

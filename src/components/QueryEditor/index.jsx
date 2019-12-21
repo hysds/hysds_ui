@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 
 import AceEditor from "react-ace";
 import "brace/mode/json";
-import "brace/theme/github";
 
 const QueryEditor = props => {
   // redux action to change the on demand query
@@ -28,7 +27,6 @@ const QueryEditor = props => {
     <Fragment>
       <AceEditor
         mode="json"
-        theme="github"
         placeholder="Enter your Elasticsearch _search query"
         fontSize={12}
         showPrintMargin={false}
@@ -36,10 +34,13 @@ const QueryEditor = props => {
         highlightActiveLine={true}
         setOptions={{
           showLineNumbers: true,
-          tabSize: 2
+          tabSize: 2,
+          enableBasicAutocompletion: false,
+          enableLiveAutocompletion: false,
+          enableSnippets: false
         }}
         onChange={_handleQueryChange}
-        value={query || ""}
+        value={query}
         wrapEnabled={true}
         width="100%"
         maxLines={Infinity}

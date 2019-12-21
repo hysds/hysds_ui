@@ -1,5 +1,21 @@
+.generic-button {
+  background-color: #4387ff;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 13px;
+}
+
+.generic-button:focus {
+  outline: 0;
+}
+
 .utility-button {
-  background-color: #4288ff;
+  background-color: #5cb85c;
   border: none;
   border-radius: 5px;
   color: white;
@@ -13,7 +29,20 @@
 
 .utility-button:hover {
   transition: background-color 0.2s;
-  background-color: #1f54b0;
+  background-color: #2b672b;
+}
+
+.trigger-rules-button {
+  background-color: #4288ff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 7px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin-right: 20px;
 }
 
 .scroll-top-button {

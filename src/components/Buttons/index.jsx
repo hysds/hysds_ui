@@ -1,9 +1,21 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import "font-awesome/css/font-awesome.min.css";
 import "./style.css";
 
 import upArrow from "../../images/arrow-up.png";
+
+export const GenericButtonLink = props => {
+  let label = props.label || "Button";
+  return (
+    <Link to={props.href}>
+      <button className="generic-button" {...props}>
+        {label}
+      </button>
+    </Link>
+  );
+};
 
 export const OnDemandButton = ({ query, total }) => (
   <a
@@ -18,7 +30,7 @@ export const OnDemandButton = ({ query, total }) => (
 export const TriggerRulesButton = props => {
   let label = props.label || "Trigger Rules";
   return (
-    <a className="utility-button" href={props.link} {...props}>
+    <a className="trigger-rules-button" href={props.link} {...props}>
       {label}
     </a>
   );
@@ -76,7 +88,12 @@ export const ToggleButton = props => {
   };
 
   return (
-    <button className="toggle-button" style={style} {...props}>
+    <button
+      className="toggle-button"
+      style={style}
+      disabled={props.loading}
+      {...props}
+    >
       {label}
     </button>
   );
@@ -86,7 +103,7 @@ export const DeleteButton = props => {
   let label = props.label || "Delete";
   label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
   return (
-    <button className="delete-button" {...props}>
+    <button className="delete-button" disabled={props.loading} {...props}>
       {label}
     </button>
   );

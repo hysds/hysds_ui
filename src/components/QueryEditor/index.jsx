@@ -33,10 +33,7 @@ const QueryEditor = props => {
         highlightActiveLine={true}
         setOptions={{
           showLineNumbers: true,
-          tabSize: 2,
-          enableBasicAutocompletion: false,
-          enableLiveAutocompletion: false,
-          enableSnippets: false
+          tabSize: 2
         }}
         onChange={_handleQueryChange}
         value={query}

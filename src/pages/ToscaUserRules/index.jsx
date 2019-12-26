@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -9,6 +9,8 @@ import {
   toggleUserRule,
   deleteUserRule
 } from "../../redux/actions";
+
+import HeaderBar from "../../components/HeaderBar";
 
 import "./style.css";
 
@@ -24,7 +26,8 @@ const ToscaUserRules = class extends React.Component {
   render() {
     const { userRules } = this.props;
     return (
-      <Fragment>
+      <div>
+        <HeaderBar title="HySDS - User Rules" />
         <div className="user-rules-body">
           <div className="user-rules-options-wrapper">
             <GenericButtonLink href="/tosca/user-rule" label="Create Rule" />
@@ -39,7 +42,7 @@ const ToscaUserRules = class extends React.Component {
             />
           </div>
         </div>
-      </Fragment>
+      </div>
     );
   }
 };

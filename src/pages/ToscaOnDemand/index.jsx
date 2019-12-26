@@ -8,10 +8,9 @@ import { Border, SubmitStatusBar } from "../../components/miscellaneous";
 import TagInput from "../../components/TagInput";
 import QueueInput from "../../components/QueueInput";
 import PriorityInput from "../../components/PriorityInput";
+import { SubmitButton, QueryCheckerButton } from "../../components/Buttons";
 
 import HeaderBar from "../../components/HeaderBar";
-
-import { SubmitButton, QueryCheckerButton } from "../../components/Buttons";
 
 import { connect } from "react-redux";
 import {
@@ -96,8 +95,13 @@ class ToscaOnDemand extends React.Component {
       .then(res => res.json())
       .then(data => {
         console.log(data);
-        this.setState({ submitInProgress: 0, submitSuccess: 1 });
-        setTimeout(() => this.setState({ submitSuccess: 0 }), 3000);
+        if (!data.success) {
+          this.setState({ submitInProgress: 0, submitFailed: 1 });
+          setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
+        } else {
+          this.setState({ submitInProgress: 0, submitSuccess: 1 });
+          setTimeout(() => this.setState({ submitSuccess: 0 }), 3000);
+        }
       })
       .catch(err => {
         console.log(err);
@@ -130,7 +134,7 @@ class ToscaOnDemand extends React.Component {
 
     return (
       <Fragment>
-        <HeaderBar title="HySDS" />
+        <HeaderBar title="HySDS - On Demand" />
         <div className="tosca-on-demand">
           <div className="split on-demand-left">
             <QueryEditor
@@ -143,6 +147,7 @@ class ToscaOnDemand extends React.Component {
 
           <div className="split on-demand-right">
             <div className="on-demand-submitter-wrapper">
+              <h1>Tosca - On-Demand Job</h1>
               <div className="data-count-header">
                 Total Records: {this.props.dataCount || "N/A"}
               </div>

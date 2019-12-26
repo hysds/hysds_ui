@@ -4,23 +4,8 @@ body {
 
 .tosca-user-rule-editor {
   display: flex;
-}
-
-/* Split the screen in half */
-.split {
-  height: 100vh;
-}
-
-@media (max-width: 950px) {
-  .tosca-user-rule-editor {
-    display: block;
-    overflow: auto;
-    height: 100vh;
-  }
-
-  .split {
-    height: auto;
-  }
+  padding-top: 47px;
+  height: calc(100vh - 47px);
 }
 
 /* Control the left side */
@@ -79,4 +64,15 @@ body {
 
 .user-rule-buttons-wrapper {
   display: flex;
+}
+
+@media (max-width: 950px) {
+  .tosca-user-rule-editor {
+    display: block;
+    overflow: auto;
+  }
+
+  .user-rule-editor-right-wrapper {
+    padding: 25px;
+  }
 }

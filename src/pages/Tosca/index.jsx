@@ -201,7 +201,6 @@ class Tosca extends React.Component {
               />
             </div>
 
-            {/* <ScrollTop /> */}
             {reactiveMap}
             <ResultsList
               componentId={RESULTS_LIST_COMPONENT_ID}

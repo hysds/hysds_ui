@@ -8,23 +8,6 @@ body {
   height: calc(100vh - 47px);
 }
 
-/* Split the screen in half */
-.split {
-  overflow: auto;
-}
-
-@media (max-width: 950px) {
-  .tosca-on-demand {
-    padding-top: 47px;
-    display: block;
-    overflow: auto;
-  }
-
-  .split {
-    /* height: auto; */
-  }
-}
-
 /* Control the left and right side */
 .on-demand-left,
 .on-demand-right {
@@ -49,4 +32,16 @@ body {
 .data-count-header {
   font-size: 25px;
   padding: 15px;
+}
+
+@media (max-width: 950px) {
+  .tosca-on-demand {
+    padding-top: 47px;
+    display: block;
+    overflow: auto;
+  }
+
+  .on-demand-right {
+    padding: 5px;
+  }
 }

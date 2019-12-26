@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
@@ -10,7 +10,9 @@ import QueueInput from "../../components/QueueInput";
 import PriorityInput from "../../components/PriorityInput";
 
 import { SubmitButton } from "../../components/Buttons";
-import { Border } from "../../components/miscellaneous";
+import { Border, SubmitStatusBar } from "../../components/miscellaneous";
+
+import HeaderBar from "../../components/HeaderBar";
 
 import { GRQ_REST_API_V1 } from "../../config";
 
@@ -35,10 +37,10 @@ class ToscaRuleEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      submitInProgress: null,
-      submitSuccess: false,
-      // using the same component for creating new rules and editing existing rules
-      editMode: props.match.params.rule ? true : false
+      submitInProgress: 0,
+      submitSuccess: 0,
+      submitFailed: 0,
+      editMode: props.match.params.rule ? true : false // using the same component for creating new rules and editing existing rules
     };
   }
 
@@ -87,93 +89,117 @@ class ToscaRuleEditor extends React.Component {
       kwargs: JSON.stringify(this.props.params)
     };
 
-    const editRuleEndpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
-    this.setState({ submitInProgress: "loading" });
+    this.setState({
+      submitInProgress: "loading"
+    });
 
+    const endpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
     const headers = { "Content-Type": "application/json" };
-    fetch(editRuleEndpoint, {
-      method: this.state.editMode ? "PUT" : "POST",
+    const method = this.state.editMode ? "PUT" : "POST";
+    fetch(endpoint, {
       headers,
+      method,
       body: JSON.stringify(data)
     })
       .then(res => res.json())
-      .then(() =>
-        this.setState({ submitInProgress: null, submitSuccess: true })
-      );
+      .then(data => {
+        if (!data.success) {
+          this.setState({ submitInProgress: 0, submitFailed: 1 });
+          setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
+        } else {
+          this.props.clearJobParams();
+          this.setState({ submitInProgress: 0, submitSuccess: 1 });
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        this.setState({ submitInProgress: 0, submitFailed: 1 });
+        setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
+      });
   };
 
   render() {
     if (this.state.submitSuccess) return <Redirect to="/tosca/user-rules" />;
+
     const hysdsioLabel =
       this.props.paramsList.length > 0 ? <h2>{this.props.hysdsio}</h2> : null;
-
     const divider = this.props.paramsList.length > 0 ? <Border /> : null;
     const validSubmission = this._validateSubmission();
 
     return (
-      <div className="tosca-user-rule-editor">
-        <div className="split user-rule-editor-left">
-          <QueryEditor
-            url={!this.state.editMode}
-            editQuery={editQuery}
-            validateQuery={validateQuery}
-            query={this.props.query}
-          />
-        </div>
+      <Fragment>
+        <HeaderBar title="HySDS - User Rules" />
+        <div className="tosca-user-rule-editor">
+          <div className="split user-rule-editor-left">
+            <QueryEditor
+              url={!this.state.editMode}
+              editQuery={editQuery}
+              validateQuery={validateQuery}
+              query={this.props.query}
+            />
+          </div>
 
-        <div className="split user-rule-editor-right">
-          <div className="user-rule-editor-right-wrapper">
-            <UserRuleNameInput
-              editRuleName={editRuleName}
-              ruleName={this.props.ruleName}
-            />
-            <JobInput
-              changeJobType={changeJobType} // all redux actions
-              getParamsList={getParamsList}
-              getQueueList={getQueueList}
-              jobs={this.props.jobs}
-              jobType={this.props.jobType}
-              jobLabel={this.props.jobLabel}
-            />
-            <QueueInput
-              queue={this.props.queue}
-              queueList={this.props.queueList}
-              changeQueue={changeQueue}
-            />
-            <PriorityInput
-              priority={this.props.priority}
-              editJobPriority={editJobPriority}
-            />
-            {divider}
-            {hysdsioLabel}
-            <JobParams
-              editParams={editParams}
-              paramsList={this.props.paramsList}
-              params={this.props.params}
-            />
-
-            <div className="user-rule-buttons-wrapper">
-              <SubmitButton
-                label={this.state.editMode ? "Save Changes" : "Save"}
-                onClick={this._handleUserRuleSubmit}
-                loading={this.state.submitInProgress}
-                disabled={!validSubmission}
+          <div className="split user-rule-editor-right">
+            <div className="user-rule-editor-right-wrapper">
+              <h1>Tosca - User Rule Editor</h1>
+              <UserRuleNameInput
+                editRuleName={editRuleName}
+                ruleName={this.props.ruleName}
               />
-              <Link
-                to="/tosca/user-rules"
-                className="user-rules-editor-cancel-button-wrapper"
-              >
-                <button
-                  className="user-rules-editor-cancel-button"
-                  onClick={() => this.props.clearJobParams()}
+              <JobInput
+                changeJobType={changeJobType} // all redux actions
+                getParamsList={getParamsList}
+                getQueueList={getQueueList}
+                jobs={this.props.jobs}
+                jobType={this.props.jobType}
+                jobLabel={this.props.jobLabel}
+              />
+              <QueueInput
+                queue={this.props.queue}
+                queueList={this.props.queueList}
+                changeQueue={changeQueue}
+              />
+              <PriorityInput
+                priority={this.props.priority}
+                editJobPriority={editJobPriority}
+              />
+              {divider}
+              {hysdsioLabel}
+              <JobParams
+                editParams={editParams}
+                paramsList={this.props.paramsList}
+                params={this.props.params}
+              />
+
+              <div className="user-rule-buttons-wrapper">
+                <SubmitButton
+                  label={this.state.editMode ? "Save Changes" : "Save"}
+                  onClick={this._handleUserRuleSubmit}
+                  loading={this.state.submitInProgress}
+                  disabled={!validSubmission}
+                />
+                <Link
+                  to="/tosca/user-rules"
+                  className="user-rules-editor-cancel-button-wrapper"
                 >
-                  Cancel
-                </button>
-              </Link>
+                  <button
+                    className="user-rules-editor-cancel-button"
+                    // onClick={() => this.props.clearJobParams()}
+                    onClick={this.props.clearJobParams} // maybe this might work
+                  >
+                    Cancel
+                  </button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        <SubmitStatusBar
+          label="User Rule Submission Failed"
+          visible={this.state.submitFailed}
+          status="failed"
+        />
+      </Fragment>
     );
   }
 }

@@ -83,9 +83,10 @@ const toscaReducer = (state = initialState, action) => {
         query: action.payload
       };
     case VALIDATE_QUERY:
+      var validQuery = state.query === "null" ? false : state.query;
       return {
         ...state,
-        validQuery: action.payload
+        validQuery
       };
     case GET_JOB_LIST:
       var newJobList = makeDropdownOptions(action.payload);

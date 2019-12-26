@@ -297,7 +297,7 @@ let ConnectMapComponent = class extends React.Component {
     let storedMapHeight = localStorage.getItem("map-height");
     const mapContainerStyle = {
       minHeight: 500,
-      height: storedMapHeight ? `${storedMapHeight}px` : 500,
+      height: storedMapHeight ? `${storedMapHeight}px` : 750,
       marginTop: "10px",
       marginLeft: "10px",
       marginRight: "10px",

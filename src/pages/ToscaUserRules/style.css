@@ -1,10 +1,10 @@
 .user-rules-body {
-  /* padding-top: 10px; */
-  /* padding-bottom: 10px; */
+  padding-top: 47px;
+  height: calc(100vh - 47px);
 }
 
 .user-rules-options-wrapper {
   display: flex;
   justify-content: flex-end;
-  margin: 15px;
+  padding: 15px;
 }

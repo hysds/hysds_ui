@@ -32,7 +32,7 @@ const HeaderBar = props => {
     <div className="header-bar">
       <ul className="header-bar-link-wrapper">
         <HeaderTitle title={title} />
-        <HeaderLink to="/tosca" title="Tosca" active={true} />
+        <HeaderLink to="/tosca" title="Tosca" active={1} />
         <HeaderLink title="Figaro" />
         <HeaderLink style={{ flex: 1 }} />
 

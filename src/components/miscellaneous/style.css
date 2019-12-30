@@ -12,10 +12,17 @@
   bottom: 0;
   text-align: center;
   color: #ffffff;
-  font-size: 35px;
   width: 100%;
   padding-top: 15px;
   padding-bottom: 15px;
+}
+
+.job-submit-status-bar-label {
+  font-size: 35px;
+}
+
+.job-submit-status-bar-sublabel {
+  font-size: 17px;
 }
 
 .success {

@@ -14,7 +14,10 @@ export const SubmitStatusBar = props => {
 
   return (
     <div className={className} {...props}>
-      {label}
+      <div className="job-submit-status-bar-label">{label}</div>
+      {props.reason ? (
+        <div className="job-submit-status-bar-sublabel">{props.reason}</div>
+      ) : null}
     </div>
   );
 };

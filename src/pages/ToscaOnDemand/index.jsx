@@ -88,13 +88,11 @@ class ToscaOnDemand extends React.Component {
       query: this.props.query,
       kwargs: JSON.stringify(this.props.params)
     };
-    console.log(data);
 
     const jobSubmitUrl = `${GRQ_REST_API_V1}/grq/on-demand`;
     fetch(jobSubmitUrl, { method: "POST", headers, body: JSON.stringify(data) })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (!data.success) {
           this.setState({ submitInProgress: 0, submitFailed: 1 });
           setTimeout(() => this.setState({ submitFailed: 0 }), 3000);

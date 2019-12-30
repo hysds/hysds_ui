@@ -40,6 +40,7 @@ class ToscaRuleEditor extends React.Component {
       submitInProgress: 0,
       submitSuccess: 0,
       submitFailed: 0,
+      failureReason: "",
       editMode: props.match.params.rule ? true : false // using the same component for creating new rules and editing existing rules
     };
   }
@@ -104,11 +105,22 @@ class ToscaRuleEditor extends React.Component {
       .then(res => res.json())
       .then(data => {
         if (!data.success) {
-          this.setState({ submitInProgress: 0, submitFailed: 1 });
-          setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
+          this.setState({
+            submitInProgress: 0,
+            submitFailed: 1,
+            failureReason: data.message
+          });
+          setTimeout(
+            () => this.setState({ submitFailed: 0, failureReason: "" }),
+            3000
+          );
         } else {
           this.props.clearJobParams();
-          this.setState({ submitInProgress: 0, submitSuccess: 1 });
+          this.setState({
+            submitInProgress: 0,
+            submitSuccess: 1,
+            failureReason: ""
+          });
         }
       })
       .catch(err => {
@@ -184,8 +196,7 @@ class ToscaRuleEditor extends React.Component {
                 >
                   <button
                     className="user-rules-editor-cancel-button"
-                    // onClick={() => this.props.clearJobParams()}
-                    onClick={this.props.clearJobParams} // maybe this might work
+                    onClick={() => this.props.clearJobParams()}
                   >
                     Cancel
                   </button>
@@ -196,6 +207,7 @@ class ToscaRuleEditor extends React.Component {
         </div>
         <SubmitStatusBar
           label="User Rule Submission Failed"
+          reason={this.state.failureReason}
           visible={this.state.submitFailed}
           status="failed"
         />

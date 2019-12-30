@@ -4,15 +4,7 @@
   margin-bottom: 35px;
 }
 
-.input-wrapper {
-  /* display: table; */
-  display: flex;
-  width: 100%;
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-.dropdown-wrapper {
+.job-input-wrapper {
   display: flex;
   margin-top: 20px;
   margin-bottom: 20px;
@@ -40,13 +32,6 @@
   margin-bottom: 10px;
 }
 
-.input-label {
-  display: flex;
-  margin-top: 10px;
-  margin-right: 10px;
-  min-width: 73px;
-}
-
 .params-input:focus {
   border-color: #1c7ce4;
   border-width: 2px;
@@ -60,13 +45,13 @@ input:invalid {
   margin: 20px;
 }
 
-.dropdown-label {
+.job-input-label {
   float: left;
   margin-top: 10px;
   margin-right: 10px;
   min-width: 65px;
 }
 
-.react-select-wrapper {
+.job-input-select-wrapper {
   flex: 1;
 }

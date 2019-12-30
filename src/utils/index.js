@@ -1,3 +1,11 @@
+exports.makeDropdownOptions = data =>
+  data.map(job => ({
+    label: job.version ? `${job.label} [${job.version}]` : job.label,
+    value: job.job_spec,
+    jobType: job.job_spec,
+    hysdsio: job.hysds_io
+  }));
+
 exports.constructUrl = (key, value) => {
   const params = new URLSearchParams(location.search);
   params.set(key, value);
@@ -19,7 +27,7 @@ exports.sanitizePriority = level => {
 exports.validateUrlJob = (jobType, jobList) => {
   for (let i = 0; i < jobList.length; i++) {
     const jobData = jobList[i];
-    if (jobType === jobData.value) return true;
+    if (jobType === jobData.job_spec) return true;
   }
   return false;
 };

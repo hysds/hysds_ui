@@ -1,0 +1,43 @@
+.header-bar {
+  z-index: 10000;
+  position: fixed;
+  height: 47px;
+  width: 100%;
+  color: #ffffff;
+}
+
+.header-bar ul {
+  background-color: #4288ff;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+}
+
+.header-bar li {
+  float: left;
+}
+
+.header-bar li a {
+  display: flex;
+  flex: 1;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  padding: 14px 16px;
+}
+
+.header-bar-title {
+  margin-left: 40px;
+  margin-right: 40px;
+  background-color: #4288ff;
+}
+
+.header-bar-link {
+  /* padding: 10px; */
+}
+
+.header-bar-link.active-link {
+  background-color: #1c5bca;
+}

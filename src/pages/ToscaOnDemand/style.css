@@ -4,32 +4,12 @@ body {
 
 .tosca-on-demand {
   display: flex;
+  padding-top: 47px;
+  height: calc(100vh - 47px);
 }
 
-/* Split the screen in half */
-.split {
-  height: 100vh;
-}
-
-@media (max-width: 950px) {
-  .tosca-on-demand {
-    display: block;
-    overflow: auto;
-    height: 100vh;
-  }
-
-  .split {
-    height: auto;
-  }
-}
-
-/* Control the left side */
-.on-demand-left {
-  flex: 1;
-  overflow: auto;
-}
-
-/* Control the right side */
+/* Control the left and right side */
+.on-demand-left,
 .on-demand-right {
   flex: 1;
   overflow: auto;
@@ -52,4 +32,16 @@ body {
 .data-count-header {
   font-size: 25px;
   padding: 15px;
+}
+
+@media (max-width: 950px) {
+  .tosca-on-demand {
+    padding-top: 47px;
+    display: block;
+    overflow: auto;
+  }
+
+  .on-demand-right {
+    padding: 5px;
+  }
 }

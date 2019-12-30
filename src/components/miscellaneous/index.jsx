@@ -14,7 +14,10 @@ export const SubmitStatusBar = props => {
 
   return (
     <div className={className} {...props}>
-      {label}
+      <div className="job-submit-status-bar-label">{label}</div>
+      {props.reason ? (
+        <div className="job-submit-status-bar-sublabel">{props.reason}</div>
+      ) : null}
     </div>
   );
 };
@@ -28,3 +31,18 @@ export const HelperLink = props => {
     </Fragment>
   );
 };
+
+export const TableToggle = props => (
+  <Fragment>
+    <label className="switch">
+      <input type="checkbox" {...props} />
+      <span className="slider round"></span>
+    </label>
+  </Fragment>
+);
+
+export const Checkbox = props => (
+  <Fragment>
+    <input className="miscellaneous-checkbox" type="checkbox" {...props} />
+  </Fragment>
+);

@@ -62,19 +62,13 @@ class ConnectLogicHandler extends React.Component {
 }
 
 // Redux states and actions
-const mapStateToProps = (state, ownProps) => {
-  // console.log(ownProps);
-  return {
-    _id: state.reactivesearchReducer._id
-  };
-};
+const mapStateToProps = state => ({
+  _id: state.reactivesearchReducer._id
+});
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  // console.log(ownProps);
-  return {
-    clickDatasetId: _id => dispatch(clickDatasetId(_id))
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  clickDatasetId: _id => dispatch(clickDatasetId(_id))
+});
 
 const LogicHandler = connect(
   mapStateToProps,

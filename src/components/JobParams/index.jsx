@@ -40,8 +40,8 @@ const JobParams = props => {
       switch (param.type) {
         case "number":
           return (
-            <div className="input-wrapper" key={paramName}>
-              <div className="input-label">{paramName}:</div>
+            <div className="tag-input-wrapper" key={paramName}>
+              <div className="tag-input-label">{paramName}:</div>
               <input
                 type="number"
                 step="1"
@@ -55,8 +55,8 @@ const JobParams = props => {
           );
         case "enum":
           return (
-            <section className="dropdown-wrapper" key={paramName}>
-              <div className="dropdown-label">{paramName}:</div>
+            <section className="params-dropdown-wrapper" key={paramName}>
+              <div className="job-params-label">{paramName}:</div>
               <div className="react-select-wrapper">
                 <Select
                   label={paramName}
@@ -89,8 +89,8 @@ const JobParams = props => {
           );
         default:
           return (
-            <div className="input-wrapper" key={paramName}>
-              <div className="input-label">{paramName}:</div>
+            <div className="tag-input-wrapper" key={paramName}>
+              <div className="tag-input-label">{paramName}:</div>
               <input
                 type="text"
                 value={value || ""}
@@ -114,9 +114,16 @@ JobParams.propTypes = {
   editParams: PropTypes.func.isRequired
 };
 
+JobParams.defaultProps = {
+  url: false
+};
+
 // Redux actions
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  editParams: param => dispatch(ownProps.editParams(param))
-});
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { url } = ownProps;
+  return {
+    editParams: param => dispatch(ownProps.editParams(param, url))
+  };
+};
 
 export default connect(null, mapDispatchToProps)(JobParams);

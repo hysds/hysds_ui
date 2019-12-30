@@ -9,20 +9,24 @@ import {
   EDIT_JOB_PARAMS,
   CHANGE_JOB_TYPE,
   LOAD_QUEUE_LIST,
+  lOAD_QUEUE,
   CHANGE_QUEUE,
   EDIT_TAG,
-  EDIT_DATA_COUNT
+  EDIT_DATA_COUNT,
+  LOAD_USER_RULES,
+  TOGGLE_USER_RULE,
+  USER_RULE_ACTION_LOADING,
+  LOAD_USER_RULE,
+  CLEAR_JOB_PARAMS,
+  EDIT_RULE_NAME,
+  DELETE_USER_RULE
 } from "../constants";
 
 import {
-  constructUrl,
+  makeDropdownOptions,
   sanitizePriority,
-  validateUrlJob,
-  extractJobParams,
-  clearUrlJobParams,
-  editUrlJobParam,
-  validateUrlQueryParam,
-  editUrlDataCount
+  // validateUrlJob,
+  extractJobParams
 } from "../../utils";
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -42,14 +46,19 @@ const initialState = {
   validQuery: true,
   priority: priority || null,
   jobList: [],
+  jobLabel: null,
   jobType: urlParams.get("job_type") || null,
-  hysdsio: null,
+  hysdsio: urlParams.get("hysds_io") || null,
   queueList: [],
   queue: null,
   paramsList: [],
   params: defaultUrlJobParams || {},
   submissionType: null,
-  tags: urlParams.get("tags") || null
+  tags: urlParams.get("tags") || null,
+  ruleName: null,
+  userRules: [],
+
+  toggle: false
 };
 
 const toscaReducer = (state = initialState, action) => {
@@ -69,63 +78,60 @@ const toscaReducer = (state = initialState, action) => {
 
     // on-demand page
     case EDIT_QUERY:
-      validateUrlQueryParam(action.payload);
       return {
         ...state,
         query: action.payload
       };
     case VALIDATE_QUERY:
+      var isNull = state.query === "null" || state.query === "";
       return {
         ...state,
-        validQuery: action.payload
+        validQuery: action.payload && !isNull
       };
     case GET_JOB_LIST:
-      const newJobList = action.payload.map(job => ({
-        label: job.version ? `${job.label} [${job.version}]` : job.label,
-        value: job.value
-      }));
+      var newJobList = makeDropdownOptions(action.payload);
 
       return {
         ...state,
-        jobList: newJobList,
-        jobType: validateUrlJob(state.jobType, action.payload)
-          ? state.jobType
-          : ""
+        jobList: newJobList
       };
     case LOAD_JOB_PARAMS:
-      const params = action.payload.params || [];
+      var params = action.payload.params || [];
 
-      let defaultParams = {};
+      var defaultParams = {};
       params.map(p => {
         let name = p.name;
-        defaultParams[name] = p.default || state.params[name] || null; // THIS IS THE BUG
+        defaultParams[name] = state.params[name] || p.default || null; // THIS IS THE BUG
       });
 
       return {
         ...state,
         paramsList: params,
         submissionType: action.payload.submission_type,
-        hysdsio: action.payload.hysds_io,
         params: defaultParams
       };
     case CHANGE_JOB_TYPE:
-      clearUrlJobParams(action.payload);
-      constructUrl("job_type", action.payload);
       return {
         ...state,
-        jobType: action.payload,
+        jobType: action.payload.jobType,
+        jobLabel: action.payload.label,
+        hysdsio: action.payload.hysdsio,
+        queue: null,
+        queueList: [],
         params: {}
       };
     case LOAD_QUEUE_LIST:
-      const queueList = action.payload.queues;
-      const recommendedQueues = action.payload.recommended;
-      let defaultQueue =
-        recommendedQueues.length > 0 ? recommendedQueues[0] : null;
-
+      var queueList = action.payload;
       return {
         ...state,
-        queueList: queueList.map(queue => ({ label: queue, value: queue })),
-        queue: defaultQueue
+        queueList: queueList.map(queue => ({ label: queue, value: queue }))
+      };
+    case lOAD_QUEUE:
+      var queues = action.payload;
+      var recommendedQueue = queues.length > 0 ? queues[0] : state.queue;
+      return {
+        ...state,
+        queue: recommendedQueue
       };
     case CHANGE_QUEUE:
       return {
@@ -133,33 +139,98 @@ const toscaReducer = (state = initialState, action) => {
         queue: action.payload
       };
     case EDIT_PRIORITY:
-      constructUrl("priority", action.payload);
       return {
         ...state,
         priority: action.payload
       };
     case EDIT_TAG:
-      constructUrl("tags", action.payload);
-
       return {
         ...state,
         tags: action.payload
       };
     case EDIT_JOB_PARAMS:
-      const newParams = {
+      var newParams = {
         ...state.params,
         ...{ [action.payload.name]: action.payload.value }
       };
-      editUrlJobParam(action.payload.name, action.payload.value);
+      // editUrlJobParam(action.payload.name, action.payload.value);
       return {
         ...state,
         params: newParams
       };
     case EDIT_DATA_COUNT:
-      editUrlDataCount(action.payload);
       return {
         ...state,
         dataCount: action.payload
+      };
+    case LOAD_USER_RULES:
+      return {
+        ...state,
+        userRules: action.payload
+      };
+    case LOAD_USER_RULE:
+      var payload = action.payload;
+      return {
+        ...state,
+        query: payload.query_string,
+        jobType: payload.job_spec,
+        hysdsio: payload.job_type,
+        params: JSON.parse(payload.kwargs),
+        ruleName: payload.rule_name,
+        queue: payload.queue,
+        priority: payload.priority
+      };
+    case USER_RULE_ACTION_LOADING:
+      var index = action.payload;
+      var foundRule = state.userRules[index];
+      foundRule.toggleLoading = true;
+
+      return {
+        ...state,
+        userRules: [
+          ...state.userRules.slice(0, index),
+          foundRule,
+          ...state.userRules.slice(index + 1)
+        ]
+      };
+    case TOGGLE_USER_RULE:
+      var index = action.payload.index;
+      var foundRule = state.userRules[index];
+      foundRule.enabled = action.payload.updated.enabled;
+      foundRule.toggleLoading = false;
+
+      return {
+        ...state,
+        userRules: [
+          ...state.userRules.slice(0, index),
+          foundRule,
+          ...state.userRules.slice(index + 1)
+        ]
+      };
+    case CLEAR_JOB_PARAMS:
+      return {
+        ...state,
+        jobType: null,
+        hysdsio: null,
+        queue: null,
+        queueList: [],
+        queue: null,
+        params: {},
+        paramsList: []
+      };
+    case EDIT_RULE_NAME:
+      return {
+        ...state,
+        ruleName: action.payload
+      };
+    case DELETE_USER_RULE:
+      var { index, id } = action.payload;
+      return {
+        ...state,
+        userRules: [
+          ...state.userRules.slice(0, index),
+          ...state.userRules.slice(index + 1)
+        ]
       };
     default:
       return state;

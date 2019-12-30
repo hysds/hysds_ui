@@ -117,7 +117,7 @@ class SearchQueryHandlerConnect extends React.Component {
             type="text"
             value={queryString || ""}
             onChange={this._handleChange}
-            placeholder="Input Elasticsearch query string..."
+            placeholder={`Input Elasticsearch query string... ex. _id:"test_id"`}
           />
         </form>
       </Fragment>

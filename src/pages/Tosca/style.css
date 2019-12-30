@@ -2,15 +2,17 @@
 /* MAIN BODY */
 .body {
   padding-left: 20px;
-  padding-right: 20px;
+  padding-right: 15px;
   padding-bottom: 35px;
-  min-width: 750px;
+  min-width: 800px;
   flex: 5;
   overflow: auto;
 }
 
 .tosca-body-wrapper {
   display: flex;
+  padding-top: 47px;
+  /* height: calc(100vh - 50px); */
   height: 100vh;
 }
 
@@ -28,7 +30,7 @@
 
 .sidenav-title {
   text-align: center;
-  font-size: 35px;
+  font-size: 25px;
   font-weight: 700;
   padding-bottom: 10px;
 }

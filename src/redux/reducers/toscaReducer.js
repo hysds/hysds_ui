@@ -19,7 +19,8 @@ import {
   LOAD_USER_RULE,
   CLEAR_JOB_PARAMS,
   EDIT_RULE_NAME,
-  DELETE_USER_RULE
+  DELETE_USER_RULE,
+  GLOBAL_SEARCH_USER_RULES
 } from "../constants";
 
 import {
@@ -56,7 +57,8 @@ const initialState = {
   submissionType: null,
   tags: urlParams.get("tags") || null,
   ruleName: null,
-  userRules: [],
+  userRules: [], // store all the rules client side
+  filteredRules: [], // client global search for user rules
 
   toggle: false
 };
@@ -166,7 +168,8 @@ const toscaReducer = (state = initialState, action) => {
     case LOAD_USER_RULES:
       return {
         ...state,
-        userRules: action.payload
+        userRules: action.payload,
+        filteredRules: action.payload
       };
     case LOAD_USER_RULE:
       var payload = action.payload;
@@ -231,6 +234,25 @@ const toscaReducer = (state = initialState, action) => {
           ...state.userRules.slice(0, index),
           ...state.userRules.slice(index + 1)
         ]
+      };
+    case GLOBAL_SEARCH_USER_RULES:
+      var search = action.payload;
+      var filteredRules = state.userRules.filter(value => {
+        return (
+          value.rule_name.toLowerCase().includes(search.toLowerCase()) ||
+          value.job_spec.toLowerCase().includes(search.toLowerCase()) ||
+          value.query_string.toLowerCase().includes(search.toLowerCase()) ||
+          value.kwargs.toLowerCase().includes(search.toLowerCase()) ||
+          value.job_type.toLowerCase().includes(search.toLowerCase()) ||
+          value.username.toLowerCase().includes(search.toLowerCase()) ||
+          value.modified_time.toLowerCase().includes(search.toLowerCase()) ||
+          value.creation_time.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+
+      return {
+        ...state,
+        filteredRules
       };
     default:
       return state;

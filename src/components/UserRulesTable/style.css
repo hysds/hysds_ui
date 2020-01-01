@@ -14,3 +14,21 @@
 .user-rules-table-query-string pre {
   font-size: 11px;
 }
+
+.ReactTable .-pagination {
+  justify-content: center;
+  box-shadow: none;
+}
+
+.ReactTable .-pagination .-center {
+  flex: none;
+}
+
+.ReactTable .-pagination .-previous,
+.ReactTable .-pagination .-next {
+  flex: 0;
+}
+
+.ReactTable .-pagination .-btn {
+  width: 85px;
+}

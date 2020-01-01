@@ -7,7 +7,8 @@ import UserRulesTable from "../../components/UserRulesTable";
 import {
   getUserRules,
   toggleUserRule,
-  deleteUserRule
+  deleteUserRule,
+  globalSearchUserRules
 } from "../../redux/actions";
 
 import HeaderBar from "../../components/HeaderBar";
@@ -23,6 +24,8 @@ const ToscaUserRules = class extends React.Component {
     this.props.getUserRules();
   }
 
+  _handleRuleSearch = e => this.props.globalSearchUserRules(e.target.value);
+
   render() {
     const { userRules } = this.props;
     return (
@@ -30,7 +33,14 @@ const ToscaUserRules = class extends React.Component {
         <HeaderBar title="HySDS - User Rules" />
         <div className="user-rules-body">
           <div className="user-rules-options-wrapper">
-            <GenericButtonLink href="/tosca/user-rule" label="Create Rule" />
+            <input
+              className="user-rules-global-search"
+              placeholder="Search..."
+              onChange={this._handleRuleSearch}
+            />
+            <div className="user-rules-button-wrapper">
+              <GenericButtonLink href="/tosca/user-rule" label="Create Rule" />
+            </div>
           </div>
 
           <div className="user-rules-table-wrapper">
@@ -54,12 +64,13 @@ ToscaUserRules.propTypes = {
 
 // redux state data
 const mapStateToProps = state => ({
-  userRules: state.toscaReducer.userRules
+  userRules: state.toscaReducer.filteredRules
 });
 
 // Redux actions
 const mapDispatchToProps = dispatch => ({
-  getUserRules: () => dispatch(getUserRules())
+  getUserRules: () => dispatch(getUserRules()),
+  globalSearchUserRules: search => dispatch(globalSearchUserRules(search))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ToscaUserRules);

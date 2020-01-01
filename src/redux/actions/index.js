@@ -23,7 +23,8 @@ import {
   USER_RULE_ACTION_LOADING,
   CLEAR_JOB_PARAMS,
   EDIT_RULE_NAME,
-  DELETE_USER_RULE
+  DELETE_USER_RULE,
+  GLOBAL_SEARCH_USER_RULES
 } from "../constants.js";
 
 import {
@@ -306,3 +307,8 @@ export const deleteUserRule = (index, id) => dispatch => {
       })
     );
 };
+
+export const globalSearchUserRules = payload => ({
+  type: GLOBAL_SEARCH_USER_RULES,
+  payload
+});

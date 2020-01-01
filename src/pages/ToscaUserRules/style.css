@@ -5,6 +5,18 @@
 
 .user-rules-options-wrapper {
   display: flex;
-  justify-content: flex-end;
+  /* justify-content: flex-end; */
   padding: 15px;
+}
+
+.user-rules-button-wrapper {
+  margin-left: auto;
+}
+
+.user-rules-global-search {
+  font-size: 13px;
+  padding: 9px;
+  width: 22rem;
+  border-radius: 5px;
+  border: solid 1px #dfdfdf;
 }

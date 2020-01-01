@@ -19,6 +19,8 @@ const buttonCellStyle = {
 };
 
 const UserRulesTable = props => {
+  const defaultSorted = [{ id: "modified_time", desc: true }];
+
   const columns = [
     {
       Header: "ID",
@@ -58,7 +60,7 @@ const UserRulesTable = props => {
       width: 150
     },
     {
-      Header: "Enabled",
+      Header: null,
       accessor: "enabled",
       width: 100,
       resizable: false,
@@ -117,13 +119,6 @@ const UserRulesTable = props => {
       accessor: "modified_time",
       width: 145,
       resizable: false
-    }
-  ];
-
-  const defaultSorted = [
-    {
-      id: "modified_time",
-      desc: true
     }
   ];
 

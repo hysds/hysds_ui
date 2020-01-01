@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import ReactTable from "react-table";
@@ -20,7 +20,6 @@ const buttonCellStyle = {
 
 const UserRulesTable = props => {
   const defaultSorted = [{ id: "modified_time", desc: true }];
-
   const columns = [
     {
       Header: "ID",
@@ -122,6 +121,13 @@ const UserRulesTable = props => {
     }
   ];
 
+  const [expanded, setExpanded] = useState({});
+
+  const _handleExpanded = (rows, i) => setExpanded(rows);
+  const _handlePageChange = () => setExpanded({});
+  const _handlePageSizeChange = () => setExpanded({});
+  const _handleSortedChange = () => setExpanded({});
+
   const _renderSubComponent = data => {
     let query = data.original.query;
     let kwargs = data.original.kwargs;
@@ -159,6 +165,11 @@ const UserRulesTable = props => {
       toggleUserRule={props.toggleUserRule}
       defaultSorted={defaultSorted}
       SubComponent={row => _renderSubComponent(row)}
+      expanded={expanded}
+      onExpandedChange={_handleExpanded}
+      onPageChange={_handlePageChange}
+      onPageSizeChange={_handlePageSizeChange}
+      onSortedChange={_handleSortedChange}
       {...props}
     />
   );

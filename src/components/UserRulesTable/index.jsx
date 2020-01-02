@@ -50,7 +50,30 @@ const UserRulesTable = props => {
       Header: "Priority",
       accessor: "priority",
       width: 65,
-      resizable: false
+      resizable: false,
+      filterable: true,
+      filterMethod: (filter, row) => {
+        if (filter.value == -1) return row;
+        else if (filter.value == row.priority) return row;
+      },
+      Filter: ({ filter, onChange }) => (
+        <select
+          onChange={e => onChange(e.target.value)}
+          className="user-rules-table-priority-filter"
+          value={filter ? filter.value : "all"}
+        >
+          <option value={-1}></option>
+          <option value={1}>1</option>
+          <option value={2}>2</option>
+          <option value={3}>3</option>
+          <option value={4}>4</option>
+          <option value={5}>5</option>
+          <option value={6}>6</option>
+          <option value={7}>7</option>
+          <option value={8}>8</option>
+          <option value={9}>9</option>
+        </select>
+      )
     },
     {
       Header: "User",

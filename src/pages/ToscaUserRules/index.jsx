@@ -37,6 +37,7 @@ const ToscaUserRules = class extends React.Component {
               className="user-rules-global-search"
               placeholder="Search..."
               onChange={this._handleRuleSearch}
+              disabled={userRules.length === 0 ? true : false}
             />
             <div className="user-rules-button-wrapper">
               <GenericButtonLink href="/tosca/user-rule" label="Create Rule" />

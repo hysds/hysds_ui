@@ -188,13 +188,16 @@ const toscaReducer = (state = initialState, action) => {
       var foundRule = state.userRules[index];
       foundRule.toggleLoading = true;
 
+      var newRulesList = [
+        ...state.userRules.slice(0, index),
+        foundRule,
+        ...state.userRules.slice(index + 1)
+      ];
+
       return {
         ...state,
-        userRules: [
-          ...state.userRules.slice(0, index),
-          foundRule,
-          ...state.userRules.slice(index + 1)
-        ]
+        userRules: newRulesList,
+        filteredRules: newRulesList
       };
     case TOGGLE_USER_RULE:
       var index = action.payload.index;
@@ -202,13 +205,16 @@ const toscaReducer = (state = initialState, action) => {
       foundRule.enabled = action.payload.updated.enabled;
       foundRule.toggleLoading = false;
 
+      var newRulesList = [
+        ...state.userRules.slice(0, index),
+        foundRule,
+        ...state.userRules.slice(index + 1)
+      ];
+
       return {
         ...state,
-        userRules: [
-          ...state.userRules.slice(0, index),
-          foundRule,
-          ...state.userRules.slice(index + 1)
-        ]
+        userRules: newRulesList,
+        filteredRules: newRulesList
       };
     case CLEAR_JOB_PARAMS:
       return {
@@ -228,12 +234,14 @@ const toscaReducer = (state = initialState, action) => {
       };
     case DELETE_USER_RULE:
       var { index, id } = action.payload;
+      var newRulesList = [
+        ...state.userRules.slice(0, index),
+        ...state.userRules.slice(index + 1)
+      ];
       return {
         ...state,
-        userRules: [
-          ...state.userRules.slice(0, index),
-          ...state.userRules.slice(index + 1)
-        ]
+        userRules: newRulesList,
+        filteredRules: newRulesList
       };
     case GLOBAL_SEARCH_USER_RULES:
       var search = action.payload;

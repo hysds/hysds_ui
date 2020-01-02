@@ -18,13 +18,21 @@ import "./style.css";
 const ToscaUserRules = class extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      globalSearch: ""
+    };
   }
 
   componentDidMount() {
     this.props.getUserRules();
   }
 
-  _handleRuleSearch = e => this.props.globalSearchUserRules(e.target.value);
+  _handleRuleSearch = e => {
+    this.setState({
+      globalSearch: e.target.value
+    });
+    this.props.globalSearchUserRules(e.target.value);
+  };
 
   render() {
     const { userRules } = this.props;
@@ -37,7 +45,11 @@ const ToscaUserRules = class extends React.Component {
               className="user-rules-global-search"
               placeholder="Search..."
               onChange={this._handleRuleSearch}
-              disabled={userRules.length === 0 ? true : false}
+              disabled={
+                userRules.length === 0 && !this.state.globalSearch
+                  ? true
+                  : false
+              }
             />
             <div className="user-rules-button-wrapper">
               <GenericButtonLink href="/tosca/user-rule" label="Create Rule" />

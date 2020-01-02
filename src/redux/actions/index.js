@@ -292,11 +292,6 @@ export const editRuleName = (payload, url = false) => {
 };
 
 export const deleteUserRule = (index, id) => dispatch => {
-  // dispatch({
-  //   type: USER_RULE_ACTION_LOADING,
-  //   payload: { index, id }
-  // });
-
   const deleteRuleEndpoint = `${GRQ_REST_API_V1}/grq/user-rules?id=${id}`;
   return fetch(deleteRuleEndpoint, { method: "DELETE" })
     .then(res => res.json())

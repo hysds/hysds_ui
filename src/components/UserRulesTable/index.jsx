@@ -66,8 +66,9 @@ const UserRulesTable = props => {
       filterable: true,
       Filter: ({ filter, onChange }) => (
         <select
-          onChange={e => onChange(e.target.value)}
           className="user-rules-table-dropdown-filter"
+          onChange={e => onChange(e.target.value)}
+          value={filter ? filter.value : -1}
         >
           <option value={-1}></option>
           <option value={1}>1</option>
@@ -118,8 +119,9 @@ const UserRulesTable = props => {
       filterable: true,
       Filter: ({ filter, onChange }) => (
         <select
-          onChange={e => onChange(e.target.value)}
           className="user-rules-table-dropdown-filter"
+          onChange={e => onChange(e.target.value)}
+          value={filter ? filter.value : ""}
         >
           <option value=""></option>
           <option value={true}>On</option>
@@ -179,7 +181,7 @@ const UserRulesTable = props => {
 
   const _handleExpanded = (rows, i) => setExpanded(rows);
   const _handlePageChange = () => setExpanded({});
-  const _handlePageSizeChange = () => setExpanded({});
+  const _handlePageSizeChange = e => setExpanded({});
   const _handleSortedChange = () => setExpanded({});
 
   const _renderSubComponent = data => {
@@ -236,11 +238,6 @@ UserRulesTable.propTypes = {
   deleteUserRule: PropTypes.func.isRequired
 };
 
-// redux state data
-const mapStateToProps = state => ({
-  userRules: state.toscaReducer.userRules
-});
-
 // Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { toggleUserRule, deleteUserRule } = ownProps;
@@ -251,4 +248,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserRulesTable);
+export default connect(null, mapDispatchToProps)(UserRulesTable);

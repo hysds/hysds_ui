@@ -24,7 +24,8 @@ const UserRulesTable = props => {
     {
       Header: "ID",
       accessor: "_id",
-      show: false
+      // show: false
+      show: true
     },
     {
       Header: "Name",

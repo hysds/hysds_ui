@@ -184,37 +184,52 @@ const toscaReducer = (state = initialState, action) => {
         priority: payload.priority
       };
     case USER_RULE_ACTION_LOADING:
-      var index = action.payload;
-      var foundRule = state.userRules[index];
+      var { index, id } = action.payload;
+
+      var foundFilteredRule = state.filteredRules[index];
+      foundFilteredRule.toggleLoading = true;
+
+      var loc = state.userRules.findIndex(x => x._id === id);
+      var foundRule = state.userRules[loc];
       foundRule.toggleLoading = true;
 
-      var newRulesList = [
-        ...state.userRules.slice(0, index),
-        foundRule,
-        ...state.userRules.slice(index + 1)
-      ];
-
       return {
         ...state,
-        userRules: newRulesList,
-        filteredRules: newRulesList
+        userRules: [
+          ...state.userRules.slice(0, loc),
+          foundRule,
+          ...state.userRules.slice(loc + 1)
+        ],
+        filteredRules: [
+          ...state.filteredRules.slice(0, index),
+          foundFilteredRule,
+          ...state.filteredRules.slice(index + 1)
+        ]
       };
     case TOGGLE_USER_RULE:
-      var index = action.payload.index;
-      var foundRule = state.userRules[index];
-      foundRule.enabled = action.payload.updated.enabled;
+      var { index, id, updated } = action.payload;
+
+      var loc = state.userRules.findIndex(x => x._id === id);
+      var foundRule = state.userRules[loc];
+      foundRule.enabled = updated.enabled;
       foundRule.toggleLoading = false;
 
-      var newRulesList = [
-        ...state.userRules.slice(0, index),
-        foundRule,
-        ...state.userRules.slice(index + 1)
-      ];
+      var foundFilteredRule = state.filteredRules[index];
+      foundFilteredRule.enabled = updated.enabled;
+      foundFilteredRule.toggleLoading = false;
 
       return {
         ...state,
-        userRules: newRulesList,
-        filteredRules: newRulesList
+        userRules: [
+          ...state.userRules.slice(0, loc),
+          foundRule,
+          ...state.userRules.slice(loc + 1)
+        ],
+        filteredRules: [
+          ...state.filteredRules.slice(0, index),
+          foundFilteredRule,
+          ...state.filteredRules.slice(index + 1)
+        ]
       };
     case CLEAR_JOB_PARAMS:
       return {

@@ -254,7 +254,7 @@ export const getUserRule = id => dispatch => {
 export const toggleUserRule = (index, id, enabled) => dispatch => {
   dispatch({
     type: USER_RULE_ACTION_LOADING,
-    payload: index
+    payload: { index, id }
   });
 
   const toggleUserRuleEndpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
@@ -273,7 +273,7 @@ export const toggleUserRule = (index, id, enabled) => dispatch => {
     .then(data => {
       dispatch({
         type: TOGGLE_USER_RULE,
-        payload: { ...data, index }
+        payload: { ...data, index, id }
       });
     });
 };

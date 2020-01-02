@@ -268,6 +268,7 @@ const toscaReducer = (state = initialState, action) => {
         return (
           value.rule_name.toLowerCase().includes(search.toLowerCase()) ||
           value.job_spec.toLowerCase().includes(search.toLowerCase()) ||
+          value.queue.toLowerCase().includes(search.toLowerCase()) ||
           value.query_string.toLowerCase().includes(search.toLowerCase()) ||
           value.kwargs.toLowerCase().includes(search.toLowerCase()) ||
           value.job_type.toLowerCase().includes(search.toLowerCase()) ||

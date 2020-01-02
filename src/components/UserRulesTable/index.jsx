@@ -29,22 +29,38 @@ const UserRulesTable = props => {
     {
       Header: "Name",
       accessor: "rule_name",
-      filterable: true
+      filterable: true,
+      filterMethod: (filter, row) => {
+        if (row.rule_name.toLowerCase().includes(filter.value.toLowerCase()))
+          return row;
+      }
     },
     {
       Header: "Action",
       accessor: "job_type",
-      filterable: true
+      filterable: true,
+      filterMethod: (filter, row) => {
+        if (row.job_type.toLowerCase().includes(filter.value.toLowerCase()))
+          return row;
+      }
     },
     {
       Header: "Job Specification",
       accessor: "job_spec",
-      show: false
+      show: false,
+      filterMethod: (filter, row) => {
+        if (row.job_spec.toLowerCase().includes(filter.value.toLowerCase()))
+          return row;
+      }
     },
     {
       Header: "Queue",
       accessor: "queue",
-      filterable: true
+      filterable: true,
+      filterMethod: (filter, row) => {
+        if (row.queue.toLowerCase().includes(filter.value.toLowerCase()))
+          return row;
+      }
     },
     {
       Header: "Priority",
@@ -52,15 +68,10 @@ const UserRulesTable = props => {
       width: 65,
       resizable: false,
       filterable: true,
-      filterMethod: (filter, row) => {
-        if (filter.value == -1) return row;
-        else if (filter.value == row.priority) return row;
-      },
       Filter: ({ filter, onChange }) => (
         <select
           onChange={e => onChange(e.target.value)}
-          className="user-rules-table-priority-filter"
-          value={filter ? filter.value : "all"}
+          className="user-rules-table-dropdown-filter"
         >
           <option value={-1}></option>
           <option value={1}>1</option>
@@ -73,12 +84,20 @@ const UserRulesTable = props => {
           <option value={8}>8</option>
           <option value={9}>9</option>
         </select>
-      )
+      ),
+      filterMethod: (filter, row) => {
+        if (filter.value == -1) return row;
+        else if (filter.value == row.priority) return row;
+      }
     },
     {
       Header: "User",
       accessor: "username",
       filterable: true,
+      filterMethod: (filter, row) => {
+        if (row.username.toLowerCase().includes(filter.value.toLowerCase()))
+          return row;
+      },
       width: 150
     },
     {
@@ -99,7 +118,23 @@ const UserRulesTable = props => {
             );
           }}
         />
-      )
+      ),
+      filterable: true,
+      Filter: ({ filter, onChange }) => (
+        <select
+          onChange={e => onChange(e.target.value)}
+          className="user-rules-table-dropdown-filter"
+        >
+          <option value=""></option>
+          <option value={true}>On</option>
+          <option value={false}>Off</option>
+        </select>
+      ),
+      filterMethod: (filter, row) => {
+        const val = filter.value == "true" ? true : false;
+        if (filter.value === "") return row;
+        else if (val === row.enabled) return row;
+      }
     },
     {
       Header: null,

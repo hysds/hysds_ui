@@ -249,14 +249,18 @@ const toscaReducer = (state = initialState, action) => {
       };
     case DELETE_USER_RULE:
       var { index, id } = action.payload;
-      var newRulesList = [
-        ...state.userRules.slice(0, index),
-        ...state.userRules.slice(index + 1)
-      ];
+      var loc = state.userRules.findIndex(x => x._id === id);
+
       return {
         ...state,
-        userRules: newRulesList,
-        filteredRules: newRulesList
+        userRules: [
+          ...state.userRules.slice(0, loc),
+          ...state.userRules.slice(loc + 1)
+        ],
+        filteredRules: [
+          ...state.filteredRules.slice(0, index),
+          ...state.filteredRules.slice(index + 1)
+        ]
       };
     case GLOBAL_SEARCH_USER_RULES:
       var search = action.payload;

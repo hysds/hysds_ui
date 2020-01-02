@@ -47,11 +47,7 @@ const UserRulesTable = props => {
     {
       Header: "Job Specification",
       accessor: "job_spec",
-      show: false,
-      filterMethod: (filter, row) => {
-        if (row.job_spec.toLowerCase().includes(filter.value.toLowerCase()))
-          return row;
-      }
+      show: false
     },
     {
       Header: "Queue",
@@ -131,7 +127,7 @@ const UserRulesTable = props => {
         </select>
       ),
       filterMethod: (filter, row) => {
-        const val = filter.value == "true" ? true : false;
+        const val = filter.value === "true" ? true : false;
         if (filter.value === "") return row;
         else if (val === row.enabled) return row;
       }

@@ -29,9 +29,7 @@
     "leaflet": "1.4.0",
     "leaflet-draw": "1.0.4",
     "prop-types": "^15.7.2",
-    "react": "^16.9.0",
     "react-ace": "^7.0.5",
-    "react-dom": "^16.9.0",
     "react-json-view": "^1.19.1",
     "react-router-dom": "^5.1.0",
     "react-select": "^2.4.4",
@@ -43,5 +41,9 @@
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.8.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "react-helmet": "^5.2.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
+  }
 }

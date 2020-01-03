@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -38,6 +39,11 @@ const ToscaUserRules = class extends React.Component {
     const { userRules } = this.props;
     return (
       <div>
+        <Helmet>
+          <title>Tosca - User Rules</title>
+          <meta name="description" content="Helmet application" />
+        </Helmet>
+
         <HeaderBar title="HySDS - User Rules" />
         <div className="user-rules-body">
           <div className="user-rules-options-wrapper">

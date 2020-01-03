@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { Helmet } from "react-helmet";
 import {
   ReactiveBase,
   SingleList,
@@ -114,7 +115,12 @@ class Tosca extends React.Component {
         url={GRQ_ES_URL}
         transformRequest={this._handleTransformRequest}
       >
+        <Helmet>
+          <title>Tosca - Home</title>
+          <meta name="description" content="Helmet application" />
+        </Helmet>
         <HeaderBar title="HySDS" />
+
         <div className="tosca-body-wrapper">
           <div className="sidenav">
             <div className="sidenav-title">Filters</div>

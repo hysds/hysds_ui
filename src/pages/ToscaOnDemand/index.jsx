@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { Helmet } from "react-helmet";
 
 import QueryEditor from "../../components/QueryEditor";
 import JobInput from "../../components/JobInput";
@@ -132,6 +133,10 @@ class ToscaOnDemand extends React.Component {
 
     return (
       <Fragment>
+        <Helmet>
+          <title>Tosca - On Demand</title>
+          <meta name="description" content="Helmet application" />
+        </Helmet>
         <HeaderBar title="HySDS - On Demand" />
         <div className="tosca-on-demand">
           <div className="split on-demand-left">

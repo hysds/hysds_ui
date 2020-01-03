@@ -1,4 +1,6 @@
 import React, { Fragment } from "react";
+import { Helmet } from "react-helmet";
+
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
@@ -140,7 +142,12 @@ class ToscaRuleEditor extends React.Component {
 
     return (
       <Fragment>
+        <Helmet>
+          <title>Tosca - Rule Editor</title>
+          <meta name="description" content="Helmet application" />
+        </Helmet>
         <HeaderBar title="HySDS - User Rules" />
+
         <div className="tosca-user-rule-editor">
           <div className="split user-rule-editor-left">
             <QueryEditor

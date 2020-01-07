@@ -2,7 +2,8 @@ import {
   GET_DATASET_ID,
   CLEAR_ALL_CUSTOM_COMPONENTS,
   CLEAR_CUSTOM_COMPONENTS,
-  UPDATE_SEARCH_QUERY
+  UPDATE_SEARCH_QUERY,
+  BBOX_EDIT
 } from "../constants.js";
 import { ID_COMPONENT, QUERY_SEARCH_COMPONENT_ID } from "../../config.js";
 
@@ -26,7 +27,8 @@ const initialState = {
   // _id: null,
   _id: _id,
   queryString: queryString,
-  userTyping: false // maybe move this to global reducer?
+  userTyping: false, // maybe move this to global reducer?
+  bboxText: ""
 };
 
 const reactivesearchReducer = (state = initialState, action) => {
@@ -44,6 +46,13 @@ const reactivesearchReducer = (state = initialState, action) => {
         ...state,
         [QUERY_SEARCH_COMPONENT_ID]: queryString,
         userTyping: userTyping
+      };
+
+    case BBOX_EDIT:
+      console.log(BBOX_EDIT, action.payload);
+      return {
+        ...state,
+        bboxText: action.payload
       };
 
     // CUSTOM COMPONENT HAS A CLEAR EVENT (NEED TO FIGURE OUT TO HANDLE ALL AT ONCE)

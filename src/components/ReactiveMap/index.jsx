@@ -1,9 +1,11 @@
 import React, { Fragment } from "react"; // react imports
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
+
 import { connect } from "react-redux"; // redux
-import { clickDatasetId } from "../../redux/actions";
+import { clickDatasetId, bboxEdit } from "../../redux/actions";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
+
 import L from "leaflet"; // lealfet
 import "leaflet-draw";
 import "leaflet/dist/leaflet.css";
@@ -18,6 +20,38 @@ import {
   BBOX_WEIGHT,
   BBOX_OPACITY
 } from "../../config.js";
+
+const ReactiveMap = ({ componentId, data, zoom, maxZoom, minZoom }) => {
+  return (
+    <ReactiveComponent
+      componentId={componentId}
+      URLParams={true}
+      render={({ setQuery, value }) => (
+        <MapComponent
+          setQuery={setQuery}
+          value={value}
+          data={data}
+          zoom={zoom}
+          maxZoom={maxZoom}
+          minZoom={minZoom}
+        />
+      )}
+    />
+  );
+};
+
+ReactiveMap.propTypes = {
+  componentId: PropTypes.string.isRequired
+};
+
+ReactiveMap.defaultProps = {
+  zoom: 6,
+  maxZoom: 10,
+  minZoom: 0,
+  data: []
+};
+
+export default ReactiveMap;
 
 let ConnectMapComponent = class extends React.Component {
   constructor(props) {
@@ -101,6 +135,32 @@ let ConnectMapComponent = class extends React.Component {
     this._renderDatasets(); // rendering dataset panes
   }
 
+  _generateQuery = polygon => ({
+    query: {
+      bool: {
+        filter: {
+          geo_shape: {
+            location: {
+              shape: { type: "polygon", coordinates: [polygon] }
+            }
+          }
+        }
+      }
+    }
+  });
+
+  sendEmptyQuery = () => {
+    // remove the bbox facet
+    this.drawnItems.clearLayers();
+    this.props.setQuery({
+      query: null,
+      value: null
+    });
+    this.setState({
+      polygonTextbox: null
+    });
+  };
+
   _handleMapDraw = event => {
     let newLayer = event.layer;
     let polygon = newLayer.getLatLngs()[0].map(cord => [cord.lng, cord.lat]);
@@ -133,7 +193,10 @@ let ConnectMapComponent = class extends React.Component {
   _reRenderMap = () => this.map._onResize();
   _toggleMapDisplay = () =>
     this.setState({ displayMap: !this.state.displayMap }, this._reRenderMap);
-  _polygonTextChange = e => this.setState({ polygonTextbox: e.target.value });
+  _polygonTextChange = e => {
+    this.props.bboxEdit(e.target.value);
+    this.setState({ polygonTextbox: e.target.value });
+  };
 
   _polygonTextInput = e => {
     if (e.key === "Enter" && e.shiftKey) {
@@ -160,32 +223,6 @@ let ConnectMapComponent = class extends React.Component {
         alert("Not valid JSON");
       }
     }
-  };
-
-  _generateQuery = polygon => ({
-    query: {
-      bool: {
-        filter: {
-          geo_shape: {
-            location: {
-              shape: { type: "polygon", coordinates: [polygon] }
-            }
-          }
-        }
-      }
-    }
-  });
-
-  sendEmptyQuery = () => {
-    // remove the bbox facet
-    this.drawnItems.clearLayers();
-    this.props.setQuery({
-      query: null,
-      value: null
-    });
-    this.setState({
-      polygonTextbox: null
-    });
   };
 
   // utility function to handle the data
@@ -336,39 +373,8 @@ let ConnectMapComponent = class extends React.Component {
 
 // Redux actions
 const mapDispatchToProps = dispatch => ({
-  clickDatasetId: _id => dispatch(clickDatasetId(_id))
+  clickDatasetId: _id => dispatch(clickDatasetId(_id)),
+  bboxEdit: bbox => dispatch(bboxEdit(bbox))
 });
 
 const MapComponent = connect(null, mapDispatchToProps)(ConnectMapComponent);
-
-const ReactiveMap = ({ componentId, data, zoom, maxZoom, minZoom }) => {
-  return (
-    <ReactiveComponent
-      componentId={componentId}
-      URLParams={true}
-      render={({ setQuery, value }) => (
-        <MapComponent
-          setQuery={setQuery}
-          value={value}
-          data={data}
-          zoom={zoom}
-          maxZoom={maxZoom}
-          minZoom={minZoom}
-        />
-      )}
-    />
-  );
-};
-
-ReactiveMap.propTypes = {
-  componentId: PropTypes.string.isRequired
-};
-
-ReactiveMap.defaultProps = {
-  zoom: 6,
-  maxZoom: 10,
-  minZoom: 0,
-  data: []
-};
-
-export default ReactiveMap;

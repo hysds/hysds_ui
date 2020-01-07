@@ -24,7 +24,8 @@ import {
   CLEAR_JOB_PARAMS,
   EDIT_RULE_NAME,
   DELETE_USER_RULE,
-  GLOBAL_SEARCH_USER_RULES
+  GLOBAL_SEARCH_USER_RULES,
+  BBOX_EDIT
 } from "../constants.js";
 
 import {
@@ -305,5 +306,10 @@ export const deleteUserRule = (index, id) => dispatch => {
 
 export const globalSearchUserRules = payload => ({
   type: GLOBAL_SEARCH_USER_RULES,
+  payload
+});
+
+export const bboxEdit = payload => ({
+  type: BBOX_EDIT,
   payload
 });

@@ -1,48 +1,55 @@
-var path = require('path');
+var path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: './src/index.js',
+  entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'index_bundle.js',
-    publicPath: '/'
+    path: path.resolve(__dirname, "dist"),
+    filename: "index_bundle.js",
+    publicPath: "/"
   },
   module: {
-    rules: [{
+    rules: [
+      {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
+          loader: "babel-loader"
         }
       },
       {
         test: /\.html$/,
-        use: [{
-          loader: "html-loader",
-        }]
+        use: [
+          {
+            loader: "html-loader"
+          }
+        ]
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: ["style-loader", "css-loader"]
       },
       {
         test: /\.(woff|woff2|ttf|svg|eot)$/,
-        use: [{
-          loader: 'file-loader',
-          options: {}
-        }]
+        use: [
+          {
+            loader: "file-loader",
+            options: {}
+          }
+        ]
       },
       {
         test: /\.png$/,
-        use: [{
-          loader: "url-loader?mimetype=image/png"
-        }]
-      },
-    ],
+        use: [
+          {
+            loader: "url-loader?mimetype=image/png"
+          }
+        ]
+      }
+    ]
   },
   devServer: {
-    historyApiFallback: true,
+    historyApiFallback: true
   },
   plugins: [
     new HtmlWebPackPlugin({
@@ -54,6 +61,6 @@ module.exports = {
     hints: false
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: [".js", ".jsx"]
   }
 };

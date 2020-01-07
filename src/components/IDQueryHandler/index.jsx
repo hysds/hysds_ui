@@ -31,10 +31,6 @@ class ConnectLogicHandler extends React.Component {
     this.setState({ _id: null });
   };
 
-  /**
-   * TODO: clean up this logic
-   * const _id = this.props._id || this.props.value
-   */
   componentDidUpdate() {
     const { _id } = this.props;
 

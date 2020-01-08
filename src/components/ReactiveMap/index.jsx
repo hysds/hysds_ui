@@ -8,6 +8,7 @@ import {
   bboxEdit,
   unclickQueryRegion
 } from "../../redux/actions";
+
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 
 import L from "leaflet"; // lealfet

@@ -71,6 +71,12 @@ class Tosca extends React.Component {
     this.state = {
       tableView: GRQ_TABLE_VIEW_DEFAULT // boolean
     };
+    this.ref = React.createRef();
+  }
+
+  componentDidUpdate() {
+    // scrolls to top of page if the query region button is pressed
+    if (this.props.queryRegion) this.ref.current.scrollTo(0, 0);
   }
 
   _handleTransformRequest = event => {
@@ -181,7 +187,7 @@ class Tosca extends React.Component {
             />
           </div>
 
-          <div className="body">
+          <div className="body" ref={this.ref}>
             <div className="top-bar-wrapper">
               <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
               <SearchQuery componentId={QUERY_SEARCH_COMPONENT_ID} />
@@ -225,7 +231,8 @@ class Tosca extends React.Component {
 const mapStateToProps = state => ({
   data: state.toscaReducer.data,
   dataCount: state.toscaReducer.dataCount,
-  query: state.toscaReducer.query
+  query: state.toscaReducer.query,
+  queryRegion: state.reactivesearchReducer.queryRegion
 });
 
 // Redux actions

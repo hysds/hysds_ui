@@ -5,8 +5,10 @@ import { clickQueryRegion } from "../../redux/actions";
 
 import { SimpleButton } from "../Buttons";
 
+import "./style.css";
+
 const ToscaDataViewer = props => {
-  const res = props.res;
+  const { res } = props;
 
   const clickQueryRegion = () => {
     const bbox = JSON.stringify(res.location.coordinates[0]);
@@ -14,7 +16,7 @@ const ToscaDataViewer = props => {
   };
 
   return (
-    <div style={{ border: "1px solid black", padding: 10, margin: 10 }}>
+    <div className="tosca-data-viewer">
       <div>id: {res._id}</div>
       {res.location && res.location.coordinates ? (
         <SimpleButton label="Query Region" onClick={clickQueryRegion} />

@@ -76,7 +76,8 @@ class Tosca extends React.Component {
 
   componentDidUpdate() {
     // scrolls to top of page if the query region button is pressed
-    if (this.props.queryRegion) this.ref.current.scrollTo(0, 0);
+    if (this.props.queryRegion)
+      this.ref.current.scrollIntoView({ block: "start" });
   }
 
   _handleTransformRequest = event => {
@@ -187,7 +188,7 @@ class Tosca extends React.Component {
             />
           </div>
 
-          <div className="body" ref={this.ref}>
+          <div className="body">
             <div className="top-bar-wrapper">
               <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
               <SearchQuery componentId={QUERY_SEARCH_COMPONENT_ID} />
@@ -212,8 +213,7 @@ class Tosca extends React.Component {
                 onClear={this._handleClearFilter}
               />
             </div>
-
-            {reactiveMap}
+            <div ref={this.ref}>{reactiveMap}</div>
             <ResultsList
               componentId={RESULTS_LIST_COMPONENT_ID}
               queryParams={QUERY_LOGIC}

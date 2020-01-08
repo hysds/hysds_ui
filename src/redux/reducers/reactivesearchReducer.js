@@ -28,7 +28,8 @@ const initialState = {
   _id: _id,
   queryString: queryString,
   userTyping: false, // maybe move this to global reducer?
-  bboxText: ""
+  bboxText: null,
+  queryRegion: false
 };
 
 const reactivesearchReducer = (state = initialState, action) => {
@@ -40,8 +41,8 @@ const reactivesearchReducer = (state = initialState, action) => {
       };
 
     case UPDATE_SEARCH_QUERY:
-      const queryString = action.payload[QUERY_SEARCH_COMPONENT_ID];
-      const userTyping = action.payload.userTyping;
+      var queryString = action.payload[QUERY_SEARCH_COMPONENT_ID];
+      var userTyping = action.payload.userTyping;
       return {
         ...state,
         [QUERY_SEARCH_COMPONENT_ID]: queryString,
@@ -49,7 +50,7 @@ const reactivesearchReducer = (state = initialState, action) => {
       };
 
     case BBOX_EDIT:
-      console.log(BBOX_EDIT, action.payload);
+      // console.log(BBOX_EDIT, action.payload);
       return {
         ...state,
         bboxText: action.payload

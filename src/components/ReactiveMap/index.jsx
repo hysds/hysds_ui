@@ -58,8 +58,8 @@ let ConnectMapComponent = class extends React.Component {
     super(props);
     this.state = {
       displayMap: true,
-      value: null,
-      polygonTextbox: props.value
+      value: null
+      // polygonTextbox: props.value
     };
   }
 
@@ -114,6 +114,11 @@ let ConnectMapComponent = class extends React.Component {
   }
 
   componentDidUpdate() {
+    if (this.props.queryRegion) {
+      console.log("query region clicked, querying elasticsearch");
+      return;
+    }
+
     if (this.props.value !== this.state.value) {
       if (this.props.value !== null) {
         // if the page loads with coordinates in the URL
@@ -123,14 +128,12 @@ let ConnectMapComponent = class extends React.Component {
           query,
           value: this.props.value
         });
-      } else this.sendEmptyQuery(); // handles onClear (facets)
-
-      this.setState({
-        value: this.props.value, // prevent maximum recursion error
-        polygonTextbox: this.props.value
-      });
+      } else {
+        this.sendEmptyQuery(); // handles onClear (facets)
+      }
+      this.setState({ value: this.props.value }); // prevent maximum recursion error
+      this.props.bboxEdit(this.props.value);
     }
-
     this._renderBbox(); // rendering pink bbox
     this._renderDatasets(); // rendering dataset panes
   }
@@ -156,9 +159,7 @@ let ConnectMapComponent = class extends React.Component {
       query: null,
       value: null
     });
-    this.setState({
-      polygonTextbox: null
-    });
+    this.props.bboxEdit(null);
   };
 
   _handleMapDraw = event => {
@@ -170,7 +171,9 @@ let ConnectMapComponent = class extends React.Component {
     const polygonString = JSON.stringify(polygon);
 
     this.props.setQuery({ query, value: polygonString }); // querying elasticsearch
-    this.setState({ value: polygonString, polygonTextbox: polygonString });
+
+    this.props.bboxEdit(polygonString);
+    this.setState({ value: polygonString });
   };
 
   _handlePolygonEdit = event => {
@@ -183,7 +186,9 @@ let ConnectMapComponent = class extends React.Component {
       const polygonString = JSON.stringify(polygon);
 
       this.props.setQuery({ query, value: polygonString }); // querying elasticsearch
-      this.setState({ value: polygonString, polygonTextbox: polygonString });
+
+      this.props.bboxEdit(polygonString);
+      this.setState({ value: polygonString });
     });
   };
 
@@ -193,10 +198,8 @@ let ConnectMapComponent = class extends React.Component {
   _reRenderMap = () => this.map._onResize();
   _toggleMapDisplay = () =>
     this.setState({ displayMap: !this.state.displayMap }, this._reRenderMap);
-  _polygonTextChange = e => {
-    this.props.bboxEdit(e.target.value);
-    this.setState({ polygonTextbox: e.target.value });
-  };
+
+  _polygonTextChange = e => this.props.bboxEdit(e.target.value);
 
   _polygonTextInput = e => {
     if (e.key === "Enter" && e.shiftKey) {
@@ -215,10 +218,8 @@ let ConnectMapComponent = class extends React.Component {
           query,
           value: polygonString
         });
-        this.setState({
-          value: polygonString,
-          polygonTextbox: polygonString
-        });
+        this.setState({ value: polygonString });
+        this.props.bboxEdit(polygonString);
       } catch (err) {
         alert("Not valid JSON");
       }
@@ -317,8 +318,8 @@ let ConnectMapComponent = class extends React.Component {
   };
 
   render() {
-    const { data } = this.props;
-    const { displayMap, polygonTextbox } = this.state;
+    const { data, bboxText } = this.props;
+    const { displayMap } = this.state;
 
     // find first occurance of valid center coordinate
     let validCenter = data.find(row =>
@@ -362,7 +363,7 @@ let ConnectMapComponent = class extends React.Component {
           className="map-coordinates-textbox"
           placeholder={textboxTooltip}
           data-tip={textboxTooltip} // react tool tip
-          value={polygonTextbox || ""}
+          value={bboxText || ""}
           onChange={this._polygonTextChange}
           onKeyPress={this._polygonTextInput}
         ></textarea>
@@ -377,4 +378,12 @@ const mapDispatchToProps = dispatch => ({
   bboxEdit: bbox => dispatch(bboxEdit(bbox))
 });
 
-const MapComponent = connect(null, mapDispatchToProps)(ConnectMapComponent);
+const mapStateToProps = state => ({
+  bboxText: state.reactivesearchReducer.bboxText,
+  queryRegion: state.reactivesearchReducer.queryRegion
+});
+
+const MapComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ConnectMapComponent);

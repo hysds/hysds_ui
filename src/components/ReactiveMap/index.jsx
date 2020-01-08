@@ -3,7 +3,11 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
 import { connect } from "react-redux"; // redux
-import { clickDatasetId, bboxEdit } from "../../redux/actions";
+import {
+  clickDatasetId,
+  bboxEdit,
+  unclickQueryRegion
+} from "../../redux/actions";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 
 import L from "leaflet"; // lealfet
@@ -115,7 +119,15 @@ let ConnectMapComponent = class extends React.Component {
 
   componentDidUpdate() {
     if (this.props.queryRegion) {
-      console.log("query region clicked, querying elasticsearch");
+      this.props.unclickQueryRegion(); // avoid infinite loop
+
+      let polygon = JSON.parse(this.props.bboxText);
+      const query = this._generateQuery(polygon);
+      this.props.setQuery({
+        query,
+        value: this.props.bboxText
+      });
+      this.setState({ value: this.props.bboxText });
       return;
     }
 
@@ -375,7 +387,8 @@ let ConnectMapComponent = class extends React.Component {
 // Redux actions
 const mapDispatchToProps = dispatch => ({
   clickDatasetId: _id => dispatch(clickDatasetId(_id)),
-  bboxEdit: bbox => dispatch(bboxEdit(bbox))
+  bboxEdit: bbox => dispatch(bboxEdit(bbox)),
+  unclickQueryRegion: () => dispatch(unclickQueryRegion())
 });
 
 const mapStateToProps = state => ({

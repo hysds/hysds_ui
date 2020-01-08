@@ -25,7 +25,9 @@ import {
   EDIT_RULE_NAME,
   DELETE_USER_RULE,
   GLOBAL_SEARCH_USER_RULES,
-  BBOX_EDIT
+  BBOX_EDIT,
+  CLICK_QUERY_REGION,
+  UNCLICK_QUERY_REGION
 } from "../constants.js";
 
 import {
@@ -304,12 +306,21 @@ export const deleteUserRule = (index, id) => dispatch => {
     );
 };
 
-export const globalSearchUserRules = payload => ({
+export const globalSearchUserRules = string => ({
   type: GLOBAL_SEARCH_USER_RULES,
-  payload
+  payload: string
 });
 
-export const bboxEdit = payload => ({
+export const bboxEdit = bbox => ({
   type: BBOX_EDIT,
-  payload
+  payload: bbox
+});
+
+export const clickQueryRegion = bbox => ({
+  type: CLICK_QUERY_REGION,
+  payload: bbox
+});
+
+export const unclickQueryRegion = () => ({
+  type: UNCLICK_QUERY_REGION
 });

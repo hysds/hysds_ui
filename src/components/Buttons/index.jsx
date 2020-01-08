@@ -6,6 +6,15 @@ import "./style.css";
 
 import upArrow from "../../images/arrow-up.png";
 
+export const SimpleButton = props => {
+  const label = props.label || "Button";
+  return (
+    <button className="simple-button" {...props}>
+      {label}
+    </button>
+  );
+};
+
 export const GenericButtonLink = props => {
   let label = props.label || "Button";
   return (

@@ -5,7 +5,7 @@ import { connect } from "react-redux"; // redux
 import { retrieveData } from "../../redux/actions";
 
 import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
-import ToggleListView from "../ToggleListView";
+import ToscaDataViewer from "../ToscaDataViewer";
 import DataTable from "../DataTable";
 
 import { SORT_OPTIONS } from "../../config";
@@ -26,13 +26,11 @@ class ResultsList extends React.Component {
   }
 
   // callback function to handle the results from ES
-  resultsListHandler = res => {
-    return (
-      <div key={res._id}>
-        <ToggleListView res={res} />
-      </div>
-    );
-  };
+  resultsListHandler = res => (
+    <div key={`${res._index}-${res._id}`}>
+      <ToscaDataViewer res={res} />
+    </div>
+  );
 
   handleTableToggle() {
     this.setState({
@@ -111,18 +109,11 @@ class ResultsList extends React.Component {
               value={pageSize}
               onChange={e => this.setState({ pageSize: e.target.value })}
             >
-              <option key="page-size-dropdown-10" value={10}>
-                {10}
-              </option>
-              <option key="page-size-dropdown-25" value={25}>
-                {25}
-              </option>
-              <option key="page-size-dropdown-50" value={50}>
-                {50}
-              </option>
-              <option key="page-size-dropdown-100" value={100}>
-                {100}
-              </option>
+              {[10, 25, 50, 100].map(x => (
+                <option key={`page-size-dropdown-${x}`} value={x}>
+                  {x}
+                </option>
+              ))}
             </select>
           </div>
         </div>

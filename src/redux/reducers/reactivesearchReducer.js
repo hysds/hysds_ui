@@ -2,7 +2,10 @@ import {
   GET_DATASET_ID,
   CLEAR_ALL_CUSTOM_COMPONENTS,
   CLEAR_CUSTOM_COMPONENTS,
-  UPDATE_SEARCH_QUERY
+  UPDATE_SEARCH_QUERY,
+  BBOX_EDIT,
+  CLICK_QUERY_REGION,
+  UNCLICK_QUERY_REGION
 } from "../constants.js";
 import { ID_COMPONENT, QUERY_SEARCH_COMPONENT_ID } from "../../config.js";
 
@@ -23,10 +26,11 @@ const queryString = urlParams.get(QUERY_SEARCH_COMPONENT_ID)
 
 // custom ReactiveComponent id's
 const initialState = {
-  // _id: null,
   _id: _id,
   queryString: queryString,
-  userTyping: false // maybe move this to global reducer?
+  userTyping: false, // maybe move this to global reducer?
+  bboxText: null,
+  queryRegion: false
 };
 
 const reactivesearchReducer = (state = initialState, action) => {
@@ -38,12 +42,18 @@ const reactivesearchReducer = (state = initialState, action) => {
       };
 
     case UPDATE_SEARCH_QUERY:
-      const queryString = action.payload[QUERY_SEARCH_COMPONENT_ID];
-      const userTyping = action.payload.userTyping;
+      var queryString = action.payload[QUERY_SEARCH_COMPONENT_ID];
+      var userTyping = action.payload.userTyping;
       return {
         ...state,
         [QUERY_SEARCH_COMPONENT_ID]: queryString,
         userTyping: userTyping
+      };
+
+    case BBOX_EDIT:
+      return {
+        ...state,
+        bboxText: action.payload
       };
 
     // CUSTOM COMPONENT HAS A CLEAR EVENT (NEED TO FIGURE OUT TO HANDLE ALL AT ONCE)
@@ -60,6 +70,19 @@ const reactivesearchReducer = (state = initialState, action) => {
         ...state,
         [action.payload]: null,
         userTyping: false
+      };
+
+    case CLICK_QUERY_REGION:
+      return {
+        ...state,
+        bboxText: action.payload,
+        queryRegion: true
+      };
+
+    case UNCLICK_QUERY_REGION:
+      return {
+        ...state,
+        queryRegion: false
       };
 
     default:

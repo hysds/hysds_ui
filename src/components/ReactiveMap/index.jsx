@@ -19,6 +19,7 @@ import "./style.css";
 import ReactTooltip from "react-tooltip"; // UI stuff
 
 import {
+  DEFAULT_MAP_SHOW,
   LEAFLET_TILELAYER,
   LEAFLET_ATTRIBUTION,
   BBOX_COLOR,
@@ -26,24 +27,22 @@ import {
   BBOX_OPACITY
 } from "../../config.js";
 
-const ReactiveMap = ({ componentId, data, zoom, maxZoom, minZoom }) => {
-  return (
-    <ReactiveComponent
-      componentId={componentId}
-      URLParams={true}
-      render={({ setQuery, value }) => (
-        <MapComponent
-          setQuery={setQuery}
-          value={value}
-          data={data}
-          zoom={zoom}
-          maxZoom={maxZoom}
-          minZoom={minZoom}
-        />
-      )}
-    />
-  );
-};
+const ReactiveMap = ({ componentId, data, zoom, maxZoom, minZoom }) => (
+  <ReactiveComponent
+    componentId={componentId}
+    URLParams={true}
+    render={({ setQuery, value }) => (
+      <MapComponent
+        setQuery={setQuery}
+        value={value}
+        data={data}
+        zoom={zoom}
+        maxZoom={maxZoom}
+        minZoom={minZoom}
+      />
+    )}
+  />
+);
 
 ReactiveMap.propTypes = {
   componentId: PropTypes.string.isRequired
@@ -62,17 +61,20 @@ let ConnectMapComponent = class extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayMap: true,
-      value: null
-      // polygonTextbox: props.value
+      displayMap: DEFAULT_MAP_SHOW,
+      value: props.bboxText
     };
   }
 
   componentDidMount() {
+    let center = window.localStorage.getItem("center");
+    center = center ? JSON.parse(center) : [36.7783, -119.4179];
+
     // initializing the map
-    this.map = L.map("leaflet-map-id", {
+    const mapId = "leaflet-map-id";
+    this.map = L.map(mapId, {
       attributionControl: false,
-      center: [36.7783, -119.4179],
+      center,
       zoom: localStorage.getItem("zoom") || this.props.zoom,
       maxZoom: this.props.maxZoom,
       minZoom: this.props.minZoom,
@@ -84,6 +86,12 @@ let ConnectMapComponent = class extends React.Component {
     this.drawnItems = new L.FeatureGroup().addTo(this.map); // store all drawn boox's here
     this.layerGroup = L.layerGroup().addTo(this.map); // store all dataset panels in this layergroup
 
+    this.shapeAttr = {
+      color: BBOX_COLOR,
+      weight: BBOX_WEIGHT,
+      opacity: BBOX_OPACITY
+    };
+
     this.drawControl = new L.Control.Draw({
       shapeOptions: { showArea: true, clickable: true },
       edit: { featureGroup: this.drawnItems, remove: false },
@@ -94,18 +102,10 @@ let ConnectMapComponent = class extends React.Component {
         circlemarker: false,
         polygon: {
           allowIntersection: false,
-          shapeOptions: {
-            color: BBOX_COLOR,
-            weight: BBOX_WEIGHT,
-            opacity: BBOX_OPACITY
-          }
+          shapeOptions: this.shapeAttr
         },
         rectangle: {
-          shapeOptions: {
-            color: BBOX_COLOR,
-            weight: BBOX_WEIGHT,
-            opacity: BBOX_OPACITY
-          }
+          shapeOptions: this.shapeAttr
         }
       }
     });
@@ -116,6 +116,17 @@ let ConnectMapComponent = class extends React.Component {
     this.map.on(L.Draw.Event.DRAWSTART, this._clearBbox);
     this.map.on(L.Draw.Event.CREATED, this._handleMapDraw);
     this.map.on(L.Draw.Event.EDITED, this._handlePolygonEdit);
+
+    // avoid additional "match_all" query on page load if initial bbox
+    if (this.props.value) {
+      let polygon = JSON.parse(this.props.value);
+      const query = this._generateQuery(polygon);
+      this.props.setQuery({
+        query,
+        value: this.props.value
+      });
+      this.setState({ value: this.props.value });
+    }
   }
 
   componentDidUpdate() {
@@ -241,25 +252,22 @@ let ConnectMapComponent = class extends React.Component {
 
   // utility function to handle the data
   _switchCoordinates = polygon => polygon.map(row => [row[1], row[0]]);
-  _transformData = data => {
-    // transforms data for map
-    const displayData = data.map(row => ({
-      _id: row._id,
-      _index: row._index,
-      key: `${row._index}/${row._id}`,
-      coordinates:
-        !!row.location && !!row.location.coordinates
-          ? this._switchCoordinates(row.location.coordinates[0])
-          : [],
-      center: row.center
-        ? [row.center.coordinates[1], row.center.coordinates[0]]
-        : [],
-      image: row.urls
-        ? `${row.urls[0]}/${row._id}.interferogram.browse_coarse.png`
-        : null
-    }));
-    return displayData;
-  };
+  _transformData = data =>
+    data.map(row => {
+      let [coordinates, center] = [[], []]; // initializing to empty array
+      if (!!row.location && !!row.location.coordinates)
+        coordinates = this._switchCoordinates(row.location.coordinates[0]);
+      if (row.center)
+        center = [row.center.coordinates[1], row.center.coordinates[0]];
+
+      return {
+        _id: row._id,
+        _index: row._index,
+        key: `${row._index}/${row._id}`,
+        coordinates,
+        center
+      };
+    });
 
   _validateRectangle = coord => {
     if (
@@ -280,14 +288,9 @@ let ConnectMapComponent = class extends React.Component {
       this.drawnItems.clearLayers();
       let coordinates = this._switchCoordinates(JSON.parse(value));
       const isRectangle = this._validateRectangle(coordinates); // checking valid rectangle
-      const drawOptions = {
-        color: BBOX_COLOR,
-        weight: BBOX_WEIGHT,
-        opacity: BBOX_OPACITY
-      };
       const poly = isRectangle
-        ? L.rectangle(coordinates, drawOptions)
-        : L.polygon(coordinates, drawOptions);
+        ? L.rectangle(coordinates, this.shapeAttr)
+        : L.polygon(coordinates, this.shapeAttr);
       poly.addTo(this.drawnItems).addTo(this.map);
     }
   };
@@ -306,15 +309,14 @@ let ConnectMapComponent = class extends React.Component {
           weight: 1.3
         });
         const popup = (
-          <div>
-            <p
-              className="id-popup-link"
-              onClick={this.clickIdHandler.bind(this, row._id)}
-            >
-              {row._id}
-            </p>
-          </div>
+          <p
+            className="id-popup-link"
+            onClick={this.clickIdHandler.bind(this, row._id)}
+          >
+            {row._id}
+          </p>
         );
+
         let popupElement = document.createElement("div");
         ReactDOM.render(popup, popupElement);
         poly
@@ -339,23 +341,12 @@ let ConnectMapComponent = class extends React.Component {
       row.center ? row.center.coordinates : null
     );
     if (validCenter) {
-      const center = validCenter.center.coordinates;
+      let center = validCenter.center.coordinates;
       this.map.panTo(new L.LatLng(center[1], center[0]));
+      localStorage.setItem("center", JSON.stringify([center[1], center[0]]));
     }
 
     const textboxTooltip = `Press SHIFT + ENTER to manually input polygon... ex. [ [-125.09335, 42.47589], ... ,[-125.09335, 42.47589] ]`;
-
-    let storedMapHeight = localStorage.getItem("map-height");
-    const mapContainerStyle = {
-      minHeight: 500,
-      height: storedMapHeight ? `${storedMapHeight}px` : 750,
-      marginTop: "10px",
-      marginLeft: "10px",
-      marginRight: "10px",
-      overflow: "auto",
-      resize: "vertical",
-      display: displayMap ? "block" : "none"
-    };
     const mapStyle = { display: displayMap ? "block" : "none" };
 
     return (
@@ -363,12 +354,8 @@ let ConnectMapComponent = class extends React.Component {
         <button onClick={this._toggleMapDisplay}>
           {displayMap ? "Hide Map" : "Show Map"}
         </button>
-        <div
-          onMouseUp={this._handleMapSizeChange}
-          style={mapContainerStyle}
-          ref={input => (this.mapContainer = input)}
-        >
-          <div style={mapStyle} id="leaflet-map-id" className="leaflet-map" />
+        <div className="leaflet-map-container" style={mapStyle}>
+          <div id="leaflet-map-id" className="leaflet-map" />
         </div>
 
         <ReactTooltip place="top" type="dark" effect="solid" />

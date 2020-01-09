@@ -8,6 +8,14 @@ p {
   margin: 0 auto;
 }
 
+.leaflet-map-container {
+  min-height: 500px;
+  height: 750px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
 .map-coordinates-textbox {
   min-width: 93%;
   max-width: 93%;

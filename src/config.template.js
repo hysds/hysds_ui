@@ -8,6 +8,8 @@ exports.GRQ_ES_INDICES = "grq";
 // DEFINING THE OPTIONS FOR THE LEAFLET MAP
 /*******************************************************************************/
 exports.DISPLAY_MAP = true;
+exports.DEFAULT_MAP_SHOW = false; // is map displayed by default
+
 // all leaflet styles: https://leaflet-extras.github.io/leaflet-providers/preview/
 exports.LEAFLET_TILELAYER =
   "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png";

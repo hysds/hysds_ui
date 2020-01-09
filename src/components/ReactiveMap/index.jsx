@@ -369,7 +369,7 @@ let ConnectMapComponent = class extends React.Component {
           className="map-coordinates-textbox"
           placeholder={textboxTooltip}
           data-tip={textboxTooltip} // react tool tip
-          value={bboxText || ""}
+          value={bboxText || this.props.value || ""}
           onChange={this._polygonTextChange}
           onKeyPress={this._polygonTextInput}
         ></textarea>

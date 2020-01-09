@@ -11,7 +11,7 @@
 
 .tosca-body-wrapper {
   display: flex;
-  padding-top: 47px;
+  padding-top: 46px;
   /* height: calc(100vh - 50px); */
   height: 100vh;
 }

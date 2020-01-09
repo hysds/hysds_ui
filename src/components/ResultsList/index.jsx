@@ -18,7 +18,7 @@ class ResultsList extends React.Component {
     const pageSize = localStorage.getItem("page-size");
 
     this.state = {
-      pageSize: pageSize ? parseInt(pageSize) : sprops.pageSize,
+      pageSize: pageSize ? parseInt(pageSize) : props.pageSize,
       tableView: localStorage.getItem("table-view") === "true" ? true : false,
       sortColumn: "None",
       sortOrder: "desc"

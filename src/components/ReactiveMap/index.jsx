@@ -60,8 +60,12 @@ export default ReactiveMap;
 let ConnectMapComponent = class extends React.Component {
   constructor(props) {
     super(props);
+
+    let displayMap = localStorage.getItem("display-map");
+    displayMap = displayMap === "false" ? false : DEFAULT_MAP_SHOW;
+
     this.state = {
-      displayMap: DEFAULT_MAP_SHOW,
+      displayMap,
       value: props.bboxText
     };
   }
@@ -220,8 +224,10 @@ let ConnectMapComponent = class extends React.Component {
   _clearBbox = () => this.drawnItems.clearLayers();
   _zoomHandler = () => localStorage.setItem("zoom", this.map.getZoom());
   _reRenderMap = () => this.map._onResize();
-  _toggleMapDisplay = () =>
+  _toggleMapDisplay = () => {
     this.setState({ displayMap: !this.state.displayMap }, this._reRenderMap);
+    localStorage.setItem("display-map", !this.state.displayMap);
+  };
 
   _polygonTextChange = e => this.props.bboxEdit(e.target.value);
 

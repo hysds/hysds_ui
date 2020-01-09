@@ -42,7 +42,11 @@ import IdQueryHandler from "../../components/IdQueryHandler";
 import SearchQuery from "../../components/SearchQuery";
 
 // custom utility components
-import { OnDemandButton, TriggerRulesButton } from "../../components/Buttons";
+import {
+  OnDemandButton,
+  TriggerRulesButton,
+  ScrollTop
+} from "../../components/Buttons";
 
 import { HelperLink } from "../../components/miscellaneous";
 import HeaderBar from "../../components/HeaderBar";
@@ -71,13 +75,14 @@ class Tosca extends React.Component {
     this.state = {
       tableView: GRQ_TABLE_VIEW_DEFAULT // boolean
     };
-    this.ref = React.createRef();
+    this.mapRef = React.createRef();
+    this.pageRef = React.createRef();
   }
 
   componentDidUpdate() {
     // scrolls to top of page if the query region button is pressed
     if (this.props.queryRegion)
-      this.ref.current.scrollIntoView({ block: "start" });
+      this.mapRef.current.scrollIntoView({ block: "start" });
   }
 
   _handleTransformRequest = event => {
@@ -188,7 +193,7 @@ class Tosca extends React.Component {
             />
           </div>
 
-          <div className="body">
+          <div className="body" ref={this.pageRef}>
             <div className="top-bar-wrapper">
               <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
               <SearchQuery componentId={QUERY_SEARCH_COMPONENT_ID} />
@@ -213,7 +218,7 @@ class Tosca extends React.Component {
                 onClear={this._handleClearFilter}
               />
             </div>
-            <div ref={this.ref}>{reactiveMap}</div>
+            <div ref={this.mapRef}>{reactiveMap}</div>
             <ResultsList
               componentId={RESULTS_LIST_COMPONENT_ID}
               queryParams={QUERY_LOGIC}
@@ -221,6 +226,7 @@ class Tosca extends React.Component {
               pageSize={10}
             />
           </div>
+          <ScrollTop onClick={() => this.pageRef.current.scrollTo(0, 0)} />
         </div>
       </ReactiveBase>
     );

@@ -45,12 +45,8 @@ export const TriggerRulesButton = props => {
   );
 };
 
-export const ScrollTop = () => (
-  <img
-    src={upArrow}
-    className="scroll-top-button"
-    onClick={() => window.scrollTo(0, 0)}
-  />
+export const ScrollTop = props => (
+  <img src={upArrow} className="scroll-top-button" {...props} />
 );
 
 export const SubmitButton = props => {

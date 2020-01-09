@@ -14,15 +14,15 @@ import "./style.css";
 class ResultsList extends React.Component {
   constructor(props) {
     super(props);
+
+    const pageSize = localStorage.getItem("page-size");
+
     this.state = {
-      pageSize: props.pageSize,
-      tableView: true,
+      pageSize: pageSize ? parseInt(pageSize) : sprops.pageSize,
+      tableView: localStorage.getItem("table-view") === "true" ? true : false,
       sortColumn: "None",
       sortOrder: "desc"
     };
-    this.resultsListHandler = this.resultsListHandler.bind(this);
-    this.renderTable = this.renderTable.bind(this);
-    this.handleTableToggle = this.handleTableToggle.bind(this);
   }
 
   // callback function to handle the results from ES
@@ -32,11 +32,15 @@ class ResultsList extends React.Component {
     </div>
   );
 
-  handleTableToggle() {
-    this.setState({
-      tableView: !this.state.tableView
-    });
-  }
+  _handleTableToggle = () => {
+    localStorage.setItem("table-view", !this.state.tableView);
+    this.setState({ tableView: !this.state.tableView });
+  };
+
+  _handlePageSizeChange = e => {
+    this.setState({ pageSize: parseInt(e.target.value) });
+    localStorage.setItem("page-size", e.target.value);
+  };
 
   renderTable = ({ data, loading }) => {
     const { sortColumn, sortOrder } = this.state;
@@ -49,6 +53,16 @@ class ResultsList extends React.Component {
     const { componentId, queryParams } = this.props;
     const { pageSize, tableView, sortColumn, sortOrder } = this.state;
 
+    const sortOptions =
+      sortColumn !== "None"
+        ? [
+            {
+              dataField: sortColumn,
+              sortBy: sortOrder
+            }
+          ]
+        : null;
+
     return (
       <div>
         <div className="results-display-options">
@@ -58,7 +72,7 @@ class ResultsList extends React.Component {
               <input
                 type="checkbox"
                 value={tableView}
-                onChange={this.handleTableToggle.bind(this)}
+                onChange={this._handleTableToggle.bind(this)}
                 checked={tableView}
               />
               <span className="slider round"></span>
@@ -107,7 +121,7 @@ class ResultsList extends React.Component {
             <select
               className="page-size-dropdown"
               value={pageSize}
-              onChange={e => this.setState({ pageSize: e.target.value })}
+              onChange={this._handlePageSizeChange}
             >
               {[10, 25, 50, 100].map(x => (
                 <option key={`page-size-dropdown-${x}`} value={x}>
@@ -135,16 +149,7 @@ class ResultsList extends React.Component {
           }
           renderItem={tableView ? null : this.resultsListHandler}
           render={tableView ? this.renderTable : null}
-          sortOptions={
-            sortColumn !== "None"
-              ? [
-                  {
-                    dataField: sortColumn,
-                    sortBy: sortOrder
-                  }
-                ]
-              : null
-          }
+          sortOptions={sortOptions}
         />
       </div>
     );

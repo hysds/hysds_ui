@@ -16,7 +16,7 @@ import "leaflet-draw";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import "./style.css";
-import ReactTooltip from "react-tooltip"; // UI stuff
+// import ReactTooltip from "react-tooltip"; // UI stuff
 
 import {
   DEFAULT_MAP_SHOW,
@@ -364,7 +364,7 @@ let ConnectMapComponent = class extends React.Component {
           <div id="leaflet-map-id" className="leaflet-map" />
         </div>
 
-        <ReactTooltip place="top" type="dark" effect="solid" />
+        {/* <ReactTooltip place="top" type="dark" effect="solid" /> */}
         <textarea
           className="map-coordinates-textbox"
           placeholder={textboxTooltip}

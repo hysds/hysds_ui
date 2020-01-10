@@ -28,6 +28,7 @@
     "ignore-styles": "^5.0.1",
     "leaflet": "1.4.0",
     "leaflet-draw": "1.0.4",
+    "node-sass": "^4.13.0",
     "prop-types": "^15.7.2",
     "react-ace": "^7.0.5",
     "react-json-view": "^1.19.1",
@@ -35,6 +36,7 @@
     "react-select": "^2.4.4",
     "react-table": "^6.10.3",
     "react-tooltip": "^3.11.1",
+    "sass-loader": "^8.0.0",
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",
     "webpack": "^4.41.0",
@@ -42,8 +44,8 @@
     "webpack-dev-server": "^3.8.1"
   },
   "dependencies": {
-    "react-helmet": "^5.2.1",
     "react": "^16.9.0",
-    "react-dom": "^16.9.0"
+    "react-dom": "^16.9.0",
+    "react-helmet": "^5.2.1"
   }
 }

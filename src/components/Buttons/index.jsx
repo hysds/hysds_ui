@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import "font-awesome/css/font-awesome.min.css";
 import "./style.css";
+import "./style.scss";
 
 import upArrow from "../../images/arrow-up.png";
 

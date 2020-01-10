@@ -1,0 +1,21 @@
+$base-color: #4387ff;
+
+.simple-button {
+  background-color: $base-color;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 13px;
+}
+
+.simple-button:focus {
+  outline: 0;
+}
+
+.simple-button:hover {
+  background-color: darken($color: $base-color, $amount: 25%);
+}

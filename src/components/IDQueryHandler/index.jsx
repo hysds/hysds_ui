@@ -13,10 +13,13 @@ class ConnectLogicHandler extends React.Component {
   }
 
   componentDidMount() {
-    const { _id } = this.props;
-    if (_id) {
-      const query = this._generateQuery(_id);
-      this.props.setQuery({ query, value: _id });
+    const { value } = this.props;
+    if (value) {
+      const query = this._generateQuery(value);
+      this.props.setQuery({
+        query,
+        value
+      });
     }
   }
 

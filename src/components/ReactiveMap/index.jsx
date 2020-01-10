@@ -317,7 +317,7 @@ let ConnectMapComponent = class extends React.Component {
         const popup = (
           <p
             className="id-popup-link"
-            onClick={this.clickIdHandler.bind(this, row._id)}
+            onClick={() => this.clickIdHandler(row._id)}
           >
             {row._id}
           </p>
@@ -368,7 +368,7 @@ let ConnectMapComponent = class extends React.Component {
         <textarea
           className="map-coordinates-textbox"
           placeholder={textboxTooltip}
-          data-tip={textboxTooltip} // react tool tip
+          // data-tip={textboxTooltip} // react tool tip
           value={bboxText || this.props.value || ""}
           onChange={this._polygonTextChange}
           onKeyPress={this._polygonTextInput}

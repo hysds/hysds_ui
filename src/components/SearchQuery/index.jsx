@@ -20,17 +20,18 @@ class SearchQueryHandlerConnect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      queryString: props.queryString || props.value
+      queryString: props.queryString
     };
   }
 
   componentDidMount() {
-    const { queryString } = this.props;
-
-    if (!queryString) this._sendEmptyQuery();
-    else {
-      const query = this._generateQuery(queryString);
-      this.props.setQuery({ query, value: queryString });
+    const { value } = this.props;
+    if (value) {
+      const query = this._generateQuery(value);
+      this.props.setQuery({
+        query,
+        value
+      });
     }
   }
 

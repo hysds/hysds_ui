@@ -73,13 +73,17 @@ input:focus {
   margin-bottom: 20px;
 }
 
-.button-wrapper {
-  margin-left: auto;
-}
-
 .on-demand-button:hover {
   transition: background-color 0.4s ease-out;
   background-color: #0a45a4;
+}
+
+.button-wrapper {
+  display: flex;
+}
+
+.tosca-button {
+  padding: 0px 7px;
 }
 
 /****************************************************/

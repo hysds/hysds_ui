@@ -42,11 +42,7 @@ import IdQueryHandler from "../../components/IdQueryHandler";
 import SearchQuery from "../../components/SearchQuery";
 
 // custom utility components
-import {
-  OnDemandButton,
-  TriggerRulesButton,
-  ScrollTop
-} from "../../components/Buttons";
+import { ButtonLink, ScrollTop } from "../../components/Buttons";
 
 import { HelperLink } from "../../components/miscellaneous";
 import HeaderBar from "../../components/HeaderBar";
@@ -164,7 +160,6 @@ class Tosca extends React.Component {
               componentId={START_TIME_ID}
               title="Start Date"
               dataField="starttime"
-              // queryFormat="basic_date_time"
               URLParams={true}
               className="reactivesearch-input reactivesearch-date"
             />
@@ -172,7 +167,6 @@ class Tosca extends React.Component {
               componentId={END_TIME_ID}
               title="End Date"
               dataField="endtime"
-              // queryFormat="basic_date_time"
               URLParams={true}
               className="reactivesearch-input reactivesearch-date"
             />
@@ -198,18 +192,32 @@ class Tosca extends React.Component {
               <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
               <SearchQuery componentId={QUERY_SEARCH_COMPONENT_ID} />
               <IdQueryHandler componentId={ID_COMPONENT} />
-              <div className="button-wraper">
-                <OnDemandButton query={query} total={dataCount} />
-                <TriggerRulesButton
-                  label="Create New Rule"
-                  link={`tosca/user-rule?query=${query}`}
-                  target="tosca-user-rules"
-                />
-                <TriggerRulesButton
-                  label="View Rules"
-                  link="tosca/user-rules"
-                  target="tosca-user-rules"
-                />
+              <div className="button-wrapper">
+                <div className="tosca-button">
+                  <ButtonLink
+                    label="On Demand"
+                    target="on-demand-tosca"
+                    size="small"
+                    color="success"
+                    href={`/tosca/on-demand?query=${query}&total=${dataCount}`}
+                  />
+                </div>
+                <div className="tosca-button">
+                  <ButtonLink
+                    label="Create Rule"
+                    target="tosca-user-rules"
+                    size="small"
+                    href={`tosca/user-rule?query=${query}`}
+                  />
+                </div>
+                <div className="tosca-button">
+                  <ButtonLink
+                    label="View Rules"
+                    target="tosca-user-rules"
+                    size="small"
+                    href={"tosca/user-rules"}
+                  />
+                </div>
               </div>
             </div>
             <div className="filter-list-wrapper">

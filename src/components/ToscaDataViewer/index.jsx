@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux"; // redux
 import { clickQueryRegion } from "../../redux/actions";
 
-import { SimpleButton } from "../Buttons";
+import { Button } from "../Buttons";
 
 import "./style.css";
 
@@ -19,7 +19,7 @@ const ToscaDataViewer = props => {
     <div className="tosca-data-viewer">
       <div>id: {res._id}</div>
       {res.location && res.location.coordinates ? (
-        <SimpleButton label="Query Region" onClick={clickQueryRegion} />
+        <Button size="small" label="Query Region" onClick={clickQueryRegion} />
       ) : null}
     </div>
   );

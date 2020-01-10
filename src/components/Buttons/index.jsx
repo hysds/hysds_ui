@@ -2,88 +2,58 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import "font-awesome/css/font-awesome.min.css";
-import "./style.css";
 import "./style.scss";
 
 import upArrow from "../../images/arrow-up.png";
 
-export const SimpleButton = props => {
-  const label = props.label || "Button";
+export const Button = props => {
+  let { label, size, color, loading } = props;
+
+  label = loading ? <i className="fa fa-spinner fa-spin"></i> : label;
+
+  var colorClass;
+  switch (color) {
+    case "success":
+      colorClass = "button-success";
+      break;
+    case "fail":
+      colorClass = "button-fail";
+      break;
+    case "warning":
+      colorClass = "button-warning";
+      break;
+    default:
+      colorClass = "button-basic";
+  }
+
+  var sizeClass;
+  switch (size) {
+    case "small":
+      sizeClass = "button-small";
+      break;
+    case "large":
+      sizeClass = "button-large";
+      break;
+    default:
+      sizeClass = "button";
+  }
+
   return (
-    <button className="simple-button" {...props}>
-      {label}
+    <button className={`${sizeClass} ${colorClass}`} {...props}>
+      {label || "Button"}
     </button>
   );
 };
 
-export const GenericButtonLink = props => {
-  let label = props.label || "Button";
-  return (
-    <Link to={props.href}>
-      <button className="generic-button" {...props}>
-        {label}
-      </button>
-    </Link>
-  );
-};
-
-export const OnDemandButton = ({ query, total }) => (
-  <a
-    className="utility-button"
-    href={`/tosca/on-demand?query=${query}&total=${total}`}
-    target="on-demand-tosca"
-  >
-    On Demand
-  </a>
+export const ButtonLink = props => (
+  <Link to={props.href} target={props.target}>
+    <Button {...props} />
+  </Link>
 );
-
-export const TriggerRulesButton = props => {
-  let label = props.label || "Trigger Rules";
-  return (
-    <a className="trigger-rules-button" href={props.link} {...props}>
-      {label}
-    </a>
-  );
-};
 
 export const ScrollTop = props => (
   <img src={upArrow} className="scroll-top-button" {...props} />
 );
-
-export const SubmitButton = props => {
-  const className = props.disabled
-    ? "submit-button disabled"
-    : "submit-button active";
-
-  let label = props.label || "Submit";
-  label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
-
-  return (
-    <button
-      className={className}
-      disabled={props.disabled || props.loading}
-      {...props}
-    >
-      {label}
-    </button>
-  );
-};
-
-export const QueryCheckerButton = props => {
-  let className = "query-checker-button";
-  if (props.disabled) className = `${className} disabled`;
-
-  const label = props.loading ? (
-    <i className="fa fa-spinner fa-spin"></i>
-  ) : (
-    label
-  );
-  return (
-    <button className={className} disabled={props.disabled} {...props}>
-      Data Count Check
-    </button>
-  );
-};
 
 export const ToggleButton = props => {
   let label = props.enabled ? "On" : "Off";
@@ -95,7 +65,7 @@ export const ToggleButton = props => {
 
   return (
     <button
-      className="toggle-button"
+      className="user-rules-table-button"
       style={style}
       disabled={props.loading}
       {...props}
@@ -109,7 +79,11 @@ export const DeleteButton = props => {
   let label = props.label || "Delete";
   label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
   return (
-    <button className="delete-button" disabled={props.loading} {...props}>
+    <button
+      className="user-rules-table-button delete"
+      disabled={props.loading}
+      {...props}
+    >
       {label}
     </button>
   );
@@ -119,7 +93,7 @@ export const EditButton = props => {
   let label = props.label || "Edit";
   label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
   return (
-    <button className="edit-button" {...props}>
+    <button className="user-rules-table-button edit" {...props}>
       {label}
     </button>
   );

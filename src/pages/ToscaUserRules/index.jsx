@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { GenericButtonLink } from "../../components/Buttons";
+import { ButtonLink } from "../../components/Buttons";
 import UserRulesTable from "../../components/UserRulesTable";
 import {
   getUserRules,
@@ -58,7 +58,7 @@ const ToscaUserRules = class extends React.Component {
               }
             />
             <div className="user-rules-button-wrapper">
-              <GenericButtonLink href="/tosca/user-rule" label="Create Rule" />
+              <ButtonLink href="/tosca/user-rule" label="Create Rule" />
             </div>
           </div>
 

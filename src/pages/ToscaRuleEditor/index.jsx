@@ -11,7 +11,7 @@ import UserRuleNameInput from "../../components/UserRuleNameInput";
 import QueueInput from "../../components/QueueInput";
 import PriorityInput from "../../components/PriorityInput";
 
-import { SubmitButton } from "../../components/Buttons";
+import { Button, ButtonLink } from "../../components/Buttons";
 import { Border, SubmitStatusBar } from "../../components/miscellaneous";
 
 import HeaderBar from "../../components/HeaderBar";
@@ -191,23 +191,24 @@ class ToscaRuleEditor extends React.Component {
               />
 
               <div className="user-rule-buttons-wrapper">
-                <SubmitButton
-                  label={this.state.editMode ? "Save Changes" : "Save"}
-                  onClick={this._handleUserRuleSubmit}
-                  loading={this.state.submitInProgress}
-                  disabled={!validSubmission}
-                />
-                <Link
-                  to="/tosca/user-rules"
-                  className="user-rules-editor-cancel-button-wrapper"
-                >
-                  <button
-                    className="user-rules-editor-cancel-button"
+                <div className="user-rule-button">
+                  <Button
+                    size="large"
+                    label={this.state.editMode ? "Save Changes" : "Save"}
+                    onClick={this._handleUserRuleSubmit}
+                    loading={this.state.submitInProgress}
+                    disabled={!validSubmission}
+                  />
+                </div>
+                <div className="user-rule-button">
+                  <ButtonLink
+                    color="fail"
+                    label="Cancel"
+                    size="large"
+                    href="/tosca/user-rules"
                     onClick={() => this.props.clearJobParams()}
-                  >
-                    Cancel
-                  </button>
-                </Link>
+                  />
+                </div>
               </div>
             </div>
           </div>

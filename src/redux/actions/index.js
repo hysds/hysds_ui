@@ -4,7 +4,6 @@ import {
   CLEAR_CUSTOM_COMPONENTS,
   RETRIEVE_DATA,
   GET_QUERY,
-  UPDATE_SEARCH_QUERY,
   EDIT_QUERY, // on-demand
   VALIDATE_QUERY,
   EDIT_PRIORITY,
@@ -75,11 +74,6 @@ export const getQuery = query => {
     payload: query
   };
 };
-
-export const updateSearchQuery = queryString => ({
-  type: UPDATE_SEARCH_QUERY,
-  payload: queryString
-});
 
 // ********************************************************************** //
 // TOSCA ON DEMAND ACTIONS

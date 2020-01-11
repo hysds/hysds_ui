@@ -1,6 +1,4 @@
 import React, { Fragment } from "react";
-import { connect } from "react-redux"; // redux
-import { updateSearchQuery } from "../../redux/actions";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 
 import "./style.css";
@@ -16,11 +14,13 @@ const SearchQuery = ({ componentId }) => (
   />
 );
 
-class SearchQueryHandlerConnect extends React.Component {
+// main component for the search query
+class SearchQueryHandler extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      queryString: props.queryString
+      userTyping: false,
+      value: props.value
     };
   }
 
@@ -28,45 +28,26 @@ class SearchQueryHandlerConnect extends React.Component {
     const { value } = this.props;
     if (value) {
       const query = this._generateQuery(value);
-      this.props.setQuery({
-        query,
-        value
-      });
+      this.props.setQuery({ query, value });
     }
   }
 
-  // TODO: need to clean this logic up
   componentDidUpdate() {
-    const { queryString } = this.props;
+    const { userTyping } = this.state;
 
-    if (!this.props.userTyping) {
-      if (this.props.queryString !== this.state.queryString) {
-        if (!this.state.queryString) {
-          const query = this._generateQuery(this.props.queryString);
-          this.props.setQuery({ query, value: queryString });
-          this.setState({ queryString });
-        } else {
-          this._sendEmptyQuery(); // clearing _id facet
-          this.setState({ queryString: null });
-        }
-      } else if (this.props.queryString !== this.props.value) {
-        // handle page forwards and backwards
-        if (this.props.value) {
-          // page moves to non-empty query_string
-          const query = this._generateQuery(this.props.value);
-          this.props.setQuery({ query, value: this.props.value });
-        } else {
-          // page moves to empty query_string
-          this._sendEmptyQuery();
-          this.setState({ queryString: null });
-        }
-        const dispatchData = {
-          queryString: this.props.value,
-          userTyping: false
-        };
-        this.props.updateSearchQuery(dispatchData);
-        this.setState({ queryString: this.props.value });
+    if (userTyping) return;
+
+    if (this.props.value !== this.state.value) {
+      if (this.props.value !== null) {
+        const query = this._generateQuery(this.props.value);
+        this.props.setQuery({
+          query,
+          value: this.props.value
+        });
+      } else {
+        this._sendEmptyQuery();
       }
+      this.setState({ value: this.props.value }); // prevent maximum recursion error
     }
   }
 
@@ -81,42 +62,41 @@ class SearchQueryHandlerConnect extends React.Component {
 
   _sendEmptyQuery = () => {
     this.props.setQuery({ query: null, value: null });
+    this.setState({ value: null, userTyping: false });
   };
 
-  _handleSubmit = event => {
-    event.preventDefault();
-    const { queryString } = this.props;
+  _handleSubmit = e => {
+    e.preventDefault();
+    const { value } = this.state;
 
-    if (!queryString) this._sendEmptyQuery();
+    if (!value) this._sendEmptyQuery();
     else {
-      const query = this._generateQuery(queryString);
-      this.props.setQuery({ query, value: queryString }); // sending query to elasticsearch
-      const dispatchData = {
-        queryString,
+      const query = this._generateQuery(value);
+      this.props.setQuery({ query, value }); // sending query to elasticsearch
+      this.setState({
+        value,
         userTyping: false
-      };
-      this.props.updateSearchQuery(dispatchData);
+      });
     }
   };
 
-  _handleChange = event => {
-    const text = event.target.value;
-    const dispatchData = {
-      queryString: text,
-      userTyping: true
-    };
-    this.props.updateSearchQuery(dispatchData);
+  _handleChange = e => {
+    const queryString = e.target.value;
+    this.setState({
+      userTyping: true,
+      value: queryString
+    });
   };
 
   render() {
-    const { queryString } = this.props;
+    const { value } = this.state;
     return (
       <Fragment>
         <form className="query-input-form" onSubmit={this._handleSubmit}>
           <input
             className="query-input-box"
             type="text"
-            value={queryString || ""}
+            value={value || ""}
             onChange={this._handleChange}
             placeholder={`Input Elasticsearch query string... ex. _id:"test_id"`}
           />
@@ -125,23 +105,5 @@ class SearchQueryHandlerConnect extends React.Component {
     );
   }
 }
-
-// redux state data
-const mapStateToProps = state => ({
-  queryString: state.reactivesearchReducer.queryString,
-  userTyping: state.reactivesearchReducer.userTyping
-});
-
-// Redux actions
-const mapDispatchToProps = dispatch => {
-  return {
-    updateSearchQuery: data => dispatch(updateSearchQuery(data)) // consists of queryString and userTyping
-  };
-};
-
-const SearchQueryHandler = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SearchQueryHandlerConnect);
 
 export default SearchQuery;

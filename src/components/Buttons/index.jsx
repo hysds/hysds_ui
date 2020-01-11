@@ -59,17 +59,11 @@ export const ToggleButton = props => {
   let label = props.enabled ? "On" : "Off";
   label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
 
-  const style = {
-    background: props.enabled ? "#5cb85c" : "#dc3545"
-  };
+  const toggleClass = props.enabled ? "on" : "off";
+  const className = `rules-table-button ${toggleClass}`;
 
   return (
-    <button
-      className="user-rules-table-button"
-      style={style}
-      disabled={props.loading}
-      {...props}
-    >
+    <button className={className} disabled={props.loading} {...props}>
       {label}
     </button>
   );
@@ -80,7 +74,7 @@ export const DeleteButton = props => {
   label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
   return (
     <button
-      className="user-rules-table-button delete"
+      className="rules-table-button delete"
       disabled={props.loading}
       {...props}
     >
@@ -93,7 +87,7 @@ export const EditButton = props => {
   let label = props.label || "Edit";
   label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
   return (
-    <button className="user-rules-table-button edit" {...props}>
+    <button className="rules-table-button edit" {...props}>
       {label}
     </button>
   );

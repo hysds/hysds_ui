@@ -16,7 +16,9 @@ import "leaflet-draw";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import "./style.css";
-import ReactTooltip from "react-tooltip"; // UI stuff
+// import ReactTooltip from "react-tooltip"; // UI stuff
+
+import { Button } from "../Buttons";
 
 import {
   DEFAULT_MAP_SHOW,
@@ -357,14 +359,17 @@ let ConnectMapComponent = class extends React.Component {
 
     return (
       <Fragment>
-        <button onClick={this._toggleMapDisplay}>
-          {displayMap ? "Hide Map" : "Show Map"}
-        </button>
+        <Button
+          label={displayMap ? "Hide Map" : "Show Map"}
+          size="small"
+          onClick={this._toggleMapDisplay}
+        />
+
         <div className="leaflet-map-container" style={mapStyle}>
           <div id="leaflet-map-id" className="leaflet-map" />
         </div>
 
-        <ReactTooltip place="top" type="dark" effect="solid" />
+        {/* <ReactTooltip place="top" type="dark" effect="solid" /> */}
         <textarea
           className="map-coordinates-textbox"
           placeholder={textboxTooltip}

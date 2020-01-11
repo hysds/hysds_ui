@@ -9,8 +9,8 @@ import { Border, SubmitStatusBar } from "../../components/miscellaneous";
 import TagInput from "../../components/TagInput";
 import QueueInput from "../../components/QueueInput";
 import PriorityInput from "../../components/PriorityInput";
-import { SubmitButton, QueryCheckerButton } from "../../components/Buttons";
 
+import { Button } from "../../components/Buttons";
 import HeaderBar from "../../components/HeaderBar";
 
 import { connect } from "react-redux";
@@ -182,16 +182,33 @@ class ToscaOnDemand extends React.Component {
                 paramsList={paramsList}
                 params={params}
               />
-              <div className="on-demand-button-wrapper">
-                <SubmitButton
-                  disabled={!validSubmission || submitInProgress}
-                  onClick={this._handleJobSubmit}
-                  loading={submitInProgress}
-                />
-                <QueryCheckerButton
-                  onClick={this._checkQueryDataCount}
-                  disabled={!validQuery}
-                />
+              <div className="tosca-on-demand-button-wrapper">
+                <div className="tosca-on-demand-button">
+                  <Button
+                    size="large"
+                    label={"Submit"}
+                    onClick={this._handleJobSubmit}
+                    loading={submitInProgress}
+                    disabled={!validSubmission || submitInProgress}
+                  />
+                </div>
+                <div className="tosca-on-demand-button">
+                  <Button
+                    size="large"
+                    color="success"
+                    label="Data Count Check"
+                    onClick={this._checkQueryDataCount}
+                    disabled={!validQuery}
+                  />
+                </div>
+                <div className="tosca-on-demand-button">
+                  <Button
+                    size="large"
+                    color="fail"
+                    label="Cancel"
+                    onClick={() => window.close()}
+                  />
+                </div>
                 {submissionTypeLabel}
               </div>
             </div>

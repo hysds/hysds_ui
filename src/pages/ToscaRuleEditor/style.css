@@ -24,46 +24,18 @@ body {
   padding: 10px;
 }
 
-.user-rule-editor-button-wrapper {
-  padding: 10px;
-}
-
-.user-rule-editor-submission-type {
-  padding-left: 10px;
-  border: none;
-  font-size: 15px;
-}
-
-.user-rule-editor-submission-type:focus {
-  outline: 0;
-}
-
 .data-count-header {
   font-size: 25px;
   padding: 15px;
 }
 
-.user-rules-editor-cancel-button {
-  width: 75px;
-  padding: 10px;
-  background: #dc3545;
-  color: #ffff;
-  font-size: 15px;
-  border: none;
-  border-radius: 5px;
-}
-.user-rules-editor-cancel-button:active {
-  outline: 0;
-  border: none;
-  -moz-outline-style: none;
-}
-
-.user-rules-editor-cancel-button-wrapper {
-  padding: 10px;
-}
-
 .user-rule-buttons-wrapper {
+  padding: 5px;
   display: flex;
+}
+
+.user-rule-button {
+  margin: 5px;
 }
 
 @media (max-width: 950px) {

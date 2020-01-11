@@ -15,8 +15,13 @@ body {
   overflow: auto;
 }
 
-.on-demand-button-wrapper {
+.tosca-on-demand-button-wrapper {
+  display: flex;
   padding: 10px;
+}
+
+.tosca-on-demand-button {
+  margin: 5px;
 }
 
 .on-demand-submission-type {

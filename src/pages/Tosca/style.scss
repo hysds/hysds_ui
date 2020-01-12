@@ -147,12 +147,12 @@ input:focus {
 .__dark-theme {
   // transition: background-color 0.5s;
   &.body {
-    background: $dark-theme-background;
+    background-color: $dark-theme-background;
     color: $dark-theme-color;
 
     .filter-list-wrapper {
       > div > a {
-        background: $dark-theme-alt;
+        background-color: $dark-theme-alt;
         color: $dark-theme-color;
 
         > span {
@@ -162,7 +162,7 @@ input:focus {
     }
   }
   &.sidenav {
-    background: $dark-theme-alt;
+    background-color: $dark-theme-alt;
     color: $dark-theme-color;
 
     .reactivesearch-input {
@@ -178,7 +178,7 @@ input:focus {
       > .DayPickerInput > input,
       input {
         border: $dark-theme-border;
-        background: $dark-theme-background;
+        background-color: $dark-theme-background;
         color: $dark-theme-color;
       }
 

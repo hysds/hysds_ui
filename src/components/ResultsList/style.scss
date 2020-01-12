@@ -130,7 +130,7 @@ input:checked + .slider:before {
 .__dark-theme {
   .reactivesearch-results-list {
     a {
-      background: $dark-theme-alt;
+      background-color: $dark-theme-alt;
       color: $dark-theme-color;
 
       &.active {

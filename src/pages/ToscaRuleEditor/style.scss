@@ -1,11 +1,13 @@
+@import "../../scss/constants.scss";
+
 body {
   font-family: "Oswald", sans-serif !important;
 }
 
 .tosca-user-rule-editor {
   display: flex;
-  padding-top: 47px;
-  height: calc(100vh - 47px);
+  padding-top: 44px;
+  height: calc(100vh - 44px);
 }
 
 /* Control the left side */
@@ -18,6 +20,7 @@ body {
 .user-rule-editor-right {
   flex: 1;
   overflow: auto;
+  padding: 10px 20px;
 }
 
 .user-rule-editor-right-wrapper {
@@ -47,4 +50,31 @@ body {
   .user-rule-editor-right-wrapper {
     padding: 25px;
   }
+}
+
+.__dark-theme {
+  background-color: $dark-theme-background;
+  color: $dark-theme-color;
+
+  .rule-editor-select-wrapper {
+    color: black;
+    label {
+      color: $dark-theme-color;
+    }
+  }
+
+  section {
+    color: black;
+  }
+  label {
+    color: $dark-theme-color;
+  }
+
+  hr {
+    border-color: $dark-theme-color;
+  }
+}
+
+.ace_editor {
+  height: 100% !important;
 }

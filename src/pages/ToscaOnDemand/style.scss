@@ -54,23 +54,21 @@ body {
 }
 
 .__dark-theme {
-  .tosca-on-demand {
-    background: $dark-theme-background;
-    color: $dark-theme-color;
+  background-color: $dark-theme-background;
+  color: $dark-theme-color;
 
-    .on-demand-select-wrapper {
-      color: black;
-      label {
-        color: $dark-theme-color;
-      }
-    }
-
-    section {
-      color: black;
-    }
+  .on-demand-select-wrapper {
+    color: black;
     label {
       color: $dark-theme-color;
     }
+  }
+
+  section {
+    color: black;
+  }
+  label {
+    color: $dark-theme-color;
   }
 
   hr {

@@ -1,0 +1,55 @@
+@import "../../scss/constants.scss";
+
+.user-rules-body {
+  padding-top: 47px;
+  height: calc(100vh - 47px);
+}
+
+.user-rules-options-wrapper {
+  display: flex;
+  /* justify-content: flex-end; */
+  padding: 15px;
+}
+
+.user-rules-button-wrapper {
+  margin-left: auto;
+}
+
+.user-rules-global-search {
+  font-size: 13px;
+  padding: 9px;
+  width: 22rem;
+  border-radius: 5px;
+  border: solid 1px #dfdfdf;
+}
+
+.__dark-theme {
+  background-color: $dark-theme-alt;
+  color: $dark-theme-color;
+
+  .user-rules-options-wrapper {
+    input {
+      background-color: $dark-theme-light;
+      color: $dark-theme-color;
+      border-color: $dark-theme-alt;
+    }
+  }
+
+  .ReactTable {
+    .-pagination {
+      button {
+        color: $dark-theme-color;
+      }
+    }
+
+    .rt-thead {
+      &.-filters {
+        input,
+        select {
+          background-color: $dark-theme-light;
+          color: $dark-theme-color;
+        }
+      }
+    }
+  }
+}

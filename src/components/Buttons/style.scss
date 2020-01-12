@@ -49,10 +49,10 @@
   color: #ffffff;
 
   &:hover {
-    background-color: darken($color: $base-color, $amount: 15%);
+    background-color: darken($color: $base-color, $amount: $hover-percent);
   }
   &:active {
-    background-color: darken($color: $base-color, $amount: 25%);
+    background-color: darken($color: $base-color, $amount: $active-percent);
   }
 }
 
@@ -62,10 +62,10 @@
   color: #ffffff;
 
   &:hover {
-    background-color: darken($color: $success-color, $amount: 15%);
+    background-color: darken($color: $success-color, $amount: $hover-percent);
   }
   &:active {
-    background-color: darken($color: $success-color, $amount: 25%);
+    background-color: darken($color: $success-color, $amount: $active-percent);
   }
 }
 
@@ -75,10 +75,10 @@
   color: #ffffff;
 
   &:hover {
-    background-color: darken($color: $fail-color, $amount: 15%);
+    background-color: darken($color: $fail-color, $amount: $hover-percent);
   }
   &:active {
-    background-color: darken($color: $fail-color, $amount: 25%);
+    background-color: darken($color: $fail-color, $amount: $active-percent);
   }
 }
 
@@ -88,10 +88,10 @@
   color: #ffffff;
 
   &:hover {
-    background-color: darken($color: $warning-color, $amount: 15%);
+    background-color: darken($color: $warning-color, $amount: $hover-percent);
   }
   &:active {
-    background-color: darken($color: $warning-color, $amount: 25%);
+    background-color: darken($color: $warning-color, $amount: $active-percent);
   }
 }
 
@@ -140,10 +140,10 @@
     background-color: $fail-color;
 
     &:hover {
-      background-color: darken($fail-color, 15%);
+      background-color: darken($fail-color, $hover-percent);
     }
     &:active {
-      background-color: darken($fail-color, 25%);
+      background-color: darken($fail-color, $active-percent);
     }
   }
 
@@ -152,10 +152,10 @@
     background-color: $base-color;
 
     &:hover {
-      background-color: darken($base-color, 15%);
+      background-color: darken($base-color, $hover-percent);
     }
     &:active {
-      background-color: darken($base-color, 25%);
+      background-color: darken($base-color, $active-percent);
     }
   }
 
@@ -164,10 +164,10 @@
     background-color: $success-color;
 
     &:hover {
-      background-color: darken($success-color, 15%);
+      background-color: darken($success-color, $hover-percent);
     }
     &:active {
-      background-color: darken($success-color, 25%);
+      background-color: darken($success-color, $active-percent);
     }
   }
 
@@ -176,10 +176,10 @@
     background-color: $fail-color;
 
     &:hover {
-      background-color: darken($fail-color, 15%);
+      background-color: darken($fail-color, $hover-percent);
     }
     &:active {
-      background-color: darken($fail-color, 25%);
+      background-color: darken($fail-color, $active-percent);
     }
   }
 }

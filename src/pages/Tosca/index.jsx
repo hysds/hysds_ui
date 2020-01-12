@@ -116,7 +116,7 @@ class Tosca extends React.Component {
       />
     ) : null;
 
-    const classTheme = darkMode ? "__dark-theme" : "__light-theme";
+    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
     return (
       <ReactiveBase
@@ -128,9 +128,8 @@ class Tosca extends React.Component {
           <title>Tosca - Home</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
-        <HeaderBar title="HySDS">
-          <div>fjsdklfdjlfks</div>
-        </HeaderBar>
+        <HeaderBar title="HySDS" theme={classTheme}></HeaderBar>
+
         <div className="tosca-body-wrapper">
           <div className={`${classTheme} sidenav`}>
             <div className="sidenav-title">Filters</div>
@@ -249,7 +248,7 @@ class Tosca extends React.Component {
 }
 
 Tosca.defaultProps = {
-  theme: "__light-theme"
+  theme: "__theme-light"
 };
 
 // redux state data

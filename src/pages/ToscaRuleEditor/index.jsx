@@ -138,7 +138,7 @@ class ToscaRuleEditor extends React.Component {
     const divider = this.props.paramsList.length > 0 ? <Border /> : null;
     const validSubmission = this._validateSubmission();
 
-    const classTheme = darkMode ? "__dark-theme" : "__light-theme";
+    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
     const darkTheme = "twilight";
     const lightTheme = "tomorrow";
     const aceTheme = darkMode ? darkTheme : lightTheme;
@@ -149,7 +149,7 @@ class ToscaRuleEditor extends React.Component {
           <title>Tosca - Rule Editor</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
-        <HeaderBar title="HySDS - User Rules" />
+        <HeaderBar title="HySDS - User Rules" theme={classTheme} />
 
         <div className="tosca-user-rule-editor">
           <div className="split user-rule-editor-left">

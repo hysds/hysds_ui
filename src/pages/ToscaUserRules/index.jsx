@@ -38,7 +38,7 @@ const ToscaUserRules = class extends React.Component {
   render() {
     const { darkMode, userRules } = this.props;
 
-    const classTheme = darkMode ? "__dark-theme" : "__light-theme";
+    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
     return (
       <div className={classTheme}>
@@ -46,8 +46,8 @@ const ToscaUserRules = class extends React.Component {
           <title>Tosca - User Rules</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
+        <HeaderBar title="HySDS - User Rules" theme={classTheme} />
 
-        <HeaderBar title="HySDS - User Rules" />
         <div className="user-rules-body">
           <div className="user-rules-options-wrapper">
             <input

@@ -15,7 +15,7 @@ const SearchQuery = ({ componentId, theme }) => (
 );
 
 SearchQuery.defaultProps = {
-  theme: "__light-theme"
+  theme: "__theme-light"
 };
 
 // main component for the search query

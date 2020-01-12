@@ -132,7 +132,7 @@ class ToscaOnDemand extends React.Component {
 
     const validSubmission = this._validateSubmission();
 
-    const classTheme = darkMode ? "__dark-theme" : "__light-theme";
+    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
     const darkTheme = "twilight";
     const lightTheme = "tomorrow";
     const aceTheme = darkMode ? darkTheme : lightTheme;
@@ -143,7 +143,8 @@ class ToscaOnDemand extends React.Component {
           <title>Tosca - On Demand</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
-        <HeaderBar title="HySDS - On Demand" />
+        <HeaderBar title="HySDS - On Demand" theme={classTheme} />
+
         <div className={classTheme}>
           <div className="tosca-on-demand">
             <div className="split on-demand-left">

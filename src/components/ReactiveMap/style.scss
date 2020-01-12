@@ -65,7 +65,7 @@ p {
   text-decoration: underline;
 }
 
-.__dark-theme {
+.__theme-dark {
   .map-coordinates-textbox {
     background-color: $dark-theme-alt;
     color: $dark-theme-color;
@@ -73,7 +73,7 @@ p {
   }
 }
 
-.__light-theme {
+.__theme-light {
   .map-coordinates-textbox {
     border: 1px solid #b2b2b2;
   }

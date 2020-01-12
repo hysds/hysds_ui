@@ -120,6 +120,10 @@ input:focus {
     min-height: 25px;
     font-size: 12px;
 
+    > label > span {
+      padding-right: 15px;
+    }
+
     > label::before {
       width: calc(12px + 1px);
       height: 12px;
@@ -144,7 +148,7 @@ input:focus {
   }
 }
 
-.__dark-theme {
+.__theme-dark {
   // transition: background-color 0.5s;
   &.body {
     background-color: $dark-theme-background;
@@ -169,10 +173,6 @@ input:focus {
       > div > div {
         border-color: $dark-theme-border;
         border: none;
-      }
-
-      > ul > li > label > span {
-        padding-right: 15px;
       }
 
       > .DayPickerInput > input,

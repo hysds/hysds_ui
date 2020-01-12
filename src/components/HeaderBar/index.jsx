@@ -32,7 +32,8 @@ const HeaderTitle = props => {
 };
 
 const HeaderBar = props => {
-  const title = props.title || "HySDS";
+  let { title, theme } = props;
+  title = props.title || "HySDS";
 
   const _themeHandler = () => {
     const { darkMode } = props;
@@ -41,7 +42,7 @@ const HeaderBar = props => {
   };
 
   return (
-    <div className="header-bar">
+    <div className={`${theme} header-bar`}>
       <ul className="header-bar-link-wrapper">
         <HeaderTitle title={title} />
         <HeaderLink to="/tosca" title="Tosca" active={1} />
@@ -58,6 +59,10 @@ const HeaderBar = props => {
       </ul>
     </div>
   );
+};
+
+HeaderBar.defaultProps = {
+  theme: "__theme-light"
 };
 
 const mapStateToProps = state => ({

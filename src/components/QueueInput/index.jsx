@@ -20,7 +20,7 @@ const QueueInput = props => {
 
   return (
     <section className="queue-input-wrapper">
-      <div className="queue-label">Queue:</div>
+      <label className="queue-label">Queue:</label>
       <div className="queue-select-wrapper">
         <Select
           label="Queue"

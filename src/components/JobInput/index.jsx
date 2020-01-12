@@ -25,7 +25,7 @@ const JobInput = props => {
   return (
     <Fragment>
       <section className="job-input-wrapper">
-        <div className="job-input-label">Jobs:</div>
+        <label className="job-input-label">Jobs:</label>
         <div className="job-input-select-wrapper">
           <Select
             label="Select Job"

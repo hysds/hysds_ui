@@ -1,3 +1,5 @@
+@import "../../scss/constants.scss";
+
 body {
   font-family: "Oswald", sans-serif !important;
 }
@@ -5,7 +7,7 @@ body {
 .tosca-on-demand {
   display: flex;
   padding-top: 44px;
-  height: calc(100vh - 47px);
+  height: calc(100vh - 43px);
 }
 
 /* Control the left and right side */
@@ -49,4 +51,38 @@ body {
   .on-demand-right {
     padding: 5px;
   }
+}
+
+.__dark-theme {
+  .tosca-on-demand {
+    background: $dark-theme-background;
+    color: $dark-theme-color;
+
+    .on-demand-select-wrapper {
+      color: black;
+      label {
+        color: $dark-theme-color;
+      }
+    }
+
+    section {
+      color: black;
+    }
+    label {
+      color: $dark-theme-color;
+    }
+  }
+
+  hr {
+    border-color: $dark-theme-color;
+  }
+
+  .on-demand-submission-type {
+    background-color: $dark-theme-background;
+    color: $dark-theme-color;
+  }
+}
+
+.ace_editor {
+  height: 100% !important;
 }

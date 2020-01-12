@@ -31,7 +31,7 @@ const PriorityInput = props => {
 
   return (
     <section className="priority-input-wrapper">
-      <div className="priority-label">Priority:</div>
+      <label className="priority-label">Priority:</label>
       <div className="priority-dropdown-wrapper">
         <Select
           label="Priority"

@@ -30,7 +30,7 @@ import {
 
 import { GRQ_REST_API_V1 } from "../../config";
 
-import "./style.css";
+import "./style.scss";
 
 class ToscaOnDemand extends React.Component {
   constructor(props) {
@@ -111,6 +111,7 @@ class ToscaOnDemand extends React.Component {
 
   render() {
     let {
+      darkMode,
       query,
       paramsList,
       params,
@@ -131,6 +132,11 @@ class ToscaOnDemand extends React.Component {
 
     const validSubmission = this._validateSubmission();
 
+    const classTheme = darkMode ? "__dark-theme" : "__light-theme";
+    const darkTheme = "twilight";
+    const lightTheme = "tomorrow";
+    const aceTheme = darkMode ? darkTheme : lightTheme;
+
     return (
       <Fragment>
         <Helmet>
@@ -138,78 +144,91 @@ class ToscaOnDemand extends React.Component {
           <meta name="description" content="Helmet application" />
         </Helmet>
         <HeaderBar title="HySDS - On Demand" />
-        <div className="tosca-on-demand">
-          <div className="split on-demand-left">
-            <QueryEditor
-              url={true} // update query params in url
-              query={query}
-              editQuery={editQuery} // redux action
-              validateQuery={validateQuery}
-            />
-          </div>
+        <div className={classTheme}>
+          <div className="tosca-on-demand">
+            <div className="split on-demand-left">
+              <QueryEditor
+                url={true} // update query params in url
+                query={query}
+                editQuery={editQuery} // redux action
+                validateQuery={validateQuery}
+                theme={aceTheme}
+              />
+            </div>
 
-          <div className="split on-demand-right">
-            <div className="on-demand-submitter-wrapper">
-              <h1>Tosca - On-Demand Job</h1>
-              <div className="data-count-header">
-                Total Records: {this.props.dataCount || "N/A"}
-              </div>
-              <TagInput url={true} tags={this.props.tags} editTags={editTags} />
-              <JobInput
-                url={true} // update query params in url
-                changeJobType={changeJobType} // all redux actions
-                getParamsList={getParamsList}
-                getQueueList={getQueueList}
-                jobs={this.props.jobs}
-                jobType={this.props.jobType}
-                jobLabel={this.props.jobLabel}
-              />
-              <QueueInput
-                queue={this.props.queue}
-                queueList={this.props.queueList}
-                changeQueue={changeQueue}
-              />
-              <PriorityInput
-                url={true}
-                priority={this.props.priority}
-                editJobPriority={editJobPriority}
-              />
-              {divider}
-              {hysdsioLabel}
-              <JobParams
-                url={true} // update query params in url
-                editParams={editParams}
-                paramsList={paramsList}
-                params={params}
-              />
-              <div className="tosca-on-demand-button-wrapper">
-                <div className="tosca-on-demand-button">
-                  <Button
-                    size="large"
-                    label={"Submit"}
-                    onClick={this._handleJobSubmit}
-                    loading={submitInProgress}
-                    disabled={!validSubmission || submitInProgress}
+            <div className="split on-demand-right">
+              <div className="on-demand-submitter-wrapper">
+                <h1>Tosca - On-Demand Job</h1>
+                <div className="data-count-header">
+                  Total Records: {this.props.dataCount || "N/A"}
+                </div>
+                <TagInput
+                  url={true}
+                  tags={this.props.tags}
+                  editTags={editTags}
+                />
+                <div class="on-demand-select-wrapper">
+                  <JobInput
+                    url={true} // update query params in url
+                    changeJobType={changeJobType} // all redux actions
+                    getParamsList={getParamsList}
+                    getQueueList={getQueueList}
+                    jobs={this.props.jobs}
+                    jobType={this.props.jobType}
+                    jobLabel={this.props.jobLabel}
                   />
                 </div>
-                <div className="tosca-on-demand-button">
-                  <Button
-                    size="large"
-                    color="success"
-                    label="Data Count Check"
-                    onClick={this._checkQueryDataCount}
-                    disabled={!validQuery}
+                <div class="on-demand-select-wrapper">
+                  <QueueInput
+                    queue={this.props.queue}
+                    queueList={this.props.queueList}
+                    changeQueue={changeQueue}
                   />
                 </div>
-                <div className="tosca-on-demand-button">
-                  <Button
-                    size="large"
-                    color="fail"
-                    label="Cancel"
-                    onClick={() => window.close()}
+                <div class="on-demand-select-wrapper">
+                  <PriorityInput
+                    url={true}
+                    priority={this.props.priority}
+                    editJobPriority={editJobPriority}
                   />
                 </div>
-                {submissionTypeLabel}
+                {divider}
+                {hysdsioLabel}
+                <JobParams
+                  url={true} // update query params in url
+                  editParams={editParams}
+                  paramsList={paramsList}
+                  params={params}
+                />
+                <div className="tosca-on-demand-button-wrapper">
+                  <div className="tosca-on-demand-button">
+                    <Button
+                      size="large"
+                      label={"Submit"}
+                      onClick={this._handleJobSubmit}
+                      loading={submitInProgress}
+                      disabled={!validSubmission || submitInProgress}
+                    />
+                  </div>
+                  <div className="tosca-on-demand-button">
+                    <Button
+                      size="large"
+                      color="success"
+                      label="Data Count Check"
+                      onClick={this._checkQueryDataCount}
+                      disabled={!validQuery}
+                    />
+                  </div>
+                  <div className="tosca-on-demand-button">
+                    <Button
+                      size="large"
+                      color="fail"
+                      label="Cancel"
+                      onClick={() => window.close()}
+                    />
+                  </div>
+                  {submissionTypeLabel}
+                </div>
               </div>
             </div>
           </div>
@@ -226,6 +245,7 @@ class ToscaOnDemand extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  darkMode: state.themeReducer.darkMode,
   query: state.toscaReducer.query,
   validQuery: state.toscaReducer.validQuery,
   jobs: state.toscaReducer.jobList,

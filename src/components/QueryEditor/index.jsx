@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 
 import AceEditor from "react-ace";
 import "brace/mode/json";
+import "brace/theme/twilight";
+import "brace/theme/tomorrow";
 
 const QueryEditor = props => {
   const _handleQueryChange = val => props.editQuery(val);
@@ -26,6 +28,7 @@ const QueryEditor = props => {
     <Fragment>
       <AceEditor
         mode="json"
+        theme={props.theme}
         placeholder="Enter your Elasticsearch _search query"
         fontSize={12}
         showPrintMargin={false}

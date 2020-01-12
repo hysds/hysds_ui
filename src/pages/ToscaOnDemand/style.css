@@ -4,7 +4,7 @@ body {
 
 .tosca-on-demand {
   display: flex;
-  padding-top: 47px;
+  padding-top: 44px;
   height: calc(100vh - 47px);
 }
 

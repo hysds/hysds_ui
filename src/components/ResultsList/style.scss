@@ -1,3 +1,5 @@
+@import "../../scss/constants.scss";
+
 /******************************/
 /* TABLE STYLING */
 .custom-table-cell {
@@ -12,22 +14,20 @@
 }
 /******************************/
 
-.reactivesearch-results-list a.active {
-  background-color: #2096f3 !important;
-}
-
-.reactivesearch-results-list a {
-  font-size: 13px;
+.reactivesearch-results-list {
+  a {
+    font-size: 13px;
+    &.active {
+      background-color: #2096f3 !important;
+    }
+  }
 }
 
 /******************************/
 /* DROPDOWN STYLING */
 .results-display-options {
   display: flex;
-  padding-left: 40px;
-  padding-right: 40px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding: 10px 40px;
 }
 
 .sort-results-wrapper {
@@ -51,23 +51,23 @@
 
 .sort-column-dropdown,
 .sort-order-dropdown {
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
   height: 29px;
   font-size: 16px;
   width: 120px;
   border-radius: 5px;
   background-color: #ffffff;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
 }
 
 .page-size-dropdown {
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
   height: 29px;
   font-size: 16px;
   width: 80px;
   border-radius: 5px;
   background-color: #ffffff;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
 }
 
 input[name="sort-options"],
@@ -103,30 +103,6 @@ select[name="sort-options"] {
   top: 2px;
 }
 
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 15px;
-  width: 15px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
-}
-
 input:checked + .slider {
   background-color: #2196f3;
 }
@@ -150,3 +126,17 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 /******************************/
+
+.__dark-theme {
+  .reactivesearch-results-list {
+    a {
+      background: $dark-theme-alt;
+      color: $dark-theme-color;
+
+      &.active {
+        background-color: #2096f3 !important;
+        color: #ffffff;
+      }
+    }
+  }
+}

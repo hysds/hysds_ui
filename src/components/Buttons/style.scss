@@ -1,7 +1,4 @@
-$base-color: #4387ff;
-$success-color: #5cb85c;
-$fail-color: #dc3545;
-$warning-color: #ffc107;
+@import "../../scss/constants.scss";
 
 .button {
   border: none;
@@ -50,56 +47,52 @@ $warning-color: #ffc107;
 .button-basic {
   background-color: $base-color;
   color: #ffffff;
-}
 
-.button-basic:hover {
-  background-color: darken($color: $base-color, $amount: 15%);
-}
-
-.button-basic:active {
-  background-color: darken($color: $base-color, $amount: 25%);
+  &:hover {
+    background-color: darken($color: $base-color, $amount: 15%);
+  }
+  &:active {
+    background-color: darken($color: $base-color, $amount: 25%);
+  }
 }
 
 // success button (green)
 .button-success {
   background-color: $success-color;
   color: #ffffff;
-}
 
-.button-success:hover {
-  background-color: darken($color: $success-color, $amount: 15%);
-}
-
-.button-success:active {
-  background-color: darken($color: $success-color, $amount: 25%);
+  &:hover {
+    background-color: darken($color: $success-color, $amount: 15%);
+  }
+  &:active {
+    background-color: darken($color: $success-color, $amount: 25%);
+  }
 }
 
 // fail button (red)
 .button-fail {
   background-color: $fail-color;
   color: #ffffff;
-}
 
-.button-fail:hover {
-  background-color: darken($color: $fail-color, $amount: 15%);
-}
-
-.button-fail:active {
-  background-color: darken($color: $fail-color, $amount: 25%);
+  &:hover {
+    background-color: darken($color: $fail-color, $amount: 15%);
+  }
+  &:active {
+    background-color: darken($color: $fail-color, $amount: 25%);
+  }
 }
 
 // warning button (yellow)
 .button-warning {
   background-color: $warning-color;
   color: #ffffff;
-}
 
-.button-warning:hover {
-  background-color: darken($color: $warning-color, $amount: 15%);
-}
-
-.button-warning:active {
-  background-color: darken($color: $warning-color, $amount: 25%);
+  &:hover {
+    background-color: darken($color: $warning-color, $amount: 15%);
+  }
+  &:active {
+    background-color: darken($color: $warning-color, $amount: 25%);
+  }
 }
 
 .scroll-top-button {
@@ -115,11 +108,10 @@ $warning-color: #ffc107;
   font-size: 12px;
   z-index: 999;
   -webkit-transition: opacity 0.25s;
-}
 
-// user rules table buttons
-.scroll-top-button:hover {
-  opacity: 1;
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .rules-table-button {
@@ -132,64 +124,62 @@ $warning-color: #ffc107;
   text-decoration: none;
   display: inline-block;
   font-size: 12px;
-}
 
-.rules-table-button:hover {
-  transition: background-color 0.2s;
-}
-
-.rules-table-button:focus {
-  outline: 0;
+  &:hover {
+    transition: background-color 0.2s;
+  }
+  &:focus {
+    outline: 0;
+  }
 }
 
 // delete button
-.rules-table-button.delete {
-  background-color: $fail-color;
-}
+.rules-table-button {
+  // delete button
+  &.delete {
+    background-color: $fail-color;
 
-.rules-table-button.delete:hover {
-  background-color: darken($fail-color, 15%);
-}
+    &:hover {
+      background-color: darken($fail-color, 15%);
+    }
+    &:active {
+      background-color: darken($fail-color, 25%);
+    }
+  }
 
-.rules-table-button.delete:active {
-  background-color: darken($fail-color, 25%);
-}
+  // edit button
+  &.edit {
+    background-color: $base-color;
 
-// edit button
-.rules-table-button.edit {
-  background-color: $base-color;
-}
+    &:hover {
+      background-color: darken($base-color, 15%);
+    }
+    &:active {
+      background-color: darken($base-color, 25%);
+    }
+  }
 
-.rules-table-button.edit:hover {
-  background-color: darken($base-color, 15%);
-}
+  // toggle button (on)
+  &.on {
+    background-color: $success-color;
 
-.rules-table-button.edit:active {
-  background-color: darken($base-color, 25%);
-}
+    &:hover {
+      background-color: darken($success-color, 15%);
+    }
+    &:active {
+      background-color: darken($success-color, 25%);
+    }
+  }
 
-// toggle button (on)
-.rules-table-button.on {
-  background-color: $success-color;
-}
+  // toggle-button (off)
+  &.off {
+    background-color: $fail-color;
 
-.rules-table-button.on:hover {
-  background-color: darken($success-color, 15%);
-}
-
-.rules-table-button.on:active {
-  background-color: darken($success-color, 25%);
-}
-
-// toggle button (on)
-.rules-table-button.off {
-  background-color: $fail-color;
-}
-
-.rules-table-button.off:hover {
-  background-color: darken($fail-color, 15%);
-}
-
-.rules-table-button.off:active {
-  background-color: darken($fail-color, 25%);
+    &:hover {
+      background-color: darken($fail-color, 15%);
+    }
+    &:active {
+      background-color: darken($fail-color, 25%);
+    }
+  }
 }

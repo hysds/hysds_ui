@@ -1,18 +1,22 @@
 import React, { Fragment } from "react";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 
-import "./style.css";
+import "./style.scss";
 
 // wrapper component for ReactiveComponent
-const SearchQuery = ({ componentId }) => (
+const SearchQuery = ({ componentId, theme }) => (
   <ReactiveComponent
     componentId={componentId}
     URLParams={true}
     render={({ setQuery, value }) => (
-      <SearchQueryHandler setQuery={setQuery} value={value} />
+      <SearchQueryHandler setQuery={setQuery} value={value} theme={theme} />
     )}
   />
 );
+
+SearchQuery.defaultProps = {
+  theme: "__light-theme"
+};
 
 // main component for the search query
 class SearchQueryHandler extends React.Component {
@@ -90,9 +94,13 @@ class SearchQueryHandler extends React.Component {
 
   render() {
     const { value } = this.state;
+
     return (
       <Fragment>
-        <form className="query-input-form" onSubmit={this._handleSubmit}>
+        <form
+          className={`${this.props.theme} query-input-form`}
+          onSubmit={this._handleSubmit}
+        >
           <input
             className="query-input-box"
             type="text"

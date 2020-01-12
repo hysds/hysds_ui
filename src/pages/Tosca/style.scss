@@ -1,0 +1,194 @@
+@import "../../scss/constants.scss";
+
+/****************************************************/ /* MAIN BODY */
+.body {
+  padding: 0px 20px;
+  padding-bottom: 50px;
+  min-width: 800px;
+  flex: 1;
+  overflow: auto;
+}
+
+.tosca-body-wrapper {
+  display: flex;
+  padding-top: 46px;
+  height: 100vh;
+}
+
+/****************************************************/
+/* SIDEBAR */
+.sidenav {
+  flex: 0;
+  min-width: 320px;
+  z-index: 1;
+  padding: 20px;
+  background-color: #ffff;
+  border-right: solid 1px #0000004d;
+  overflow: auto;
+}
+
+.sidenav-title {
+  text-align: center;
+  font-size: 25px;
+  font-weight: 700;
+  padding-bottom: 10px;
+}
+
+li.active:hover {
+  background-color: transparent !important;
+}
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  display: block;
+  height: 100%;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+}
+
+/****************************************************/
+/* TOP BAR: query string, on demand and trigger rules */
+input:focus {
+  outline: none;
+}
+
+.top-bar-wrapper {
+  margin: 0 auto;
+  display: flex;
+  width: 95%;
+  align-items: center;
+  min-width: 500px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.filter-list-wrapper {
+  margin-bottom: 20px;
+}
+
+.on-demand-button:hover {
+  transition: background-color 0.4s ease-out;
+  background-color: #0a45a4;
+}
+
+.button-wrapper {
+  display: flex;
+}
+
+.tosca-button {
+  padding: 0px 7px;
+}
+
+/****************************************************/
+/* STYLES ON FACETS AND FILTERS */
+.DayPickerInput-OverlayWrapper {
+  font-size: 11px;
+}
+
+.DayPickerInput {
+  > input {
+    padding: 8px 5px !important;
+    height: 30px !important;
+    font-size: 11px !important;
+  }
+}
+
+.reactivesearch-date {
+  margin-bottom: 25px;
+}
+
+.reactivesearch-input {
+  > input {
+    height: 30px;
+    background: #ffff;
+    font-size: 11px !important;
+  }
+
+  > h2 {
+    font-size: 0.9em !important;
+    font-weight: 500;
+  }
+
+  > ul > li {
+    height: 25px;
+    min-height: 25px;
+    font-size: 12px;
+
+    > label::before {
+      width: calc(12px + 1px);
+      height: 12px;
+    }
+
+    > label::after {
+      top: 9px;
+      left: calc(1px + 0px / 2);
+    }
+  }
+}
+
+.reactivesearch-multilist {
+  margin-bottom: 25px;
+}
+
+.filter-list {
+  margin-bottom: 20px;
+
+  > a {
+    font-size: 11px !important;
+  }
+}
+
+.__dark-theme {
+  // transition: background-color 0.5s;
+  &.body {
+    background: $dark-theme-background;
+    color: $dark-theme-color;
+
+    .filter-list-wrapper {
+      > div > a {
+        background: $dark-theme-alt;
+        color: $dark-theme-color;
+
+        > span {
+          border: none;
+        }
+      }
+    }
+  }
+  &.sidenav {
+    background: $dark-theme-alt;
+    color: $dark-theme-color;
+
+    .reactivesearch-input {
+      > div > div {
+        border-color: $dark-theme-border;
+        border: none;
+      }
+
+      > ul > li > label > span {
+        padding-right: 15px;
+      }
+
+      > .DayPickerInput > input,
+      input {
+        border: $dark-theme-border;
+        background: $dark-theme-background;
+        color: $dark-theme-color;
+      }
+
+      .DayPickerInput-OverlayWrapper {
+        color: black;
+      }
+
+      > h2 {
+        color: $dark-theme-title;
+      }
+    }
+  }
+}

@@ -1,3 +1,5 @@
+@import "../../scss/constants.scss";
+
 p {
   text-align: center;
 }
@@ -20,12 +22,15 @@ p {
   min-width: 93%;
   max-width: 93%;
   min-height: 90px;
-  border: 1px solid #b2b2b2;
   display: block;
   margin: 0 auto;
   margin-top: 20px;
   font-size: 0.85em;
   font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace !important;
+}
+
+.map-coordinates-textbox:focus {
+  outline: none;
 }
 
 .leaflet-tooltip {
@@ -58,4 +63,18 @@ p {
 .id-popup-link:hover {
   cursor: pointer;
   text-decoration: underline;
+}
+
+.__dark-theme {
+  .map-coordinates-textbox {
+    background: $dark-theme-alt;
+    color: $dark-theme-color;
+    border: $dark-theme-border;
+  }
+}
+
+.__light-theme {
+  .map-coordinates-textbox {
+    border: 1px solid #b2b2b2;
+  }
 }

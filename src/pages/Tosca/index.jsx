@@ -18,8 +18,7 @@ import {
   GRQ_ES_URL,
   GRQ_ES_INDICES,
   GRQ_TABLE_VIEW_DEFAULT,
-  // all fields read by Reactivesearch
-  ID_COMPONENT,
+  ID_COMPONENT, // all fields read by Reactivesearch
   MAP_COMPONENT_ID,
   QUERY_SEARCH_COMPONENT_ID,
   DATASET_TYPE_SEARCH_ID,
@@ -47,7 +46,7 @@ import { ButtonLink, ScrollTop } from "../../components/Buttons";
 import { HelperLink } from "../../components/miscellaneous";
 import HeaderBar from "../../components/HeaderBar";
 
-import "./style.css"; // main style sheet for the Toca page
+import "./style.scss";
 
 // query logic for elasticsearch
 const QUERY_LOGIC = {
@@ -105,7 +104,7 @@ class Tosca extends React.Component {
   };
 
   render() {
-    const { data, dataCount, query } = this.props;
+    const { darkMode, data, dataCount, query } = this.props;
 
     const reactiveMap = DISPLAY_MAP ? (
       <ReactiveMap
@@ -117,6 +116,8 @@ class Tosca extends React.Component {
       />
     ) : null;
 
+    const classTheme = darkMode ? "__dark-theme" : "__light-theme";
+
     return (
       <ReactiveBase
         app={GRQ_ES_INDICES}
@@ -127,10 +128,11 @@ class Tosca extends React.Component {
           <title>Tosca - Home</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
-        <HeaderBar title="HySDS" />
-
+        <HeaderBar title="HySDS">
+          <div>fjsdklfdjlfks</div>
+        </HeaderBar>
         <div className="tosca-body-wrapper">
-          <div className="sidenav">
+          <div className={`${classTheme} sidenav`}>
             <div className="sidenav-title">Filters</div>
             <SingleList
               componentId={DATASET_TYPE_SEARCH_ID}
@@ -187,10 +189,13 @@ class Tosca extends React.Component {
             />
           </div>
 
-          <div className="body" ref={this.pageRef}>
+          <div className={`${classTheme} body`} ref={this.pageRef}>
             <div className="top-bar-wrapper">
               <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
-              <SearchQuery componentId={QUERY_SEARCH_COMPONENT_ID} />
+              <SearchQuery
+                componentId={QUERY_SEARCH_COMPONENT_ID}
+                theme={classTheme}
+              />
               <IdQueryHandler componentId={ID_COMPONENT} />
               <div className="button-wrapper">
                 <div className="tosca-button">
@@ -220,6 +225,7 @@ class Tosca extends React.Component {
                 </div>
               </div>
             </div>
+
             <div className="filter-list-wrapper">
               <SelectedFilters
                 className="filter-list"
@@ -232,6 +238,7 @@ class Tosca extends React.Component {
               queryParams={QUERY_LOGIC}
               retrieveData={this.retrieveData}
               pageSize={10}
+              theme={classTheme}
             />
           </div>
           <ScrollTop onClick={() => this.pageRef.current.scrollTo(0, 0)} />
@@ -241,8 +248,13 @@ class Tosca extends React.Component {
   }
 }
 
+Tosca.defaultProps = {
+  theme: "__light-theme"
+};
+
 // redux state data
 const mapStateToProps = state => ({
+  darkMode: state.themeReducer.darkMode,
   data: state.toscaReducer.data,
   dataCount: state.toscaReducer.dataCount,
   query: state.toscaReducer.query,

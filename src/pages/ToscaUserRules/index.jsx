@@ -14,7 +14,7 @@ import {
 
 import HeaderBar from "../../components/HeaderBar";
 
-import "./style.css";
+import "./style.scss";
 
 const ToscaUserRules = class extends React.Component {
   constructor(props) {
@@ -36,15 +36,18 @@ const ToscaUserRules = class extends React.Component {
   };
 
   render() {
-    const { userRules } = this.props;
+    const { darkMode, userRules } = this.props;
+
+    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
+
     return (
-      <div>
+      <div className={classTheme}>
         <Helmet>
           <title>Tosca - User Rules</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
+        <HeaderBar title="HySDS - User Rules" theme={classTheme} />
 
-        <HeaderBar title="HySDS - User Rules" />
         <div className="user-rules-body">
           <div className="user-rules-options-wrapper">
             <input
@@ -83,6 +86,7 @@ ToscaUserRules.propTypes = {
 
 // redux state data
 const mapStateToProps = state => ({
+  darkMode: state.themeReducer.darkMode,
   userRules: state.toscaReducer.filteredRules
 });
 

@@ -9,7 +9,7 @@ import ToscaDataViewer from "../ToscaDataViewer";
 import DataTable from "../DataTable";
 
 import { SORT_OPTIONS } from "../../config";
-import "./style.css";
+import "./style.scss";
 
 class ResultsList extends React.Component {
   constructor(props) {
@@ -44,8 +44,14 @@ class ResultsList extends React.Component {
 
   renderTable = ({ data, loading }) => {
     const { sortColumn, sortOrder } = this.state;
+
     return data.length > 0 ? (
-      <DataTable data={data} sortColumn={sortColumn} sortOrder={sortOrder} />
+      <DataTable
+        data={data}
+        sortColumn={sortColumn}
+        sortOrder={sortOrder}
+        theme={this.props.theme}
+      />
     ) : null;
   };
 

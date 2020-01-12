@@ -33,7 +33,7 @@ import {
   clearJobParams
 } from "../../redux/actions";
 
-import "./style.css";
+import "./style.scss";
 
 class ToscaRuleEditor extends React.Component {
   constructor(props) {
@@ -112,10 +112,7 @@ class ToscaRuleEditor extends React.Component {
             submitFailed: 1,
             failureReason: data.message
           });
-          setTimeout(
-            () => this.setState({ submitFailed: 0, failureReason: "" }),
-            3000
-          );
+          setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
         } else {
           this.props.clearJobParams();
           this.setState({
@@ -133,6 +130,7 @@ class ToscaRuleEditor extends React.Component {
   };
 
   render() {
+    const { darkMode } = this.props;
     if (this.state.submitSuccess) return <Redirect to="/tosca/user-rules" />;
 
     const hysdsioLabel =
@@ -140,13 +138,18 @@ class ToscaRuleEditor extends React.Component {
     const divider = this.props.paramsList.length > 0 ? <Border /> : null;
     const validSubmission = this._validateSubmission();
 
+    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
+    const darkTheme = "twilight";
+    const lightTheme = "tomorrow";
+    const aceTheme = darkMode ? darkTheme : lightTheme;
+
     return (
-      <Fragment>
+      <div className={classTheme}>
         <Helmet>
           <title>Tosca - Rule Editor</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
-        <HeaderBar title="HySDS - User Rules" />
+        <HeaderBar title="HySDS - User Rules" theme={classTheme} />
 
         <div className="tosca-user-rule-editor">
           <div className="split user-rule-editor-left">
@@ -155,6 +158,7 @@ class ToscaRuleEditor extends React.Component {
               editQuery={editQuery}
               validateQuery={validateQuery}
               query={this.props.query}
+              theme={aceTheme}
             />
           </div>
 
@@ -219,13 +223,14 @@ class ToscaRuleEditor extends React.Component {
           visible={this.state.submitFailed}
           status="failed"
         />
-      </Fragment>
+      </div>
     );
   }
 }
 
 // redux state data
 const mapStateToProps = state => ({
+  darkMode: state.themeReducer.darkMode,
   userRules: state.toscaReducer.userRules,
   query: state.toscaReducer.query,
   validQuery: state.toscaReducer.validQuery,

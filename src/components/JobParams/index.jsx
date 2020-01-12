@@ -41,7 +41,7 @@ const JobParams = props => {
         case "number":
           return (
             <div className="tag-input-wrapper" key={paramName}>
-              <div className="tag-input-label">{paramName}:</div>
+              <label className="tag-input-label">{paramName}:</label>
               <input
                 type="number"
                 step="1"
@@ -56,7 +56,7 @@ const JobParams = props => {
         case "enum":
           return (
             <section className="params-dropdown-wrapper" key={paramName}>
-              <div className="job-params-label">{paramName}:</div>
+              <label className="job-params-label">{paramName}:</label>
               <div className="react-select-wrapper">
                 <Select
                   label={paramName}

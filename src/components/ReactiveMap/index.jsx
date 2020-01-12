@@ -15,7 +15,6 @@ import L from "leaflet"; // lealfet
 import "leaflet-draw";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
-import "./style.css";
 // import ReactTooltip from "react-tooltip"; // UI stuff
 
 import { Button } from "../Buttons";
@@ -28,6 +27,8 @@ import {
   BBOX_WEIGHT,
   BBOX_OPACITY
 } from "../../config.js";
+
+import "./style.scss";
 
 const ReactiveMap = ({ componentId, data, zoom, maxZoom, minZoom }) => (
   <ReactiveComponent

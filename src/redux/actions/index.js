@@ -26,7 +26,8 @@ import {
   GLOBAL_SEARCH_USER_RULES,
   BBOX_EDIT,
   CLICK_QUERY_REGION,
-  UNCLICK_QUERY_REGION
+  UNCLICK_QUERY_REGION,
+  EDIT_THEME
 } from "../constants.js";
 
 import {
@@ -317,4 +318,9 @@ export const clickQueryRegion = bbox => ({
 
 export const unclickQueryRegion = () => ({
   type: UNCLICK_QUERY_REGION
+});
+
+export const editTheme = darkMode => ({
+  type: EDIT_THEME,
+  payload: darkMode
 });

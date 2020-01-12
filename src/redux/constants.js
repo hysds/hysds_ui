@@ -31,3 +31,6 @@ export const CLEAR_JOB_PARAMS = "CLEAR_JOB_PARAMS";
 export const EDIT_RULE_NAME = "EDIT_RULE_NAME";
 export const DELETE_USER_RULE = "DELETE_USER_RULE";
 export const GLOBAL_SEARCH_USER_RULES = "GLOBAL_SEARCH_USER_RULES";
+
+// theme
+export const EDIT_THEME = "EDIT_THEME";

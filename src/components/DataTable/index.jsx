@@ -5,7 +5,7 @@ import ReactTable from "react-table";
 import { GRQ_DISPLAY_COLUMNS } from "../../config.js";
 
 import "react-table/react-table.css";
-import "./style.css";
+import "./style.scss";
 
 const DataTable = props => {
   const { data } = props;

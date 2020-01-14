@@ -9,7 +9,7 @@ import {
   DeleteButton
 } from "../../components/Buttons";
 
-import "./style.css";
+import "./style.scss";
 
 const buttonCellStyle = {
   style: {

@@ -168,7 +168,7 @@ class ToscaOnDemand extends React.Component {
                   tags={this.props.tags}
                   editTags={editTags}
                 />
-                <div class="on-demand-select-wrapper">
+                <div className="on-demand-select-wrapper">
                   <JobInput
                     url={true} // update query params in url
                     changeJobType={changeJobType} // all redux actions
@@ -179,14 +179,14 @@ class ToscaOnDemand extends React.Component {
                     jobLabel={this.props.jobLabel}
                   />
                 </div>
-                <div class="on-demand-select-wrapper">
+                <div className="on-demand-select-wrapper">
                   <QueueInput
                     queue={this.props.queue}
                     queueList={this.props.queueList}
                     changeQueue={changeQueue}
                   />
                 </div>
-                <div class="on-demand-select-wrapper">
+                <div className="on-demand-select-wrapper">
                   <PriorityInput
                     url={true}
                     priority={this.props.priority}

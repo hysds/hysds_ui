@@ -6,7 +6,7 @@ import { SingleList, DateRange, MultiList } from "@appbaseio/reactivesearch";
 import "./style.scss";
 
 const renderFilter = filter => {
-  const { componentId, dataField, title, type } = filter;
+  const { componentId, dataField, title, type, defaultValue } = filter;
   switch (type) {
     case "single":
       return (
@@ -16,6 +16,7 @@ const renderFilter = filter => {
           dataField={dataField}
           title={title}
           URLParams={true}
+          defaultValue={null || defaultValue}
           className="reactivesearch-input"
         />
       );
@@ -27,6 +28,7 @@ const renderFilter = filter => {
           dataField={dataField}
           title={title}
           URLParams={true}
+          defaultValue={null || defaultValue}
           className="reactivesearch-input reactivesearch-multilist"
         />
       );
@@ -49,6 +51,7 @@ const renderFilter = filter => {
           dataField={dataField}
           title={title}
           URLParams={true}
+          defaultValue={null || defaultValue}
           className="reactivesearch-input"
         />
       );

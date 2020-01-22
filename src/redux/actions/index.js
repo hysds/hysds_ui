@@ -27,7 +27,9 @@ import {
   BBOX_EDIT,
   CLICK_QUERY_REGION,
   UNCLICK_QUERY_REGION,
-  EDIT_THEME
+  EDIT_THEME,
+  EDIT_CUSTOM_FILTER_ID,
+  CLEAR_REACTIVE_SEARCH_REDUX
 } from "../constants.js";
 
 import {
@@ -47,9 +49,20 @@ import {
 
 // ********************************************************************** //
 // REACTIVESEARCH ACTIONS
+export const clearReactiveSearchRedux = () => ({
+  type: CLEAR_REACTIVE_SEARCH_REDUX
+});
+
 export const clickDatasetId = id => ({
   type: GET_DATASET_ID,
   payload: id
+});
+
+export const editCustomFilterId = (componentId, value) => ({
+  type: EDIT_CUSTOM_FILTER_ID,
+  payload: {
+    [componentId]: value
+  }
 });
 
 export const clearAllCustomComponents = payload => ({

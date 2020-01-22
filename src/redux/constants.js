@@ -1,10 +1,12 @@
 // actions to handle the states for custom ReactiveComponents
+export const CLEAR_REACTIVE_SEARCH_REDUX = "CLEAR_REACTIVE_SEARCH_REDUX";
 export const GET_DATASET_ID = "GET_DATASET_ID";
 export const CLEAR_ALL_CUSTOM_COMPONENTS = "CLEAR_ALL_CUSTOM_COMPONENTS";
 export const CLEAR_CUSTOM_COMPONENTS = "CLEAR_CUSTOM_COMPONENTS";
 export const BBOX_EDIT = "BBOX_EDIT";
 export const CLICK_QUERY_REGION = "CLICK_QUERY_REGION";
 export const UNCLICK_QUERY_REGION = "UNCLICK_QUERY_REGION";
+export const EDIT_CUSTOM_FILTER_ID = "EDIT_CUSTOM_FILTER_ID";
 
 // Tosca action names
 export const RETRIEVE_DATA = "RETRIEVE_DATA";

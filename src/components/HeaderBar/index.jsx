@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { connect } from "react-redux";
-import { editTheme } from "../../redux/actions";
+import { clearReactiveSearchRedux, editTheme } from "../../redux/actions";
 
 import { Button } from "../Buttons";
 import { Link } from "react-router-dom";
@@ -17,10 +17,7 @@ const HeaderLink = props => {
 
   return (
     <li className={className} {...props}>
-      <Link
-        to={props.href}
-        // target={props.target}
-      >
+      <Link to={href} {...props}>
         {title}
       </Link>
     </li>
@@ -52,13 +49,14 @@ const HeaderBar = props => {
         <HeaderTitle title={title} />
         <HeaderLink
           href="/tosca"
-          target="tosca"
+          // target="tosca"
           title="Tosca"
+          onClick={() => props.clearReactiveSearchRedux()}
           active={props.active === "tosca" ? 1 : 0}
         />
         <HeaderLink
           href="/figaro"
-          target="figaro"
+          // target="figaro"
           title="Figaro"
           active={props.active === "figaro" ? 1 : 0}
         />
@@ -85,6 +83,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  clearReactiveSearchRedux: () => dispatch(clearReactiveSearchRedux()),
   editTheme: darkMode => dispatch(editTheme(darkMode))
 });
 

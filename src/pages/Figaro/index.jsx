@@ -9,8 +9,11 @@ import {
 
 import FigaroFilters from "../../components/SidebarFilters";
 import SearchQuery from "../../components/SearchQuery";
+import CustomIdFilter from "../../components/CustomIdFilter";
 import HeaderBar from "../../components/HeaderBar";
 import { HelperLink } from "../../components/miscellaneous";
+
+import { editCustomFilterId } from "../../redux/actions";
 
 import {
   MOZART_ES_URL,
@@ -58,6 +61,11 @@ class Figaro extends React.Component {
                   className="filter-list"
                   onClear={this._handleClearFilter}
                 />
+                <CustomIdFilter
+                  componentId="payload_id"
+                  dataField="payload_id"
+                />
+                <CustomIdFilter componentId="_id" dataField="_id" />
               </div>
               <ReactiveList
                 componentId="figaro-results"
@@ -71,7 +79,7 @@ class Figaro extends React.Component {
                     key={`${res._index}-${res._id}`}
                     style={{
                       border: "1px solid black",
-                      padding: 10,
+                      padding: 15,
                       margin: 10
                     }}
                   >
@@ -86,11 +94,22 @@ class Figaro extends React.Component {
                     <div>
                       <b>index:</b> {res._index}
                     </div>
-                    <div>
+                    <div
+                      onClick={() =>
+                        this.props.editCustomFilterId("_id", res._id)
+                      }
+                    >
                       <b>id:</b> {res._id}
                     </div>
                     {res.payload_id ? (
-                      <div>
+                      <div
+                        onClick={() =>
+                          this.props.editCustomFilterId(
+                            "payload_id",
+                            res.payload_id
+                          )
+                        }
+                      >
                         <b>payload id:</b> {res.payload_id}
                       </div>
                     ) : null}
@@ -141,4 +160,9 @@ const mapStateToProps = state => ({
   darkMode: state.themeReducer.darkMode
 });
 
-export default connect(mapStateToProps, null)(Figaro);
+const mapDispatchToProps = dispatch => ({
+  editCustomFilterId: (componentId, value) =>
+    dispatch(editCustomFilterId(componentId, value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Figaro);

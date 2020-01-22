@@ -46,7 +46,11 @@ const ToscaUserRules = class extends React.Component {
           <title>Tosca - User Rules</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
-        <HeaderBar title="HySDS - User Rules" theme={classTheme} />
+        <HeaderBar
+          title="HySDS - User Rules"
+          theme={classTheme}
+          active="tosca"
+        />
 
         <div className="user-rules-body">
           <div className="user-rules-options-wrapper">

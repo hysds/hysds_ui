@@ -1,7 +1,4 @@
-@import "../../scss/constants.scss";
-
-/****************************************************/ /* MAIN BODY */
-.tosca-body {
+.figaro-body {
   padding: 0px 20px;
   padding-bottom: 50px;
   min-width: 800px;
@@ -9,15 +6,18 @@
   overflow: auto;
 }
 
-.tosca-page-wrapper {
+.figaro-page-wrapper {
   display: flex;
   padding-top: 44px;
   height: 100vh;
 }
 
+@import "../../scss/constants.scss";
+
+/****************************************************/ /* MAIN BODY */
 /****************************************************/
 /* SIDEBAR */
-.tosca-sidenav {
+.figaro-sidenav {
   flex: 0;
   min-width: 320px;
   z-index: 1;
@@ -81,17 +81,17 @@ input:focus {
   display: flex;
 }
 
-.tosca-button {
+.figaro-button {
   padding: 0px 7px;
 }
 
 .__theme-dark {
   // transition: background-color 0.5s;
-  &.tosca-body {
+  &.figaro-body {
     background-color: $dark-theme-background;
     color: $dark-theme-color;
   }
-  &.tosca-sidenav {
+  &.figaro-sidenav {
     background-color: $dark-theme-alt;
     color: $dark-theme-color;
   }

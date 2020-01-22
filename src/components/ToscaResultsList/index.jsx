@@ -8,7 +8,7 @@ import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
 import ToscaDataViewer from "../ToscaDataViewer";
 import DataTable from "../DataTable";
 
-import { SORT_OPTIONS } from "../../config";
+import { SORT_OPTIONS } from "../../config/tosca";
 import "./style.scss";
 
 class ResultsList extends React.Component {
@@ -141,7 +141,7 @@ class ResultsList extends React.Component {
         <ReactiveList
           componentId={componentId}
           className="reactivesearch-results-list"
-          dataField="Dest"
+          dataField="tosca_reactive_list"
           size={pageSize}
           pages={7}
           stream={true}

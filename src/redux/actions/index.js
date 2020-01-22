@@ -43,7 +43,7 @@ import {
   MOZART_REST_API_V2,
   GRQ_ES_URL,
   GRQ_ES_INDICES
-} from "../../config";
+} from "../../config/tosca";
 
 // ********************************************************************** //
 // REACTIVESEARCH ACTIONS

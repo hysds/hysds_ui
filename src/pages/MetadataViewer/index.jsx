@@ -1,6 +1,6 @@
 import React from "react";
 import ReactJson from "react-json-view";
-import { GRQ_ES_URL, GRQ_ES_INDICES } from "../../config.js";
+import { GRQ_ES_URL, GRQ_ES_INDICES } from "../../config/tosca";
 
 /**
  * add second panel to show the map and webdav link, etc.

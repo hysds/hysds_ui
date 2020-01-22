@@ -6,7 +6,7 @@ import {
   CLICK_QUERY_REGION,
   UNCLICK_QUERY_REGION
 } from "../constants.js";
-import { ID_COMPONENT } from "../../config.js";
+import { ID_COMPONENT } from "../../config/tosca";
 
 // custom ReactiveComponent id's
 const initialState = {

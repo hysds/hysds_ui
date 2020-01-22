@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import ReactTable from "react-table";
 
-import { GRQ_DISPLAY_COLUMNS } from "../../config.js";
+import { GRQ_DISPLAY_COLUMNS } from "../../config/tosca";
 
 import "react-table/react-table.css";
 import "./style.scss";

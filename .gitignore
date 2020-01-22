@@ -27,6 +27,8 @@ chrome-user-data
 config.js
 dist/
 package-lock.json
+tosca.js
+figaro.js
 
 # General
 .DS_Store

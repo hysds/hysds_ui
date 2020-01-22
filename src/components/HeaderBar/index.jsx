@@ -17,7 +17,12 @@ const HeaderLink = props => {
 
   return (
     <li className={className} {...props}>
-      <Link to={props.href}>{title}</Link>
+      <Link
+        to={props.href}
+        // target={props.target}
+      >
+        {title}
+      </Link>
     </li>
   );
 };
@@ -45,8 +50,18 @@ const HeaderBar = props => {
     <div className={`${theme} header-bar`}>
       <ul className="header-bar-link-wrapper">
         <HeaderTitle title={title} />
-        <HeaderLink to="/tosca" title="Tosca" active={1} />
-        <HeaderLink title="Figaro" />
+        <HeaderLink
+          href="/tosca"
+          target="tosca"
+          title="Tosca"
+          active={props.active === "tosca" ? 1 : 0}
+        />
+        <HeaderLink
+          href="/figaro"
+          target="figaro"
+          title="Figaro"
+          active={props.active === "figaro" ? 1 : 0}
+        />
         <Button
           label={props.darkMode ? "Light Mode" : "Dark Mode"}
           onClick={_themeHandler}

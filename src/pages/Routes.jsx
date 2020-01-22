@@ -12,11 +12,14 @@ import ToscaOnDemand from "../pages/ToscaOnDemand";
 import ToscaUserRules from "../pages/ToscaUserRules";
 import ToscaRuleEditor from "../pages/ToscaRuleEditor";
 
+import Figaro from "./Figaro";
+
 const Routes = () => {
   let router = (
     <Router>
       <Switch>
         <Route exact path="/" render={() => <Redirect to="/tosca" />} />
+
         <Route exact path="/tosca" component={Tosca} />
         <Route exact path="/tosca/metadata" component={MetadataViewer} />
         <Route exact path="/tosca/on-demand" component={ToscaOnDemand} />
@@ -27,6 +30,8 @@ const Routes = () => {
           path="/tosca/user-rule/:rule"
           component={ToscaRuleEditor}
         />
+
+        <Route exact path="/figaro" component={Figaro} />
       </Switch>
     </Router>
   );

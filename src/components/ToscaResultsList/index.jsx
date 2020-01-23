@@ -8,20 +8,32 @@ import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
 import ToscaDataViewer from "../ToscaDataViewer";
 import DataTable from "../DataTable";
 
-import { SORT_OPTIONS } from "../../config";
+import {
+  ToggleSlider,
+  SortOptions,
+  SortDirection,
+  PageSizeOptions
+} from "../../components/TableOptions";
+import { SORT_OPTIONS } from "../../config/tosca";
 import "./style.scss";
+
+const TABLE_VIEW_STORE = "table-view-tosca";
+const PAGE_SIZE_STORE = "page-size-tosca";
+const SORT_FIELD_STORE = "sort-field-tosca";
+const SORT_DIRECTION_STORE = "sort-direction-tosca";
 
 class ResultsList extends React.Component {
   constructor(props) {
     super(props);
 
-    const pageSize = localStorage.getItem("page-size");
+    const pageSize = localStorage.getItem(PAGE_SIZE_STORE);
+    const tableView = localStorage.getItem(TABLE_VIEW_STORE);
 
     this.state = {
+      tableView: tableView === "true" ? true : false,
       pageSize: pageSize ? parseInt(pageSize) : props.pageSize,
-      tableView: localStorage.getItem("table-view") === "true" ? true : false,
-      sortColumn: "None",
-      sortOrder: "desc"
+      sortColumn: localStorage.getItem(SORT_FIELD_STORE) || "None",
+      sortOrder: localStorage.getItem(SORT_DIRECTION_STORE) || "desc"
     };
   }
 
@@ -33,13 +45,23 @@ class ResultsList extends React.Component {
   );
 
   _handleTableToggle = () => {
-    localStorage.setItem("table-view", !this.state.tableView);
+    localStorage.setItem(TABLE_VIEW_STORE, !this.state.tableView);
     this.setState({ tableView: !this.state.tableView });
   };
 
   _handlePageSizeChange = e => {
     this.setState({ pageSize: parseInt(e.target.value) });
-    localStorage.setItem("page-size", e.target.value);
+    localStorage.setItem(PAGE_SIZE_STORE, e.target.value);
+  };
+
+  _handleSortColumnChange = e => {
+    this.setState({ sortColumn: e.target.value });
+    localStorage.setItem(SORT_FIELD_STORE, e.target.value);
+  };
+
+  _handleSortDirectionChange = e => {
+    this.setState({ sortOrder: e.target.value });
+    localStorage.setItem(SORT_DIRECTION_STORE, e.target.value);
   };
 
   renderTable = ({ data, loading }) => {
@@ -72,76 +94,35 @@ class ResultsList extends React.Component {
     return (
       <div>
         <div className="results-display-options">
-          <div className="table-toggle-wrapper">
-            <span className="table-toggle-label">Table View: </span>
-            <label className="switch">
-              <input
-                type="checkbox"
-                value={tableView}
-                onChange={this._handleTableToggle.bind(this)}
-                checked={tableView}
-              />
-              <span className="slider round"></span>
-            </label>
-          </div>
+          <ToggleSlider
+            label="Table View: "
+            value={tableView}
+            onChange={this._handleTableToggle}
+            checked={tableView}
+          />
 
-          <div className="sort-results-wrapper">
-            <div className="sort-results-select-wrapper">
-              <span>Sort By: </span>
-              <select
-                className="sort-column-dropdown"
-                value={sortColumn}
-                onChange={e =>
-                  this.setState({
-                    sortColumn: e.target.value
-                  })
-                }
-              >
-                <option value="None">None</option>
-                {SORT_OPTIONS.map(field => (
-                  <option key={`sort-column-${field}`} value={field}>
-                    {field}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="sort-direction-select-wrapper">
-              <select
-                className="sort-order-dropdown"
-                value={sortOrder}
-                onChange={e => this.setState({ sortOrder: e.target.value })}
-              >
-                <option key="sort-direction-desc" value="desc">
-                  desc
-                </option>
-                <option key="sort-direction-asc" value="asc">
-                  asc
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div className="results-page-select-wrapper">
-            <span>Page Size: </span>
-            <select
-              className="page-size-dropdown"
-              value={pageSize}
-              onChange={this._handlePageSizeChange}
-            >
-              {[10, 25, 50, 100].map(x => (
-                <option key={`page-size-dropdown-${x}`} value={x}>
-                  {x}
-                </option>
-              ))}
-            </select>
-          </div>
+          <div className="results-display-buffer" />
+          <SortOptions
+            label="Sort By: "
+            value={sortColumn}
+            onChange={this._handleSortColumnChange}
+            options={SORT_OPTIONS}
+          />
+          <SortDirection
+            value={sortOrder}
+            onChange={this._handleSortDirectionChange}
+          />
+          <PageSizeOptions
+            label="Page Size: "
+            value={pageSize}
+            onChange={this._handlePageSizeChange}
+          />
         </div>
 
         <ReactiveList
           componentId={componentId}
           className="reactivesearch-results-list"
-          dataField="Dest"
+          dataField="tosca_reactive_list"
           size={pageSize}
           pages={7}
           stream={true}

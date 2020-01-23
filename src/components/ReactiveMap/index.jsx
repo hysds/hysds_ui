@@ -26,7 +26,7 @@ import {
   BBOX_COLOR,
   BBOX_WEIGHT,
   BBOX_OPACITY
-} from "../../config.js";
+} from "../../config/tosca";
 
 import "./style.scss";
 
@@ -349,7 +349,7 @@ let ConnectMapComponent = class extends React.Component {
     let validCenter = data.find(row =>
       row.center ? row.center.coordinates : null
     );
-    if (validCenter) {
+    if (validCenter && this.map) {
       let center = validCenter.center.coordinates;
       this.map.panTo(new L.LatLng(center[1], center[0]));
       localStorage.setItem("center", JSON.stringify([center[1], center[0]]));

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { connect } from "react-redux";
-import { editTheme } from "../../redux/actions";
+import { clearReactiveSearchRedux, editTheme } from "../../redux/actions";
 
 import { Button } from "../Buttons";
 import { Link } from "react-router-dom";
@@ -17,7 +17,9 @@ const HeaderLink = props => {
 
   return (
     <li className={className} {...props}>
-      <Link to={props.href}>{title}</Link>
+      <Link to={href} {...props}>
+        {title}
+      </Link>
     </li>
   );
 };
@@ -41,18 +43,32 @@ const HeaderBar = props => {
     localStorage.setItem("dark-mode", !darkMode);
   };
 
+  const _handleLinkClick = e => {
+    if (e.shiftKey || e.ctrlKey || e.metaKey) return;
+    props.clearReactiveSearchRedux();
+  };
+
   return (
     <div className={`${theme} header-bar`}>
       <ul className="header-bar-link-wrapper">
         <HeaderTitle title={title} />
-        <HeaderLink to="/tosca" title="Tosca" active={1} />
-        <HeaderLink title="Figaro" />
+        <HeaderLink
+          href="/tosca"
+          title="Tosca"
+          onClick={_handleLinkClick}
+          active={props.active === "tosca" ? 1 : 0}
+        />
+        <HeaderLink
+          href="/figaro"
+          title="Figaro"
+          onClick={_handleLinkClick}
+          active={props.active === "figaro" ? 1 : 0}
+        />
         <Button
           label={props.darkMode ? "Light Mode" : "Dark Mode"}
           onClick={_themeHandler}
         />
         <div className="header-bar-buffer"></div>
-        {/* <button>button</button> */}
         <li>
           <a>Logout</a>
         </li>
@@ -70,6 +86,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  clearReactiveSearchRedux: () => dispatch(clearReactiveSearchRedux()),
   editTheme: darkMode => dispatch(editTheme(darkMode))
 });
 

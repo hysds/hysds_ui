@@ -1,6 +1,6 @@
 import React from "react";
 import ReactJson from "react-json-view";
-import { GRQ_ES_URL, GRQ_ES_INDICES } from "../../config.js";
+import { GRQ_ES_URL, GRQ_ES_INDICES } from "../../config/tosca";
 
 /**
  * add second panel to show the map and webdav link, etc.
@@ -13,10 +13,9 @@ export default class MetadataViewer extends React.Component {
       id: props.match.params.id,
       metadata: null
     };
-    this._fetchMetadata = this._fetchMetadata.bind(this);
   }
 
-  _fetchMetadata(index, id) {
+  _fetchMetadata = (index, id) => {
     const esEndpoint = `${GRQ_ES_URL}/${index}/_doc/${id}`;
 
     fetch(esEndpoint, {
@@ -36,7 +35,7 @@ export default class MetadataViewer extends React.Component {
         });
         console.error("Error:", error);
       });
-  }
+  };
 
   componentDidMount() {
     const search = this.props.location.search;

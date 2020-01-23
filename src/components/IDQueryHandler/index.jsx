@@ -4,7 +4,7 @@ import { connect } from "react-redux"; // redux
 import { clickDatasetId } from "../../redux/actions";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 
-class ConnectLogicHandler extends React.Component {
+var Handler = class extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -58,7 +58,7 @@ class ConnectLogicHandler extends React.Component {
     }
   }
   render = () => <Fragment />;
-}
+};
 
 // Redux states and actions
 const mapStateToProps = state => ({
@@ -69,10 +69,7 @@ const mapDispatchToProps = dispatch => ({
   clickDatasetId: _id => dispatch(clickDatasetId(_id))
 });
 
-const LogicHandler = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ConnectLogicHandler);
+Handler = connect(mapStateToProps, mapDispatchToProps)(Handler);
 
 const IdQueryHandler = ({ componentId }) => {
   return (
@@ -80,13 +77,9 @@ const IdQueryHandler = ({ componentId }) => {
       componentId={componentId}
       URLParams={true}
       render={({ setQuery, value }) => (
-        <LogicHandler
-          setQuery={setQuery}
-          value={value}
-          componentId={componentId}
-        />
+        <Handler setQuery={setQuery} value={value} componentId={componentId} />
       )}
-    ></ReactiveComponent>
+    />
   );
 };
 

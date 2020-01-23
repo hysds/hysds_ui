@@ -28,7 +28,7 @@ import {
   editDataCount
 } from "../../redux/actions";
 
-import { GRQ_REST_API_V1 } from "../../config";
+import { GRQ_REST_API_V1 } from "../../config/tosca";
 
 import "./style.scss";
 
@@ -143,7 +143,11 @@ class ToscaOnDemand extends React.Component {
           <title>Tosca - On Demand</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
-        <HeaderBar title="HySDS - On Demand" theme={classTheme} />
+        <HeaderBar
+          title="HySDS - On Demand"
+          theme={classTheme}
+          active="tosca"
+        />
 
         <div className={classTheme}>
           <div className="tosca-on-demand">

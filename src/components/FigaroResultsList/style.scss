@@ -1,0 +1,33 @@
+@import "../../scss/constants.scss";
+
+.results-display-options {
+  display: flex;
+  margin: 15px;
+}
+
+.results-display-buffer {
+  flex: 1;
+}
+
+.reactivesearch-results-list {
+  a {
+    font-size: 13px;
+    &.active {
+      background-color: #2096f3 !important;
+    }
+  }
+}
+
+.__theme-dark {
+  .reactivesearch-results-list {
+    a {
+      background-color: $dark-theme-alt;
+      color: $dark-theme-color;
+
+      &.active {
+        background-color: #2096f3 !important;
+        color: #ffffff;
+      }
+    }
+  }
+}

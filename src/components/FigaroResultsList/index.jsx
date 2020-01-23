@@ -4,14 +4,19 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux"; // redux
 
 import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
-import DataTable from "../DataTable";
-
 import { editCustomFilterId } from "../../redux/actions";
 
 import {
   FigaroDataComponent,
   FigaroDataTable
 } from "../../components/FigaroDataViewer";
+
+import {
+  ToggleSlider,
+  SortOptions,
+  SortDirection,
+  PageSizeOptions
+} from "../../components/TableOptions";
 
 // import { SORT_OPTIONS } from "../../config/tosca";
 import {
@@ -71,71 +76,34 @@ class FigaroResultsList extends React.Component {
     return (
       <div>
         <div className="results-display-options">
-          <div className="table-toggle-wrapper">
-            <span className="table-toggle-label">Table View: </span>
-            <label className="switch">
-              <input
-                type="checkbox"
-                value={tableView}
-                onChange={this._handleTableToggle}
-                checked={tableView}
-              />
-              <span className="slider round"></span>
-            </label>
-          </div>
-
-          <div className="sort-results-wrapper">
-            <div className="sort-results-select-wrapper">
-              <span>Sort By: </span>
-              <select
-                className="sort-column-dropdown"
-                value={sortColumn}
-                onChange={this._handleSortColumnChange}
-              >
-                <option value="None">None</option>
-                {SORT_OPTIONS.map(field => (
-                  <option key={`sort-column-${field}`} value={field}>
-                    {field}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="sort-direction-select-wrapper">
-              <select
-                className="sort-order-dropdown"
-                value={sortOrder}
-                onChange={e => this.setState({ sortOrder: e.target.value })}
-              >
-                <option key="sort-direction-desc" value="desc">
-                  desc
-                </option>
-                <option key="sort-direction-asc" value="asc">
-                  asc
-                </option>
-              </select>
-            </div>
-
-            <div className="results-page-select-wrapper">
-              <span>Page Size: </span>
-              <select
-                className="page-size-dropdown"
-                value={pageSize}
-                onChange={this._handlePageSizeChange}
-              >
-                {[10, 25, 50, 100].map(x => (
-                  <option key={`page-size-dropdown-${x}`} value={x}>
-                    {x}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+          <ToggleSlider
+            label="Table View: "
+            value={tableView}
+            onChange={this._handleTableToggle}
+            checked={tableView}
+          />
+          <div className="results-display-buffer" />
+          <SortOptions
+            label="Sort By: "
+            value={sortColumn}
+            onChange={this._handleSortColumnChange}
+            options={SORT_OPTIONS}
+          />
+          <SortDirection
+            value={sortOrder}
+            onChange={e => this.setState({ sortOrder: e.target.value })}
+          />
+          <PageSizeOptions
+            label="Page Size: "
+            value={pageSize}
+            onChange={this._handlePageSizeChange}
+          />
         </div>
 
         <ReactiveList
           componentId="figaro-results"
           dataField="figaro-reactive-list"
+          className="reactivesearch-results-list"
           pagination={true}
           size={pageSize}
           pages={7}

@@ -4,11 +4,16 @@
   padding: 15px;
   margin: 20px;
   border: 1px solid $dark-theme-light;
-  background-color: $dark-theme-alt;
 }
 
 .tosca-data-view-link {
   &:hover {
     text-decoration: underline;
+  }
+}
+
+.__theme-dark {
+  .figaro-data-component {
+    background-color: $dark-theme-alt;
   }
 }

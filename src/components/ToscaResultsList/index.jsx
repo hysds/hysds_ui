@@ -8,11 +8,18 @@ import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
 import ToscaDataViewer from "../ToscaDataViewer";
 import DataTable from "../DataTable";
 
+import {
+  ToggleSlider,
+  SortOptions,
+  SortDirection,
+  PageSizeOptions
+} from "../../components/TableOptions";
 import { SORT_OPTIONS } from "../../config/tosca";
 import "./style.scss";
 
 const TABLE_VIEW_STORE = "table-view-tosca";
 const PAGE_SIZE_STORE = "page-size-tosca";
+const SORT_FIELD_STORE = "sort-field-tosca";
 
 class ResultsList extends React.Component {
   constructor(props) {
@@ -46,6 +53,11 @@ class ResultsList extends React.Component {
     localStorage.setItem(PAGE_SIZE_STORE, e.target.value);
   };
 
+  _handleSortColumnChange = e => {
+    this.setState({ sortColumn: e.target.value });
+    localStorage.setItem(SORT_FIELD_STORE, e.target.value);
+  };
+
   renderTable = ({ data, loading }) => {
     const { sortColumn, sortOrder } = this.state;
 
@@ -76,70 +88,29 @@ class ResultsList extends React.Component {
     return (
       <div>
         <div className="results-display-options">
-          <div className="table-toggle-wrapper">
-            <span className="table-toggle-label">Table View: </span>
-            <label className="switch">
-              <input
-                type="checkbox"
-                value={tableView}
-                onChange={this._handleTableToggle}
-                checked={tableView}
-              />
-              <span className="slider round"></span>
-            </label>
-          </div>
+          <ToggleSlider
+            label="Table View: "
+            value={tableView}
+            onChange={this._handleTableToggle}
+            checked={tableView}
+          />
 
-          <div className="sort-results-wrapper">
-            <div className="sort-results-select-wrapper">
-              <span>Sort By: </span>
-              <select
-                className="sort-column-dropdown"
-                value={sortColumn}
-                onChange={e =>
-                  this.setState({
-                    sortColumn: e.target.value
-                  })
-                }
-              >
-                <option value="None">None</option>
-                {SORT_OPTIONS.map(field => (
-                  <option key={`sort-column-${field}`} value={field}>
-                    {field}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="sort-direction-select-wrapper">
-              <select
-                className="sort-order-dropdown"
-                value={sortOrder}
-                onChange={e => this.setState({ sortOrder: e.target.value })}
-              >
-                <option key="sort-direction-desc" value="desc">
-                  desc
-                </option>
-                <option key="sort-direction-asc" value="asc">
-                  asc
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div className="results-page-select-wrapper">
-            <span>Page Size: </span>
-            <select
-              className="page-size-dropdown"
-              value={pageSize}
-              onChange={this._handlePageSizeChange}
-            >
-              {[10, 25, 50, 100].map(x => (
-                <option key={`page-size-dropdown-${x}`} value={x}>
-                  {x}
-                </option>
-              ))}
-            </select>
-          </div>
+          <div className="results-display-buffer" />
+          <SortOptions
+            label="Sort By: "
+            value={sortColumn}
+            onChange={this._handleSortColumnChange}
+            options={SORT_OPTIONS}
+          />
+          <SortDirection
+            value={sortOrder}
+            onChange={e => this.setState({ sortOrder: e.target.value })}
+          />
+          <PageSizeOptions
+            label="Page Size: "
+            value={pageSize}
+            onChange={this._handlePageSizeChange}
+          />
         </div>
 
         <ReactiveList

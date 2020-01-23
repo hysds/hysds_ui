@@ -44,7 +44,7 @@ const HeaderBar = props => {
   };
 
   const _handleLinkClick = e => {
-    if (e.shiftKey || e.ctrlKey || e.metaKey) return;
+    if (e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
     props.clearReactiveSearchRedux();
   };
 

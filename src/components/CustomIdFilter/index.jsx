@@ -7,6 +7,7 @@ import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 let Handler = class extends React.Component {
   constructor(props) {
     super(props);
+
     const { componentId } = props;
     this.state = {
       [componentId]: props[componentId]
@@ -34,8 +35,9 @@ let Handler = class extends React.Component {
   });
 
   _sendEmptyQuery = () => {
+    const { componentId } = this.props;
     this.props.setQuery({ query: null, value: null });
-    this.setState({ value: null });
+    this.setState({ [componentId]: null });
   };
 
   componentDidUpdate() {

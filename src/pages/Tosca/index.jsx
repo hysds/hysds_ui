@@ -60,7 +60,7 @@ class Tosca extends React.Component {
     query = JSON.parse(query);
 
     // main query ran to get the data
-    if (query._source) {
+    if (query._source && FIELDS.length > 0) {
       query._source.includes = FIELDS;
 
       let parsedQuery = query.query;
@@ -158,7 +158,7 @@ class Tosca extends React.Component {
               <ToscaResultsList
                 componentId={RESULTS_LIST_COMPONENT_ID}
                 queryParams={QUERY_LOGIC}
-                retrieveData={this.retrieveData}
+                // retrieveData={this.retrieveData}
                 pageSize={10}
                 theme={classTheme}
               />

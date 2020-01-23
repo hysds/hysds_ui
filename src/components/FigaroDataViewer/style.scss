@@ -1,0 +1,14 @@
+@import "../../scss/constants.scss";
+
+.figaro-data-component {
+  padding: 15px;
+  margin: 20px;
+  border: 1px solid $dark-theme-light;
+  background-color: $dark-theme-alt;
+}
+
+.tosca-data-view-link {
+  &:hover {
+    text-decoration: underline;
+  }
+}

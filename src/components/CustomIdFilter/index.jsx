@@ -15,6 +15,7 @@ let Handler = class extends React.Component {
 
   componentDidMount() {
     const { value, dataField } = this.props;
+
     if (value) {
       const query = this._generateQuery(dataField, value);
       this.props.setQuery({

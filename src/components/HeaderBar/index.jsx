@@ -49,14 +49,12 @@ const HeaderBar = props => {
         <HeaderTitle title={title} />
         <HeaderLink
           href="/tosca"
-          // target="tosca"
           title="Tosca"
           onClick={() => props.clearReactiveSearchRedux()}
           active={props.active === "tosca" ? 1 : 0}
         />
         <HeaderLink
           href="/figaro"
-          // target="figaro"
           title="Figaro"
           active={props.active === "figaro" ? 1 : 0}
         />
@@ -65,7 +63,6 @@ const HeaderBar = props => {
           onClick={_themeHandler}
         />
         <div className="header-bar-buffer"></div>
-        {/* <button>button</button> */}
         <li>
           <a>Logout</a>
         </li>

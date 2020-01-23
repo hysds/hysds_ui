@@ -2,39 +2,43 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { connect } from "react-redux"; // redux
-import { retrieveData } from "../../redux/actions";
 
 import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
-import ToscaDataViewer from "../ToscaDataViewer";
 import DataTable from "../DataTable";
 
-import { SORT_OPTIONS } from "../../config/tosca";
+import { editCustomFilterId } from "../../redux/actions";
+
+import {
+  FigaroDataComponent,
+  FigaroDataTable
+} from "../../components/FigaroDataViewer";
+
+// import { SORT_OPTIONS } from "../../config/tosca";
+import {
+  QUERY_LOGIC,
+  FIGARO_DISPLAY_COLUMNS,
+  SORT_OPTIONS
+} from "../../config/figaro";
+
 import "./style.scss";
 
-const TABLE_VIEW_STORE = "table-view-tosca";
-const PAGE_SIZE_STORE = "page-size-tosca";
+const TABLE_VIEW_STORE = "table-view-figaro";
+const PAGE_SIZE_STORE = "page-size-figaro";
+const SORT_FIELD_STORE = "sort-field-figaro";
 
-class ResultsList extends React.Component {
+class FigaroResultsList extends React.Component {
   constructor(props) {
     super(props);
-
     const pageSize = localStorage.getItem(PAGE_SIZE_STORE);
 
     this.state = {
-      pageSize: pageSize ? parseInt(pageSize) : props.pageSize,
+      sortColumn: localStorage.getItem(SORT_FIELD_STORE) || "None",
       tableView:
         localStorage.getItem(TABLE_VIEW_STORE) === "true" ? true : false,
-      sortColumn: "None",
+      pageSize: pageSize ? parseInt(pageSize) : 10,
       sortOrder: "desc"
     };
   }
-
-  // callback function to handle the results from ES
-  resultsListHandler = res => (
-    <div key={`${res._index}-${res._id}`}>
-      <ToscaDataViewer res={res} />
-    </div>
-  );
 
   _handleTableToggle = () => {
     localStorage.setItem(TABLE_VIEW_STORE, !this.state.tableView);
@@ -46,21 +50,12 @@ class ResultsList extends React.Component {
     localStorage.setItem(PAGE_SIZE_STORE, e.target.value);
   };
 
-  renderTable = ({ data, loading }) => {
-    const { sortColumn, sortOrder } = this.state;
-
-    return data.length > 0 ? (
-      <DataTable
-        data={data}
-        sortColumn={sortColumn}
-        sortOrder={sortOrder}
-        theme={this.props.theme}
-      />
-    ) : null;
+  _handleSortColumnChange = e => {
+    this.setState({ sortColumn: e.target.value });
+    localStorage.setItem(SORT_FIELD_STORE, e.target.value);
   };
 
   render() {
-    const { componentId, queryParams } = this.props;
     const { pageSize, tableView, sortColumn, sortOrder } = this.state;
 
     const sortOptions =
@@ -95,11 +90,7 @@ class ResultsList extends React.Component {
               <select
                 className="sort-column-dropdown"
                 value={sortColumn}
-                onChange={e =>
-                  this.setState({
-                    sortColumn: e.target.value
-                  })
-                }
+                onChange={this._handleSortColumnChange}
               >
                 <option value="None">None</option>
                 {SORT_OPTIONS.map(field => (
@@ -124,62 +115,68 @@ class ResultsList extends React.Component {
                 </option>
               </select>
             </div>
-          </div>
 
-          <div className="results-page-select-wrapper">
-            <span>Page Size: </span>
-            <select
-              className="page-size-dropdown"
-              value={pageSize}
-              onChange={this._handlePageSizeChange}
-            >
-              {[10, 25, 50, 100].map(x => (
-                <option key={`page-size-dropdown-${x}`} value={x}>
-                  {x}
-                </option>
-              ))}
-            </select>
+            <div className="results-page-select-wrapper">
+              <span>Page Size: </span>
+              <select
+                className="page-size-dropdown"
+                value={pageSize}
+                onChange={this._handlePageSizeChange}
+              >
+                {[10, 25, 50, 100].map(x => (
+                  <option key={`page-size-dropdown-${x}`} value={x}>
+                    {x}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
         <ReactiveList
-          componentId={componentId}
-          className="reactivesearch-results-list"
-          dataField="tosca_reactive_list"
+          componentId="figaro-results"
+          dataField="figaro-reactive-list"
+          pagination={true}
           size={pageSize}
           pages={7}
-          stream={true}
-          pagination={true}
-          scrollOnChange={false}
-          paginationAt="both"
-          onData={this.props.retrieveDataAction}
-          react={queryParams}
-          onResultStats={(total, took) =>
-            `Found ${total} results in ${took} ms.`
-          }
-          renderItem={tableView ? null : this.resultsListHandler}
-          render={tableView ? this.renderTable : null}
           sortOptions={sortOptions}
+          paginationAt="both"
+          react={QUERY_LOGIC}
+          renderItem={
+            tableView
+              ? null
+              : res => (
+                  <div key={`${res._index}-${res._id}`}>
+                    <FigaroDataComponent
+                      res={res}
+                      editCustomFilterId={this.props.editCustomFilterId}
+                    />
+                  </div>
+                )
+          }
+          render={
+            tableView
+              ? ({ data }) => (
+                  <FigaroDataTable
+                    data={data}
+                    columns={FIGARO_DISPLAY_COLUMNS}
+                  />
+                )
+              : null
+          }
         />
       </div>
     );
   }
 }
 
-ResultsList.propTypes = {
-  componentId: PropTypes.string.isRequired,
-  queryParams: PropTypes.object.isRequired
-};
+const mapStateToProps = state => ({
+  // darkMode: state.themeReducer.darkMode
+});
 
-ResultsList.defaultProps = {
-  pageSize: 10
-};
+const mapDispatchToProps = dispatch => ({
+  editCustomFilterId: (componentId, value) =>
+    dispatch(editCustomFilterId(componentId, value))
+});
 
-// Redux actions
-const mapDispatchToProps = dispatch => {
-  return {
-    retrieveDataAction: data => dispatch(retrieveData(data))
-  };
-};
-
-export default connect(null, mapDispatchToProps)(ResultsList);
+export default connect(mapStateToProps, mapDispatchToProps)(FigaroResultsList);

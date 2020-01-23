@@ -20,19 +20,20 @@ import "./style.scss";
 const TABLE_VIEW_STORE = "table-view-tosca";
 const PAGE_SIZE_STORE = "page-size-tosca";
 const SORT_FIELD_STORE = "sort-field-tosca";
+const SORT_DIRECTION_STORE = "sort-direction-tosca";
 
 class ResultsList extends React.Component {
   constructor(props) {
     super(props);
 
     const pageSize = localStorage.getItem(PAGE_SIZE_STORE);
+    const tableView = localStorage.getItem(TABLE_VIEW_STORE);
 
     this.state = {
+      tableView: tableView === "true" ? true : false,
       pageSize: pageSize ? parseInt(pageSize) : props.pageSize,
-      tableView:
-        localStorage.getItem(TABLE_VIEW_STORE) === "true" ? true : false,
-      sortColumn: "None",
-      sortOrder: "desc"
+      sortColumn: localStorage.getItem(SORT_FIELD_STORE) || "None",
+      sortOrder: localStorage.getItem(SORT_DIRECTION_STORE) || "desc"
     };
   }
 
@@ -56,6 +57,11 @@ class ResultsList extends React.Component {
   _handleSortColumnChange = e => {
     this.setState({ sortColumn: e.target.value });
     localStorage.setItem(SORT_FIELD_STORE, e.target.value);
+  };
+
+  _handleSortDirectionChange = e => {
+    this.setState({ sortOrder: e.target.value });
+    localStorage.setItem(SORT_DIRECTION_STORE, e.target.value);
   };
 
   renderTable = ({ data, loading }) => {
@@ -104,7 +110,7 @@ class ResultsList extends React.Component {
           />
           <SortDirection
             value={sortOrder}
-            onChange={e => this.setState({ sortOrder: e.target.value })}
+            onChange={this._handleSortDirectionChange}
           />
           <PageSizeOptions
             label="Page Size: "

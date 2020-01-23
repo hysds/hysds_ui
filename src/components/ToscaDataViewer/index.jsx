@@ -5,7 +5,7 @@ import { clickQueryRegion } from "../../redux/actions";
 
 import { Button } from "../Buttons";
 
-import "./style.css";
+import "./style.scss";
 
 const ToscaDataViewer = props => {
   const { res } = props;

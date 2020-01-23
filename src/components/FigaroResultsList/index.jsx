@@ -30,18 +30,20 @@ import "./style.scss";
 const TABLE_VIEW_STORE = "table-view-figaro";
 const PAGE_SIZE_STORE = "page-size-figaro";
 const SORT_FIELD_STORE = "sort-field-figaro";
+const SORT_DIRECTION_STORE = "sort-direction-figaro";
 
 class FigaroResultsList extends React.Component {
   constructor(props) {
     super(props);
+
     const pageSize = localStorage.getItem(PAGE_SIZE_STORE);
+    const tableView = localStorage.getItem(TABLE_VIEW_STORE);
 
     this.state = {
-      sortColumn: localStorage.getItem(SORT_FIELD_STORE) || "None",
-      tableView:
-        localStorage.getItem(TABLE_VIEW_STORE) === "true" ? true : false,
+      tableView: tableView === "true" ? true : false,
       pageSize: pageSize ? parseInt(pageSize) : 10,
-      sortOrder: "desc"
+      sortColumn: localStorage.getItem(SORT_FIELD_STORE) || "None",
+      sortOrder: localStorage.getItem(SORT_DIRECTION_STORE) || "desc"
     };
   }
 
@@ -58,6 +60,11 @@ class FigaroResultsList extends React.Component {
   _handleSortColumnChange = e => {
     this.setState({ sortColumn: e.target.value });
     localStorage.setItem(SORT_FIELD_STORE, e.target.value);
+  };
+
+  _handleSortDirectionChange = e => {
+    this.setState({ sortOrder: e.target.value });
+    localStorage.setItem(SORT_DIRECTION_STORE, e.target.value);
   };
 
   render() {
@@ -91,7 +98,7 @@ class FigaroResultsList extends React.Component {
           />
           <SortDirection
             value={sortOrder}
-            onChange={e => this.setState({ sortOrder: e.target.value })}
+            onChange={this._handleSortDirectionChange}
           />
           <PageSizeOptions
             label="Page Size: "

@@ -48,7 +48,7 @@ export const FigaroDataComponent = class extends React.Component {
           <div>queue: {res.job.job_info.job_queue}</div>
         ) : null}
         {res.job ? <div>priority: {res.job.priority}</div> : null}
-        <div>tags: {res.tags}</div>
+        {res.tags && res.tags.length > 0 ? <div>tags: {res.tags}</div> : null}
         {res.job && res.job.job_info ? (
           <div>duration: {res.job.job_info.duration}</div>
         ) : null}

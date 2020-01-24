@@ -30,37 +30,7 @@ import {
 
 import "./style.scss";
 
-const ReactiveMap = ({ componentId, data, zoom, maxZoom, minZoom }) => (
-  <ReactiveComponent
-    componentId={componentId}
-    URLParams={true}
-    render={({ setQuery, value }) => (
-      <MapComponent
-        setQuery={setQuery}
-        value={value}
-        data={data}
-        zoom={zoom}
-        maxZoom={maxZoom}
-        minZoom={minZoom}
-      />
-    )}
-  />
-);
-
-ReactiveMap.propTypes = {
-  componentId: PropTypes.string.isRequired
-};
-
-ReactiveMap.defaultProps = {
-  zoom: 6,
-  maxZoom: 10,
-  minZoom: 0,
-  data: []
-};
-
-export default ReactiveMap;
-
-let ConnectMapComponent = class extends React.Component {
+let MapComponent = class extends React.Component {
   constructor(props) {
     super(props);
 
@@ -175,7 +145,10 @@ let ConnectMapComponent = class extends React.Component {
         filter: {
           geo_shape: {
             location: {
-              shape: { type: "polygon", coordinates: [polygon] }
+              shape: {
+                type: "polygon",
+                coordinates: [polygon]
+              }
             }
           }
         }
@@ -184,7 +157,6 @@ let ConnectMapComponent = class extends React.Component {
   });
 
   sendEmptyQuery = () => {
-    // remove the bbox facet
     this.drawnItems.clearLayers();
     this.props.setQuery({
       query: null,
@@ -312,7 +284,7 @@ let ConnectMapComponent = class extends React.Component {
     if (this.layerGroup) {
       this.layerGroup.clearLayers(); // clearing all the previous datasets
       this._transformData(data).map(row => {
-        // parsing data and rendering map
+        // parsing data and rendering datasets in the map
         let poly = L.polygon(row.coordinates, {
           fillOpacity: 0,
           weight: 1.3
@@ -334,11 +306,6 @@ let ConnectMapComponent = class extends React.Component {
           .addTo(this.map);
       });
     }
-  };
-
-  _handleMapSizeChange = e => {
-    this.map.invalidateSize();
-    localStorage.setItem("map-height", this.mapContainer.clientHeight);
   };
 
   render() {
@@ -396,7 +363,34 @@ const mapStateToProps = state => ({
   queryRegion: state.reactivesearchReducer.queryRegion
 });
 
-const MapComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ConnectMapComponent);
+MapComponent = connect(mapStateToProps, mapDispatchToProps)(MapComponent);
+
+const ReactiveMap = ({ componentId, data, zoom, maxZoom, minZoom }) => (
+  <ReactiveComponent
+    componentId={componentId}
+    URLParams={true}
+    render={({ setQuery, value }) => (
+      <MapComponent
+        setQuery={setQuery}
+        value={value}
+        data={data}
+        zoom={zoom}
+        maxZoom={maxZoom}
+        minZoom={minZoom}
+      />
+    )}
+  />
+);
+
+ReactiveMap.propTypes = {
+  componentId: PropTypes.string.isRequired
+};
+
+ReactiveMap.defaultProps = {
+  zoom: 6,
+  maxZoom: 10,
+  minZoom: 0,
+  data: []
+};
+
+export default ReactiveMap;

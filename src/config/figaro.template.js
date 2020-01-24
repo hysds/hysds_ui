@@ -3,10 +3,30 @@
 // local or AWS managed ElasticSearch instance
 exports.MOZART_ES_URL = "http://localhost:9998";
 
-exports.MOZART_ES_INDICES = "job_status,task_status"; //worker_status
-// exports.MOZART_ES_INDICES = "job_status-current";
+exports.MOZART_ES_INDICES = "job_status";
+
+exports.FIGARO_DISPLAY_COLUMNS = [
+  {
+    Header: "status",
+    accessor: "status"
+  },
+  {
+    Header: "resource",
+    accessor: "resource"
+  },
+  { Header: "timestamp", accessor: "@timestamp" },
+  { Header: "job type", accessor: "job.type" },
+  { Header: "node", accessor: "job.job_info.execute_node" }
+];
 
 exports.FILTERS = [
+  {
+    componentId: "resource",
+    dataField: "resource",
+    title: "Resource",
+    type: "single",
+    defaultValue: "job"
+  },
   {
     componentId: "tags",
     dataField: "tags.keyword",
@@ -20,15 +40,15 @@ exports.FILTERS = [
     type: "single"
   },
   {
+    componentId: "timestamp",
+    dataField: "@timestamp",
+    title: "Timestamp",
+    type: "date"
+  },
+  {
     componentId: "short_error",
     dataField: "short_error.keyword",
     title: "Short Error",
-    type: "single"
-  },
-  {
-    componentId: "resource",
-    dataField: "resource",
-    title: "Resource",
     type: "single"
   },
   {
@@ -47,7 +67,8 @@ exports.FILTERS = [
     componentId: "priority",
     dataField: "job.priority",
     title: "Priority",
-    type: "multi"
+    type: "multi",
+    sortBy: "desc"
   },
   {
     componentId: "container_image",
@@ -69,6 +90,9 @@ exports.FILTERS = [
   }
 ];
 
+exports.SORT_OPTIONS = ["@timestamp"];
+
+// TODO: TRY ADDING .KEYWORD TO COMPONENTID
 exports.QUERY_LOGIC = {
   and: [
     "tags",
@@ -81,6 +105,29 @@ exports.QUERY_LOGIC = {
     "container_image",
     "instance_type",
     "retry_count",
-    "query_string"
+    "query_string",
+    "payload_id",
+    "_id",
+    "timestamp"
   ]
 };
+
+exports.FIELDS = [
+  "_index",
+  "_id",
+  "status",
+  "resource",
+  "payload_id",
+  "@timestamp",
+  "short_error",
+  "error",
+  "traceback",
+  "tags",
+  "job.name",
+  "job.priority",
+  "job.type",
+  "job.job_info.execute_node",
+  "job.job_info.facts.ec2_instance_type",
+  "job.job_info.job_queue",
+  "job.job_info.duration"
+];

@@ -36,8 +36,13 @@ let Handler = class extends React.Component {
 
   _sendEmptyQuery = () => {
     const { componentId } = this.props;
-    this.props.setQuery({ query: null, value: null });
-    this.setState({ [componentId]: null });
+    this.props.setQuery({
+      query: null,
+      value: null
+    });
+    this.setState({
+      [componentId]: null
+    });
   };
 
   componentDidUpdate() {
@@ -54,7 +59,7 @@ let Handler = class extends React.Component {
           [componentId]: this.props[componentId]
         });
       } else {
-        this._sendEmptyQuery(); // clearing _id facet
+        this._sendEmptyQuery(); // clearing custom field facet
       }
     } else if (this.props[componentId] !== this.props.value) {
       // this is to handle page forwards and backwards

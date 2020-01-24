@@ -82,6 +82,7 @@ class Figaro extends React.Component {
                       size="small"
                       color="success"
                       // href={`/figaro/on-demand?query=${query}&total=${dataCount}`}
+                      href="/figaro/on-demand"
                     />
                   </div>
                   <div className="figaro-button">

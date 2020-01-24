@@ -131,12 +131,13 @@ class FigaroResultsList extends React.Component {
           }
           render={
             tableView
-              ? ({ data }) => (
-                  <FigaroDataTable
-                    data={data}
-                    columns={FIGARO_DISPLAY_COLUMNS}
-                  />
-                )
+              ? ({ data }) =>
+                  data.length > 0 ? (
+                    <FigaroDataTable
+                      data={data}
+                      columns={FIGARO_DISPLAY_COLUMNS}
+                    />
+                  ) : null
               : null
           }
         />

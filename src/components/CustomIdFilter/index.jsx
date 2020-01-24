@@ -49,7 +49,8 @@ let Handler = class extends React.Component {
     const { dataField, componentId } = this.props;
 
     if (this.props[componentId] !== this.state[componentId]) {
-      if (!this.state[componentId]) {
+      // if (!this.state[componentId]) {
+      if (this.props[componentId]) {
         const query = this._generateQuery(dataField, this.props[componentId]);
         this.props.setQuery({
           query,

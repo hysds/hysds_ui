@@ -1,32 +1,32 @@
 import {
-  RETRIEVE_DATA,
-  GET_QUERY,
-  EDIT_QUERY,
-  VALIDATE_QUERY,
-  EDIT_PRIORITY,
-  GET_JOB_LIST,
-  LOAD_JOB_PARAMS,
-  EDIT_JOB_PARAMS,
   CHANGE_JOB_TYPE,
-  LOAD_QUEUE_LIST,
-  lOAD_QUEUE,
   CHANGE_QUEUE,
-  EDIT_TAG,
+  CLEAR_JOB_PARAMS,
+  CLEAR_REDUX_STORE,
+  DELETE_USER_RULE,
   EDIT_DATA_COUNT,
+  EDIT_JOB_PARAMS,
+  EDIT_PRIORITY,
+  EDIT_QUERY,
+  EDIT_RULE_NAME,
+  EDIT_TAG,
+  GET_JOB_LIST,
+  GET_QUERY,
+  GLOBAL_SEARCH_USER_RULES,
+  LOAD_JOB_PARAMS,
+  LOAD_QUEUE,
+  LOAD_QUEUE_LIST,
+  LOAD_USER_RULE,
   LOAD_USER_RULES,
+  RETRIEVE_DATA,
   TOGGLE_USER_RULE,
   USER_RULE_ACTION_LOADING,
-  LOAD_USER_RULE,
-  CLEAR_JOB_PARAMS,
-  EDIT_RULE_NAME,
-  DELETE_USER_RULE,
-  GLOBAL_SEARCH_USER_RULES
+  VALIDATE_QUERY
 } from "../constants";
 
 import {
   makeDropdownOptions,
   sanitizePriority,
-  // validateUrlJob,
   extractJobParams
 } from "../../utils";
 
@@ -65,6 +65,8 @@ const initialState = {
 
 const toscaReducer = (state = initialState, action) => {
   switch (action.type) {
+    case CLEAR_REDUX_STORE:
+      return initialState;
     // main-page
     case RETRIEVE_DATA:
       return {
@@ -128,7 +130,7 @@ const toscaReducer = (state = initialState, action) => {
         ...state,
         queueList: queueList.map(queue => ({ label: queue, value: queue }))
       };
-    case lOAD_QUEUE:
+    case LOAD_QUEUE:
       var queues = action.payload;
       var recommendedQueue = queues.length > 0 ? queues[0] : state.queue;
       return {

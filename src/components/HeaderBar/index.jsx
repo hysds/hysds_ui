@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { connect } from "react-redux";
-import { clearReactiveSearchRedux, editTheme } from "../../redux/actions";
+import { clearReduxStore, editTheme } from "../../redux/actions";
 
 import { Button } from "../Buttons";
 import { Link } from "react-router-dom";
@@ -45,7 +45,7 @@ const HeaderBar = props => {
 
   const _handleLinkClick = e => {
     if (e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
-    props.clearReactiveSearchRedux();
+    props.clearReduxStore();
   };
 
   return (
@@ -86,7 +86,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  clearReactiveSearchRedux: () => dispatch(clearReactiveSearchRedux()),
+  clearReduxStore: () => dispatch(clearReduxStore()),
   editTheme: darkMode => dispatch(editTheme(darkMode))
 });
 

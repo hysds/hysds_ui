@@ -1,12 +1,12 @@
 import {
-  GET_DATASET_ID,
+  BBOX_EDIT,
   CLEAR_ALL_CUSTOM_COMPONENTS,
   CLEAR_CUSTOM_COMPONENTS,
-  BBOX_EDIT,
+  CLEAR_REDUX_STORE,
   CLICK_QUERY_REGION,
-  UNCLICK_QUERY_REGION,
   EDIT_CUSTOM_FILTER_ID,
-  CLEAR_REACTIVE_SEARCH_REDUX
+  GET_DATASET_ID,
+  UNCLICK_QUERY_REGION
 } from "../constants.js";
 import { ID_COMPONENT } from "../../config/tosca";
 
@@ -18,7 +18,8 @@ const initialState = {
 
 const reactivesearchReducer = (state = initialState, action) => {
   switch (action.type) {
-    case CLEAR_REACTIVE_SEARCH_REDUX:
+    case CLEAR_REDUX_STORE:
+      console.log(CLEAR_REDUX_STORE, "reactivesearch");
       return initialState;
 
     case GET_DATASET_ID:

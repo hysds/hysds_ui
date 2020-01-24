@@ -9,6 +9,7 @@ import CustomIdFilter from "../../components/CustomIdFilter";
 import HeaderBar from "../../components/HeaderBar";
 import FigaroResultsList from "../../components/FigaroResultsList";
 import { HelperLink } from "../../components/miscellaneous";
+import { ButtonLink } from "../../components/Buttons";
 
 import { editCustomFilterId } from "../../redux/actions";
 
@@ -72,6 +73,34 @@ class Figaro extends React.Component {
               <div className="top-bar-wrapper">
                 <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
                 <SearchQuery componentId="query_string" theme={classTheme} />
+
+                <div className="button-wrapper">
+                  <div className="figaro-button">
+                    <ButtonLink
+                      label="On Demand"
+                      target="on-demand-figaro"
+                      size="small"
+                      color="success"
+                      // href={`/figaro/on-demand?query=${query}&total=${dataCount}`}
+                    />
+                  </div>
+                  <div className="figaro-button">
+                    <ButtonLink
+                      label="Create Rule"
+                      target="figaro-user-rules"
+                      size="small"
+                      // href={`figaro/user-rule?query=${query}`}
+                    />
+                  </div>
+                  <div className="figaro-button">
+                    <ButtonLink
+                      label="View Rules"
+                      target="figaro-user-rules"
+                      size="small"
+                      // href={"figaro/user-rules"}
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="filter-list-wrapper">

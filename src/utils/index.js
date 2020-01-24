@@ -24,23 +24,16 @@ exports.sanitizePriority = level => {
   }
 };
 
-exports.validateUrlJob = (jobType, jobList) => {
-  for (let i = 0; i < jobList.length; i++) {
-    const jobData = jobList[i];
-    if (jobType === jobData.job_spec) return true;
-  }
-  return false;
-};
+const IGNORE_QUERY_PARAMS = [
+  "query",
+  "job_type",
+  "queue",
+  "priority",
+  "total",
+  "tags"
+];
 
 exports.extractJobParams = urlParams => {
-  const IGNORE_QUERY_PARAMS = [
-    "query",
-    "job_type",
-    "queue",
-    "priority",
-    "total",
-    "tags"
-  ];
   const params = {};
   urlParams.forEach((value, key) => {
     let isParam = !IGNORE_QUERY_PARAMS.includes(key);
@@ -50,14 +43,6 @@ exports.extractJobParams = urlParams => {
 };
 
 exports.clearUrlJobParams = () => {
-  const IGNORE_QUERY_PARAMS = [
-    "query",
-    "job_type",
-    "queue",
-    "priority",
-    "total",
-    "tags"
-  ];
   const params = new URLSearchParams(location.search);
   const toDelete = [];
   for (let pair of params.entries()) {

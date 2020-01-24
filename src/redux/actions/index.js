@@ -12,7 +12,7 @@ import {
   EDIT_JOB_PARAMS,
   CHANGE_JOB_TYPE,
   LOAD_QUEUE_LIST,
-  lOAD_QUEUE,
+  LOAD_QUEUE,
   CHANGE_QUEUE,
   EDIT_TAG,
   EDIT_DATA_COUNT,
@@ -29,7 +29,7 @@ import {
   UNCLICK_QUERY_REGION,
   EDIT_THEME,
   EDIT_CUSTOM_FILTER_ID,
-  CLEAR_REACTIVE_SEARCH_REDUX
+  CLEAR_REDUX_STORE
 } from "../constants.js";
 
 import {
@@ -49,8 +49,8 @@ import {
 
 // ********************************************************************** //
 // REACTIVESEARCH ACTIONS
-export const clearReactiveSearchRedux = () => ({
-  type: CLEAR_REACTIVE_SEARCH_REDUX
+export const clearReduxStore = () => ({
+  type: CLEAR_REDUX_STORE
 });
 
 export const clickDatasetId = id => ({
@@ -146,7 +146,7 @@ export const getQueueList = jobType => dispatch => {
         payload: data.result.queues
       });
       dispatch({
-        type: lOAD_QUEUE,
+        type: LOAD_QUEUE,
         payload: data.result.recommended
       });
     });

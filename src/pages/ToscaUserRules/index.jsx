@@ -5,12 +5,13 @@ import { connect } from "react-redux";
 
 import { ButtonLink } from "../../components/Buttons";
 import UserRulesTable from "../../components/UserRulesTable";
+
+import { globalSearchUserRules } from "../../redux/actions";
 import {
   getUserRules,
   toggleUserRule,
-  deleteUserRule,
-  globalSearchUserRules
-} from "../../redux/actions";
+  deleteUserRule
+} from "../../redux/actions/tosca";
 
 import HeaderBar from "../../components/HeaderBar";
 

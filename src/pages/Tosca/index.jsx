@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
 import { connect } from "react-redux";
 import {
-  getQuery,
+  setQuery,
   clearAllCustomComponents,
   clearCustomComponent
 } from "../../redux/actions";
@@ -65,7 +65,7 @@ class Tosca extends React.Component {
 
       let parsedQuery = query.query;
       parsedQuery = JSON.stringify(parsedQuery);
-      this.props.getQuery(parsedQuery);
+      this.props.setQuery(parsedQuery);
       event.body = `${preference}\n${JSON.stringify(query)}\n`;
     }
     return event;
@@ -187,7 +187,7 @@ const mapStateToProps = state => ({
 // Redux actions
 const mapDispatchToProps = dispatch => {
   return {
-    getQuery: query => dispatch(getQuery(query)),
+    setQuery: query => dispatch(setQuery(query)),
     clearAllCustomComponents: () => dispatch(clearAllCustomComponents()),
     clearCustomComponent: component => dispatch(clearCustomComponent(component))
   };

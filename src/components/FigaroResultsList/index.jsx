@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux"; // redux
 
 import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
-import { editCustomFilterId } from "../../redux/actions";
+import { retrieveData, editCustomFilterId } from "../../redux/actions";
 
 import {
   FigaroDataComponent,
@@ -117,6 +117,7 @@ class FigaroResultsList extends React.Component {
           sortOptions={sortOptions}
           paginationAt="both"
           react={QUERY_LOGIC}
+          onData={this.props.retrieveData}
           renderItem={
             tableView
               ? null
@@ -151,6 +152,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  retrieveData: data => dispatch(retrieveData(data)),
   editCustomFilterId: (componentId, value) =>
     dispatch(editCustomFilterId(componentId, value))
 });

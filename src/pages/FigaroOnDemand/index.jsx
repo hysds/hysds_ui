@@ -25,9 +25,10 @@ import {
   editTags,
   // getOnDemandJobs,
   // getParamsList,
-  getQueueList,
+  // getQueueList,
   validateQuery
 } from "../../redux/actions";
+import {} from "../../redux/actions/figaro";
 
 import "./style.scss";
 

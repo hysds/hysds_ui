@@ -17,16 +17,15 @@ import { connect } from "react-redux";
 import {
   changeJobType,
   changeQueue,
-  editDataCount,
   editJobPriority,
   editParams,
   editQuery,
   editTags,
-  getOnDemandJobs,
-  getParamsList,
-  getQueueList,
   validateQuery
 } from "../../redux/actions";
+import { editDataCount, getOnDemandJobs } from "../../redux/actions/tosca";
+
+import { getQueueList, getParamsList } from "../../redux/actions/tosca";
 
 import { GRQ_REST_API_V1 } from "../../config/tosca";
 

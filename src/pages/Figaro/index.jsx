@@ -11,7 +11,7 @@ import FigaroResultsList from "../../components/FigaroResultsList";
 import { HelperLink } from "../../components/miscellaneous";
 import { ButtonLink } from "../../components/Buttons";
 
-import { editCustomFilterId } from "../../redux/actions";
+import { setQuery, editCustomFilterId } from "../../redux/actions";
 
 import {
   MOZART_ES_URL,
@@ -40,14 +40,14 @@ class Figaro extends React.Component {
 
       let parsedQuery = query.query;
       parsedQuery = JSON.stringify(parsedQuery);
-      // this.props.getQuery(parsedQuery);
+      this.props.setQuery(parsedQuery);
       event.body = `${preference}\n${JSON.stringify(query)}\n`;
     }
     return event;
   };
 
   render() {
-    const { darkMode } = this.props;
+    const { darkMode, query, dataCount } = this.props;
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
     return (
@@ -81,8 +81,8 @@ class Figaro extends React.Component {
                       target="on-demand-figaro"
                       size="small"
                       color="success"
-                      // href={`/figaro/on-demand?query=${query}&total=${dataCount}`}
-                      href="/figaro/on-demand"
+                      href={`/figaro/on-demand?query=${query}&total=${dataCount}`}
+                      // href="/figaro/on-demand"
                     />
                   </div>
                   <div className="figaro-button">
@@ -130,10 +130,13 @@ Figaro.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  darkMode: state.themeReducer.darkMode
+  darkMode: state.themeReducer.darkMode,
+  query: state.toscaReducer.query,
+  dataCount: state.toscaReducer.dataCount
 });
 
 const mapDispatchToProps = dispatch => ({
+  setQuery: query => dispatch(setQuery(query)),
   editCustomFilterId: (componentId, value) =>
     dispatch(editCustomFilterId(componentId, value))
 });

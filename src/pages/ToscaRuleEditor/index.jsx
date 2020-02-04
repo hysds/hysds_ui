@@ -19,19 +19,21 @@ import HeaderBar from "../../components/HeaderBar";
 import { GRQ_REST_API_V1 } from "../../config/tosca";
 
 import {
-  getUserRule,
   validateQuery,
   editQuery,
   editJobPriority,
-  getOnDemandJobs,
   changeJobType,
-  getParamsList,
   editParams,
-  getQueueList,
   changeQueue,
   editRuleName,
   clearJobParams
 } from "../../redux/actions";
+import {
+  getUserRule,
+  getOnDemandJobs,
+  getParamsList,
+  getQueueList
+} from "../../redux/actions/tosca";
 
 import "./style.scss";
 

@@ -19,7 +19,6 @@ const initialState = {
 const reactivesearchReducer = (state = initialState, action) => {
   switch (action.type) {
     case CLEAR_REDUX_STORE:
-      console.log(CLEAR_REDUX_STORE, "reactivesearch");
       return initialState;
 
     case GET_DATASET_ID:

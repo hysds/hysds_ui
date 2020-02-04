@@ -1,0 +1,86 @@
+@import "../../scss/constants.scss";
+
+body {
+  font-family: "Oswald", sans-serif !important;
+}
+
+.figaro-on-demand {
+  display: flex;
+  padding-top: 44px;
+  height: calc(100vh - 43px);
+}
+
+/* Control the left and right side */
+.on-demand-left,
+.on-demand-right {
+  flex: 1;
+  overflow: auto;
+}
+
+.figaro-on-demand-button-wrapper {
+  display: flex;
+  padding: 10px;
+}
+
+.figaro-on-demand-button {
+  margin: 5px;
+}
+
+.on-demand-submission-type {
+  padding-left: 10px;
+  border: none;
+  font-size: 15px;
+}
+
+.on-demand-submission-type:focus {
+  outline: 0;
+}
+
+.data-count-header {
+  font-size: 25px;
+  padding: 15px;
+}
+
+@media (max-width: 950px) {
+  .figaro-on-demand {
+    padding-top: 47px;
+    display: block;
+    overflow: auto;
+  }
+
+  .on-demand-right {
+    padding: 5px;
+  }
+}
+
+.__theme-dark {
+  background-color: $dark-theme-background;
+  color: $dark-theme-color;
+
+  .on-demand-select-wrapper {
+    color: black;
+    label {
+      color: $dark-theme-color;
+    }
+  }
+
+  section {
+    color: black;
+  }
+  label {
+    color: $dark-theme-color;
+  }
+
+  hr {
+    border-color: $dark-theme-color;
+  }
+
+  .on-demand-submission-type {
+    background-color: $dark-theme-background;
+    color: $dark-theme-color;
+  }
+}
+
+.ace_editor {
+  height: 100% !important;
+}

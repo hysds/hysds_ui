@@ -129,7 +129,7 @@ class ResultsList extends React.Component {
           pagination={true}
           scrollOnChange={false}
           paginationAt="both"
-          onData={this.props.retrieveDataAction}
+          onData={this.props.retrieveData}
           react={queryParams}
           onResultStats={(total, took) =>
             `Found ${total} results in ${took} ms.`
@@ -153,10 +153,8 @@ ResultsList.defaultProps = {
 };
 
 // Redux actions
-const mapDispatchToProps = dispatch => {
-  return {
-    retrieveDataAction: data => dispatch(retrieveData(data))
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  retrieveData: data => dispatch(retrieveData(data))
+});
 
 export default connect(null, mapDispatchToProps)(ResultsList);

@@ -17,9 +17,9 @@ const HeaderLink = props => {
 
   return (
     <li className={className} {...props}>
-      <Link to={href} {...props}>
+      <a to={href} {...props}>
         {title}
-      </Link>
+      </a>
     </li>
   );
 };

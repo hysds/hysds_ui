@@ -2,6 +2,12 @@
 
 .reactivesearch-date {
   margin-bottom: 25px;
+
+  > div {
+    > div {
+      border: none;
+    }
+  }
 }
 
 .reactivesearch-input {
@@ -59,6 +65,8 @@
     padding: 8px 5px !important;
     height: 30px !important;
     font-size: 11px !important;
+    border: 1px solid #cccccc !important;
+    border-radius: 5px !important;
   }
 }
 
@@ -92,6 +100,7 @@
         border: $dark-theme-border;
         background-color: $dark-theme-background;
         color: $dark-theme-color;
+        border: 1px solid $dark-theme-alt !important;
       }
     }
 

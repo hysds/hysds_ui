@@ -5,12 +5,13 @@ import { connect } from "react-redux";
 
 import { ButtonLink } from "../../components/Buttons";
 import UserRulesTable from "../../components/UserRulesTable";
+
+import { globalSearchUserRules } from "../../redux/actions";
 import {
   getUserRules,
   toggleUserRule,
-  deleteUserRule,
-  globalSearchUserRules
-} from "../../redux/actions";
+  deleteUserRule
+} from "../../redux/actions/tosca";
 
 import HeaderBar from "../../components/HeaderBar";
 
@@ -53,6 +54,9 @@ const ToscaUserRules = class extends React.Component {
         />
 
         <div className="user-rules-body">
+          <div style={{ textAlign: "center" }}>
+            <h1>GRQ - User Rules</h1>
+          </div>
           <div className="user-rules-options-wrapper">
             <input
               className="user-rules-global-search"

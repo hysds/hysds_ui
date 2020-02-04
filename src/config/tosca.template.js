@@ -69,8 +69,6 @@ exports.MOZART_REST_API_BASE = "http://localhost:8888";
 exports.MOZART_REST_API_V1 = `${this.MOZART_REST_API_BASE}/api/v0.1`;
 exports.MOZART_REST_API_V2 = `${this.MOZART_REST_API_BASE}/api/v0.2`;
 
-exports.QUEUE_LIST_API = "user_rules/get_job_queues";
-
 exports.GRQ_TABLE_VIEW_DEFAULT = true;
 
 exports.GRQ_DISPLAY_COLUMNS = [

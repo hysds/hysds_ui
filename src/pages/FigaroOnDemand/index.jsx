@@ -14,6 +14,7 @@ import { Button } from "../../components/Buttons";
 import HeaderBar from "../../components/HeaderBar";
 
 import { connect } from "react-redux";
+
 import {
   changeJobType,
   changeQueue,
@@ -23,15 +24,19 @@ import {
   editTags,
   validateQuery
 } from "../../redux/actions";
-import { editDataCount, getOnDemandJobs } from "../../redux/actions/tosca";
 
-import { getQueueList, getParamsList } from "../../redux/actions/tosca";
+import {
+  getOnDemandJobs,
+  getQueueList,
+  getParamsList,
+  editDataCount
+} from "../../redux/actions/figaro";
 
-import { GRQ_REST_API_V1 } from "../../config/tosca";
+import { MOZART_REST_API_V1 } from "../../config/figaro";
 
 import "./style.scss";
 
-class ToscaOnDemand extends React.Component {
+class FigaroOnDemand extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -89,7 +94,7 @@ class ToscaOnDemand extends React.Component {
       kwargs: JSON.stringify(this.props.params)
     };
 
-    const jobSubmitUrl = `${GRQ_REST_API_V1}/grq/on-demand`;
+    const jobSubmitUrl = `${MOZART_REST_API_V1}/on-demand`;
     fetch(jobSubmitUrl, { method: "POST", headers, body: JSON.stringify(data) })
       .then(res => res.json())
       .then(data => {
@@ -120,6 +125,11 @@ class ToscaOnDemand extends React.Component {
     } = this.props;
     const { submitInProgress, submitSuccess, submitFailed } = this.state;
 
+    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
+    const darkTheme = "twilight";
+    const lightTheme = "tomorrow";
+    const aceTheme = darkMode ? darkTheme : lightTheme;
+
     const divider = paramsList.length > 0 ? <Border /> : null;
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
 
@@ -131,11 +141,6 @@ class ToscaOnDemand extends React.Component {
 
     const validSubmission = this._validateSubmission();
 
-    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
-    const darkTheme = "twilight";
-    const lightTheme = "tomorrow";
-    const aceTheme = darkMode ? darkTheme : lightTheme;
-
     return (
       <Fragment>
         <Helmet>
@@ -145,11 +150,11 @@ class ToscaOnDemand extends React.Component {
         <HeaderBar
           title="HySDS - On Demand"
           theme={classTheme}
-          active="tosca"
+          active="figaro"
         />
 
         <div className={classTheme}>
-          <div className="tosca-on-demand">
+          <div className="figaro-on-demand">
             <div className="split on-demand-left">
               <QueryEditor
                 url={true} // update query params in url
@@ -162,15 +167,17 @@ class ToscaOnDemand extends React.Component {
 
             <div className="split on-demand-right">
               <div className="on-demand-submitter-wrapper">
-                <h1>Tosca - On-Demand Job</h1>
+                <h1>Figaro - On-Demand Job</h1>
                 <div className="data-count-header">
                   Total Records: {this.props.dataCount || "N/A"}
                 </div>
+
                 <TagInput
                   url={true}
                   tags={this.props.tags}
                   editTags={editTags}
                 />
+
                 <div className="on-demand-select-wrapper">
                   <JobInput
                     url={true} // update query params in url
@@ -273,4 +280,4 @@ const mapDispatchToProps = dispatch => ({
   editDataCount: query => dispatch(editDataCount(query))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ToscaOnDemand);
+export default connect(mapStateToProps, mapDispatchToProps)(FigaroOnDemand);

@@ -70,6 +70,12 @@ input:focus {
 
 .filter-list-wrapper {
   margin-bottom: 20px;
+
+  > div {
+    > a span:last-child {
+      border-left: none;
+    }
+  }
 }
 
 .on-demand-button:hover {

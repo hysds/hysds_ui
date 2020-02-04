@@ -54,6 +54,9 @@ const ToscaUserRules = class extends React.Component {
         />
 
         <div className="user-rules-body">
+          <div style={{ textAlign: "center" }}>
+            <h1>GRQ - User Rules</h1>
+          </div>
           <div className="user-rules-options-wrapper">
             <input
               className="user-rules-global-search"

@@ -38,7 +38,6 @@ const ToscaUserRules = class extends React.Component {
 
   render() {
     const { darkMode, userRules } = this.props;
-
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
     return (

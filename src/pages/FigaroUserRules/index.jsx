@@ -1,0 +1,76 @@
+import React from "react";
+import { Helmet } from "react-helmet";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+
+import { ButtonLink } from "../../components/Buttons";
+import UserRulesTable from "../../components/UserRulesTable";
+
+import { globalSearchUserRules } from "../../redux/actions";
+// import {
+//   getUserRules,
+//   toggleUserRule,
+//   deleteUserRule
+// } from "../../redux/actions/figaro";
+
+import HeaderBar from "../../components/HeaderBar";
+
+import "./style.scss";
+
+const FigaroUserRules = class extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      globalSearch: ""
+    };
+  }
+
+  componentDidMount() {
+    // this.props.getUserRules();
+  }
+
+  _handleRuleSearch = e => {
+    this.setState({
+      globalSearch: e.target.value
+    });
+    // this.props.globalSearchUserRules(e.target.value);
+  };
+
+  render() {
+    const { darkMode, userRules } = this.props;
+    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
+
+    return (
+      <div className={classTheme}>
+        <Helmet>
+          <title>Tosca - User Rules</title>
+          <meta name="description" content="Helmet application" />
+        </Helmet>
+        <HeaderBar
+          title="HySDS - User Rules"
+          theme={classTheme}
+          active="tosca"
+        />
+      </div>
+    );
+  }
+};
+
+FigaroUserRules.propTypes = {
+  getUserRules: PropTypes.func.isRequired,
+  userRules: PropTypes.array.isRequired
+};
+
+// redux state data
+const mapStateToProps = state => ({
+  darkMode: state.themeReducer.darkMode,
+  userRules: state.toscaReducer.filteredRules
+});
+
+// Redux actions
+const mapDispatchToProps = dispatch => ({
+  // getUserRules: () => dispatch(getUserRules()),
+  // globalSearchUserRules: search => dispatch(globalSearchUserRules(search))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FigaroUserRules);

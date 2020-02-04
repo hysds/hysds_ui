@@ -14,6 +14,7 @@ import ToscaRuleEditor from "../pages/ToscaRuleEditor";
 
 import Figaro from "./Figaro";
 import FigaroOnDemand from "./FigaroOnDemand";
+import FigaroUserRules from "../pages/FigaroUserRules";
 
 const Routes = () => {
   let router = (
@@ -34,6 +35,7 @@ const Routes = () => {
 
         <Route exact path="/figaro" component={Figaro} />
         <Route exact path="/figaro/on-demand" component={FigaroOnDemand} />
+        <Route exact path="/figaro/user-rules" component={FigaroUserRules} />
       </Switch>
     </Router>
   );

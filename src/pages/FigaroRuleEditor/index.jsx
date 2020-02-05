@@ -1,0 +1,186 @@
+import React, { Fragment } from "react";
+import { Helmet } from "react-helmet";
+
+import { Link, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+
+import QueryEditor from "../../components/QueryEditor";
+import JobInput from "../../components/JobInput";
+import JobParams from "../../components/JobParams";
+import UserRuleNameInput from "../../components/UserRuleNameInput";
+import QueueInput from "../../components/QueueInput";
+import PriorityInput from "../../components/PriorityInput";
+
+import { Button, ButtonLink } from "../../components/Buttons";
+import { Border, SubmitStatusBar } from "../../components/miscellaneous";
+
+import HeaderBar from "../../components/HeaderBar";
+
+import { GRQ_REST_API_V1 } from "../../config/figaro";
+
+import {
+  validateQuery,
+  editQuery,
+  editJobPriority,
+  changeJobType,
+  editParams,
+  changeQueue,
+  editRuleName,
+  clearJobParams
+} from "../../redux/actions";
+import {
+  // getUserRule,
+  getOnDemandJobs,
+  getParamsList,
+  getQueueList
+} from "../../redux/actions/figaro";
+
+import "./style.scss";
+
+class FigaroRuleEditor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      submitInProgress: 0,
+      submitSuccess: 0,
+      submitFailed: 0,
+      failureReason: "",
+      editMode: props.match.params.rule ? true : false // using the same component for creating new rules and editing existing rules
+    };
+  }
+
+  componentDidMount() {
+    const params = this.props.match.params;
+    if (params.rule) {
+      // this.props.getUserRule(params.rule);
+      // this.props.getQueueList(params.rule);
+    }
+    this.props.getOnDemandJobs();
+  }
+
+  _validateSubmission = () => {
+    let {
+      validQuery,
+      jobType,
+      ruleName,
+      queue,
+      priority,
+      params,
+      paramsList
+    } = this.props;
+
+    let validSubmission = true;
+    if (!validQuery || !ruleName || !jobType || !priority || !queue)
+      return false;
+
+    paramsList.map(param => {
+      const paramName = param.name;
+      if (!(param.optional === true) && !params[paramName])
+        validSubmission = false;
+    });
+    return validSubmission;
+  };
+
+  render() {
+    const { darkMode } = this.props;
+    if (this.state.submitSuccess) return <Redirect to="/figaro/user-rules" />;
+
+    const hysdsioLabel =
+      this.props.paramsList.length > 0 ? <h2>{this.props.hysdsio}</h2> : null;
+    const divider = this.props.paramsList.length > 0 ? <Border /> : null;
+    const validSubmission = this._validateSubmission();
+
+    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
+    const darkTheme = "twilight";
+    const lightTheme = "tomorrow";
+    const aceTheme = darkMode ? darkTheme : lightTheme;
+
+    return (
+      <div className={classTheme}>
+        <Helmet>
+          <title>Mozart - Rule Editor</title>
+          <meta name="description" content="Helmet application" />
+        </Helmet>
+        <HeaderBar
+          title="HySDS - User Rules"
+          theme={classTheme}
+          active="figaro"
+        />
+
+        <div className="figaro-user-rule-editor">
+          <div className="split user-rule-editor-left">
+            <QueryEditor
+              url={!this.state.editMode}
+              editQuery={editQuery}
+              validateQuery={validateQuery}
+              query={this.props.query}
+              theme={aceTheme}
+            />
+          </div>
+
+          <div className="split user-rule-editor-right">
+            <div className="user-rule-editor-right-wrapper">
+              <h1>Mozart - User Rule Editor</h1>
+              <UserRuleNameInput
+                editRuleName={editRuleName}
+                ruleName={this.props.ruleName}
+              />
+              <JobInput
+                changeJobType={changeJobType} // all redux actions
+                getParamsList={getParamsList}
+                getQueueList={getQueueList}
+                jobs={this.props.jobs}
+                jobType={this.props.jobType}
+                jobLabel={this.props.jobLabel}
+              />
+              <QueueInput
+                queue={this.props.queue}
+                queueList={this.props.queueList}
+                changeQueue={changeQueue}
+              />
+              <PriorityInput
+                priority={this.props.priority}
+                editJobPriority={editJobPriority}
+              />
+              {divider}
+              {hysdsioLabel}
+              <JobParams
+                editParams={editParams}
+                paramsList={this.props.paramsList}
+                params={this.props.params}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+// redux state data
+const mapStateToProps = state => ({
+  darkMode: state.themeReducer.darkMode,
+  userRules: state.generalReducer.userRules,
+  query: state.generalReducer.query,
+  validQuery: state.generalReducer.validQuery,
+  jobs: state.generalReducer.jobList,
+  jobType: state.generalReducer.jobType,
+  jobLabel: state.generalReducer.jobLabel,
+  hysdsio: state.generalReducer.hysdsio,
+  queueList: state.generalReducer.queueList,
+  queue: state.generalReducer.queue,
+  priority: state.generalReducer.priority,
+  paramsList: state.generalReducer.paramsList,
+  params: state.generalReducer.params,
+  ruleName: state.generalReducer.ruleName
+});
+
+// Redux actions
+const mapDispatchToProps = dispatch => ({
+  // getUserRule: id => dispatch(getUserRule(id)),
+  getOnDemandJobs: () => dispatch(getOnDemandJobs()),
+  clearJobParams: () => dispatch(clearJobParams()),
+  getQueueList: jobType => dispatch(getQueueList(jobType))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FigaroRuleEditor);

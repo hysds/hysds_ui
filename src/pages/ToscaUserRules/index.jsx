@@ -30,10 +30,11 @@ const ToscaUserRules = class extends React.Component {
   }
 
   _handleRuleSearch = e => {
+    const text = e.target.value;
     this.setState({
-      globalSearch: e.target.value
+      globalSearch: text
     });
-    this.props.globalSearchUserRules(e.target.value);
+    this.props.globalSearchUserRules(text);
   };
 
   render() {

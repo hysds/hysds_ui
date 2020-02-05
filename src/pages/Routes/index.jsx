@@ -16,6 +16,7 @@ import ToscaRuleEditor from "../ToscaRuleEditor";
 import Figaro from "../Figaro";
 import FigaroOnDemand from "../FigaroOnDemand";
 import FigaroUserRules from "../FigaroUserRules";
+import FigaroRuleEditor from "../FigaroRuleEditor";
 
 import "./style.scss";
 
@@ -42,6 +43,7 @@ const Routes = props => {
           <Route exact path="/figaro" component={Figaro} />
           <Route exact path="/figaro/on-demand" component={FigaroOnDemand} />
           <Route exact path="/figaro/user-rules" component={FigaroUserRules} />
+          <Route exact path="/figaro/user-rule" component={FigaroRuleEditor} />
         </Switch>
       </Router>
     </div>

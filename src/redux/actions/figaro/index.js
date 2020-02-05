@@ -88,3 +88,17 @@ export const editDataCount = query => dispatch => {
     dispatch({ type: EDIT_DATA_COUNT, payload: null });
   }
 };
+
+// ********************************************************************** //
+// TOSCA USER RULES ACTIONS
+export const getUserRules = () => dispatch => {
+  const getUserRulesEndpoint = `${MOZART_REST_API_V1}/user-rules`;
+  return fetch(getUserRulesEndpoint)
+    .then(res => res.json())
+    .then(data =>
+      dispatch({
+        type: LOAD_USER_RULES,
+        payload: data.rules
+      })
+    );
+};

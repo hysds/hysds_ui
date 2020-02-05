@@ -90,7 +90,7 @@ class Figaro extends React.Component {
                       label="Create Rule"
                       target="figaro-user-rules"
                       size="small"
-                      // href={`figaro/user-rule?query=${query}`}
+                      href={`figaro/user-rule?query=${query}`}
                     />
                   </div>
                   <div className="figaro-button">

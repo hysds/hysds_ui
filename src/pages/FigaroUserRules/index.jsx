@@ -7,11 +7,11 @@ import { ButtonLink } from "../../components/Buttons";
 import UserRulesTable from "../../components/UserRulesTable";
 
 import { globalSearchUserRules } from "../../redux/actions";
-// import {
-//   getUserRules,
-//   toggleUserRule,
-//   deleteUserRule
-// } from "../../redux/actions/figaro";
+import {
+  getUserRules
+  // toggleUserRule,
+  // deleteUserRule
+} from "../../redux/actions/figaro";
 
 import HeaderBar from "../../components/HeaderBar";
 
@@ -26,14 +26,15 @@ const FigaroUserRules = class extends React.Component {
   }
 
   componentDidMount() {
-    // this.props.getUserRules();
+    this.props.getUserRules();
   }
 
   _handleRuleSearch = e => {
+    const text = e.target.value;
     this.setState({
-      globalSearch: e.target.value
+      globalSearch: text
     });
-    // this.props.globalSearchUserRules(e.target.value);
+    this.props.globalSearchUserRules(text);
   };
 
   render() {
@@ -42,15 +43,15 @@ const FigaroUserRules = class extends React.Component {
     const searchDisabled = userRules.length === 0 && !this.state.globalSearch;
 
     return (
-      <div className={`figaro-user-rules ${classTheme}`}>
+      <div className={classTheme}>
         <Helmet>
-          <title>Tosca - User Rules</title>
+          <title>Mozart - User Rules</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
         <HeaderBar
           title="HySDS - User Rules"
           theme={classTheme}
-          active="tosca"
+          active="figaro"
         />
 
         <div className="user-rules-body">
@@ -65,10 +66,7 @@ const FigaroUserRules = class extends React.Component {
               disabled={searchDisabled}
             />
             <div className="user-rules-button-wrapper">
-              <ButtonLink
-                // href="/tosca/user-rule"
-                label="Create Rule"
-              />
+              <ButtonLink href="/figaro/user-rule" label="Create Rule" />
             </div>
           </div>
 
@@ -77,7 +75,7 @@ const FigaroUserRules = class extends React.Component {
               rules={userRules}
               // toggleUserRule={toggleUserRule}
               // deleteUserRule={deleteUserRule}
-              // link="/tosca/user-rule"
+              // link="/figaro/user-rule"
             />
           </div>
         </div>
@@ -99,7 +97,7 @@ const mapStateToProps = state => ({
 
 // Redux actions
 const mapDispatchToProps = dispatch => ({
-  // getUserRules: () => dispatch(getUserRules()),
+  getUserRules: () => dispatch(getUserRules())
   // globalSearchUserRules: search => dispatch(globalSearchUserRules(search))
 });
 

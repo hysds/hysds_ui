@@ -111,7 +111,7 @@ class Tosca extends React.Component {
               <FigaroFilters filters={FILTERS} />
             </div>
 
-            <div className={`${classTheme} tosca-body`} ref={this.pageRef}>
+            <div className="tosca-body" ref={this.pageRef}>
               <div className="top-bar-wrapper">
                 <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
                 <SearchQuery
@@ -178,9 +178,9 @@ Tosca.defaultProps = {
 // redux state data
 const mapStateToProps = state => ({
   darkMode: state.themeReducer.darkMode,
-  data: state.toscaReducer.data,
-  dataCount: state.toscaReducer.dataCount,
-  query: state.toscaReducer.query,
+  data: state.generalReducer.data,
+  dataCount: state.generalReducer.dataCount,
+  query: state.generalReducer.query,
   queryRegion: state.reactivesearchReducer.queryRegion
 });
 

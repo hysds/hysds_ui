@@ -39,6 +39,7 @@ const ToscaUserRules = class extends React.Component {
   render() {
     const { darkMode, userRules } = this.props;
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
+    const searchDisabled = userRules.length === 0 && !this.state.globalSearch;
 
     return (
       <div className={classTheme}>
@@ -61,11 +62,7 @@ const ToscaUserRules = class extends React.Component {
               className="user-rules-global-search"
               placeholder="Search..."
               onChange={this._handleRuleSearch}
-              disabled={
-                userRules.length === 0 && !this.state.globalSearch
-                  ? true
-                  : false
-              }
+              disabled={searchDisabled}
             />
             <div className="user-rules-button-wrapper">
               <ButtonLink href="/tosca/user-rule" label="Create Rule" />
@@ -94,7 +91,7 @@ ToscaUserRules.propTypes = {
 // redux state data
 const mapStateToProps = state => ({
   darkMode: state.themeReducer.darkMode,
-  userRules: state.toscaReducer.filteredRules
+  userRules: state.generalReducer.filteredRules
 });
 
 // Redux actions

@@ -39,9 +39,10 @@ const FigaroUserRules = class extends React.Component {
   render() {
     const { darkMode, userRules } = this.props;
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
+    const searchDisabled = userRules.length === 0 && !this.state.globalSearch;
 
     return (
-      <div className={classTheme}>
+      <div className={`figaro-user-rules ${classTheme}`}>
         <Helmet>
           <title>Tosca - User Rules</title>
           <meta name="description" content="Helmet application" />
@@ -51,6 +52,35 @@ const FigaroUserRules = class extends React.Component {
           theme={classTheme}
           active="tosca"
         />
+
+        <div className="user-rules-body">
+          <div style={{ textAlign: "center" }}>
+            <h1>Mozart - User Rules</h1>
+          </div>
+          <div className="user-rules-options-wrapper">
+            <input
+              className="user-rules-global-search"
+              placeholder="Search..."
+              onChange={this._handleRuleSearch}
+              disabled={searchDisabled}
+            />
+            <div className="user-rules-button-wrapper">
+              <ButtonLink
+                // href="/tosca/user-rule"
+                label="Create Rule"
+              />
+            </div>
+          </div>
+
+          <div className="user-rules-table-wrapper">
+            <UserRulesTable
+              rules={userRules}
+              // toggleUserRule={toggleUserRule}
+              // deleteUserRule={deleteUserRule}
+              // link="/tosca/user-rule"
+            />
+          </div>
+        </div>
       </div>
     );
   }
@@ -64,7 +94,7 @@ FigaroUserRules.propTypes = {
 // redux state data
 const mapStateToProps = state => ({
   darkMode: state.themeReducer.darkMode,
-  userRules: state.toscaReducer.filteredRules
+  userRules: state.generalReducer.filteredRules
 });
 
 // Redux actions

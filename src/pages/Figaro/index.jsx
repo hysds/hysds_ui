@@ -69,7 +69,7 @@ class Figaro extends React.Component {
               <FigaroFilters filters={FILTERS} />
             </div>
 
-            <div className={`${classTheme} figaro-body`} ref={this.pageRef}>
+            <div className="figaro-body" ref={this.pageRef}>
               <div className="top-bar-wrapper">
                 <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
                 <SearchQuery componentId="query_string" theme={classTheme} />
@@ -98,7 +98,7 @@ class Figaro extends React.Component {
                       label="View Rules"
                       target="figaro-user-rules"
                       size="small"
-                      // href={"figaro/user-rules"}
+                      href={"figaro/user-rules"}
                     />
                   </div>
                 </div>
@@ -131,8 +131,8 @@ Figaro.defaultProps = {
 
 const mapStateToProps = state => ({
   darkMode: state.themeReducer.darkMode,
-  query: state.toscaReducer.query,
-  dataCount: state.toscaReducer.dataCount
+  query: state.generalReducer.query,
+  dataCount: state.generalReducer.dataCount
 });
 
 const mapDispatchToProps = dispatch => ({

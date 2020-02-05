@@ -1,13 +1,13 @@
 import { combineReducers } from "redux";
 
-import toscaReducer from "./toscaReducer";
+import generalReducer from "./generalReducer";
 import reactivesearchReducer from "./reactivesearchReducer";
 import themeReducer from "./themeReducer";
 
 const rootReducer = combineReducers({
   themeReducer,
-  reactivesearchReducer,
-  toscaReducer
+  generalReducer,
+  reactivesearchReducer
 });
 
 export default rootReducer;

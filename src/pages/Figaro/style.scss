@@ -86,11 +86,6 @@ input:focus {
 }
 
 .__theme-dark {
-  // transition: background-color 0.5s;
-  &.figaro-body {
-    background-color: $dark-theme-background;
-    color: $dark-theme-color;
-  }
   &.figaro-sidenav {
     background-color: $dark-theme-alt;
     color: $dark-theme-color;

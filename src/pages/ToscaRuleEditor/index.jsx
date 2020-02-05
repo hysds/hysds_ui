@@ -237,19 +237,19 @@ class ToscaRuleEditor extends React.Component {
 // redux state data
 const mapStateToProps = state => ({
   darkMode: state.themeReducer.darkMode,
-  userRules: state.toscaReducer.userRules,
-  query: state.toscaReducer.query,
-  validQuery: state.toscaReducer.validQuery,
-  jobs: state.toscaReducer.jobList,
-  jobType: state.toscaReducer.jobType,
-  jobLabel: state.toscaReducer.jobLabel,
-  hysdsio: state.toscaReducer.hysdsio,
-  queueList: state.toscaReducer.queueList,
-  queue: state.toscaReducer.queue,
-  priority: state.toscaReducer.priority,
-  paramsList: state.toscaReducer.paramsList,
-  params: state.toscaReducer.params,
-  ruleName: state.toscaReducer.ruleName
+  userRules: state.generalReducer.userRules,
+  query: state.generalReducer.query,
+  validQuery: state.generalReducer.validQuery,
+  jobs: state.generalReducer.jobList,
+  jobType: state.generalReducer.jobType,
+  jobLabel: state.generalReducer.jobLabel,
+  hysdsio: state.generalReducer.hysdsio,
+  queueList: state.generalReducer.queueList,
+  queue: state.generalReducer.queue,
+  priority: state.generalReducer.priority,
+  paramsList: state.generalReducer.paramsList,
+  params: state.generalReducer.params,
+  ruleName: state.generalReducer.ruleName
 });
 
 // Redux actions

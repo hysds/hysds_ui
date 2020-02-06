@@ -224,6 +224,12 @@ class FigaroRuleEditor extends React.Component {
             </div>
           </div>
         </div>
+        <SubmitStatusBar
+          label="User Rule Submission Failed"
+          reason={this.state.failureReason}
+          visible={this.state.submitFailed}
+          status="failed"
+        />
       </div>
     );
   }

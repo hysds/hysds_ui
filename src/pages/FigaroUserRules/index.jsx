@@ -8,9 +8,9 @@ import UserRulesTable from "../../components/UserRulesTable";
 
 import { globalSearchUserRules } from "../../redux/actions";
 import {
-  getUserRules
-  // toggleUserRule,
-  // deleteUserRule
+  getUserRules,
+  toggleUserRule,
+  deleteUserRule
 } from "../../redux/actions/figaro";
 
 import HeaderBar from "../../components/HeaderBar";
@@ -73,9 +73,9 @@ const FigaroUserRules = class extends React.Component {
           <div className="user-rules-table-wrapper">
             <UserRulesTable
               rules={userRules}
-              // toggleUserRule={toggleUserRule}
-              // deleteUserRule={deleteUserRule}
-              // link="/figaro/user-rule"
+              toggleUserRule={toggleUserRule}
+              deleteUserRule={deleteUserRule}
+              link="/figaro/user-rule"
             />
           </div>
         </div>
@@ -97,8 +97,8 @@ const mapStateToProps = state => ({
 
 // Redux actions
 const mapDispatchToProps = dispatch => ({
-  getUserRules: () => dispatch(getUserRules())
-  // globalSearchUserRules: search => dispatch(globalSearchUserRules(search))
+  getUserRules: () => dispatch(getUserRules()),
+  globalSearchUserRules: search => dispatch(globalSearchUserRules(search))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FigaroUserRules);

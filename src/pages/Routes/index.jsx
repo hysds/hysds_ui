@@ -44,6 +44,11 @@ const Routes = props => {
           <Route exact path="/figaro/on-demand" component={FigaroOnDemand} />
           <Route exact path="/figaro/user-rules" component={FigaroUserRules} />
           <Route exact path="/figaro/user-rule" component={FigaroRuleEditor} />
+          <Route
+            exact
+            path="/figaro/user-rule/:rule"
+            component={FigaroRuleEditor}
+          />
         </Switch>
       </Router>
     </div>

@@ -16,7 +16,7 @@ import { Border, SubmitStatusBar } from "../../components/miscellaneous";
 
 import HeaderBar from "../../components/HeaderBar";
 
-import { GRQ_REST_API_V1 } from "../../config/figaro";
+import { MOZART_REST_API_V1 } from "../../config/figaro";
 
 import {
   validateQuery,
@@ -29,7 +29,7 @@ import {
   clearJobParams
 } from "../../redux/actions";
 import {
-  // getUserRule,
+  getUserRule,
   getOnDemandJobs,
   getParamsList,
   getQueueList
@@ -52,8 +52,8 @@ class FigaroRuleEditor extends React.Component {
   componentDidMount() {
     const params = this.props.match.params;
     if (params.rule) {
-      // this.props.getUserRule(params.rule);
-      // this.props.getQueueList(params.rule);
+      this.props.getUserRule(params.rule);
+      this.props.getQueueList(params.rule);
     }
     this.props.getOnDemandJobs();
   }
@@ -79,6 +79,57 @@ class FigaroRuleEditor extends React.Component {
         validSubmission = false;
     });
     return validSubmission;
+  };
+
+  _handleUserRuleSubmit = () => {
+    const ruleId = this.props.match.params.rule;
+    const data = {
+      id: ruleId,
+      rule_name: this.props.ruleName,
+      query_string: this.props.query,
+      priority: this.props.priority,
+      workflow: this.props.hysdsio,
+      job_spec: this.props.jobType,
+      queue: this.props.queue,
+      kwargs: JSON.stringify(this.props.params)
+    };
+
+    this.setState({
+      submitInProgress: "loading"
+    });
+
+    const endpoint = `${MOZART_REST_API_V1}/user-rules`;
+    const headers = { "Content-Type": "application/json" };
+    const method = this.state.editMode ? "PUT" : "POST";
+
+    fetch(endpoint, {
+      headers,
+      method,
+      body: JSON.stringify(data)
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) {
+          this.setState({
+            submitInProgress: 0,
+            submitFailed: 1,
+            failureReason: data.message
+          });
+          setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
+        } else {
+          this.props.clearJobParams();
+          this.setState({
+            submitInProgress: 0,
+            submitSuccess: 1,
+            failureReason: ""
+          });
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        this.setState({ submitInProgress: 0, submitFailed: 1 });
+        setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
+      });
   };
 
   render() {
@@ -149,6 +200,27 @@ class FigaroRuleEditor extends React.Component {
                 paramsList={this.props.paramsList}
                 params={this.props.params}
               />
+
+              <div className="user-rule-buttons-wrapper">
+                <div className="user-rule-button">
+                  <Button
+                    size="large"
+                    label={this.state.editMode ? "Save Changes" : "Save"}
+                    onClick={this._handleUserRuleSubmit}
+                    loading={this.state.submitInProgress}
+                    disabled={!validSubmission}
+                  />
+                </div>
+                <div className="user-rule-button">
+                  <ButtonLink
+                    color="fail"
+                    label="Cancel"
+                    size="large"
+                    href="/figaro/user-rules"
+                    onClick={() => this.props.clearJobParams()}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -177,7 +249,7 @@ const mapStateToProps = state => ({
 
 // Redux actions
 const mapDispatchToProps = dispatch => ({
-  // getUserRule: id => dispatch(getUserRule(id)),
+  getUserRule: id => dispatch(getUserRule(id)),
   getOnDemandJobs: () => dispatch(getOnDemandJobs()),
   clearJobParams: () => dispatch(clearJobParams()),
   getQueueList: jobType => dispatch(getQueueList(jobType))

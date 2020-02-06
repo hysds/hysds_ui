@@ -16,7 +16,7 @@ import { Border, SubmitStatusBar } from "../../components/miscellaneous";
 
 import HeaderBar from "../../components/HeaderBar";
 
-import { GRQ_REST_API_V1 } from "../../config/tosca";
+import { MOZART_REST_API_V1 } from "../../config/figaro";
 
 import {
   validateQuery,
@@ -33,11 +33,11 @@ import {
   getOnDemandJobs,
   getParamsList,
   getQueueList
-} from "../../redux/actions/tosca";
+} from "../../redux/actions/figaro";
 
 import "./style.scss";
 
-class ToscaRuleEditor extends React.Component {
+class FigaroRuleEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -98,9 +98,10 @@ class ToscaRuleEditor extends React.Component {
       submitInProgress: "loading"
     });
 
-    const endpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
+    const endpoint = `${MOZART_REST_API_V1}/user-rules`;
     const headers = { "Content-Type": "application/json" };
     const method = this.state.editMode ? "PUT" : "POST";
+
     fetch(endpoint, {
       headers,
       method,
@@ -133,7 +134,7 @@ class ToscaRuleEditor extends React.Component {
 
   render() {
     const { darkMode } = this.props;
-    if (this.state.submitSuccess) return <Redirect to="/tosca/user-rules" />;
+    if (this.state.submitSuccess) return <Redirect to="/figaro/user-rules" />;
 
     const hysdsioLabel =
       this.props.paramsList.length > 0 ? <h2>{this.props.hysdsio}</h2> : null;
@@ -148,16 +149,16 @@ class ToscaRuleEditor extends React.Component {
     return (
       <div className={classTheme}>
         <Helmet>
-          <title>Tosca - Rule Editor</title>
+          <title>Mozart - Rule Editor</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
         <HeaderBar
           title="HySDS - User Rules"
           theme={classTheme}
-          active="tosca"
+          active="figaro"
         />
 
-        <div className="tosca-user-rule-editor">
+        <div className="figaro-user-rule-editor">
           <div className="split user-rule-editor-left">
             <QueryEditor
               url={!this.state.editMode}
@@ -170,7 +171,7 @@ class ToscaRuleEditor extends React.Component {
 
           <div className="split user-rule-editor-right">
             <div className="user-rule-editor-right-wrapper">
-              <h1>Tosca - User Rule Editor</h1>
+              <h1>Mozart - User Rule Editor</h1>
               <UserRuleNameInput
                 editRuleName={editRuleName}
                 ruleName={this.props.ruleName}
@@ -215,7 +216,7 @@ class ToscaRuleEditor extends React.Component {
                     color="fail"
                     label="Cancel"
                     size="large"
-                    href="/tosca/user-rules"
+                    href="/figaro/user-rules"
                     onClick={() => this.props.clearJobParams()}
                   />
                 </div>
@@ -223,12 +224,6 @@ class ToscaRuleEditor extends React.Component {
             </div>
           </div>
         </div>
-        <SubmitStatusBar
-          label="User Rule Submission Failed"
-          reason={this.state.failureReason}
-          visible={this.state.submitFailed}
-          status="failed"
-        />
       </div>
     );
   }
@@ -260,4 +255,4 @@ const mapDispatchToProps = dispatch => ({
   getQueueList: jobType => dispatch(getQueueList(jobType))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ToscaRuleEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(FigaroRuleEditor);

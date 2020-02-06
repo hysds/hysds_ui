@@ -92,11 +92,6 @@ input:focus {
 }
 
 .__theme-dark {
-  // transition: background-color 0.5s;
-  &.tosca-body {
-    background-color: $dark-theme-background;
-    color: $dark-theme-color;
-  }
   &.tosca-sidenav {
     background-color: $dark-theme-alt;
     color: $dark-theme-color;

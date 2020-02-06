@@ -63,7 +63,7 @@ const initialState = {
   toggle: false
 };
 
-const toscaReducer = (state = initialState, action) => {
+const generalReducer = (state = initialState, action) => {
   switch (action.type) {
     case CLEAR_REDUX_STORE:
       return initialState;
@@ -289,4 +289,4 @@ const toscaReducer = (state = initialState, action) => {
   }
 };
 
-export default toscaReducer;
+export default generalReducer;

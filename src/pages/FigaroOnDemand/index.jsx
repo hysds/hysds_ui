@@ -257,20 +257,20 @@ class FigaroOnDemand extends React.Component {
 
 const mapStateToProps = state => ({
   darkMode: state.themeReducer.darkMode,
-  query: state.toscaReducer.query,
-  validQuery: state.toscaReducer.validQuery,
-  jobs: state.toscaReducer.jobList,
-  jobType: state.toscaReducer.jobType,
-  jobLabel: state.toscaReducer.jobLabel,
-  hysdsio: state.toscaReducer.hysdsio,
-  queueList: state.toscaReducer.queueList,
-  queue: state.toscaReducer.queue,
-  priority: state.toscaReducer.priority,
-  paramsList: state.toscaReducer.paramsList,
-  params: state.toscaReducer.params,
-  tags: state.toscaReducer.tags,
-  submissionType: state.toscaReducer.submissionType,
-  dataCount: state.toscaReducer.dataCount
+  query: state.generalReducer.query,
+  validQuery: state.generalReducer.validQuery,
+  jobs: state.generalReducer.jobList,
+  jobType: state.generalReducer.jobType,
+  jobLabel: state.generalReducer.jobLabel,
+  hysdsio: state.generalReducer.hysdsio,
+  queueList: state.generalReducer.queueList,
+  queue: state.generalReducer.queue,
+  priority: state.generalReducer.priority,
+  paramsList: state.generalReducer.paramsList,
+  params: state.generalReducer.params,
+  tags: state.generalReducer.tags,
+  submissionType: state.generalReducer.submissionType,
+  dataCount: state.generalReducer.dataCount
 });
 
 const mapDispatchToProps = dispatch => ({

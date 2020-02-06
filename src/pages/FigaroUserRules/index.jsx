@@ -11,13 +11,13 @@ import {
   getUserRules,
   toggleUserRule,
   deleteUserRule
-} from "../../redux/actions/tosca";
+} from "../../redux/actions/figaro";
 
 import HeaderBar from "../../components/HeaderBar";
 
 import "./style.scss";
 
-const ToscaUserRules = class extends React.Component {
+const FigaroUserRules = class extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,18 +45,18 @@ const ToscaUserRules = class extends React.Component {
     return (
       <div className={classTheme}>
         <Helmet>
-          <title>Tosca - User Rules</title>
+          <title>Mozart - User Rules</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
         <HeaderBar
           title="HySDS - User Rules"
           theme={classTheme}
-          active="tosca"
+          active="figaro"
         />
 
         <div className="user-rules-body">
           <div style={{ textAlign: "center" }}>
-            <h1>GRQ - User Rules</h1>
+            <h1>Mozart - User Rules</h1>
           </div>
           <div className="user-rules-options-wrapper">
             <input
@@ -66,7 +66,7 @@ const ToscaUserRules = class extends React.Component {
               disabled={searchDisabled}
             />
             <div className="user-rules-button-wrapper">
-              <ButtonLink href="/tosca/user-rule" label="Create Rule" />
+              <ButtonLink href="/figaro/user-rule" label="Create Rule" />
             </div>
           </div>
 
@@ -75,7 +75,7 @@ const ToscaUserRules = class extends React.Component {
               rules={userRules}
               toggleUserRule={toggleUserRule}
               deleteUserRule={deleteUserRule}
-              link="/tosca/user-rule"
+              link="/figaro/user-rule"
             />
           </div>
         </div>
@@ -84,7 +84,7 @@ const ToscaUserRules = class extends React.Component {
   }
 };
 
-ToscaUserRules.propTypes = {
+FigaroUserRules.propTypes = {
   getUserRules: PropTypes.func.isRequired,
   userRules: PropTypes.array.isRequired
 };
@@ -101,4 +101,4 @@ const mapDispatchToProps = dispatch => ({
   globalSearchUserRules: search => dispatch(globalSearchUserRules(search))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ToscaUserRules);
+export default connect(mapStateToProps, mapDispatchToProps)(FigaroUserRules);

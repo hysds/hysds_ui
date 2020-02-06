@@ -88,3 +88,90 @@ export const editDataCount = query => dispatch => {
     dispatch({ type: EDIT_DATA_COUNT, payload: null });
   }
 };
+
+// ********************************************************************** //
+// TOSCA USER RULES ACTIONS
+export const getUserRules = () => dispatch => {
+  const getUserRulesEndpoint = `${MOZART_REST_API_V1}/user-rules`;
+  return fetch(getUserRulesEndpoint)
+    .then(res => res.json())
+    .then(data =>
+      dispatch({
+        type: LOAD_USER_RULES,
+        payload: data.rules
+      })
+    );
+};
+
+export const getUserRule = id => dispatch => {
+  const getUserRuleEndpoint = `${MOZART_REST_API_V1}/user-rules?id=${id}`;
+  return fetch(getUserRuleEndpoint)
+    .then(res => res.json())
+    .then(data => {
+      dispatch({
+        type: LOAD_USER_RULE,
+        payload: data.rule
+      });
+      const jobSpec = data.rule.job_spec;
+
+      const getQueuesEndpoint = `${MOZART_REST_API_V2}/queue/list?id=${jobSpec}`;
+      fetch(getQueuesEndpoint) // fetching the queue list for this job
+        .then(res => res.json())
+        .then(data =>
+          dispatch({
+            type: LOAD_QUEUE_LIST,
+            payload: data.result.queues
+          })
+        )
+        .catch(err => console.error(err));
+
+      const getParamsListEndpoint = `${MOZART_REST_API_V1}/on-demand/job-params?job_type=${jobSpec}`;
+      fetch(getParamsListEndpoint)
+        .then(res => res.json())
+        .then(data =>
+          dispatch({
+            type: LOAD_JOB_PARAMS,
+            payload: data
+          })
+        );
+    });
+};
+
+export const toggleUserRule = (index, id, enabled) => dispatch => {
+  dispatch({
+    type: USER_RULE_ACTION_LOADING,
+    payload: { index, id }
+  });
+
+  const toggleUserRuleEndpoint = `${MOZART_REST_API_V1}/user-rules`;
+  const payload = {
+    id: id,
+    enabled
+  };
+  const headers = {
+    headers: { "Content-Type": "application/json" },
+    method: "PUT",
+    body: JSON.stringify(payload)
+  };
+
+  return fetch(toggleUserRuleEndpoint, headers)
+    .then(res => res.json())
+    .then(data => {
+      dispatch({
+        type: TOGGLE_USER_RULE,
+        payload: { ...data, index, id }
+      });
+    });
+};
+
+export const deleteUserRule = (index, id) => dispatch => {
+  const deleteRuleEndpoint = `${MOZART_REST_API_V1}/user-rules?id=${id}`;
+  return fetch(deleteRuleEndpoint, { method: "DELETE" })
+    .then(res => res.json())
+    .then(data =>
+      dispatch({
+        type: DELETE_USER_RULE,
+        payload: { index, id }
+      })
+    );
+};

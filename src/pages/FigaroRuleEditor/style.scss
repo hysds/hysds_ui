@@ -4,7 +4,7 @@ body {
   font-family: "Oswald", sans-serif !important;
 }
 
-.tosca-user-rule-editor {
+.figaro-user-rule-editor {
   display: flex;
   padding-top: 44px;
   height: calc(100vh - 44px);
@@ -37,7 +37,7 @@ body {
 }
 
 @media (max-width: 950px) {
-  .tosca-user-rule-editor {
+  .figaro-user-rule-editor {
     display: block;
     overflow: auto;
   }

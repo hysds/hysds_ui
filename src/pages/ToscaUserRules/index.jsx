@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -43,7 +43,7 @@ const ToscaUserRules = class extends React.Component {
     const searchDisabled = userRules.length === 0 && !this.state.globalSearch;
 
     return (
-      <div className={classTheme}>
+      <Fragment>
         <Helmet>
           <title>Tosca - User Rules</title>
           <meta name="description" content="Helmet application" />
@@ -79,7 +79,7 @@ const ToscaUserRules = class extends React.Component {
             />
           </div>
         </div>
-      </div>
+      </Fragment>
     );
   }
 };

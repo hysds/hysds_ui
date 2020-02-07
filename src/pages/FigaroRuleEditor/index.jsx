@@ -147,7 +147,7 @@ class FigaroRuleEditor extends React.Component {
     const aceTheme = darkMode ? darkTheme : lightTheme;
 
     return (
-      <div className={classTheme}>
+      <Fragment>
         <Helmet>
           <title>Mozart - Rule Editor</title>
           <meta name="description" content="Helmet application" />
@@ -230,7 +230,7 @@ class FigaroRuleEditor extends React.Component {
           visible={this.state.submitFailed}
           status="failed"
         />
-      </div>
+      </Fragment>
     );
   }
 }

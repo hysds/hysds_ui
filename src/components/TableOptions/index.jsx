@@ -16,13 +16,10 @@ export const ToggleSlider = props => (
 export const SortOptions = props => (
   <div className="sort-results-select-wrapper">
     <span>{props.label || "Label: "} </span>
-    <select
-      className="sort-column-dropdown"
-      {...props}
-      // value={sortColumn}
-      // onChange={this._handleSortColumnChange}
-    >
-      <option value="None">None</option>
+    <select className="sort-column-dropdown" {...props}>
+      <option key="sort-column-none" value="None">
+        None
+      </option>
       {props.options.map(field => (
         <option key={`sort-column-${field}`} value={field}>
           {field}

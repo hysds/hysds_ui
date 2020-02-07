@@ -74,6 +74,7 @@ class FigaroResultsList extends React.Component {
       sortColumn !== "None"
         ? [
             {
+              label: sortColumn,
               dataField: sortColumn,
               sortBy: sortOrder
             }

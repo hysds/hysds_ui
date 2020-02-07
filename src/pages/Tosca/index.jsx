@@ -2,11 +2,7 @@ import React, { Fragment } from "react";
 import { Helmet } from "react-helmet";
 import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
 import { connect } from "react-redux";
-import {
-  setQuery,
-  clearAllCustomComponents,
-  clearCustomComponent
-} from "../../redux/actions";
+import { setQuery } from "../../redux/actions";
 
 import {
   GRQ_ES_URL,
@@ -31,7 +27,7 @@ import SearchQuery from "../../components/SearchQuery";
 // custom utility components
 import { ButtonLink, ScrollTop } from "../../components/Buttons";
 
-import FigaroFilters from "../../components/SidebarFilters";
+import SidebarFilters from "../../components/SidebarFilters";
 
 import { HelperLink } from "../../components/miscellaneous";
 import HeaderBar from "../../components/HeaderBar";
@@ -71,14 +67,9 @@ class Tosca extends React.Component {
     return event;
   };
 
-  _handleClearFilter = event => {
-    // clears specific filter
-    if (event) this.props.clearCustomComponent(event);
-    else this.props.clearAllCustomComponents(); // clear all filters
-  };
-
   render() {
     const { darkMode, data, dataCount, query } = this.props;
+    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
     const reactiveMap = DISPLAY_MAP ? (
       <ReactiveMap
@@ -89,8 +80,6 @@ class Tosca extends React.Component {
         data={data}
       />
     ) : null;
-
-    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
     return (
       <Fragment>
@@ -108,7 +97,7 @@ class Tosca extends React.Component {
           <div className="tosca-page-wrapper">
             <div className={`${classTheme} tosca-sidenav`}>
               <div className="sidenav-title">Filters</div>
-              <FigaroFilters filters={FILTERS} />
+              <SidebarFilters filters={FILTERS} />
             </div>
 
             <div className="tosca-body" ref={this.pageRef}>
@@ -149,16 +138,12 @@ class Tosca extends React.Component {
               </div>
 
               <div className="filter-list-wrapper">
-                <SelectedFilters
-                  className="filter-list"
-                  onClear={this._handleClearFilter}
-                />
+                <SelectedFilters className="filter-list" />
               </div>
               <div ref={this.mapRef}>{reactiveMap}</div>
               <ToscaResultsList
                 componentId={RESULTS_LIST_COMPONENT_ID}
                 queryParams={QUERY_LOGIC}
-                // retrieveData={this.retrieveData}
                 pageSize={10}
                 theme={classTheme}
               />
@@ -185,12 +170,8 @@ const mapStateToProps = state => ({
 });
 
 // Redux actions
-const mapDispatchToProps = dispatch => {
-  return {
-    setQuery: query => dispatch(setQuery(query)),
-    clearAllCustomComponents: () => dispatch(clearAllCustomComponents()),
-    clearCustomComponent: component => dispatch(clearCustomComponent(component))
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  setQuery: query => dispatch(setQuery(query))
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tosca);

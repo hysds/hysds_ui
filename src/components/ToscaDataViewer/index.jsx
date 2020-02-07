@@ -16,7 +16,7 @@ const ToscaDataViewer = props => {
   };
 
   return (
-    <div className="tosca-data-viewer">
+    <div key={`${res._index}-${res._id}`} className="tosca-data-viewer">
       <div>id: {res._id}</div>
       {res.location && res.location.coordinates ? (
         <Button size="small" label="Query Region" onClick={clickQueryRegion} />

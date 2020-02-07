@@ -85,6 +85,7 @@ class ResultsList extends React.Component {
       sortColumn !== "None"
         ? [
             {
+              label: sortColumn,
               dataField: sortColumn,
               sortBy: sortOrder
             }
@@ -134,6 +135,7 @@ class ResultsList extends React.Component {
           onResultStats={(total, took) =>
             `Found ${total} results in ${took} ms.`
           }
+          renderItem={res => <div key={res._id}>{res._id}</div>}
           renderItem={tableView ? null : this.resultsListHandler}
           render={tableView ? this.renderTable : null}
           sortOptions={sortOptions}

@@ -1,6 +1,6 @@
 @import "../../scss/constants.scss";
 
-/****************************************************/ /* MAIN BODY */
+/****************************************************/
 .tosca-body {
   padding: 0px 20px;
   padding-bottom: 50px;
@@ -38,7 +38,7 @@ li.active:hover {
   background-color: transparent !important;
 }
 
-.sidenav a {
+.tosca-sidenav a {
   padding: 6px 8px 6px 16px;
   text-decoration: none;
   font-size: 20px;
@@ -47,7 +47,7 @@ li.active:hover {
 }
 
 @media screen and (max-height: 450px) {
-  .sidenav {
+  .tosca-sidenav {
     padding-top: 15px;
   }
 }

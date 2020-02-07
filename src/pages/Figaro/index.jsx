@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
 
-import FigaroFilters from "../../components/SidebarFilters";
+import SidebarFilters from "../../components/SidebarFilters";
 import SearchQuery from "../../components/SearchQuery";
 import CustomIdFilter from "../../components/CustomIdFilter";
 import HeaderBar from "../../components/HeaderBar";
@@ -66,7 +66,7 @@ class Figaro extends React.Component {
           <div className="figaro-page-wrapper">
             <div className={`${classTheme} figaro-sidenav`}>
               <div className="sidenav-title">Filters</div>
-              <FigaroFilters filters={FILTERS} />
+              <SidebarFilters filters={FILTERS} />
             </div>
 
             <div className="figaro-body" ref={this.pageRef}>
@@ -82,7 +82,6 @@ class Figaro extends React.Component {
                       size="small"
                       color="success"
                       href={`/figaro/on-demand?query=${query}&total=${dataCount}`}
-                      // href="/figaro/on-demand"
                     />
                   </div>
                   <div className="figaro-button">
@@ -105,10 +104,7 @@ class Figaro extends React.Component {
               </div>
 
               <div className="filter-list-wrapper">
-                <SelectedFilters
-                  className="filter-list"
-                  onClear={this._handleClearFilter}
-                />
+                <SelectedFilters className="filter-list" />
                 <CustomIdFilter
                   componentId="payload_id"
                   dataField="payload_id"

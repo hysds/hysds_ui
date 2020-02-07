@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { clearReduxStore, editTheme } from "../../redux/actions";
 
 import { Button } from "../Buttons";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 import "./style.scss";
 
@@ -43,10 +43,10 @@ const HeaderBar = props => {
     localStorage.setItem("dark-mode", !darkMode);
   };
 
-  const _handleLinkClick = e => {
-    if (e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
-    props.clearReduxStore();
-  };
+  // const _handleLinkClick = e => {
+  //   if (e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
+  //   props.clearReduxStore();
+  // };
 
   return (
     <div className={`${theme} header-bar`}>
@@ -55,13 +55,11 @@ const HeaderBar = props => {
         <HeaderLink
           href="/tosca"
           title="Tosca"
-          onClick={_handleLinkClick}
           active={props.active === "tosca" ? 1 : 0}
         />
         <HeaderLink
           href="/figaro"
           title="Figaro"
-          onClick={_handleLinkClick}
           active={props.active === "figaro" ? 1 : 0}
         />
         <Button

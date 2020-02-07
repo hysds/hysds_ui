@@ -34,6 +34,7 @@ let MapComponent = class extends React.Component {
   constructor(props) {
     super(props);
 
+    this.mapId = "leaflet-map-id";
     let displayMap = localStorage.getItem("display-map");
     displayMap = displayMap === "false" ? false : DEFAULT_MAP_SHOW;
 
@@ -48,8 +49,7 @@ let MapComponent = class extends React.Component {
     center = center ? JSON.parse(center) : [36.7783, -119.4179];
 
     // initializing the map
-    const mapId = "leaflet-map-id";
-    this.map = L.map(mapId, {
+    this.map = L.map(this.mapId, {
       attributionControl: false,
       center,
       zoom: localStorage.getItem("zoom") || this.props.zoom,
@@ -334,7 +334,7 @@ let MapComponent = class extends React.Component {
         />
 
         <div className="leaflet-map-container" style={mapStyle}>
-          <div id="leaflet-map-id" className="leaflet-map" />
+          <div id={this.mapId} className="leaflet-map" />
         </div>
 
         {/* <ReactTooltip place="top" type="dark" effect="solid" /> */}

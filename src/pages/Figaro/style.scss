@@ -1,3 +1,6 @@
+@import "../../scss/constants.scss";
+
+/****************************************************/
 .figaro-body {
   padding: 0px 20px;
   padding-bottom: 50px;
@@ -12,9 +15,6 @@
   height: 100vh;
 }
 
-@import "../../scss/constants.scss";
-
-/****************************************************/ /* MAIN BODY */
 /****************************************************/
 /* SIDEBAR */
 .figaro-sidenav {
@@ -70,6 +70,12 @@ input:focus {
 
 .filter-list-wrapper {
   margin-bottom: 20px;
+
+  > div {
+    > a span:last-child {
+      border-left: none;
+    }
+  }
 }
 
 .on-demand-button:hover {

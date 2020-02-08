@@ -8,6 +8,8 @@ import "brace/mode/json";
 import "brace/theme/twilight";
 import "brace/theme/tomorrow";
 
+import "./style.scss";
+
 const QueryEditor = props => {
   const _handleQueryChange = val => props.editQuery(val);
 

@@ -1,0 +1,7 @@
+@import "../../scss/constants.scss";
+
+.__theme-dark {
+  .ace_content {
+    background-color: $dark-theme-background;
+  }
+}

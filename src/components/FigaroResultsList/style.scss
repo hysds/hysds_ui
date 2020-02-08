@@ -19,6 +19,10 @@
 }
 
 .__theme-dark {
+  .results-display-options {
+    color: $dark-theme-color;
+  }
+
   .reactivesearch-results-list {
     a {
       background-color: $dark-theme-alt;

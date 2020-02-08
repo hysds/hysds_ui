@@ -15,7 +15,6 @@ import L from "leaflet"; // lealfet
 import "leaflet-draw";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
-// import ReactTooltip from "react-tooltip"; // UI stuff
 
 import { Button } from "../Buttons";
 
@@ -337,11 +336,9 @@ let MapComponent = class extends React.Component {
           <div id={this.mapId} className="leaflet-map" />
         </div>
 
-        {/* <ReactTooltip place="top" type="dark" effect="solid" /> */}
         <textarea
           className="map-coordinates-textbox"
           placeholder={textboxTooltip}
-          // data-tip={textboxTooltip} // react tool tip
           value={bboxText || this.props.value || ""}
           onChange={this._polygonTextChange}
           onKeyPress={this._polygonTextInput}

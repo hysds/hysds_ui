@@ -123,8 +123,6 @@ class ToscaOnDemand extends React.Component {
     } = this.props;
     const { submitInProgress, submitSuccess, submitFailed } = this.state;
 
-    console.log(query);
-
     const divider = paramsList.length > 0 ? <Border /> : null;
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
 

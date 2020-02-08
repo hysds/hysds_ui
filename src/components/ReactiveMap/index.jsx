@@ -321,7 +321,8 @@ let MapComponent = class extends React.Component {
       localStorage.setItem("center", JSON.stringify([center[1], center[0]]));
     }
 
-    const textboxTooltip = `Press SHIFT + ENTER to manually input polygon... ex. [ [-125.09335, 42.47589], ... ,[-125.09335, 42.47589] ]`;
+    const textboxTooltip =
+      "Press SHIFT + ENTER to manually input polygon... \nex. [ [-125.09335, 42.47589], ... ,[-125.09335, 42.47589] ]";
     const mapStyle = { display: displayMap ? "block" : "none" };
 
     return (
@@ -339,7 +340,7 @@ let MapComponent = class extends React.Component {
         <textarea
           className="map-coordinates-textbox"
           placeholder={textboxTooltip}
-          value={bboxText || this.props.value || ""}
+          value={bboxText || this.props.value || ""} // if this.props.value is null, then blank?
           onChange={this._polygonTextChange}
           onKeyPress={this._polygonTextInput}
         ></textarea>

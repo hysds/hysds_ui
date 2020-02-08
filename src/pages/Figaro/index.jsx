@@ -9,7 +9,7 @@ import CustomIdFilter from "../../components/CustomIdFilter";
 import HeaderBar from "../../components/HeaderBar";
 import FigaroResultsList from "../../components/FigaroResultsList";
 import { HelperLink } from "../../components/miscellaneous";
-import { ButtonLink } from "../../components/Buttons";
+import { ButtonLink, ScrollTop } from "../../components/Buttons";
 
 import { setQuery, editCustomFilterId } from "../../redux/actions";
 
@@ -25,12 +25,11 @@ import "./style.scss";
 class Figaro extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
     this.pageRef = React.createRef();
   }
 
-  _handleTransformRequest = event => {
-    const body = event.body.split("\n");
+  _handleTransformRequest = e => {
+    const body = e.body.split("\n");
     let [preference, query] = body;
     query = JSON.parse(query);
 
@@ -41,9 +40,9 @@ class Figaro extends React.Component {
       let parsedQuery = query.query;
       parsedQuery = JSON.stringify(parsedQuery);
       this.props.setQuery(parsedQuery);
-      event.body = `${preference}\n${JSON.stringify(query)}\n`;
+      e.body = `${preference}\n${JSON.stringify(query)}\n`;
     }
-    return event;
+    return e;
   };
 
   render() {
@@ -114,6 +113,7 @@ class Figaro extends React.Component {
 
               <FigaroResultsList />
             </div>
+            <ScrollTop onClick={() => this.pageRef.current.scrollTo(0, 0)} />
           </div>
         </ReactiveBase>
       </Fragment>

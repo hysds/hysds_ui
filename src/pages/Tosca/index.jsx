@@ -50,8 +50,8 @@ class Tosca extends React.Component {
       this.mapRef.current.scrollIntoView({ block: "start" });
   }
 
-  _handleTransformRequest = event => {
-    const body = event.body.split("\n");
+  _handleTransformRequest = e => {
+    const body = e.body.split("\n");
     let [preference, query] = body;
     query = JSON.parse(query);
 
@@ -62,9 +62,9 @@ class Tosca extends React.Component {
       let parsedQuery = query.query;
       parsedQuery = JSON.stringify(parsedQuery);
       this.props.setQuery(parsedQuery);
-      event.body = `${preference}\n${JSON.stringify(query)}\n`;
+      e.body = `${preference}\n${JSON.stringify(query)}\n`;
     }
-    return event;
+    return e;
   };
 
   render() {

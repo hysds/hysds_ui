@@ -3,7 +3,7 @@ import {
   CLEAR_ALL_CUSTOM_COMPONENTS,
   CLEAR_CUSTOM_COMPONENTS,
   RETRIEVE_DATA,
-  GET_QUERY,
+  SET_QUERY,
   EDIT_QUERY, // on-demand
   VALIDATE_QUERY,
   EDIT_PRIORITY,
@@ -66,7 +66,7 @@ export const retrieveData = data => ({
 
 export const setQuery = query => {
   return {
-    type: GET_QUERY,
+    type: SET_QUERY,
     payload: query
   };
 };

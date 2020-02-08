@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 
 import Tosca from "../Tosca";
-import MetadataViewer from "../MetadataViewer";
+// import MetadataViewer from "../MetadataViewer";
 import ToscaOnDemand from "../ToscaOnDemand";
 import ToscaUserRules from "../ToscaUserRules";
 import ToscaRuleEditor from "../ToscaRuleEditor";
@@ -17,6 +17,8 @@ import Figaro from "../Figaro";
 import FigaroOnDemand from "../FigaroOnDemand";
 import FigaroUserRules from "../FigaroUserRules";
 import FigaroRuleEditor from "../FigaroRuleEditor";
+
+// import JsonEditorTest from "../JsonEditorTest";
 
 import "./style.scss";
 
@@ -30,7 +32,7 @@ const Routes = props => {
           <Route exact path="/" render={() => <Redirect to="/tosca" />} />
 
           <Route exact path="/tosca" component={Tosca} />
-          <Route exact path="/tosca/metadata" component={MetadataViewer} />
+          {/* <Route exact path="/tosca/metadata" component={MetadataViewer} /> */}
           <Route exact path="/tosca/on-demand" component={ToscaOnDemand} />
           <Route exact path="/tosca/user-rules" component={ToscaUserRules} />
           <Route exact path="/tosca/user-rule" component={ToscaRuleEditor} />
@@ -49,6 +51,8 @@ const Routes = props => {
             path="/figaro/user-rule/:rule"
             component={FigaroRuleEditor}
           />
+
+          {/* <Route exact path="/tosca/json-editor" component={JsonEditorTest} /> */}
         </Switch>
       </Router>
     </div>

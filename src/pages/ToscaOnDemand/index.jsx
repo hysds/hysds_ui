@@ -23,9 +23,12 @@ import {
   editTags,
   validateQuery
 } from "../../redux/actions";
-import { editDataCount, getOnDemandJobs } from "../../redux/actions/tosca";
-
-import { getQueueList, getParamsList } from "../../redux/actions/tosca";
+import {
+  editDataCount,
+  getOnDemandJobs,
+  getQueueList,
+  getParamsList
+} from "../../redux/actions/tosca";
 
 import { GRQ_REST_API_V1 } from "../../config/tosca";
 
@@ -119,6 +122,8 @@ class ToscaOnDemand extends React.Component {
       submissionType
     } = this.props;
     const { submitInProgress, submitSuccess, submitFailed } = this.state;
+
+    console.log(query);
 
     const divider = paramsList.length > 0 ? <Border /> : null;
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;

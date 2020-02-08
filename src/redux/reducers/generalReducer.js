@@ -11,7 +11,7 @@ import {
   EDIT_RULE_NAME,
   EDIT_TAG,
   GET_JOB_LIST,
-  GET_QUERY,
+  SET_QUERY,
   GLOBAL_SEARCH_USER_RULES,
   LOAD_JOB_PARAMS,
   LOAD_QUEUE,
@@ -74,7 +74,7 @@ const generalReducer = (state = initialState, action) => {
         data: action.payload.data,
         dataCount: action.payload.resultStats.numberOfResults
       };
-    case GET_QUERY:
+    case SET_QUERY:
       return {
         ...state,
         query: action.payload

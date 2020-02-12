@@ -11,8 +11,7 @@
 
 .tosca-page-wrapper {
   display: flex;
-  padding-top: 44px;
-  height: 100vh;
+  height: calc(100vh - 45px);
 }
 
 /****************************************************/

@@ -48,8 +48,8 @@ class FigaroResultsList extends React.Component {
   }
 
   _handleTableToggle = () => {
-    localStorage.setItem(TABLE_VIEW_STORE, !this.state.tableView);
     this.setState({ tableView: !this.state.tableView });
+    localStorage.setItem(TABLE_VIEW_STORE, !this.state.tableView);
   };
 
   _handlePageSizeChange = e => {

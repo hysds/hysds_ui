@@ -20,15 +20,10 @@ export const FigaroDataComponent = class extends React.Component {
 
     return (
       <div key={`${res._index}-${res._id}`} className="figaro-data-component">
+        {res.tags && res.tags.length > 0 ? <div>tags: {res.tags}</div> : null}
         <div>status: {res.status}</div>
         {res.resource ? <div>resource: {res.resource}</div> : null}
         <div>index: {res._index}</div>
-        <div
-          className="tosca-data-view-link"
-          onClick={() => this.props.editCustomFilterId("_id", res._id)}
-        >
-          id: {res._id}
-        </div>
         {res.payload_id ? (
           <div
             className="tosca-data-view-link"
@@ -36,7 +31,7 @@ export const FigaroDataComponent = class extends React.Component {
               this.props.editCustomFilterId("payload_id", res.payload_id)
             }
           >
-            payload: {res.payload_id}
+            payload_id: {res.payload_id}
           </div>
         ) : null}
         <div>timestamp: {res["@timestamp"]}</div>
@@ -48,7 +43,6 @@ export const FigaroDataComponent = class extends React.Component {
           <div>queue: {res.job.job_info.job_queue}</div>
         ) : null}
         {res.job ? <div>priority: {res.job.priority}</div> : null}
-        {res.tags && res.tags.length > 0 ? <div>tags: {res.tags}</div> : null}
         {res.job && res.job.job_info && res.job.job_info.duration ? (
           <div>duration: {res.job.job_info.duration}s</div>
         ) : null}

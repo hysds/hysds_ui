@@ -43,7 +43,7 @@ const FigaroUserRules = class extends React.Component {
     const searchDisabled = userRules.length === 0 && !this.state.globalSearch;
 
     return (
-      <Fragment>
+      <div className="figaro-user-rules">
         <Helmet>
           <title>Mozart - User Rules</title>
           <meta name="description" content="Helmet application" />
@@ -79,7 +79,7 @@ const FigaroUserRules = class extends React.Component {
             />
           </div>
         </div>
-      </Fragment>
+      </div>
     );
   }
 };

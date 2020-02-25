@@ -4,13 +4,13 @@
 .figaro-body {
   padding: 0px 20px;
   padding-bottom: 50px;
-  min-width: 800px;
   flex: 1;
   overflow: auto;
 }
 
 .figaro-page-wrapper {
   display: flex;
+  min-width: 1100px;
   height: calc(100vh - 45px);
 }
 

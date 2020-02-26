@@ -146,7 +146,7 @@ class ToscaRuleEditor extends React.Component {
     const aceTheme = darkMode ? darkTheme : lightTheme;
 
     return (
-      <Fragment>
+      <div className="tosca-user-rule-editor-page">
         <Helmet>
           <title>Tosca - Rule Editor</title>
           <meta name="description" content="Helmet application" />
@@ -229,7 +229,7 @@ class ToscaRuleEditor extends React.Component {
           visible={this.state.submitFailed}
           status="failed"
         />
-      </Fragment>
+      </div>
     );
   }
 }

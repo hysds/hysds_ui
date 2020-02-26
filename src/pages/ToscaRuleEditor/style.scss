@@ -4,6 +4,10 @@ body {
   font-family: "Oswald", sans-serif !important;
 }
 
+.tosca-user-rule-editor-page {
+  min-width: 650px;
+}
+
 .tosca-user-rule-editor {
   display: flex;
   height: calc(100vh - 44px);

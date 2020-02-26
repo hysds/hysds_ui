@@ -142,7 +142,7 @@ class FigaroOnDemand extends React.Component {
     const validSubmission = this._validateSubmission();
 
     return (
-      <Fragment>
+      <div className="figaro-on-demand-page">
         <Helmet>
           <title>Tosca - On Demand</title>
           <meta name="description" content="Helmet application" />
@@ -250,7 +250,7 @@ class FigaroOnDemand extends React.Component {
           visible={submitFailed}
           status="failed"
         />
-      </Fragment>
+      </div>
     );
   }
 }

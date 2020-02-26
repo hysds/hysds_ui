@@ -35,6 +35,11 @@
 .__theme-dark {
   .results-display-options {
     color: $dark-theme-color;
+
+    select {
+      background-color: $dark-theme-alt;
+      color: $dark-theme-color;
+    }
   }
 
   .reactivesearch-results-list {

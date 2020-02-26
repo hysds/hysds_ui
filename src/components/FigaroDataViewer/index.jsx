@@ -24,6 +24,12 @@ export const FigaroDataComponent = class extends React.Component {
         <div>status: {res.status}</div>
         {res.resource ? <div>resource: {res.resource}</div> : null}
         <div>index: {res._index}</div>
+        <div
+          className="tosca-data-view-link"
+          onClick={() => this.props.editCustomFilterId("_id", res._id)}
+        >
+          id: {res._id}
+        </div>
         {res.payload_id ? (
           <div
             className="tosca-data-view-link"

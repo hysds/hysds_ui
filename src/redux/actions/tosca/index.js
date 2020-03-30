@@ -61,8 +61,8 @@ export const getOnDemandJobs = () => dispatch => {
     );
 };
 
-export const getQueueList = jobType => dispatch => {
-  const getQueuesEndpoint = `${MOZART_REST_API_V2}/queue/list?id=${jobType}`;
+export const getQueueList = jobSpec => dispatch => {
+  const getQueuesEndpoint = `${MOZART_REST_API_V2}/queue/list?id=${jobSpec}`;
   return fetch(getQueuesEndpoint)
     .then(res => res.json())
     .then(data => {
@@ -78,8 +78,8 @@ export const getQueueList = jobType => dispatch => {
 };
 
 // /job-params
-export const getParamsList = jobType => dispatch => {
-  const getParamsListEndpoint = `${GRQ_REST_API_V1}/grq/job-params?job_type=${jobType}`;
+export const getParamsList = jobSpec => dispatch => {
+  const getParamsListEndpoint = `${GRQ_REST_API_V1}/grq/job-params?job_type=${jobSpec}`;
   return fetch(getParamsListEndpoint)
     .then(res => res.json())
     .then(data => {

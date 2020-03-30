@@ -4,6 +4,10 @@ body {
   font-family: "Oswald", sans-serif !important;
 }
 
+.figaro-user-rule-editor-page {
+  min-width: 650px;
+}
+
 .figaro-user-rule-editor {
   display: flex;
   height: calc(100vh - 44px);

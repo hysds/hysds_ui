@@ -140,7 +140,7 @@ class ToscaOnDemand extends React.Component {
     const aceTheme = darkMode ? darkTheme : lightTheme;
 
     return (
-      <Fragment>
+      <div className="tosca-on-demand-page">
         <Helmet>
           <title>Tosca - On Demand</title>
           <meta name="description" content="Helmet application" />
@@ -246,7 +246,7 @@ class ToscaOnDemand extends React.Component {
           visible={submitFailed}
           status="failed"
         />
-      </Fragment>
+      </div>
     );
   }
 }

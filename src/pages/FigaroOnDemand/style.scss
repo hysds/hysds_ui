@@ -4,6 +4,10 @@ body {
   font-family: "Oswald", sans-serif !important;
 }
 
+.figaro-on-demand-page {
+  min-width: 650px;
+}
+
 .figaro-on-demand {
   display: flex;
   height: calc(100vh - 43px);

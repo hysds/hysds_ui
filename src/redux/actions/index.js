@@ -97,7 +97,7 @@ export const editJobPriority = (payload, url = false) => {
 export const changeJobType = (payload, url = false) => {
   if (url) {
     clearUrlJobParams(payload);
-    constructUrl("job_type", payload.jobType);
+    constructUrl("job_spec", payload.jobSpec);
     constructUrl("hysds_io", payload.hysdsio);
   }
   return {

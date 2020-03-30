@@ -48,7 +48,7 @@ const initialState = {
   priority: priority || null,
   jobList: [],
   jobLabel: null,
-  jobType: urlParams.get("job_type") || null,
+  jobSpec: urlParams.get("job_spec") || null,
   hysdsio: urlParams.get("hysds_io") || null,
   queueList: [],
   queue: null,
@@ -117,7 +117,7 @@ const generalReducer = (state = initialState, action) => {
     case CHANGE_JOB_TYPE:
       return {
         ...state,
-        jobType: action.payload.jobType,
+        jobSpec: action.payload.jobSpec,
         jobLabel: action.payload.label,
         hysdsio: action.payload.hysdsio,
         queue: null,
@@ -178,7 +178,7 @@ const generalReducer = (state = initialState, action) => {
       return {
         ...state,
         query: payload.query_string,
-        jobType: payload.job_spec,
+        jobSpec: payload.job_spec,
         hysdsio: payload.job_type,
         params: JSON.parse(payload.kwargs),
         ruleName: payload.rule_name,
@@ -236,7 +236,7 @@ const generalReducer = (state = initialState, action) => {
     case CLEAR_JOB_PARAMS:
       return {
         ...state,
-        jobType: null,
+        jobSpec: null,
         hysdsio: null,
         queue: null,
         queueList: [],

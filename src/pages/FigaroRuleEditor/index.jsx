@@ -61,7 +61,7 @@ class FigaroRuleEditor extends React.Component {
   _validateSubmission = () => {
     let {
       validQuery,
-      jobType,
+      jobSpec,
       ruleName,
       queue,
       priority,
@@ -70,7 +70,7 @@ class FigaroRuleEditor extends React.Component {
     } = this.props;
 
     let validSubmission = true;
-    if (!validQuery || !ruleName || !jobType || !priority || !queue)
+    if (!validQuery || !ruleName || !jobSpec || !priority || !queue)
       return false;
 
     paramsList.map(param => {
@@ -89,7 +89,7 @@ class FigaroRuleEditor extends React.Component {
       query_string: this.props.query,
       priority: this.props.priority,
       workflow: this.props.hysdsio,
-      job_spec: this.props.jobType,
+      job_spec: this.props.jobSpec,
       queue: this.props.queue,
       kwargs: JSON.stringify(this.props.params)
     };
@@ -181,7 +181,7 @@ class FigaroRuleEditor extends React.Component {
                 getParamsList={getParamsList}
                 getQueueList={getQueueList}
                 jobs={this.props.jobs}
-                jobType={this.props.jobType}
+                jobSpec={this.props.jobSpec}
                 jobLabel={this.props.jobLabel}
               />
               <QueueInput
@@ -242,7 +242,7 @@ const mapStateToProps = state => ({
   query: state.generalReducer.query,
   validQuery: state.generalReducer.validQuery,
   jobs: state.generalReducer.jobList,
-  jobType: state.generalReducer.jobType,
+  jobSpec: state.generalReducer.jobSpec,
   jobLabel: state.generalReducer.jobLabel,
   hysdsio: state.generalReducer.hysdsio,
   queueList: state.generalReducer.queueList,
@@ -258,7 +258,7 @@ const mapDispatchToProps = dispatch => ({
   getUserRule: id => dispatch(getUserRule(id)),
   getOnDemandJobs: () => dispatch(getOnDemandJobs()),
   clearJobParams: () => dispatch(clearJobParams()),
-  getQueueList: jobType => dispatch(getQueueList(jobType))
+  getQueueList: jobSpec => dispatch(getQueueList(jobSpec))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FigaroRuleEditor);

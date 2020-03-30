@@ -1,9 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux"; // redux
 
 import ReactTable from "react-table";
-// import { clickQueryRegion } from "../../redux/actions";
 
 import "./style.scss";
 
@@ -51,6 +49,9 @@ export const FigaroDataComponent = class extends React.Component {
         {res.job ? <div>priority: {res.job.priority}</div> : null}
         {res.job && res.job.job_info && res.job.job_info.duration ? (
           <div>duration: {res.job.job_info.duration}s</div>
+        ) : null}
+        {res.traceback ? (
+          <div className="figaro-traceback">{res.traceback}</div>
         ) : null}
       </div>
     );

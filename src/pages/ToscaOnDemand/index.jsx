@@ -46,16 +46,16 @@ class ToscaOnDemand extends React.Component {
 
   componentDidMount() {
     this.props.getOnDemandJobs();
-    if (this.props.jobType) {
-      this.props.getQueueList(this.props.jobType);
-      this.props.getParamsList(this.props.jobType);
+    if (this.props.jobSpec) {
+      this.props.getQueueList(this.props.jobSpec);
+      this.props.getParamsList(this.props.jobSpec);
     }
   }
 
   _validateSubmission = () => {
     let {
       validQuery,
-      jobType,
+      jobSpec,
       tags,
       queue,
       priority,
@@ -64,7 +64,7 @@ class ToscaOnDemand extends React.Component {
     } = this.props;
 
     let validSubmission = true;
-    if (!validQuery || !tags || !jobType || !priority || !queue) return false;
+    if (!validQuery || !tags || !jobSpec || !priority || !queue) return false;
 
     paramsList.map(param => {
       const paramName = param.name;
@@ -126,7 +126,7 @@ class ToscaOnDemand extends React.Component {
     const divider = paramsList.length > 0 ? <Border /> : null;
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
 
-    const submissionTypeLabel = this.props.jobType ? (
+    const submissionTypeLabel = this.props.jobSpec ? (
       <button className="on-demand-submission-type">
         Submit Type: <strong>{submissionType || "iteration"}</strong>
       </button>
@@ -181,7 +181,7 @@ class ToscaOnDemand extends React.Component {
                     getParamsList={getParamsList}
                     getQueueList={getQueueList}
                     jobs={this.props.jobs}
-                    jobType={this.props.jobType}
+                    jobSpec={this.props.jobSpec}
                     jobLabel={this.props.jobLabel}
                   />
                 </div>
@@ -256,7 +256,7 @@ const mapStateToProps = state => ({
   query: state.generalReducer.query,
   validQuery: state.generalReducer.validQuery,
   jobs: state.generalReducer.jobList,
-  jobType: state.generalReducer.jobType,
+  jobSpec: state.generalReducer.jobSpec,
   jobLabel: state.generalReducer.jobLabel,
   hysdsio: state.generalReducer.hysdsio,
   queueList: state.generalReducer.queueList,
@@ -271,8 +271,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getOnDemandJobs: () => dispatch(getOnDemandJobs()),
-  getQueueList: jobType => dispatch(getQueueList(jobType)),
-  getParamsList: jobType => dispatch(getParamsList(jobType)),
+  getQueueList: jobSpec => dispatch(getQueueList(jobSpec)),
+  getParamsList: jobSpec => dispatch(getParamsList(jobSpec)),
   editDataCount: query => dispatch(editDataCount(query))
 });
 

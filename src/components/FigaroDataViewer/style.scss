@@ -6,6 +6,12 @@
   border: 1px solid $dark-theme-light;
 }
 
+.figaro-traceback {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  white-space: pre-line;
+}
+
 .tosca-data-view-link {
   &:hover {
     text-decoration: underline;

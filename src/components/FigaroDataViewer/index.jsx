@@ -53,7 +53,7 @@ export const FigaroDataComponent = class extends React.Component {
         {res.traceback ? (
           <div className="figaro-traceback">{res.traceback}</div>
         ) : null}
-        {res.event.traceback ? (
+        {res.event && res.event.traceback ? (
           <div className="figaro-traceback">{res.event.traceback}</div>
         ) : null}
       </div>

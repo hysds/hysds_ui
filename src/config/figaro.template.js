@@ -133,5 +133,6 @@ exports.FIELDS = [
   "job.job_info.execute_node",
   "job.job_info.facts.ec2_instance_type",
   "job.job_info.job_queue",
-  "job.job_info.duration"
+  "job.job_info.duration",
+  "event.traceback"
 ];

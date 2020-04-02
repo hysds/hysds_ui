@@ -114,7 +114,8 @@ exports.QUERY_LOGIC = {
     "starttime",
     "platform",
     "continent",
-    "track_number"
+    "track_number",
+    this.MAP_COMPONENT_ID
   ]
 };
 

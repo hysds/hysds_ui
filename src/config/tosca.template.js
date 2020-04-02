@@ -61,15 +61,62 @@ exports.FIELDS = [
 exports.GRQ_API_BASE = "http://localhost:8878"; // base url for GRQ API
 exports.GRQ_REST_API_V1 = `${this.GRQ_API_BASE}/api/v0.1`;
 exports.GRQ_REST_API_V2 = `${this.GRQ_API_BASE}/api/v0.2`;
-exports.GRQ_ACTIONS_API = "user_rules/actions_config";
-exports.GRQ_JOB_SPECS_ENDPOINT = "job_specs";
-// exports.GRQ_ACTIONS_API = 'hysds_io/list';
 
 exports.MOZART_REST_API_BASE = "http://localhost:8888";
 exports.MOZART_REST_API_V1 = `${this.MOZART_REST_API_BASE}/api/v0.1`;
 exports.MOZART_REST_API_V2 = `${this.MOZART_REST_API_BASE}/api/v0.2`;
 
 exports.GRQ_TABLE_VIEW_DEFAULT = true;
+
+exports.FILTERS = [
+  {
+    componentId: "dataset",
+    dataField: "dataset.keyword",
+    title: "Dataset",
+    type: "single"
+  },
+  {
+    componentId: "dataset_type",
+    dataField: "dataset_type.keyword",
+    title: "Dataset Type",
+    type: "single"
+  },
+  {
+    componentId: "platform",
+    dataField: "metadata.platform.keyword",
+    title: "Platform",
+    type: "single"
+  },
+  {
+    componentId: "continent",
+    dataField: "continent.keyword",
+    title: "Continent",
+    type: "single"
+  },
+  {
+    componentId: "starttime",
+    dataField: "starttime",
+    title: "Start Time",
+    type: "date"
+  },
+  {
+    componentId: "track_number",
+    dataField: "metadata.trackNumber",
+    title: "Track Number",
+    type: "multi"
+  }
+];
+
+exports.QUERY_LOGIC = {
+  and: [
+    "dataset",
+    "dataset_type",
+    "starttime",
+    "platform",
+    "continent",
+    "track_number"
+  ]
+};
 
 exports.GRQ_DISPLAY_COLUMNS = [
   {

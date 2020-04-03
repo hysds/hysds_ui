@@ -23,5 +23,5 @@ npm start
 docker build . -t hysds_ui:latest
 
 # Running image
-docker run -p 8080:80 --network="host" hysds_ui:latest
+docker run -p 8080:80 hysds_ui:latest
 ```

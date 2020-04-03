@@ -11,26 +11,31 @@ import Tosca from "../Tosca";
 import ToscaOnDemand from "../ToscaOnDemand";
 import ToscaUserRules from "../ToscaUserRules";
 import ToscaRuleEditor from "../ToscaRuleEditor";
-// import MetadataViewer from "../MetadataViewer";
 
 import Figaro from "../Figaro";
 import FigaroOnDemand from "../FigaroOnDemand";
 import FigaroUserRules from "../FigaroUserRules";
 import FigaroRuleEditor from "../FigaroRuleEditor";
 
-// import JsonEditorTest from "../JsonEditorTest";
-
 import "./style.scss";
+
+/**
+ * TODO:
+ * basename prop in Router will be useful for when this app's port routes to an endpoint
+ * ie. 100.64.###.###/mozart
+ * may need to have a settings variable that routes
+ *
+ * TODO: have a core config/index.js
+ */
 
 const Routes = props => {
   const classTheme = props.darkMode ? "__theme-dark" : "__theme-light";
 
   return (
     <div className={classTheme}>
-      <Router>
+      <Router basename="/">
         <Switch>
           <Route exact path="/" render={() => <Redirect to="/tosca" />} />
-
           <Route exact path="/tosca" component={Tosca} />
           <Route exact path="/tosca/on-demand" component={ToscaOnDemand} />
           <Route exact path="/tosca/user-rules" component={ToscaUserRules} />
@@ -40,7 +45,6 @@ const Routes = props => {
             path="/tosca/user-rule/:rule"
             component={ToscaRuleEditor}
           />
-          {/* <Route exact path="/tosca/metadata" component={MetadataViewer} /> */}
 
           <Route exact path="/figaro" component={Figaro} />
           <Route exact path="/figaro/on-demand" component={FigaroOnDemand} />
@@ -51,8 +55,6 @@ const Routes = props => {
             path="/figaro/user-rule/:rule"
             component={FigaroRuleEditor}
           />
-
-          {/* <Route exact path="/tosca/json-editor" component={JsonEditorTest} /> */}
         </Switch>
       </Router>
     </div>

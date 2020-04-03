@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+
 import {
   Route,
   BrowserRouter as Router,
@@ -22,7 +23,7 @@ import "./style.scss";
 /**
  * TODO:
  * basename prop in Router will be useful for when this app's port routes to an endpoint
- * ie. 100.64.###.###/mozart
+ * ie. 100.64.###.###/mozart -> basename="/mozart"
  * may need to have a settings variable that routes
  *
  * TODO: have a core config/index.js
@@ -33,7 +34,7 @@ const Routes = props => {
 
   return (
     <div className={classTheme}>
-      <Router basename="/">
+      <Router>
         <Switch>
           <Route exact path="/" render={() => <Redirect to="/tosca" />} />
           <Route exact path="/tosca" component={Tosca} />

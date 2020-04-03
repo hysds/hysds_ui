@@ -115,7 +115,8 @@ exports.QUERY_LOGIC = {
     "platform",
     "continent",
     "track_number",
-    this.MAP_COMPONENT_ID
+    this.MAP_COMPONENT_ID,
+    this.QUERY_SEARCH_COMPONENT_ID
   ]
 };
 

@@ -22,14 +22,14 @@ import {
   editParams,
   editQuery,
   editTags,
-  validateQuery
+  validateQuery,
 } from "../../redux/actions";
 
 import {
   getOnDemandJobs,
   getQueueList,
   getParamsList,
-  editDataCount
+  editDataCount,
 } from "../../redux/actions/figaro";
 
 import { MOZART_REST_API_V1 } from "../../config";
@@ -42,7 +42,7 @@ class FigaroOnDemand extends React.Component {
     this.state = {
       submitInProgress: 0,
       submitSuccess: 0,
-      submitFailed: 0
+      submitFailed: 0,
     };
   }
 
@@ -62,13 +62,13 @@ class FigaroOnDemand extends React.Component {
       queue,
       priority,
       params,
-      paramsList
+      paramsList,
     } = this.props;
 
     let validSubmission = true;
     if (!validQuery || !tags || !jobSpec || !priority || !queue) return false;
 
-    paramsList.map(param => {
+    paramsList.map((param) => {
       const paramName = param.name;
       if (!(param.optional === true) && !params[paramName])
         validSubmission = false;
@@ -91,13 +91,13 @@ class FigaroOnDemand extends React.Component {
       queue: this.props.queue,
       priority: this.props.priority,
       query: this.props.query,
-      kwargs: JSON.stringify(this.props.params)
+      kwargs: JSON.stringify(this.props.params),
     };
 
     const jobSubmitUrl = `${MOZART_REST_API_V1}/on-demand`;
     fetch(jobSubmitUrl, { method: "POST", headers, body: JSON.stringify(data) })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (!data.success) {
           this.setState({ submitInProgress: 0, submitFailed: 1 });
           setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
@@ -106,7 +106,7 @@ class FigaroOnDemand extends React.Component {
           setTimeout(() => this.setState({ submitSuccess: 0 }), 3000);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         this.setState({ submitInProgress: 0, submitFailed: 1 });
         setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
@@ -121,7 +121,7 @@ class FigaroOnDemand extends React.Component {
       params,
       hysdsio,
       validQuery,
-      submissionType
+      submissionType,
     } = this.props;
     const { submitInProgress, submitSuccess, submitFailed } = this.state;
 
@@ -255,7 +255,7 @@ class FigaroOnDemand extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   query: state.generalReducer.query,
   validQuery: state.generalReducer.validQuery,
@@ -270,14 +270,14 @@ const mapStateToProps = state => ({
   params: state.generalReducer.params,
   tags: state.generalReducer.tags,
   submissionType: state.generalReducer.submissionType,
-  dataCount: state.generalReducer.dataCount
+  dataCount: state.generalReducer.dataCount,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   getOnDemandJobs: () => dispatch(getOnDemandJobs()),
-  getQueueList: jobSpec => dispatch(getQueueList(jobSpec)),
-  getParamsList: jobSpec => dispatch(getParamsList(jobSpec)),
-  editDataCount: query => dispatch(editDataCount(query))
+  getQueueList: (jobSpec) => dispatch(getQueueList(jobSpec)),
+  getParamsList: (jobSpec) => dispatch(getParamsList(jobSpec)),
+  editDataCount: (query) => dispatch(editDataCount(query)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FigaroOnDemand);

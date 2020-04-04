@@ -14,7 +14,7 @@ import {
   FIELDS, // only fields we care about
   DISPLAY_MAP, // display map or do not render
   FILTERS,
-  QUERY_LOGIC
+  QUERY_LOGIC,
 } from "../../config/tosca";
 
 // custom components we built to handle elasticsearch data
@@ -37,7 +37,7 @@ class Tosca extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tableView: GRQ_TABLE_VIEW_DEFAULT // boolean
+      tableView: GRQ_TABLE_VIEW_DEFAULT, // boolean
     };
     this.mapRef = React.createRef();
     this.pageRef = React.createRef();
@@ -49,7 +49,7 @@ class Tosca extends React.Component {
       this.mapRef.current.scrollIntoView({ block: "start" });
   }
 
-  _handleTransformRequest = e => {
+  _handleTransformRequest = (e) => {
     const body = e.body.split("\n");
     let [preference, query] = body;
     query = JSON.parse(query);
@@ -156,21 +156,21 @@ class Tosca extends React.Component {
 }
 
 Tosca.defaultProps = {
-  theme: "__theme-light"
+  theme: "__theme-light",
 };
 
 // redux state data
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   data: state.generalReducer.data,
   dataCount: state.generalReducer.dataCount,
   query: state.generalReducer.query,
-  queryRegion: state.reactivesearchReducer.queryRegion
+  queryRegion: state.reactivesearchReducer.queryRegion,
 });
 
 // Redux actions
-const mapDispatchToProps = dispatch => ({
-  setQuery: query => dispatch(setQuery(query))
+const mapDispatchToProps = (dispatch) => ({
+  setQuery: (query) => dispatch(setQuery(query)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tosca);

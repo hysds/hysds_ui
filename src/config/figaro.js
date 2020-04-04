@@ -1,5 +1,3 @@
-exports.MOZART_ES_INDICES = "job_status";
-
 exports.FIGARO_DISPLAY_COLUMNS = [
   {
     Header: "status",

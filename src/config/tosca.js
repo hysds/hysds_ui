@@ -1,6 +1,3 @@
-exports.GRQ_ES_INDICES = "grq";
-// exports.GRQ_ES_INDICES = "grq_v1.1_s1-iw_slc3,grq_v2.0.2_s1-gunw3";
-
 // DEFINING THE OPTIONS FOR THE LEAFLET MAP
 /*******************************************************************************/
 exports.DISPLAY_MAP = true;
@@ -108,6 +105,7 @@ exports.QUERY_LOGIC = {
     "continent",
     "track_number",
     "endtime",
+    this.ID_COMPONENT,
     this.MAP_COMPONENT_ID,
     this.QUERY_SEARCH_COMPONENT_ID
   ]

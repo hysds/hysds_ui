@@ -13,12 +13,8 @@ import { ButtonLink, ScrollTop } from "../../components/Buttons";
 
 import { setQuery, editCustomFilterId } from "../../redux/actions";
 
-import {
-  MOZART_ES_URL,
-  MOZART_ES_INDICES,
-  FILTERS,
-  FIELDS
-} from "../../config/figaro";
+import { MOZART_ES_URL } from "../../config";
+import { MOZART_ES_INDICES, FILTERS, FIELDS } from "../../config/figaro";
 
 import "./style.scss";
 

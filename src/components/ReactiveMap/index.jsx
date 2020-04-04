@@ -19,7 +19,6 @@ import "leaflet-draw/dist/leaflet.draw.css";
 import { Button } from "../Buttons";
 
 import {
-  DEFAULT_MAP_SHOW,
   LEAFLET_TILELAYER,
   LEAFLET_ATTRIBUTION,
   BBOX_COLOR,
@@ -35,7 +34,7 @@ let MapComponent = class extends React.Component {
 
     this.mapId = "leaflet-map-id";
     let displayMap = localStorage.getItem("display-map");
-    displayMap = displayMap === "false" ? false : DEFAULT_MAP_SHOW;
+    displayMap = displayMap === "false" ? false : true;
 
     this.state = {
       displayMap,

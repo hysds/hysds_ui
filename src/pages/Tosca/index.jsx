@@ -4,8 +4,8 @@ import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
 import { connect } from "react-redux";
 import { setQuery } from "../../redux/actions";
 
+import { GRQ_ES_URL } from "../../config";
 import {
-  GRQ_ES_URL,
   GRQ_ES_INDICES,
   GRQ_TABLE_VIEW_DEFAULT,
   ID_COMPONENT, // all fields read by Reactivesearch

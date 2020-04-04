@@ -30,7 +30,7 @@ import {
   getParamsList
 } from "../../redux/actions/tosca";
 
-import { GRQ_REST_API_V1 } from "../../config/tosca";
+import { GRQ_REST_API_V1 } from "../../config";
 
 import "./style.scss";
 

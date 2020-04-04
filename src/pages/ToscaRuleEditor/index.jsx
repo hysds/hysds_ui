@@ -16,7 +16,7 @@ import { Border, SubmitStatusBar } from "../../components/miscellaneous";
 
 import HeaderBar from "../../components/HeaderBar";
 
-import { GRQ_REST_API_V1 } from "../../config/tosca";
+import { GRQ_REST_API_V1 } from "../../config";
 
 import {
   validateQuery,

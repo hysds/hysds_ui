@@ -13,13 +13,10 @@ import {
 
 import { editUrlDataCount } from "../../../utils";
 
-import {
-  GRQ_REST_API_V1,
-  GRQ_ES_URL,
-  GRQ_ES_INDICES
-} from "../../../config/tosca";
+import { GRQ_REST_API_V1, GRQ_ES_URL } from "../../../config";
+import { GRQ_ES_INDICES } from "../../../config/tosca";
 
-import { MOZART_REST_API_V2 } from "../../../config/figaro";
+import { MOZART_REST_API_V2 } from "../../../config";
 
 export const editDataCount = query => dispatch => {
   const ES_QUERY_DATA_COUNT_ENDPOINT = `${GRQ_ES_URL}/${GRQ_ES_INDICES}/_search?size=0`;

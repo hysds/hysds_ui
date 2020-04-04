@@ -1,13 +1,4 @@
-// DEFINING THE ELASTICSEARCH CONNECTION OPTIONS
-/*******************************************************************************/
-// local or AWS managed ElasticSearch instance
-exports.MOZART_ES_URL = "http://localhost:9998";
-
 exports.MOZART_ES_INDICES = "job_status";
-
-exports.MOZART_REST_API_BASE = "http://localhost:8888";
-exports.MOZART_REST_API_V1 = `${this.MOZART_REST_API_BASE}/api/v0.1`;
-exports.MOZART_REST_API_V2 = `${this.MOZART_REST_API_BASE}/api/v0.2`;
 
 exports.FIGARO_DISPLAY_COLUMNS = [
   {

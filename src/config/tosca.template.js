@@ -1,14 +1,8 @@
-// DEFINING THE ELASTICSEARCH CONNECTION OPTIONS
-/*******************************************************************************/
-// local or AWS managed ElasticSearch instance
-exports.GRQ_ES_URL = "http://localhost:9200";
-
 exports.GRQ_ES_INDICES = "grq";
 
 // DEFINING THE OPTIONS FOR THE LEAFLET MAP
 /*******************************************************************************/
 exports.DISPLAY_MAP = true;
-exports.DEFAULT_MAP_SHOW = false; // is map displayed by default
 
 // all leaflet styles: https://leaflet-extras.github.io/leaflet-providers/preview/
 exports.LEAFLET_TILELAYER =
@@ -25,7 +19,7 @@ exports.BBOX_OPACITY = 0.3;
 // reactivesearch retrieves data from each component by its componentId
 // custom Reactivesearch component
 exports.ID_COMPONENT = "_id";
-exports.QUERY_SEARCH_COMPONENT_ID = "queryString";
+exports.QUERY_SEARCH_COMPONENT_ID = "query_string";
 exports.MAP_COMPONENT_ID = "polygon";
 
 // built in Reactivesearch component id
@@ -56,15 +50,6 @@ exports.FIELDS = [
   "metadata.sensoroperationalmode",
   "metadata.polarisationmode"
 ];
-
-// API endpoints to get the available actions for on-demand
-exports.GRQ_API_BASE = "http://localhost:8878"; // base url for GRQ API
-exports.GRQ_REST_API_V1 = `${this.GRQ_API_BASE}/api/v0.1`;
-exports.GRQ_REST_API_V2 = `${this.GRQ_API_BASE}/api/v0.2`;
-
-exports.MOZART_REST_API_BASE = "http://localhost:8888";
-exports.MOZART_REST_API_V1 = `${this.MOZART_REST_API_BASE}/api/v0.1`;
-exports.MOZART_REST_API_V2 = `${this.MOZART_REST_API_BASE}/api/v0.2`;
 
 exports.GRQ_TABLE_VIEW_DEFAULT = true;
 
@@ -100,6 +85,12 @@ exports.FILTERS = [
     type: "date"
   },
   {
+    componentId: "endtime",
+    dataField: "endtime",
+    title: "End Time",
+    type: "date"
+  },
+  {
     componentId: "track_number",
     dataField: "metadata.trackNumber",
     title: "Track Number",
@@ -115,6 +106,7 @@ exports.QUERY_LOGIC = {
     "platform",
     "continent",
     "track_number",
+    "endtime",
     this.MAP_COMPONENT_ID,
     this.QUERY_SEARCH_COMPONENT_ID
   ]

@@ -15,10 +15,11 @@ import { editUrlDataCount } from "../../../utils";
 
 import {
   MOZART_ES_URL,
-  MOZART_ES_INDICES,
   MOZART_REST_API_V1,
   MOZART_REST_API_V2
-} from "../../../config/figaro";
+} from "../../../config";
+
+import { MOZART_ES_INDICES } from "../../../config/figaro";
 
 export const getOnDemandJobs = () => dispatch => {
   const getJobsEndpoint = `${MOZART_REST_API_V1}/on-demand`;

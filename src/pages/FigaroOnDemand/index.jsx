@@ -32,7 +32,7 @@ import {
   editDataCount
 } from "../../redux/actions/figaro";
 
-import { MOZART_REST_API_V1 } from "../../config/figaro";
+import { MOZART_REST_API_V1 } from "../../config";
 
 import "./style.scss";
 

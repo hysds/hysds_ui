@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import { Link } from "react-router-dom";
+
 import { connect } from "react-redux";
 import { clearReduxStore, editTheme } from "../../redux/actions";
 
@@ -9,7 +11,7 @@ import { Button } from "../Buttons";
 
 import "./style.scss";
 
-const HeaderLink = props => {
+const HeaderLink = (props) => {
   const { title, href, active } = props;
 
   let className = "header-bar-link";
@@ -17,14 +19,13 @@ const HeaderLink = props => {
 
   return (
     <li className={className} {...props}>
-      <a to={href} {...props}>
-        {title}
-      </a>
+      {/* <a to={href} {...props}>{title}</a> */}
+      <Link to={{ pathname: href, state: "desiredState" }}>{title}</Link>
     </li>
   );
 };
 
-const HeaderTitle = props => {
+const HeaderTitle = (props) => {
   let title = props.title || "HySDS";
   return (
     <li className="header-bar-title" {...props}>
@@ -33,7 +34,7 @@ const HeaderTitle = props => {
   );
 };
 
-const HeaderBar = props => {
+const HeaderBar = (props) => {
   let { title, theme } = props;
   title = props.title || "HySDS";
 
@@ -76,16 +77,16 @@ const HeaderBar = props => {
 };
 
 HeaderBar.defaultProps = {
-  theme: "__theme-light"
+  theme: "__theme-light",
 };
 
-const mapStateToProps = state => ({
-  darkMode: state.themeReducer.darkMode
+const mapStateToProps = (state) => ({
+  darkMode: state.themeReducer.darkMode,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   clearReduxStore: () => dispatch(clearReduxStore()),
-  editTheme: darkMode => dispatch(editTheme(darkMode))
+  editTheme: (darkMode) => dispatch(editTheme(darkMode)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HeaderBar);

@@ -5,7 +5,7 @@ import {
   Route,
   BrowserRouter as Router,
   Switch,
-  Redirect
+  Redirect,
 } from "react-router-dom";
 
 import Tosca from "../Tosca";
@@ -29,7 +29,7 @@ import "./style.scss";
  * TODO: have a core config/index.js
  */
 
-const Routes = props => {
+const Routes = (props) => {
   const classTheme = props.darkMode ? "__theme-dark" : "__theme-light";
 
   return (
@@ -62,8 +62,8 @@ const Routes = props => {
   );
 };
 
-const mapStateToProps = state => ({
-  darkMode: state.themeReducer.darkMode
+const mapStateToProps = (state) => ({
+  darkMode: state.themeReducer.darkMode,
 });
 
 export default connect(mapStateToProps)(Routes);

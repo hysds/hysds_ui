@@ -11,7 +11,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "index_bundle.js",
-    publicPath: "/"
+    publicPath: "/",
   },
   module: {
     rules: [
@@ -19,61 +19,61 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
-        }
+          loader: "babel-loader",
+        },
       },
       {
         test: /\.html$/,
         use: [
           {
-            loader: "html-loader"
-          }
-        ]
+            loader: "html-loader",
+          },
+        ],
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"]
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.s[ac]ss$/i,
         use: [
           "style-loader", // Creates `style` nodes from JS strings
           "css-loader", // Translates CSS into CommonJS
-          "sass-loader" // Compiles Sass to CSS
-        ]
+          "sass-loader", // Compiles Sass to CSS
+        ],
       },
       {
         test: /\.(woff|woff2|ttf|svg|eot)$/,
         use: [
           {
             loader: "file-loader",
-            options: {}
-          }
-        ]
+            options: {},
+          },
+        ],
       },
       {
         test: /\.png$/,
         use: [
           {
-            loader: "url-loader?mimetype=image/png"
-          }
-        ]
-      }
-    ]
+            loader: "url-loader?mimetype=image/png",
+          },
+        ],
+      },
+    ],
   },
   devServer: {
-    historyApiFallback: true
+    historyApiFallback: true,
   },
   plugins: [
     new HtmlWebPackPlugin({
       template: "./src/index.html",
-      filename: "./index.html"
-    })
+      filename: "./index.html",
+    }),
   ],
   performance: {
-    hints: false
+    hints: false,
   },
   resolve: {
-    extensions: [".js", ".jsx"]
-  }
+    extensions: [".js", ".jsx"],
+  },
 };

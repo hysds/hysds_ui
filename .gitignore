@@ -24,11 +24,10 @@ chrome-user-data
 *.swo
 
 # js gitignore
-config.js
+src/config/index.js
 dist/
 package-lock.json
-tosca.js
-figaro.js
+
 
 # General
 .DS_Store

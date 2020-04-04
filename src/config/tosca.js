@@ -1,4 +1,5 @@
 exports.GRQ_ES_INDICES = "grq";
+// exports.GRQ_ES_INDICES = "grq_v1.1_s1-iw_slc3,grq_v2.0.2_s1-gunw3";
 
 // DEFINING THE OPTIONS FOR THE LEAFLET MAP
 /*******************************************************************************/

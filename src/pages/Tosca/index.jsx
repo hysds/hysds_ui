@@ -4,7 +4,7 @@ import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
 import { connect } from "react-redux";
 import { setQuery } from "../../redux/actions";
 
-import { GRQ_ES_URL, GRQ_ES_INDICES } from "../../config";
+import { GRQ_ES_URL, GRQ_ES_INDICES, LDAP_USER, LDAP_PW } from "../../config";
 import {
   GRQ_TABLE_VIEW_DEFAULT,
   ID_COMPONENT, // all fields read by Reactivesearch
@@ -50,6 +50,8 @@ class Tosca extends React.Component {
   }
 
   _handleTransformRequest = (e) => {
+    e.headers["Authorization"] = `Basic ${btoa(`${LDAP_USER}:${LDAP_PW}`)}`;
+
     const body = e.body.split("\n");
     let [preference, query] = body;
     query = JSON.parse(query);

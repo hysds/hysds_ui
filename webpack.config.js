@@ -5,13 +5,14 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
  * TODO: may need to import basepath variable and append to output.publicPath
  * ie. publicPath: "/mozart"
  */
+const { SOURCE_PATH } = require("./src/config");
 
 module.exports = {
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "index_bundle.js",
-    publicPath: "/",
+    publicPath: SOURCE_PATH,
   },
   module: {
     rules: [

@@ -144,7 +144,7 @@ class FigaroOnDemand extends React.Component {
     return (
       <div className="figaro-on-demand-page">
         <Helmet>
-          <title>Tosca - On Demand</title>
+          <title>Figaro - On Demand</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
         <HeaderBar

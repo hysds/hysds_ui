@@ -12,7 +12,7 @@ import {
   ToggleSlider,
   SortOptions,
   SortDirection,
-  PageSizeOptions
+  PageSizeOptions,
 } from "../../components/TableOptions";
 import { SORT_OPTIONS } from "../../config/tosca";
 import "./style.scss";
@@ -21,6 +21,11 @@ const TABLE_VIEW_STORE = "table-view-tosca";
 const PAGE_SIZE_STORE = "page-size-tosca";
 const SORT_FIELD_STORE = "sort-field-tosca";
 const SORT_DIRECTION_STORE = "sort-direction-tosca";
+
+/**
+ * https://docs.appbase.io/docs/reactivesearch/v3/result/reactivelist/
+ * includeFields
+ */
 
 class ResultsList extends React.Component {
   constructor(props) {
@@ -33,33 +38,33 @@ class ResultsList extends React.Component {
       tableView: tableView === "true" ? true : false,
       pageSize: pageSize ? parseInt(pageSize) : props.pageSize,
       sortColumn: localStorage.getItem(SORT_FIELD_STORE) || "None",
-      sortOrder: localStorage.getItem(SORT_DIRECTION_STORE) || "desc"
+      sortOrder: localStorage.getItem(SORT_DIRECTION_STORE) || "desc",
     };
   }
 
   // callback function to handle the results from ES
-  resultsListHandler = res => (
+  resultsListHandler = (res) => (
     <div key={`${res._index}-${res._id}`}>
       <ToscaDataViewer res={res} />
     </div>
   );
 
   _handleTableToggle = () => {
-    localStorage.setItem(TABLE_VIEW_STORE, !this.state.tableView);
     this.setState({ tableView: !this.state.tableView });
+    localStorage.setItem(TABLE_VIEW_STORE, !this.state.tableView);
   };
 
-  _handlePageSizeChange = e => {
+  _handlePageSizeChange = (e) => {
     this.setState({ pageSize: parseInt(e.target.value) });
     localStorage.setItem(PAGE_SIZE_STORE, e.target.value);
   };
 
-  _handleSortColumnChange = e => {
+  _handleSortColumnChange = (e) => {
     this.setState({ sortColumn: e.target.value });
     localStorage.setItem(SORT_FIELD_STORE, e.target.value);
   };
 
-  _handleSortDirectionChange = e => {
+  _handleSortDirectionChange = (e) => {
     this.setState({ sortOrder: e.target.value });
     localStorage.setItem(SORT_DIRECTION_STORE, e.target.value);
   };
@@ -87,8 +92,8 @@ class ResultsList extends React.Component {
             {
               label: sortColumn,
               dataField: sortColumn,
-              sortBy: sortOrder
-            }
+              sortBy: sortOrder,
+            },
           ]
         : null;
 
@@ -135,7 +140,7 @@ class ResultsList extends React.Component {
           onResultStats={(total, took) =>
             `Found ${total} results in ${took} ms.`
           }
-          renderItem={res => <div key={res._id}>{res._id}</div>}
+          renderItem={(res) => <div key={res._id}>{res._id}</div>}
           renderItem={tableView ? null : this.resultsListHandler}
           render={tableView ? this.renderTable : null}
           sortOptions={sortOptions}
@@ -147,16 +152,16 @@ class ResultsList extends React.Component {
 
 ResultsList.propTypes = {
   componentId: PropTypes.string.isRequired,
-  queryParams: PropTypes.object.isRequired
+  queryParams: PropTypes.object.isRequired,
 };
 
 ResultsList.defaultProps = {
-  pageSize: 10
+  pageSize: 10,
 };
 
 // Redux actions
-const mapDispatchToProps = dispatch => ({
-  retrieveData: data => dispatch(retrieveData(data))
+const mapDispatchToProps = (dispatch) => ({
+  retrieveData: (data) => dispatch(retrieveData(data)),
 });
 
 export default connect(null, mapDispatchToProps)(ResultsList);

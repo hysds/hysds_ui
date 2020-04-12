@@ -1,15 +1,15 @@
 exports.FIGARO_DISPLAY_COLUMNS = [
   {
     Header: "status",
-    accessor: "status"
+    accessor: "status",
   },
   {
     Header: "resource",
-    accessor: "resource"
+    accessor: "resource",
   },
   { Header: "timestamp", accessor: "@timestamp" },
   { Header: "job type", accessor: "job.type" },
-  { Header: "node", accessor: "job.job_info.execute_node" }
+  { Header: "node", accessor: "job.job_info.execute_node" },
 ];
 
 exports.FILTERS = [
@@ -18,69 +18,70 @@ exports.FILTERS = [
     dataField: "resource",
     title: "Resource",
     type: "single",
-    defaultValue: "job"
-  },
-  {
-    componentId: "tags",
-    dataField: "tags.keyword",
-    title: "Tags",
-    type: "multi"
+    defaultValue: "job",
   },
   {
     componentId: "status",
     dataField: "status",
     title: "Status",
-    type: "single"
+    type: "single",
+    sortBy: "asc",
+  },
+  {
+    componentId: "tags",
+    dataField: "tags.keyword",
+    title: "Tags",
+    type: "multi",
   },
   {
     componentId: "timestamp",
     dataField: "@timestamp",
     title: "Timestamp",
-    type: "date"
+    type: "date",
   },
   {
     componentId: "short_error",
     dataField: "short_error.keyword",
     title: "Short Error",
-    type: "single"
+    type: "single",
   },
   {
     componentId: "job_type",
     dataField: "job.type",
     title: "Job Type",
-    type: "single"
+    type: "single",
   },
   {
     componentId: "node",
     dataField: "job.job_info.execute_node",
     title: "Node",
-    type: "single"
+    type: "single",
   },
   {
     componentId: "priority",
     dataField: "job.priority",
     title: "Priority",
     type: "multi",
-    sortBy: "desc"
+    sortBy: "desc",
   },
   {
     componentId: "container_image",
     dataField: "job.container_image_name",
     title: "Container Image",
-    type: "single"
+    type: "single",
   },
   {
     componentId: "instance_type",
     dataField: "job.job_info.facts.ec2_instance_type",
     title: "Instance Type",
-    type: "single"
+    type: "single",
   },
   {
     componentId: "retry_count",
     dataField: "job.retry_count",
     title: "Retry Count",
-    type: "single"
-  }
+    type: "single",
+  },
 ];
 
 exports.SORT_OPTIONS = ["@timestamp"];
@@ -101,8 +102,8 @@ exports.QUERY_LOGIC = {
     "query_string",
     "payload_id",
     "_id",
-    "timestamp"
-  ]
+    "timestamp",
+  ],
 };
 
 exports.FIELDS = [
@@ -123,5 +124,5 @@ exports.FIELDS = [
   "job.job_info.facts.ec2_instance_type",
   "job.job_info.job_queue",
   "job.job_info.duration",
-  "event.traceback"
+  "event.traceback",
 ];

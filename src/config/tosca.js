@@ -46,7 +46,7 @@ exports.FIELDS = [
   "metadata.status",
   "metadata.platform",
   "metadata.sensoroperationalmode",
-  "metadata.polarisationmode"
+  "metadata.polarisationmode",
 ];
 
 exports.GRQ_TABLE_VIEW_DEFAULT = true;
@@ -56,44 +56,44 @@ exports.FILTERS = [
     componentId: "dataset",
     dataField: "dataset.keyword",
     title: "Dataset",
-    type: "single"
+    type: "single",
   },
   {
     componentId: "dataset_type",
     dataField: "dataset_type.keyword",
     title: "Dataset Type",
-    type: "single"
+    type: "single",
   },
   {
     componentId: "platform",
     dataField: "metadata.platform.keyword",
     title: "Platform",
-    type: "single"
+    type: "single",
   },
   {
     componentId: "continent",
     dataField: "continent.keyword",
     title: "Continent",
-    type: "single"
+    type: "single",
   },
   {
     componentId: "starttime",
     dataField: "starttime",
     title: "Start Time",
-    type: "date"
+    type: "date",
   },
   {
     componentId: "endtime",
     dataField: "endtime",
     title: "End Time",
-    type: "date"
+    type: "date",
   },
   {
     componentId: "track_number",
     dataField: "metadata.trackNumber",
     title: "Track Number",
-    type: "multi"
-  }
+    type: "multi",
+  },
 ];
 
 exports.QUERY_LOGIC = {
@@ -107,50 +107,50 @@ exports.QUERY_LOGIC = {
     "endtime",
     this.ID_COMPONENT,
     this.MAP_COMPONENT_ID,
-    this.QUERY_SEARCH_COMPONENT_ID
-  ]
+    this.QUERY_SEARCH_COMPONENT_ID,
+  ],
 };
 
 exports.GRQ_DISPLAY_COLUMNS = [
   {
     Header: "_id",
     accessor: "_id",
-    width: 350
+    width: 350,
   },
   {
     Header: "start_time",
-    accessor: "starttime"
+    accessor: "starttime",
   },
   { Header: "end_time", accessor: "endtime" },
   {
     Header: "status",
-    accessor: "metadata.status"
+    accessor: "metadata.status",
   },
   {
     Header: "platform",
     accessor: "metadata.platform",
-    width: 150
+    width: 150,
   },
   {
     Header: "direction",
     accessor: "metadata.direction",
-    width: 100
+    width: 100,
   },
   {
     Header: "mode",
-    accessor: "metadata.sensoroperationalmode"
+    accessor: "metadata.sensoroperationalmode",
   },
   {
     id: "trackNumber",
     Header: "track",
-    accessor: d =>
+    accessor: (d) =>
       d.metadata ? d.metadata.trackNumber || d.metadata.track_number : null,
-    width: 50
+    width: 50,
   },
   {
     Header: "polarisation",
-    accessor: "metadata.polarisationmode"
-  }
+    accessor: "metadata.polarisationmode",
+  },
 ];
 
 exports.SORT_OPTIONS = ["starttime", "endtime", "creation_timestamp"];

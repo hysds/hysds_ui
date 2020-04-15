@@ -7,7 +7,7 @@ import { Button } from "../Buttons";
 
 import "./style.scss";
 
-const ToscaDataViewer = props => {
+const ToscaDataViewer = (props) => {
   const { res } = props;
 
   const clickQueryRegion = () => {
@@ -18,6 +18,9 @@ const ToscaDataViewer = props => {
   return (
     <div key={`${res._index}-${res._id}`} className="tosca-data-viewer">
       <div>id: {res._id}</div>
+      {res["@timestamp"] ? (
+        <div>ingest timestamp: {res["@timestamp"]}</div>
+      ) : null}
       {res.location && res.location.coordinates ? (
         <Button size="small" label="Query Region" onClick={clickQueryRegion} />
       ) : null}
@@ -26,8 +29,8 @@ const ToscaDataViewer = props => {
 };
 
 // Redux actions
-const mapDispatchToProps = dispatch => ({
-  clickQueryRegion: bbox => dispatch(clickQueryRegion(bbox))
+const mapDispatchToProps = (dispatch) => ({
+  clickQueryRegion: (bbox) => dispatch(clickQueryRegion(bbox)),
 });
 
 export default connect(null, mapDispatchToProps)(ToscaDataViewer);

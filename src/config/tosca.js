@@ -47,6 +47,7 @@ exports.FIELDS = [
   "metadata.platform",
   "metadata.sensoroperationalmode",
   "metadata.polarisationmode",
+  "@timestamp",
 ];
 
 exports.GRQ_TABLE_VIEW_DEFAULT = true;
@@ -116,6 +117,11 @@ exports.GRQ_DISPLAY_COLUMNS = [
     Header: "_id",
     accessor: "_id",
     width: 350,
+  },
+  {
+    Header: "ingest_timestamp",
+    accessor: "@timestamp",
+    width: 200,
   },
   {
     Header: "start_time",

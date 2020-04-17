@@ -159,4 +159,9 @@ exports.GRQ_DISPLAY_COLUMNS = [
   },
 ];
 
-exports.SORT_OPTIONS = ["starttime", "endtime", "creation_timestamp"];
+exports.SORT_OPTIONS = [
+  "@timestamp",
+  "starttime",
+  "endtime",
+  "creation_timestamp",
+];

@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux"; // redux
 import { clickQueryRegion } from "../../redux/actions";
+import UserTags from "../UserTags";
 
 import { Button } from "../Buttons";
 
@@ -24,6 +25,7 @@ const ToscaDataViewer = (props) => {
       {res.location && res.location.coordinates ? (
         <Button size="small" label="Query Region" onClick={clickQueryRegion} />
       ) : null}
+      <UserTags />
     </div>
   );
 };

@@ -6,15 +6,15 @@ import Select from "react-select";
 
 import "./style.css";
 
-const JobInput = props => {
+const JobInput = (props) => {
   const customSelectStyles = {
     control: (base, value) => ({
       ...base,
-      border: value.hasValue ? null : "2px solid red"
-    })
+      border: value.hasValue ? null : "2px solid red",
+    }),
   };
 
-  const _handleJobChange = e => {
+  const _handleJobChange = (e) => {
     if (e.jobSpec === props.jobSpec) return;
     props.changeJobType(e, props.url);
     props.getQueueList(e.jobSpec);
@@ -34,7 +34,7 @@ const JobInput = props => {
             options={jobs}
             value={{
               label: jobLabel || jobSpec || "",
-              value: jobSpec || ""
+              value: jobSpec || "",
             }}
             onChange={_handleJobChange}
             styles={customSelectStyles}
@@ -47,11 +47,11 @@ const JobInput = props => {
 
 JobInput.propTypes = {
   changeJobType: PropTypes.func.isRequired,
-  getQueueList: PropTypes.func.isRequired
+  getQueueList: PropTypes.func.isRequired,
 };
 
 JobInput.defaultProps = {
-  url: false
+  url: false,
 };
 
 // Redux actions
@@ -60,8 +60,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     changeJobType: (jobSpec, hysdsio) =>
       dispatch(changeJobType(jobSpec, hysdsio, url)),
-    getParamsList: jobSpec => dispatch(getParamsList(jobSpec)),
-    getQueueList: jobSpec => dispatch(getQueueList(jobSpec))
+    getParamsList: (jobSpec) => dispatch(getParamsList(jobSpec)),
+    getQueueList: (jobSpec) => dispatch(getQueueList(jobSpec)),
   };
 };
 

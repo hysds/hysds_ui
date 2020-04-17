@@ -14,7 +14,7 @@ import { ButtonLink, ScrollTop } from "../../components/Buttons";
 import { setQuery, editCustomFilterId } from "../../redux/actions";
 
 import { MOZART_ES_URL, MOZART_ES_INDICES } from "../../config";
-import { FILTERS, FIELDS } from "../../config/figaro";
+import { FILTERS } from "../../config/figaro";
 
 import "./style.scss";
 
@@ -24,20 +24,14 @@ class Figaro extends React.Component {
     this.pageRef = React.createRef();
   }
 
-  _handleTransformRequest = e => {
+  _handleTransformRequest = (e) => {
     const body = e.body.split("\n");
     let [preference, query] = body;
     query = JSON.parse(query);
 
-    // main query ran to get the data
-    if (query._source && FIELDS.length > 0) {
-      query._source.includes = FIELDS;
-
-      let parsedQuery = query.query;
-      parsedQuery = JSON.stringify(parsedQuery);
-      this.props.setQuery(parsedQuery);
-      e.body = `${preference}\n${JSON.stringify(query)}\n`;
-    }
+    let parsedQuery = query.query;
+    parsedQuery = JSON.stringify(parsedQuery);
+    this.props.setQuery(parsedQuery);
     return e;
   };
 
@@ -118,19 +112,19 @@ class Figaro extends React.Component {
 }
 
 Figaro.defaultProps = {
-  theme: "__theme-light"
+  theme: "__theme-light",
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   query: state.generalReducer.query,
-  dataCount: state.generalReducer.dataCount
+  dataCount: state.generalReducer.dataCount,
 });
 
-const mapDispatchToProps = dispatch => ({
-  setQuery: query => dispatch(setQuery(query)),
+const mapDispatchToProps = (dispatch) => ({
+  setQuery: (query) => dispatch(setQuery(query)),
   editCustomFilterId: (componentId, value) =>
-    dispatch(editCustomFilterId(componentId, value))
+    dispatch(editCustomFilterId(componentId, value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Figaro);

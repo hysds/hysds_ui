@@ -8,21 +8,22 @@ import { retrieveData, editCustomFilterId } from "../../redux/actions";
 
 import {
   FigaroDataComponent,
-  FigaroDataTable
+  FigaroDataTable,
 } from "../../components/FigaroDataViewer";
 
 import {
   ToggleSlider,
   SortOptions,
   SortDirection,
-  PageSizeOptions
+  PageSizeOptions,
 } from "../../components/TableOptions";
 
 // import { SORT_OPTIONS } from "../../config/tosca";
 import {
   QUERY_LOGIC,
   FIGARO_DISPLAY_COLUMNS,
-  SORT_OPTIONS
+  SORT_OPTIONS,
+  FIELDS,
 } from "../../config/figaro";
 
 import "./style.scss";
@@ -43,7 +44,7 @@ class FigaroResultsList extends React.Component {
       tableView: tableView === "true" ? true : false,
       pageSize: pageSize ? parseInt(pageSize) : 10,
       sortColumn: localStorage.getItem(SORT_FIELD_STORE) || "None",
-      sortOrder: localStorage.getItem(SORT_DIRECTION_STORE) || "desc"
+      sortOrder: localStorage.getItem(SORT_DIRECTION_STORE) || "desc",
     };
   }
 
@@ -52,17 +53,17 @@ class FigaroResultsList extends React.Component {
     localStorage.setItem(TABLE_VIEW_STORE, !this.state.tableView);
   };
 
-  _handlePageSizeChange = e => {
+  _handlePageSizeChange = (e) => {
     this.setState({ pageSize: parseInt(e.target.value) });
     localStorage.setItem(PAGE_SIZE_STORE, e.target.value);
   };
 
-  _handleSortColumnChange = e => {
+  _handleSortColumnChange = (e) => {
     this.setState({ sortColumn: e.target.value });
     localStorage.setItem(SORT_FIELD_STORE, e.target.value);
   };
 
-  _handleSortDirectionChange = e => {
+  _handleSortDirectionChange = (e) => {
     this.setState({ sortOrder: e.target.value });
     localStorage.setItem(SORT_DIRECTION_STORE, e.target.value);
   };
@@ -76,8 +77,8 @@ class FigaroResultsList extends React.Component {
             {
               label: sortColumn,
               dataField: sortColumn,
-              sortBy: sortOrder
-            }
+              sortBy: sortOrder,
+            },
           ]
         : null;
 
@@ -122,7 +123,7 @@ class FigaroResultsList extends React.Component {
           renderItem={
             tableView
               ? null
-              : res => (
+              : (res) => (
                   <div key={`${res._index}-${res._id}`}>
                     <FigaroDataComponent
                       res={res}
@@ -142,20 +143,21 @@ class FigaroResultsList extends React.Component {
                   ) : null
               : null
           }
+          includeFields={FIELDS ? FIELDS : null}
         />
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   // darkMode: state.themeReducer.darkMode
 });
 
-const mapDispatchToProps = dispatch => ({
-  retrieveData: data => dispatch(retrieveData(data)),
+const mapDispatchToProps = (dispatch) => ({
+  retrieveData: (data) => dispatch(retrieveData(data)),
   editCustomFilterId: (componentId, value) =>
-    dispatch(editCustomFilterId(componentId, value))
+    dispatch(editCustomFilterId(componentId, value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FigaroResultsList);

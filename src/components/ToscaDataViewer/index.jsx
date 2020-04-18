@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux"; // redux
 
@@ -33,7 +33,6 @@ const ToscaDataViewer = (props) => {
       {res.location && res.location.coordinates ? (
         <Button size="small" label="Query Region" onClick={clickQueryRegion} />
       ) : null}
-      <br />
       <UserTags
         userTags={userTags}
         endpoint={endpoint}

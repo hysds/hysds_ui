@@ -14,7 +14,9 @@ const UserTags = (props) => {
     const url = `${endpoint}?${params}`;
     fetch(url, { method: "DELETE" }).then(() => setValue(value));
   };
+
   const handleInputChange = (val) => setInputValue(val);
+
   const handleKeyDown = (e) => {
     switch (e.key) {
       case "Enter":
@@ -38,11 +40,11 @@ const UserTags = (props) => {
 
   return (
     <Creatable
-      components={{ DropdownIndicator: null }}
-      inputValue={input}
       isClearable
       isMulti
       menuIsOpen={false}
+      components={{ DropdownIndicator: null }}
+      inputValue={input}
       onChange={handleRemove}
       onInputChange={handleInputChange}
       onKeyDown={handleKeyDown}
@@ -53,7 +55,7 @@ const UserTags = (props) => {
 };
 
 UserTags.propTypes = {
-  userTags: PropTypes.string.isRequired,
+  userTags: PropTypes.array.isRequired,
   endpoint: PropTypes.string.isRequired,
   index: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,

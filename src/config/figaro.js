@@ -125,4 +125,5 @@ exports.FIELDS = [
   "job.job_info.job_queue",
   "job.job_info.duration",
   "event.traceback",
+  "user_tags",
 ];

@@ -9,7 +9,7 @@ export const FigaroDataComponent = class extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      expanded: false
+      expanded: false,
     };
   }
 
@@ -40,7 +40,7 @@ export const FigaroDataComponent = class extends React.Component {
         ) : null}
         <div>timestamp: {res["@timestamp"]}</div>
         {res.job ? <div>job: {res.job.name}</div> : null}
-        {res.job && res.job.job_info ? (
+        {res.job && res.job.job_info && res.job.job_info.execute_node ? (
           <div>node: {res.job.job_info.execute_node}</div>
         ) : null}
         {res.job && res.job.job_info ? (
@@ -61,7 +61,7 @@ export const FigaroDataComponent = class extends React.Component {
   }
 };
 
-export const FigaroDataTable = props => {
+export const FigaroDataTable = (props) => {
   const { columns, data, sortColumn, sortOrder } = props;
 
   return (
@@ -76,8 +76,8 @@ export const FigaroDataTable = props => {
       defaultSorted={[
         {
           id: sortColumn,
-          desc: sortOrder === "desc" ? true : false
-        }
+          desc: sortOrder === "desc" ? true : false,
+        },
       ]}
     />
   );

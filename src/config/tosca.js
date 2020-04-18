@@ -47,6 +47,7 @@ exports.FIELDS = [
   "metadata.platform",
   "metadata.sensoroperationalmode",
   "metadata.polarisationmode",
+  "metadata.user_tags",
   "@timestamp",
 ];
 

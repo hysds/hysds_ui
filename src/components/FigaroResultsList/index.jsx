@@ -1,13 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
-
 import { connect } from "react-redux"; // redux
 
 import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
 import { retrieveData, editCustomFilterId } from "../../redux/actions";
 
 import {
-  FigaroDataComponent,
+  FigaroDataViewer,
   FigaroDataTable,
 } from "../../components/FigaroDataViewer";
 
@@ -18,7 +16,6 @@ import {
   PageSizeOptions,
 } from "../../components/TableOptions";
 
-// import { SORT_OPTIONS } from "../../config/tosca";
 import {
   QUERY_LOGIC,
   FIGARO_DISPLAY_COLUMNS,
@@ -125,7 +122,7 @@ class FigaroResultsList extends React.Component {
               ? null
               : (res) => (
                   <div key={`${res._index}-${res._id}`}>
-                    <FigaroDataComponent
+                    <FigaroDataViewer
                       res={res}
                       editCustomFilterId={this.props.editCustomFilterId}
                     />
@@ -150,14 +147,10 @@ class FigaroResultsList extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  // darkMode: state.themeReducer.darkMode
-});
-
 const mapDispatchToProps = (dispatch) => ({
   retrieveData: (data) => dispatch(retrieveData(data)),
   editCustomFilterId: (componentId, value) =>
     dispatch(editCustomFilterId(componentId, value)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FigaroResultsList);
+export default connect(null, mapDispatchToProps)(FigaroResultsList);

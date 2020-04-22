@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux"; // redux
 
 import { clickQueryRegion } from "../../redux/actions";
-import UserTags from "../UserTags";
+import UserTags from "../../components/UserTags";
 import { Button } from "../Buttons";
 
 import { GRQ_REST_API_V1 } from "../../config";
@@ -15,9 +15,7 @@ const ToscaDataViewer = (props) => {
   const endpoint = `${GRQ_REST_API_V1}/grq/user-tags`;
 
   let userTags =
-    res.metadata && res.metadata.user_tags
-      ? res.metadata.user_tags.map((tag) => ({ label: tag, value: tag }))
-      : [];
+    res.metadata && res.metadata.user_tags ? res.metadata.user_tags : [];
 
   const clickQueryRegion = () => {
     const bbox = JSON.stringify(res.location.coordinates[0]);
@@ -34,7 +32,7 @@ const ToscaDataViewer = (props) => {
         <Button size="small" label="Query Region" onClick={clickQueryRegion} />
       ) : null}
       <UserTags
-        userTags={userTags}
+        tags={userTags}
         endpoint={endpoint}
         index={res._index}
         id={res._id}

@@ -1,61 +1,152 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Creatable } from "react-select";
+import { css } from "emotion";
 
-const UserTags = (props) => {
-  const { userTags, endpoint, index, id } = props;
+import "font-awesome/css/font-awesome.min.css";
 
-  const [value, setValue] = useState(userTags);
-  const [input, setInputValue] = useState("");
+const Tag = (props) => {
+  const style = css`
+    padding: 3px 7px;
+    background-color: #dcdcdc;
+    margin: 1px 3px;
+    font-size: 13px;
+    &:hover {
+      color: #dc3645;
+    }
+  `;
 
-  const handleRemove = (value, removed) => {
-    const removedValue = removed.removedValue.value;
-    const params = new URLSearchParams({ id, index, tag: removedValue });
-    const url = `${endpoint}?${params}`;
-    fetch(url, { method: "DELETE" }).then(() => setValue(value));
-  };
+  const deleteStyle = css`
+    padding-right: 6px;
+    border-right: 1px solid #fff;
+  `;
 
-  const handleInputChange = (val) => setInputValue(val);
+  const tagStyle = css`
+    padding-left: 5px;
+  `;
 
-  const handleKeyDown = (e) => {
+  const handleClick = () => props.onDelete(props.value);
+
+  return (
+    <div onClick={handleClick} className={style}>
+      <span className={deleteStyle}>
+        <i className="fa fa-times"></i>
+      </span>
+      <span className={tagStyle}>{props.value}</span>
+    </div>
+  );
+};
+
+Tag.propTypes = {
+  value: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};
+
+const Input = (props) => {
+  const { value } = props;
+
+  const style = css`
+    flex-grow: 1;
+    border: none;
+    font-size: 13px;
+  `;
+
+  const keyInput = (e) => {
     switch (e.key) {
       case "Enter":
       case "Tab":
-        const inputTrim = input.trim();
-        const idx = value.findIndex((val) => inputTrim === val.value); // checking for dupes
-        if (idx === -1 && inputTrim !== "") {
-          const data = { index, id, tag: inputTrim };
-          fetch(endpoint, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-          }).then(() =>
-            setValue([...value, { label: inputTrim, value: inputTrim }])
-          );
-        }
-        setInputValue("");
-        e.preventDefault();
+        if (value.trim() === "") return;
+        props.onAdd(value);
+        props.setValue("");
+        return;
+      case "Backspace":
+        if (e.target.value === "") props.onDelete();
+        else return;
     }
   };
 
   return (
-    <Creatable
-      isClearable
-      isMulti
-      menuIsOpen={false}
-      components={{ DropdownIndicator: null }}
-      inputValue={input}
-      onChange={handleRemove}
-      onInputChange={handleInputChange}
-      onKeyDown={handleKeyDown}
+    <input
+      placeholder={props.placeholder}
+      type="text"
       value={value}
-      placeholder="User Tags..."
+      onKeyDown={keyInput}
+      onChange={(e) => props.setValue(e.target.value)}
+      className={style}
     />
   );
 };
 
+Input.propTypes = {
+  value: PropTypes.string.isRequired,
+};
+
+const UserTags = (props) => {
+  let { tags, index, id, endpoint } = props;
+
+  const [userTags, setTags] = useState(tags || []);
+  const [value, setValue] = useState("");
+
+  const onAdd = (tag) => {
+    if (userTags.indexOf(tag) === -1) {
+      const data = { index, id, tag: tag };
+      const body = {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      };
+      fetch(endpoint, body).then(() => setTags([...userTags, tag]));
+    }
+  };
+
+  const deleteAPI = (tag) => {
+    const params = new URLSearchParams({ id, index, tag });
+    const url = `${endpoint}?${params}`;
+    return fetch(url, { method: "DELETE" });
+  };
+
+  const onDelete = () => {
+    if (userTags.length === 0) return;
+    const lastTag = userTags[userTags.length - 1];
+    deleteAPI(lastTag).then(() =>
+      setTags(userTags.slice(0, userTags.length - 1))
+    );
+  };
+  const onDeleteClick = (tag) => {
+    const idx = userTags.indexOf(tag);
+    deleteAPI(tag).then(() =>
+      setTags([...userTags.slice(0, idx), ...userTags.slice(idx + 1)])
+    );
+  };
+
+  const style = css`
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: #fff;
+    color: black;
+    padding: 5px;
+  `;
+
+  return (
+    <div className={style}>
+      {userTags.map((tag) => (
+        <Tag onDelete={onDeleteClick} key={tag} value={tag} />
+      ))}
+      <Input
+        value={value}
+        onAdd={onAdd}
+        onDelete={onDelete}
+        setTags={setTags}
+        setValue={setValue}
+        placeholder="User Tags..."
+      />
+    </div>
+  );
+};
+
 UserTags.propTypes = {
-  userTags: PropTypes.array.isRequired,
+  tags: PropTypes.array.isRequired,
   endpoint: PropTypes.string.isRequired,
   index: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,

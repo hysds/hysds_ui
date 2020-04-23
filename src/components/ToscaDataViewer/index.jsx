@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux"; // redux
 
 import { clickQueryRegion } from "../../redux/actions";
-import UserTags from "../../components/UserTags";
+import UserTags from "../UserTags";
 import { Button } from "../Buttons";
 
 import { GRQ_REST_API_V1 } from "../../config";

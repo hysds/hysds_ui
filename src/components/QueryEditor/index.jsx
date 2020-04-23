@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -6,21 +6,24 @@ import "./style.scss";
 
 const QueryEditor = (props) => {
   let { query } = props;
-  // TODO: use react hooks (useEffect) as componentDidMount to fix the weird type formatting
-
   try {
     query = JSON.parse(query);
     query = JSON.stringify(query, null, 2);
   } catch (err) {}
 
-  const _handleQueryChange = (e) => props.editQuery(e.target.value);
+  const [body, setBody] = useState(query);
+
+  const _handleQueryChange = (e) => {
+    setBody(e.target.value);
+    props.editQuery(e.target.value);
+  };
 
   return (
     <div className="code-edit-container">
       <textarea
         spellCheck="false"
         className="code-input"
-        value={query}
+        value={body}
         onChange={_handleQueryChange}
       />
     </div>
@@ -29,20 +32,16 @@ const QueryEditor = (props) => {
 
 QueryEditor.propTypes = {
   editQuery: PropTypes.func.isRequired,
-  validateQuery: PropTypes.func.isRequired,
 };
 
 QueryEditor.defaultProps = {
   url: false,
 };
 
-// Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { url } = ownProps;
-  const { editQuery, validateQuery } = ownProps; // actions
+  const { url, editQuery } = ownProps;
   return {
     editQuery: (query) => dispatch(editQuery(query, url)),
-    validateQuery: (validQuery) => dispatch(validateQuery(validQuery)),
   };
 };
 

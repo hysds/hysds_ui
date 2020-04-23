@@ -1,7 +1,21 @@
-@import "../../scss/constants.scss";
+.code-edit-container {
+  height: calc(100vh - 47px);
+}
 
-.__theme-dark {
-  .ace_content {
-    background-color: $dark-theme-background;
+.code-input {
+  padding: 15px;
+  width: 100%;
+  height: inherit;
+  border: none;
+  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  font-size: 0.8rem;
+  font-size: 1rem;
+  opacity: 1;
+  background-color: transparent;
+  color: inherit;
+  resize: none;
+
+  &:focus {
+    outline: none;
   }
 }

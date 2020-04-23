@@ -1,64 +1,39 @@
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-
 import { connect } from "react-redux";
-
-import AceEditor from "react-ace";
-import "brace/mode/json";
-import "brace/theme/twilight";
-import "brace/theme/tomorrow";
 
 import "./style.scss";
 
-const QueryEditor = props => {
-  const _handleQueryChange = val => props.editQuery(val);
-
-  // disable submit job button
-  const _validateESQuery = err => {
-    const isValid = err.length > 0 ? false : true;
-    props.validateQuery(isValid);
-  };
-
-  let { query } = props; // prop variables
+const QueryEditor = (props) => {
+  let { query } = props;
+  // TODO: use react hooks (useEffect) as componentDidMount to fix the weird type formatting
 
   try {
     query = JSON.parse(query);
     query = JSON.stringify(query, null, 2);
   } catch (err) {}
 
+  const _handleQueryChange = (e) => props.editQuery(e.target.value);
+
   return (
-    <Fragment>
-      <AceEditor
-        mode="json"
-        theme={props.theme}
-        placeholder="Enter your Elasticsearch _search query"
-        fontSize={12}
-        showPrintMargin={false}
-        showGutter={true}
-        highlightActiveLine={true}
-        setOptions={{
-          showLineNumbers: true,
-          tabSize: 2
-        }}
-        onChange={_handleQueryChange}
+    <div className="code-edit-container">
+      <textarea
+        spellCheck="false"
+        className="code-input"
         value={query}
-        wrapEnabled={true}
-        width="100%"
-        maxLines={Infinity}
-        onValidate={_validateESQuery}
-        editorProps={{ $blockScrolling: Infinity }}
+        onChange={_handleQueryChange}
       />
-    </Fragment>
+    </div>
   );
 };
 
 QueryEditor.propTypes = {
   editQuery: PropTypes.func.isRequired,
-  validateQuery: PropTypes.func.isRequired
+  validateQuery: PropTypes.func.isRequired,
 };
 
 QueryEditor.defaultProps = {
-  url: false
+  url: false,
 };
 
 // Redux actions
@@ -66,8 +41,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const { url } = ownProps;
   const { editQuery, validateQuery } = ownProps; // actions
   return {
-    editQuery: query => dispatch(editQuery(query, url)),
-    validateQuery: validQuery => dispatch(validateQuery(validQuery))
+    editQuery: (query) => dispatch(editQuery(query, url)),
+    validateQuery: (validQuery) => dispatch(validateQuery(validQuery)),
   };
 };
 

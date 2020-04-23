@@ -1,6 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 
+// import QueryEditor from "../../components/QueryEditor";
 import QueryEditor from "../../components/QueryEditor";
 import JobInput from "../../components/JobInput";
 import JobParams from "../../components/JobParams";
@@ -135,9 +136,6 @@ class ToscaOnDemand extends React.Component {
     const validSubmission = this._validateSubmission();
 
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
-    const darkTheme = "twilight";
-    const lightTheme = "tomorrow";
-    const aceTheme = darkMode ? darkTheme : lightTheme;
 
     return (
       <div className="tosca-on-demand-page">
@@ -158,8 +156,6 @@ class ToscaOnDemand extends React.Component {
                 url={true} // update query params in url
                 query={query}
                 editQuery={editQuery} // redux action
-                validateQuery={validateQuery}
-                theme={aceTheme}
               />
             </div>
 

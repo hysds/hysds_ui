@@ -1,10 +1,6 @@
 var path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
-/**
- * TODO: may need to import basepath variable and append to output.publicPath
- * ie. publicPath: "/mozart"
- */
 const { SOURCE_PATH } = require("./src/config");
 
 module.exports = {

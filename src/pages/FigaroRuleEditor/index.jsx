@@ -1,7 +1,7 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Helmet } from "react-helmet";
 
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import QueryEditor from "../../components/QueryEditor";
@@ -19,20 +19,19 @@ import HeaderBar from "../../components/HeaderBar";
 import { MOZART_REST_API_V1 } from "../../config";
 
 import {
-  validateQuery,
   editQuery,
   editJobPriority,
   changeJobType,
   editParams,
   changeQueue,
   editRuleName,
-  clearJobParams
+  clearJobParams,
 } from "../../redux/actions";
 import {
   getUserRule,
   getOnDemandJobs,
   getParamsList,
-  getQueueList
+  getQueueList,
 } from "../../redux/actions/figaro";
 
 import "./style.scss";
@@ -45,7 +44,7 @@ class FigaroRuleEditor extends React.Component {
       submitSuccess: 0,
       submitFailed: 0,
       failureReason: "",
-      editMode: props.match.params.rule ? true : false // using the same component for creating new rules and editing existing rules
+      editMode: props.match.params.rule ? true : false, // using the same component for creating new rules and editing existing rules
     };
   }
 
@@ -66,14 +65,14 @@ class FigaroRuleEditor extends React.Component {
       queue,
       priority,
       params,
-      paramsList
+      paramsList,
     } = this.props;
 
     let validSubmission = true;
     if (!validQuery || !ruleName || !jobSpec || !priority || !queue)
       return false;
 
-    paramsList.map(param => {
+    paramsList.map((param) => {
       const paramName = param.name;
       if (!(param.optional === true) && !params[paramName])
         validSubmission = false;
@@ -91,11 +90,11 @@ class FigaroRuleEditor extends React.Component {
       workflow: this.props.hysdsio,
       job_spec: this.props.jobSpec,
       queue: this.props.queue,
-      kwargs: JSON.stringify(this.props.params)
+      kwargs: JSON.stringify(this.props.params),
     };
 
     this.setState({
-      submitInProgress: "loading"
+      submitInProgress: "loading",
     });
 
     const endpoint = `${MOZART_REST_API_V1}/user-rules`;
@@ -105,15 +104,15 @@ class FigaroRuleEditor extends React.Component {
     fetch(endpoint, {
       headers,
       method,
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (!data.success) {
           this.setState({
             submitInProgress: 0,
             submitFailed: 1,
-            failureReason: data.message
+            failureReason: data.message,
           });
           setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
         } else {
@@ -121,11 +120,11 @@ class FigaroRuleEditor extends React.Component {
           this.setState({
             submitInProgress: 0,
             submitSuccess: 1,
-            failureReason: ""
+            failureReason: "",
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         this.setState({ submitInProgress: 0, submitFailed: 1 });
         setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
@@ -142,9 +141,6 @@ class FigaroRuleEditor extends React.Component {
     const validSubmission = this._validateSubmission();
 
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
-    const darkTheme = "twilight";
-    const lightTheme = "tomorrow";
-    const aceTheme = darkMode ? darkTheme : lightTheme;
 
     return (
       <div className="figaro-user-rule-editor-page">
@@ -163,9 +159,7 @@ class FigaroRuleEditor extends React.Component {
             <QueryEditor
               url={!this.state.editMode}
               editQuery={editQuery}
-              validateQuery={validateQuery}
               query={this.props.query}
-              theme={aceTheme}
             />
           </div>
 
@@ -236,7 +230,7 @@ class FigaroRuleEditor extends React.Component {
 }
 
 // redux state data
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   userRules: state.generalReducer.userRules,
   query: state.generalReducer.query,
@@ -250,15 +244,15 @@ const mapStateToProps = state => ({
   priority: state.generalReducer.priority,
   paramsList: state.generalReducer.paramsList,
   params: state.generalReducer.params,
-  ruleName: state.generalReducer.ruleName
+  ruleName: state.generalReducer.ruleName,
 });
 
 // Redux actions
-const mapDispatchToProps = dispatch => ({
-  getUserRule: id => dispatch(getUserRule(id)),
+const mapDispatchToProps = (dispatch) => ({
+  getUserRule: (id) => dispatch(getUserRule(id)),
   getOnDemandJobs: () => dispatch(getOnDemandJobs()),
   clearJobParams: () => dispatch(clearJobParams()),
-  getQueueList: jobSpec => dispatch(getQueueList(jobSpec))
+  getQueueList: (jobSpec) => dispatch(getQueueList(jobSpec)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FigaroRuleEditor);

@@ -18,4 +18,4 @@ exports.MOZART_REST_API_V2 = `${this.MOZART_REST_API_BASE}/api/v0.2`;
 
 // root path for app
 // set to "/" if you are developing locally
-exports.SOURCE_PATH = "/";
+exports.ROOT_PATH = "/";

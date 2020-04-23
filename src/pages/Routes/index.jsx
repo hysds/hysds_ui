@@ -18,7 +18,7 @@ import FigaroOnDemand from "../FigaroOnDemand";
 import FigaroUserRules from "../FigaroUserRules";
 import FigaroRuleEditor from "../FigaroRuleEditor";
 
-import { SOURCE_PATH } from "../../config/index.js";
+import { ROOT_PATH } from "../../config/index.js";
 
 import "./style.scss";
 
@@ -27,7 +27,7 @@ const Routes = (props) => {
 
   return (
     <div className={classTheme}>
-      <Router basename={SOURCE_PATH}>
+      <Router basename={ROOT_PATH}>
         <Switch>
           <Route exact path="/" render={() => <Redirect to="/tosca" />} />
           <Route exact path="/tosca" component={Tosca} />

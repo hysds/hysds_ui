@@ -47,6 +47,8 @@ exports.FIELDS = [
   "metadata.platform",
   "metadata.sensoroperationalmode",
   "metadata.polarisationmode",
+  "metadata.user_tags",
+  "@timestamp",
 ];
 
 exports.GRQ_TABLE_VIEW_DEFAULT = true;
@@ -118,6 +120,11 @@ exports.GRQ_DISPLAY_COLUMNS = [
     width: 350,
   },
   {
+    Header: "ingest_timestamp",
+    accessor: "@timestamp",
+    width: 200,
+  },
+  {
     Header: "start_time",
     accessor: "starttime",
   },
@@ -153,4 +160,9 @@ exports.GRQ_DISPLAY_COLUMNS = [
   },
 ];
 
-exports.SORT_OPTIONS = ["starttime", "endtime", "creation_timestamp"];
+exports.SORT_OPTIONS = [
+  "@timestamp",
+  "starttime",
+  "endtime",
+  "creation_timestamp",
+];

@@ -14,18 +14,13 @@ import {
   SortDirection,
   PageSizeOptions,
 } from "../../components/TableOptions";
-import { SORT_OPTIONS } from "../../config/tosca";
+import { SORT_OPTIONS, FIELDS } from "../../config/tosca";
 import "./style.scss";
 
 const TABLE_VIEW_STORE = "table-view-tosca";
 const PAGE_SIZE_STORE = "page-size-tosca";
 const SORT_FIELD_STORE = "sort-field-tosca";
 const SORT_DIRECTION_STORE = "sort-direction-tosca";
-
-/**
- * https://docs.appbase.io/docs/reactivesearch/v3/result/reactivelist/
- * includeFields
- */
 
 class ResultsList extends React.Component {
   constructor(props) {
@@ -144,6 +139,7 @@ class ResultsList extends React.Component {
           renderItem={tableView ? null : this.resultsListHandler}
           render={tableView ? this.renderTable : null}
           sortOptions={sortOptions}
+          includeFields={FIELDS ? FIELDS : null}
         />
       </div>
     );

@@ -11,7 +11,6 @@ import {
   MAP_COMPONENT_ID,
   QUERY_SEARCH_COMPONENT_ID,
   RESULTS_LIST_COMPONENT_ID,
-  FIELDS, // only fields we care about
   DISPLAY_MAP, // display map or do not render
   FILTERS,
   QUERY_LOGIC,
@@ -55,14 +54,9 @@ class Tosca extends React.Component {
     query = JSON.parse(query);
 
     // main query ran to get the data
-    if (query._source && FIELDS.length > 0) {
-      query._source.includes = FIELDS;
-
-      let parsedQuery = query.query;
-      parsedQuery = JSON.stringify(parsedQuery);
-      this.props.setQuery(parsedQuery);
-      e.body = `${preference}\n${JSON.stringify(query)}\n`;
-    }
+    let parsedQuery = query.query;
+    parsedQuery = JSON.stringify(parsedQuery);
+    this.props.setQuery(parsedQuery);
     return e;
   };
 

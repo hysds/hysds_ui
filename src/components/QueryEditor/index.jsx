@@ -6,12 +6,21 @@ import "./style.scss";
 
 const QueryEditor = (props) => {
   let { query } = props;
-  try {
-    query = JSON.parse(query);
-    query = JSON.stringify(query, null, 2);
-  } catch (err) {}
+  const [body, setBody] = useState("");
+  const [mounted, setMounted] = useState(false);
 
-  const [body, setBody] = useState(query);
+  if (!mounted) {
+    try {
+      query = JSON.parse(query);
+      query = JSON.stringify(query, null, 2);
+      setBody(query);
+    } catch (err) {
+      setBody(query);
+    }
+    setMounted(true);
+  }
+
+  const numRows = body.split("\n").length;
 
   const _handleQueryChange = (e) => {
     setBody(e.target.value);
@@ -25,6 +34,7 @@ const QueryEditor = (props) => {
         className="code-input"
         value={body}
         onChange={_handleQueryChange}
+        rows={numRows}
       />
     </div>
   );

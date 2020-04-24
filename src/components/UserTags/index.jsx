@@ -94,6 +94,7 @@ const UserTags = (props) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       };
+
       fetch(endpoint, body).then(() => setTags([...userTags, tag]));
     }
   };
@@ -107,6 +108,7 @@ const UserTags = (props) => {
   const onDelete = () => {
     if (userTags.length === 0) return;
     const lastTag = userTags[userTags.length - 1];
+
     deleteAPI(lastTag).then(() =>
       setTags(userTags.slice(0, userTags.length - 1))
     );

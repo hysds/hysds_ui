@@ -19,55 +19,55 @@ import {
   UNCLICK_QUERY_REGION,
   EDIT_THEME,
   EDIT_CUSTOM_FILTER_ID,
-  CLEAR_REDUX_STORE
+  CLEAR_REDUX_STORE,
 } from "../constants.js";
 
 import {
   constructUrl,
   clearUrlJobParams,
   editUrlJobParam,
-  validateUrlQueryParam
+  validateUrlQueryParam,
 } from "../../utils";
 
 // ********************************************************************** //
 // REACTIVESEARCH ACTIONS
 export const clearReduxStore = () => ({
-  type: CLEAR_REDUX_STORE
+  type: CLEAR_REDUX_STORE,
 });
 
-export const clickDatasetId = id => ({
+export const clickDatasetId = (id) => ({
   type: GET_DATASET_ID,
-  payload: id
+  payload: id,
 });
 
 export const editCustomFilterId = (componentId, value) => ({
   type: EDIT_CUSTOM_FILTER_ID,
   payload: {
-    [componentId]: value
-  }
+    [componentId]: value,
+  },
 });
 
-export const clearAllCustomComponents = payload => ({
+export const clearAllCustomComponents = (payload) => ({
   type: CLEAR_ALL_CUSTOM_COMPONENTS,
-  payload
+  payload,
 });
 
-export const clearCustomComponent = id => ({
+export const clearCustomComponent = (id) => ({
   type: CLEAR_CUSTOM_COMPONENTS,
-  payload: id
+  payload: id,
 });
 
 // ********************************************************************** //
 // TOSCA ACTIONS
-export const retrieveData = data => ({
+export const retrieveData = (data) => ({
   type: RETRIEVE_DATA,
-  payload: data
+  payload: data,
 });
 
-export const setQuery = query => {
+export const setQuery = (query) => {
   return {
     type: SET_QUERY,
-    payload: query
+    payload: query,
   };
 };
 
@@ -77,20 +77,20 @@ export const editQuery = (payload, url = false) => {
   if (url) validateUrlQueryParam(payload);
   return {
     type: EDIT_QUERY,
-    payload
+    payload,
   };
 };
 
-export const validateQuery = payload => ({
+export const validateQuery = (payload) => ({
   type: VALIDATE_QUERY,
-  payload
+  payload,
 });
 
 export const editJobPriority = (payload, url = false) => {
   if (url) constructUrl("priority", payload);
   return {
     type: EDIT_PRIORITY,
-    payload
+    payload,
   };
 };
 
@@ -102,20 +102,20 @@ export const changeJobType = (payload, url = false) => {
   }
   return {
     type: CHANGE_JOB_TYPE,
-    payload
+    payload,
   };
 };
 
-export const changeQueue = payload => ({
+export const changeQueue = (payload) => ({
   type: CHANGE_QUEUE,
-  payload
+  payload,
 });
 
 export const editTags = (payload, url = false) => {
   if (url) constructUrl("tags", payload);
   return {
     type: EDIT_TAG,
-    payload
+    payload,
   };
 };
 
@@ -123,43 +123,43 @@ export const editParams = (payload, url = false) => {
   if (url) editUrlJobParam(payload.name, payload.value);
   return {
     type: EDIT_JOB_PARAMS,
-    payload
+    payload,
   };
 };
 
-export const clearJobParams = payload => ({
+export const clearJobParams = (payload) => ({
   type: CLEAR_JOB_PARAMS,
-  payload
+  payload,
 });
 
 export const editRuleName = (payload, url = false) => {
   if (url) constructUrl("rule_name", payload);
   return {
     type: EDIT_RULE_NAME,
-    payload
+    payload,
   };
 };
 
-export const globalSearchUserRules = string => ({
+export const globalSearchUserRules = (string) => ({
   type: GLOBAL_SEARCH_USER_RULES,
-  payload: string
+  payload: string,
 });
 
-export const bboxEdit = bbox => ({
+export const bboxEdit = (bbox) => ({
   type: BBOX_EDIT,
-  payload: bbox
+  payload: bbox,
 });
 
-export const clickQueryRegion = bbox => ({
+export const clickQueryRegion = (bbox) => ({
   type: CLICK_QUERY_REGION,
-  payload: bbox
+  payload: bbox,
 });
 
 export const unclickQueryRegion = () => ({
-  type: UNCLICK_QUERY_REGION
+  type: UNCLICK_QUERY_REGION,
 });
 
-export const editTheme = darkMode => ({
+export const editTheme = (darkMode) => ({
   type: EDIT_THEME,
-  payload: darkMode
+  payload: darkMode,
 });

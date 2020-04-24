@@ -12,9 +12,7 @@ export const FigaroDataViewer = (props) => {
   const { res } = props;
   const endpoint = `${MOZART_REST_API_V1}/user-tags`;
 
-  let userTags = res.user_tags
-    ? res.user_tags.map((tag) => ({ label: tag, value: tag }))
-    : [];
+  let userTags = res.user_tags || [];
 
   var userTagsJobStatus = [
     "job-queued",
@@ -26,7 +24,7 @@ export const FigaroDataViewer = (props) => {
     res._index.startsWith("job_status-") &&
     userTagsJobStatus.includes(res.status) ? (
       <UserTags
-        userTags={userTags}
+        tags={userTags}
         endpoint={endpoint}
         index={res._index}
         id={res._id}

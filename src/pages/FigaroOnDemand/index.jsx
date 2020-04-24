@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Helmet } from "react-helmet";
 
 import QueryEditor from "../../components/QueryEditor";
@@ -22,7 +22,6 @@ import {
   editParams,
   editQuery,
   editTags,
-  validateQuery,
 } from "../../redux/actions";
 
 import {
@@ -126,9 +125,6 @@ class FigaroOnDemand extends React.Component {
     const { submitInProgress, submitSuccess, submitFailed } = this.state;
 
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
-    const darkTheme = "twilight";
-    const lightTheme = "tomorrow";
-    const aceTheme = darkMode ? darkTheme : lightTheme;
 
     const divider = paramsList.length > 0 ? <Border /> : null;
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
@@ -160,8 +156,6 @@ class FigaroOnDemand extends React.Component {
                 url={true} // update query params in url
                 query={query}
                 editQuery={editQuery} // redux action
-                validateQuery={validateQuery}
-                theme={aceTheme}
               />
             </div>
 

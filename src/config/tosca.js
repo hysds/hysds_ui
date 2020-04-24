@@ -134,18 +134,9 @@ exports.GRQ_DISPLAY_COLUMNS = [
     accessor: "metadata.status",
   },
   {
-    Header: "platform",
-    accessor: "metadata.platform",
-    width: 150,
-  },
-  {
     Header: "direction",
     accessor: "metadata.direction",
     width: 100,
-  },
-  {
-    Header: "mode",
-    accessor: "metadata.sensoroperationalmode",
   },
   {
     id: "trackNumber",
@@ -153,10 +144,6 @@ exports.GRQ_DISPLAY_COLUMNS = [
     accessor: (d) =>
       d.metadata ? d.metadata.trackNumber || d.metadata.track_number : null,
     width: 50,
-  },
-  {
-    Header: "polarisation",
-    accessor: "metadata.polarisationmode",
   },
 ];
 

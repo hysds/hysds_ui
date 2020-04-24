@@ -1,73 +1,57 @@
-import React, { Fragment } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-
 import { connect } from "react-redux";
-
-import AceEditor from "react-ace";
-import "brace/mode/json";
-import "brace/theme/twilight";
-import "brace/theme/tomorrow";
 
 import "./style.scss";
 
-const QueryEditor = props => {
-  const _handleQueryChange = val => props.editQuery(val);
+const QueryEditor = (props) => {
+  let { query } = props;
+  const [body, setBody] = useState("");
+  const [mounted, setMounted] = useState(false);
 
-  // disable submit job button
-  const _validateESQuery = err => {
-    const isValid = err.length > 0 ? false : true;
-    props.validateQuery(isValid);
+  if (!mounted) {
+    try {
+      query = JSON.parse(query);
+      query = JSON.stringify(query, null, 2);
+      setBody(query);
+    } catch (err) {
+      setBody(query);
+    }
+    setMounted(true);
+  }
+
+  const numRows = body.split("\n").length;
+
+  const _handleQueryChange = (e) => {
+    setBody(e.target.value);
+    props.editQuery(e.target.value);
   };
 
-  let { query } = props; // prop variables
-
-  try {
-    query = JSON.parse(query);
-    query = JSON.stringify(query, null, 2);
-  } catch (err) {}
-
   return (
-    <Fragment>
-      <AceEditor
-        mode="json"
-        theme={props.theme}
-        placeholder="Enter your Elasticsearch _search query"
-        fontSize={12}
-        showPrintMargin={false}
-        showGutter={true}
-        highlightActiveLine={true}
-        setOptions={{
-          showLineNumbers: true,
-          tabSize: 2
-        }}
+    <div className="code-edit-container">
+      <textarea
+        spellCheck="false"
+        className="code-input"
+        value={body}
         onChange={_handleQueryChange}
-        value={query}
-        wrapEnabled={true}
-        width="100%"
-        maxLines={Infinity}
-        onValidate={_validateESQuery}
-        editorProps={{ $blockScrolling: Infinity }}
+        rows={numRows}
       />
-    </Fragment>
+    </div>
   );
 };
 
 QueryEditor.propTypes = {
   editQuery: PropTypes.func.isRequired,
-  validateQuery: PropTypes.func.isRequired
 };
 
 QueryEditor.defaultProps = {
-  url: false
+  url: false,
 };
 
-// Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { url } = ownProps;
-  const { editQuery, validateQuery } = ownProps; // actions
+  const { url, editQuery } = ownProps;
   return {
-    editQuery: query => dispatch(editQuery(query, url)),
-    validateQuery: validQuery => dispatch(validateQuery(validQuery))
+    editQuery: (query) => dispatch(editQuery(query, url)),
   };
 };
 

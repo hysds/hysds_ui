@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { css } from "emotion";
 
-import "font-awesome/css/font-awesome.min.css";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Tag = (props) => {
   const style = css`
@@ -29,7 +30,7 @@ const Tag = (props) => {
   return (
     <div onClick={handleClick} className={style}>
       <span className={deleteStyle}>
-        <i className="fa fa-times"></i>
+        <FontAwesomeIcon icon={faTimes} />
       </span>
       <span className={tagStyle}>{props.value}</span>
     </div>

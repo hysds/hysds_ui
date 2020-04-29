@@ -1,15 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import "font-awesome/css/font-awesome.min.css";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import "./style.scss";
 
 import upArrow from "../../images/arrow-up.png";
 
-export const Button = props => {
+export const Button = (props) => {
   let { label, size, color, loading } = props;
 
-  label = loading ? <i className="fa fa-spinner fa-spin"></i> : label;
+  label = loading ? <FontAwesomeIcon icon={faSpinner} /> : label;
 
   var colorClass;
   switch (color) {
@@ -45,19 +47,19 @@ export const Button = props => {
   );
 };
 
-export const ButtonLink = props => (
+export const ButtonLink = (props) => (
   <Link to={props.href} target={props.target}>
     <Button {...props} />
   </Link>
 );
 
-export const ScrollTop = props => (
+export const ScrollTop = (props) => (
   <img src={upArrow} className="scroll-top-button" {...props} />
 );
 
-export const ToggleButton = props => {
+export const ToggleButton = (props) => {
   let label = props.enabled ? "On" : "Off";
-  label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
+  label = props.loading ? <FontAwesomeIcon icon={faSpinner} /> : label;
 
   const toggleClass = props.enabled ? "on" : "off";
   const className = `rules-table-button ${toggleClass}`;
@@ -69,9 +71,9 @@ export const ToggleButton = props => {
   );
 };
 
-export const DeleteButton = props => {
+export const DeleteButton = (props) => {
   let label = props.label || "Delete";
-  label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
+  label = props.loading ? <FontAwesomeIcon icon={faSpinner} /> : label;
   return (
     <button
       className="rules-table-button delete"
@@ -83,9 +85,9 @@ export const DeleteButton = props => {
   );
 };
 
-export const EditButton = props => {
+export const EditButton = (props) => {
   let label = props.label || "Edit";
-  label = props.loading ? <i className="fa fa-spinner fa-spin"></i> : label;
+  label = props.loading ? <FontAwesomeIcon icon={faSpinner} /> : label;
   return (
     <button className="rules-table-button edit" {...props}>
       {label}

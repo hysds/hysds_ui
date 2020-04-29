@@ -1,7 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 
-// import QueryEditor from "../../components/QueryEditor";
 import QueryEditor from "../../components/QueryEditor";
 import JobInput from "../../components/JobInput";
 import JobParams from "../../components/JobParams";
@@ -22,13 +21,12 @@ import {
   editParams,
   editQuery,
   editTags,
-  validateQuery,
 } from "../../redux/actions";
 import {
-  editDataCount,
   getOnDemandJobs,
   getQueueList,
   getParamsList,
+  editDataCount,
 } from "../../redux/actions/tosca";
 
 import { GRQ_REST_API_V1 } from "../../config";
@@ -46,26 +44,20 @@ class ToscaOnDemand extends React.Component {
   }
 
   componentDidMount() {
+    const { jobSpec } = this.props;
     this.props.getOnDemandJobs();
-    if (this.props.jobSpec) {
-      this.props.getQueueList(this.props.jobSpec);
-      this.props.getParamsList(this.props.jobSpec);
+    if (jobSpec) {
+      this.props.getQueueList(jobSpec);
+      this.props.getParamsList(jobSpec);
     }
   }
 
   _validateSubmission = () => {
-    let {
-      validQuery,
-      jobSpec,
-      tags,
-      queue,
-      priority,
-      params,
-      paramsList,
-    } = this.props;
+    let { jobSpec, tags, queue, priority, params } = this.props;
+    const { paramsList } = this.props;
 
     let validSubmission = true;
-    if (!validQuery || !tags || !jobSpec || !priority || !queue) return false;
+    if (!tags || !jobSpec || !priority || !queue) return false;
 
     paramsList.map((param) => {
       const paramName = param.name;
@@ -75,9 +67,7 @@ class ToscaOnDemand extends React.Component {
     return validSubmission;
   };
 
-  _checkQueryDataCount = () => {
-    this.props.editDataCount(this.props.query);
-  };
+  _checkQueryDataCount = () => this.props.editDataCount(this.props.query);
 
   _handleJobSubmit = () => {
     this.setState({ submitInProgress: 1 });
@@ -113,13 +103,12 @@ class ToscaOnDemand extends React.Component {
   };
 
   render() {
-    let {
+    const {
       darkMode,
       query,
       paramsList,
       params,
       hysdsio,
-      validQuery,
       submissionType,
     } = this.props;
     const { submitInProgress, submitSuccess, submitFailed } = this.state;
@@ -128,12 +117,15 @@ class ToscaOnDemand extends React.Component {
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
 
     const submissionTypeLabel = this.props.jobSpec ? (
-      <button className="on-demand-submission-type">
-        Submit Type: <strong>{submissionType || "iteration"}</strong>
-      </button>
+      <div className="on-demand-submission-type">
+        <p>
+          Submit Type: <strong>{submissionType || "iteration"}</strong>
+        </p>
+      </div>
     ) : null;
 
     const validSubmission = this._validateSubmission();
+    console.log(validSubmission);
 
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
@@ -220,7 +212,6 @@ class ToscaOnDemand extends React.Component {
                       color="success"
                       label="Data Count Check"
                       onClick={this._checkQueryDataCount}
-                      disabled={!validQuery}
                     />
                   </div>
                   <div className="tosca-on-demand-button">
@@ -251,7 +242,6 @@ class ToscaOnDemand extends React.Component {
 const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   query: state.generalReducer.query,
-  validQuery: state.generalReducer.validQuery,
   jobs: state.generalReducer.jobList,
   jobSpec: state.generalReducer.jobSpec,
   jobLabel: state.generalReducer.jobLabel,

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -10,7 +10,7 @@ import { globalSearchUserRules } from "../../redux/actions";
 import {
   getUserRules,
   toggleUserRule,
-  deleteUserRule
+  deleteUserRule,
 } from "../../redux/actions/tosca";
 
 import HeaderBar from "../../components/HeaderBar";
@@ -21,7 +21,7 @@ const ToscaUserRules = class extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      globalSearch: ""
+      globalSearch: "",
     };
   }
 
@@ -29,10 +29,10 @@ const ToscaUserRules = class extends React.Component {
     this.props.getUserRules();
   }
 
-  _handleRuleSearch = e => {
+  _handleRuleSearch = (e) => {
     const text = e.target.value;
     this.setState({
-      globalSearch: text
+      globalSearch: text,
     });
     this.props.globalSearchUserRules(text);
   };
@@ -86,19 +86,19 @@ const ToscaUserRules = class extends React.Component {
 
 ToscaUserRules.propTypes = {
   getUserRules: PropTypes.func.isRequired,
-  userRules: PropTypes.array.isRequired
+  userRules: PropTypes.array.isRequired,
 };
 
 // redux state data
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
-  userRules: state.generalReducer.filteredRules
+  userRules: state.generalReducer.filteredRules,
 });
 
 // Redux actions
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   getUserRules: () => dispatch(getUserRules()),
-  globalSearchUserRules: search => dispatch(globalSearchUserRules(search))
+  globalSearchUserRules: (search) => dispatch(globalSearchUserRules(search)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ToscaUserRules);

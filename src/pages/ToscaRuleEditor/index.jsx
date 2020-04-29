@@ -94,9 +94,7 @@ class ToscaRuleEditor extends React.Component {
       kwargs: JSON.stringify(this.props.params),
     };
 
-    this.setState({
-      submitInProgress: "loading",
-    });
+    this.setState({ submitInProgress: 1 });
 
     const endpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
     const headers = { "Content-Type": "application/json" };
@@ -202,7 +200,7 @@ class ToscaRuleEditor extends React.Component {
                     label={this.state.editMode ? "Save Changes" : "Save"}
                     onClick={this._handleUserRuleSubmit}
                     loading={this.state.submitInProgress}
-                    disabled={!validSubmission}
+                    disabled={!validSubmission || this.state.submitInProgress}
                   />
                 </div>
                 <div className="user-rule-button">

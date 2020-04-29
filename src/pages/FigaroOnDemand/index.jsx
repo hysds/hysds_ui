@@ -14,7 +14,6 @@ import { Button } from "../../components/Buttons";
 import HeaderBar from "../../components/HeaderBar";
 
 import { connect } from "react-redux";
-
 import {
   changeJobType,
   changeQueue,
@@ -23,7 +22,6 @@ import {
   editQuery,
   editTags,
 } from "../../redux/actions";
-
 import {
   getOnDemandJobs,
   getQueueList,
@@ -46,26 +44,20 @@ class FigaroOnDemand extends React.Component {
   }
 
   componentDidMount() {
+    const { jobSpec } = this.props;
     this.props.getOnDemandJobs();
-    if (this.props.jobSpec) {
-      this.props.getQueueList(this.props.jobSpec);
-      this.props.getParamsList(this.props.jobSpec);
+    if (jobSpec) {
+      this.props.getQueueList(jobSpec);
+      this.props.getParamsList(jobSpec);
     }
   }
 
   _validateSubmission = () => {
-    let {
-      validQuery,
-      jobSpec,
-      tags,
-      queue,
-      priority,
-      params,
-      paramsList,
-    } = this.props;
+    let { jobSpec, tags, queue, priority, params } = this.props;
+    const { paramsList } = this.props;
 
     let validSubmission = true;
-    if (!validQuery || !tags || !jobSpec || !priority || !queue) return false;
+    if (!tags || !jobSpec || !priority || !queue) return false;
 
     paramsList.map((param) => {
       const paramName = param.name;
@@ -75,9 +67,7 @@ class FigaroOnDemand extends React.Component {
     return validSubmission;
   };
 
-  _checkQueryDataCount = () => {
-    this.props.editDataCount(this.props.query);
-  };
+  _checkQueryDataCount = () => this.props.editDataCount(this.props.query);
 
   _handleJobSubmit = () => {
     this.setState({ submitInProgress: 1 });
@@ -113,13 +103,12 @@ class FigaroOnDemand extends React.Component {
   };
 
   render() {
-    let {
+    const {
       darkMode,
       query,
       paramsList,
       params,
       hysdsio,
-      validQuery,
       submissionType,
     } = this.props;
     const { submitInProgress, submitSuccess, submitFailed } = this.state;
@@ -130,12 +119,15 @@ class FigaroOnDemand extends React.Component {
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
 
     const submissionTypeLabel = this.props.jobSpec ? (
-      <button className="on-demand-submission-type">
-        Submit Type: <strong>{submissionType || "iteration"}</strong>
-      </button>
+      <div className="on-demand-submission-type">
+        <p>
+          Submit Type: <strong>{submissionType || "iteration"}</strong>
+        </p>
+      </div>
     ) : null;
 
     const validSubmission = this._validateSubmission();
+    console.log(validSubmission);
 
     return (
       <div className="figaro-on-demand-page">
@@ -221,7 +213,6 @@ class FigaroOnDemand extends React.Component {
                       color="success"
                       label="Data Count Check"
                       onClick={this._checkQueryDataCount}
-                      disabled={!validQuery}
                     />
                   </div>
                   <div className="tosca-on-demand-button">
@@ -252,7 +243,6 @@ class FigaroOnDemand extends React.Component {
 const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   query: state.generalReducer.query,
-  validQuery: state.generalReducer.validQuery,
   jobs: state.generalReducer.jobList,
   jobSpec: state.generalReducer.jobSpec,
   jobLabel: state.generalReducer.jobLabel,

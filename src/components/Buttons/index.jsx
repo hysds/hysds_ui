@@ -11,7 +11,7 @@ import upArrow from "../../images/arrow-up.png";
 export const Button = (props) => {
   let { label, size, color, loading } = props;
 
-  label = loading ? <FontAwesomeIcon icon={faSpinner} /> : label;
+  label = loading ? <FontAwesomeIcon icon={faSpinner} spin={true} /> : label;
 
   var colorClass;
   switch (color) {
@@ -59,7 +59,11 @@ export const ScrollTop = (props) => (
 
 export const ToggleButton = (props) => {
   let label = props.enabled ? "On" : "Off";
-  label = props.loading ? <FontAwesomeIcon icon={faSpinner} /> : label;
+  label = props.loading ? (
+    <FontAwesomeIcon icon={faSpinner} spin={true} />
+  ) : (
+    label
+  );
 
   const toggleClass = props.enabled ? "on" : "off";
   const className = `rules-table-button ${toggleClass}`;
@@ -73,7 +77,11 @@ export const ToggleButton = (props) => {
 
 export const DeleteButton = (props) => {
   let label = props.label || "Delete";
-  label = props.loading ? <FontAwesomeIcon icon={faSpinner} /> : label;
+  label = props.loading ? (
+    <FontAwesomeIcon icon={faSpinner} spin={true} />
+  ) : (
+    label
+  );
   return (
     <button
       className="rules-table-button delete"
@@ -87,7 +95,11 @@ export const DeleteButton = (props) => {
 
 export const EditButton = (props) => {
   let label = props.label || "Edit";
-  label = props.loading ? <FontAwesomeIcon icon={faSpinner} /> : label;
+  label = props.loading ? (
+    <FontAwesomeIcon icon={faSpinner} spin={true} />
+  ) : (
+    label
+  );
   return (
     <button className="rules-table-button edit" {...props}>
       {label}

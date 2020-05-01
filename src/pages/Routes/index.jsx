@@ -18,25 +18,16 @@ import FigaroOnDemand from "../FigaroOnDemand";
 import FigaroUserRules from "../FigaroUserRules";
 import FigaroRuleEditor from "../FigaroRuleEditor";
 
-import { SOURCE_PATH } from "../../config/index.js";
+import { ROOT_PATH } from "../../config/index.js";
 
 import "./style.scss";
-
-/**
- * TODO:
- * basename prop in Router will be useful for when this app's port routes to an endpoint
- * ie. 100.64.###.###/mozart -> basename="/mozart"
- * may need to have a settings variable that routes
- *
- * TODO: have a core config/index.js
- */
 
 const Routes = (props) => {
   const classTheme = props.darkMode ? "__theme-dark" : "__theme-light";
 
   return (
     <div className={classTheme}>
-      <Router basename={SOURCE_PATH}>
+      <Router basename={ROOT_PATH}>
         <Switch>
           <Route exact path="/" render={() => <Redirect to="/tosca" />} />
           <Route exact path="/tosca" component={Tosca} />

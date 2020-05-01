@@ -1,10 +1,13 @@
 import React, { Fragment } from "react";
-import "font-awesome/css/font-awesome.min.css";
+
+import { faInfo } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import "./style.css";
 
 export const Border = () => <hr className="job-param-border" />;
 
-export const SubmitStatusBar = props => {
+export const SubmitStatusBar = (props) => {
   const label = props.label || "Please input label";
 
   const status = props.status === "failed" ? "failed" : "success";
@@ -22,17 +25,17 @@ export const SubmitStatusBar = props => {
   );
 };
 
-export const HelperLink = props => {
+export const HelperLink = (props) => {
   return (
     <Fragment>
       <a href={props.link} target="_none" className="helper-link">
-        <i className="fa fa-info"></i>
+        <FontAwesomeIcon icon={faInfo} />
       </a>
     </Fragment>
   );
 };
 
-export const Checkbox = props => (
+export const Checkbox = (props) => (
   <Fragment>
     <input className="miscellaneous-checkbox" type="checkbox" {...props} />
   </Fragment>

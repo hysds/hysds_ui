@@ -67,6 +67,12 @@ exports.FILTERS = [
     type: "single",
   },
   {
+    componentId: "system_version",
+    dataField: "system_version.keyword",
+    title: "System Version",
+    type: "single",
+  },
+  {
     componentId: "platform",
     dataField: "metadata.platform.keyword",
     title: "Platform",

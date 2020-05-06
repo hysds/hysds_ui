@@ -9,7 +9,7 @@ const QueryEditor = (props) => {
   const [body, setBody] = useState("");
   const [mounted, setMounted] = useState(false);
 
-  if (!mounted) {
+  if (query && !mounted) {
     try {
       query = JSON.parse(query);
       query = JSON.stringify(query, null, 2);

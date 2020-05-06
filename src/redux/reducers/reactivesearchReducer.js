@@ -6,14 +6,14 @@ import {
   CLICK_QUERY_REGION,
   EDIT_CUSTOM_FILTER_ID,
   GET_DATASET_ID,
-  UNCLICK_QUERY_REGION
+  UNCLICK_QUERY_REGION,
 } from "../constants.js";
 import { ID_COMPONENT } from "../../config/tosca";
 
 // custom ReactiveComponent id's
 const initialState = {
   bboxText: null,
-  queryRegion: false
+  queryRegion: false,
 };
 
 const reactivesearchReducer = (state = initialState, action) => {
@@ -24,19 +24,19 @@ const reactivesearchReducer = (state = initialState, action) => {
     case GET_DATASET_ID:
       return {
         ...state,
-        [ID_COMPONENT]: action.payload
+        [ID_COMPONENT]: action.payload,
       };
 
     case EDIT_CUSTOM_FILTER_ID:
       return {
         ...state,
-        ...action.payload
+        ...action.payload,
       };
 
     case BBOX_EDIT:
       return {
         ...state,
-        bboxText: action.payload
+        bboxText: action.payload,
       };
 
     // CUSTOM COMPONENT HAS A CLEAR EVENT (NEED TO FIGURE OUT TO HANDLE ALL AT ONCE)
@@ -44,22 +44,23 @@ const reactivesearchReducer = (state = initialState, action) => {
       break;
 
     case CLEAR_CUSTOM_COMPONENTS:
-      return {
-        ...state,
-        [action.payload]: null
-      };
+      // return {
+      //   ...state,
+      //   [action.payload]: null
+      // };
+      return state;
 
     case CLICK_QUERY_REGION:
       return {
         ...state,
         bboxText: action.payload,
-        queryRegion: true
+        queryRegion: true,
       };
 
     case UNCLICK_QUERY_REGION:
       return {
         ...state,
-        queryRegion: false
+        queryRegion: false,
       };
 
     default:

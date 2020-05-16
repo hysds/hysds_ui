@@ -100,6 +100,7 @@ exports.QUERY_LOGIC = {
     "short_error",
     "resource",
     "job_type",
+    "queue",
     "node",
     "priority",
     "container_image",

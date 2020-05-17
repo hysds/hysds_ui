@@ -67,6 +67,12 @@ exports.FILTERS = [
     type: "single",
   },
   {
+    componentId: "system_version",
+    dataField: "system_version.keyword",
+    title: "System Version",
+    type: "single",
+  },
+  {
     componentId: "platform",
     dataField: "metadata.platform.keyword",
     title: "Platform",
@@ -107,6 +113,7 @@ exports.QUERY_LOGIC = {
     "continent",
     "track_number",
     "endtime",
+    "system_version",
     this.ID_COMPONENT,
     this.MAP_COMPONENT_ID,
     this.QUERY_SEARCH_COMPONENT_ID,

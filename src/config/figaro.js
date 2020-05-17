@@ -52,6 +52,12 @@ exports.FILTERS = [
     type: "single",
   },
   {
+    componentId: "queue",
+    dataField: "job.job_info.job_queue",
+    title: "Job Queue",
+    type: "single",
+  },
+  {
     componentId: "node",
     dataField: "job.job_info.execute_node",
     title: "Node",
@@ -94,6 +100,7 @@ exports.QUERY_LOGIC = {
     "short_error",
     "resource",
     "job_type",
+    "queue",
     "node",
     "priority",
     "container_image",

@@ -21,13 +21,13 @@ import {
   RETRIEVE_DATA,
   TOGGLE_USER_RULE,
   USER_RULE_ACTION_LOADING,
-  VALIDATE_QUERY
+  VALIDATE_QUERY,
 } from "../constants";
 
 import {
   makeDropdownOptions,
   sanitizePriority,
-  extractJobParams
+  extractJobParams,
 } from "../../utils";
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -60,7 +60,7 @@ const initialState = {
   userRules: [], // store all the rules client side
   filteredRules: [], // client global search for user rules
 
-  toggle: false
+  toggle: false,
 };
 
 const generalReducer = (state = initialState, action) => {
@@ -72,38 +72,38 @@ const generalReducer = (state = initialState, action) => {
       return {
         ...state,
         data: action.payload.data,
-        dataCount: action.payload.resultStats.numberOfResults
+        dataCount: action.payload.resultStats.numberOfResults,
       };
     case SET_QUERY:
       return {
         ...state,
-        query: action.payload
+        query: action.payload,
       };
 
     // on-demand page
     case EDIT_QUERY:
       return {
         ...state,
-        query: action.payload
+        query: action.payload,
       };
     case VALIDATE_QUERY:
       var isNull = state.query === "null" || state.query === "";
       return {
         ...state,
-        validQuery: action.payload && !isNull
+        validQuery: action.payload && !isNull,
       };
     case GET_JOB_LIST:
       var newJobList = makeDropdownOptions(action.payload);
 
       return {
         ...state,
-        jobList: newJobList
+        jobList: newJobList,
       };
     case LOAD_JOB_PARAMS:
       var params = action.payload.params || [];
 
       var defaultParams = {};
-      params.map(p => {
+      params.map((p) => {
         let name = p.name;
         defaultParams[name] = state.params[name] || p.default || null; // THIS IS THE BUG
       });
@@ -112,7 +112,7 @@ const generalReducer = (state = initialState, action) => {
         ...state,
         paramsList: params,
         submissionType: action.payload.submission_type,
-        params: defaultParams
+        params: defaultParams,
       };
     case CHANGE_JOB_TYPE:
       return {
@@ -122,56 +122,56 @@ const generalReducer = (state = initialState, action) => {
         hysdsio: action.payload.hysdsio,
         queue: null,
         queueList: [],
-        params: {}
+        params: {},
       };
     case LOAD_QUEUE_LIST:
       var queueList = action.payload;
       return {
         ...state,
-        queueList: queueList.map(queue => ({ label: queue, value: queue }))
+        queueList: queueList.map((queue) => ({ label: queue, value: queue })),
       };
     case LOAD_QUEUE:
       var queues = action.payload;
       var recommendedQueue = queues.length > 0 ? queues[0] : state.queue;
       return {
         ...state,
-        queue: recommendedQueue
+        queue: recommendedQueue,
       };
     case CHANGE_QUEUE:
       return {
         ...state,
-        queue: action.payload
+        queue: action.payload,
       };
     case EDIT_PRIORITY:
       return {
         ...state,
-        priority: action.payload
+        priority: action.payload,
       };
     case EDIT_TAG:
       return {
         ...state,
-        tags: action.payload
+        tags: action.payload,
       };
     case EDIT_JOB_PARAMS:
       var newParams = {
         ...state.params,
-        ...{ [action.payload.name]: action.payload.value }
+        ...{ [action.payload.name]: action.payload.value },
       };
       // editUrlJobParam(action.payload.name, action.payload.value);
       return {
         ...state,
-        params: newParams
+        params: newParams,
       };
     case EDIT_DATA_COUNT:
       return {
         ...state,
-        dataCount: action.payload
+        dataCount: action.payload,
       };
     case LOAD_USER_RULES:
       return {
         ...state,
         userRules: action.payload,
-        filteredRules: action.payload
+        filteredRules: action.payload,
       };
     case LOAD_USER_RULE:
       var payload = action.payload;
@@ -179,11 +179,12 @@ const generalReducer = (state = initialState, action) => {
         ...state,
         query: payload.query_string,
         jobSpec: payload.job_spec,
+        jobLabel: payload.job_spec,
         hysdsio: payload.job_type,
         params: JSON.parse(payload.kwargs),
         ruleName: payload.rule_name,
         queue: payload.queue,
-        priority: payload.priority
+        priority: payload.priority,
       };
     case USER_RULE_ACTION_LOADING:
       var { index, id } = action.payload;
@@ -191,7 +192,7 @@ const generalReducer = (state = initialState, action) => {
       var foundFilteredRule = state.filteredRules[index];
       foundFilteredRule.toggleLoading = true;
 
-      var loc = state.userRules.findIndex(x => x._id === id);
+      var loc = state.userRules.findIndex((x) => x._id === id);
       var foundRule = state.userRules[loc];
       foundRule.toggleLoading = true;
 
@@ -200,18 +201,18 @@ const generalReducer = (state = initialState, action) => {
         userRules: [
           ...state.userRules.slice(0, loc),
           foundRule,
-          ...state.userRules.slice(loc + 1)
+          ...state.userRules.slice(loc + 1),
         ],
         filteredRules: [
           ...state.filteredRules.slice(0, index),
           foundFilteredRule,
-          ...state.filteredRules.slice(index + 1)
-        ]
+          ...state.filteredRules.slice(index + 1),
+        ],
       };
     case TOGGLE_USER_RULE:
       var { index, id, updated } = action.payload;
 
-      var loc = state.userRules.findIndex(x => x._id === id);
+      var loc = state.userRules.findIndex((x) => x._id === id);
       var foundRule = state.userRules[loc];
       foundRule.enabled = updated.enabled;
       foundRule.toggleLoading = false;
@@ -225,13 +226,13 @@ const generalReducer = (state = initialState, action) => {
         userRules: [
           ...state.userRules.slice(0, loc),
           foundRule,
-          ...state.userRules.slice(loc + 1)
+          ...state.userRules.slice(loc + 1),
         ],
         filteredRules: [
           ...state.filteredRules.slice(0, index),
           foundFilteredRule,
-          ...state.filteredRules.slice(index + 1)
-        ]
+          ...state.filteredRules.slice(index + 1),
+        ],
       };
     case CLEAR_JOB_PARAMS:
       return {
@@ -242,31 +243,31 @@ const generalReducer = (state = initialState, action) => {
         queueList: [],
         queue: null,
         params: {},
-        paramsList: []
+        paramsList: [],
       };
     case EDIT_RULE_NAME:
       return {
         ...state,
-        ruleName: action.payload
+        ruleName: action.payload,
       };
     case DELETE_USER_RULE:
       var { index, id } = action.payload;
-      var loc = state.userRules.findIndex(x => x._id === id);
+      var loc = state.userRules.findIndex((x) => x._id === id);
 
       return {
         ...state,
         userRules: [
           ...state.userRules.slice(0, loc),
-          ...state.userRules.slice(loc + 1)
+          ...state.userRules.slice(loc + 1),
         ],
         filteredRules: [
           ...state.filteredRules.slice(0, index),
-          ...state.filteredRules.slice(index + 1)
-        ]
+          ...state.filteredRules.slice(index + 1),
+        ],
       };
     case GLOBAL_SEARCH_USER_RULES:
       var search = action.payload;
-      var filteredRules = state.userRules.filter(value => {
+      var filteredRules = state.userRules.filter((value) => {
         return (
           value.rule_name.toLowerCase().includes(search.toLowerCase()) ||
           value.job_spec.toLowerCase().includes(search.toLowerCase()) ||
@@ -282,7 +283,7 @@ const generalReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        filteredRules
+        filteredRules,
       };
     default:
       return state;

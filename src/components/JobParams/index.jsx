@@ -9,15 +9,21 @@ import "./style.css";
 const customSelectStyles = {
   control: (base, value) => ({
     ...base,
-    border: value.hasValue ? null : "2px solid red"
-  })
+    border: value.hasValue ? null : "2px solid red",
+  }),
 };
 
-const JobParams = props => {
-  const _handleJobParamInputChange = e => {
+const JobParams = (props) => {
+  const _handleJobParamInputChange = (e) => {
+    let { name, value } = e.target;
+    if (value) {
+      try {
+        value = JSON.parse(value);
+      } catch (err) {}
+    }
     const payload = {
-      name: e.target.name,
-      value: e.target.value
+      name,
+      value,
     };
     props.editParams(payload);
   };
@@ -25,7 +31,7 @@ const JobParams = props => {
   const _handleJobParamDropdownChange = (e, v) => {
     const payload = {
       name: v.name,
-      value: e.value
+      value: e.value,
     };
     props.editParams(payload);
   };
@@ -33,9 +39,13 @@ const JobParams = props => {
   const _renderParamsList = () => {
     const { params } = props;
 
-    return props.paramsList.map(param => {
+    return props.paramsList.map((param) => {
       const paramName = param.name;
-      const value = params[paramName];
+      let value = params[paramName];
+
+      try {
+        if (value && typeof value === "object") value = JSON.stringify(value);
+      } catch (err) {}
 
       switch (param.type) {
         case "number":
@@ -62,9 +72,9 @@ const JobParams = props => {
                   label={paramName}
                   value={value ? { label: value, value: value || "" } : null}
                   name={paramName}
-                  options={param.enumerables.map(option => ({
+                  options={param.enumerables.map((option) => ({
                     label: option,
-                    value: option
+                    value: option,
                   }))}
                   onChange={_handleJobParamDropdownChange}
                   styles={param.optional ? null : customSelectStyles}
@@ -84,7 +94,7 @@ const JobParams = props => {
                 name={paramName}
                 value={value || ""}
                 onChange={_handleJobParamInputChange}
-              ></textarea>
+              />
             </div>
           );
         default:
@@ -111,18 +121,18 @@ const JobParams = props => {
 };
 
 JobParams.propTypes = {
-  editParams: PropTypes.func.isRequired
+  editParams: PropTypes.func.isRequired,
 };
 
 JobParams.defaultProps = {
-  url: false
+  url: false,
 };
 
 // Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { url } = ownProps;
   return {
-    editParams: param => dispatch(ownProps.editParams(param, url))
+    editParams: (param) => dispatch(ownProps.editParams(param, url)),
   };
 };
 

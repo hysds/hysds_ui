@@ -19,7 +19,6 @@ import HeaderBar from "../../components/HeaderBar";
 import { GRQ_REST_API_V1 } from "../../config";
 
 import {
-  validateQuery,
   editQuery,
   editJobPriority,
   changeJobType,

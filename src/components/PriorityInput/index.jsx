@@ -10,24 +10,24 @@ import "./style.css";
  * generate react-select array objects of queue list:
  * ex. [{value: 0, label: 0}, {value: 1, label: 1}]
  */
-const generatePriorityList = n =>
-  [...Array(n).keys()].slice(1).map(num => ({ value: num, label: num }));
+const generatePriorityList = (n) =>
+  [...Array(n).keys()].slice(1).map((num) => ({ value: num, label: num }));
 
 const customSelectStyles = {
   control: (base, value) => ({
     ...base,
     border: value.hasValue ? null : "2px solid red",
     active: {
-      border: null
-    }
-  })
+      border: null,
+    },
+  }),
 };
 
-const PriorityInput = props => {
+const PriorityInput = (props) => {
   const { priority } = props;
   const priorityList = generatePriorityList(10);
 
-  const _handleEditPriority = e => props.editJobPriority(e.value);
+  const _handleEditPriority = (e) => props.editJobPriority(e.value);
 
   return (
     <section className="priority-input-wrapper">
@@ -38,7 +38,7 @@ const PriorityInput = props => {
           name="priority"
           value={{
             label: priority || "",
-            value: priority || ""
+            value: priority || "",
           }}
           options={priorityList}
           onChange={_handleEditPriority}
@@ -51,18 +51,18 @@ const PriorityInput = props => {
 
 PriorityInput.propTypes = {
   priority: PropTypes.number.isRequired,
-  editJobPriority: PropTypes.func.isRequired
+  editJobPriority: PropTypes.func.isRequired,
 };
 
 PriorityInput.defaultProps = {
-  url: false
+  url: false,
 };
 
 // Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { editJobPriority, url } = ownProps;
   return {
-    editJobPriority: query => dispatch(editJobPriority(query, url))
+    editJobPriority: (query) => dispatch(editJobPriority(query, url)),
   };
 };
 

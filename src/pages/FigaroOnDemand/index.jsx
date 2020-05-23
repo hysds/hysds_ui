@@ -87,6 +87,7 @@ class FigaroOnDemand extends React.Component {
     fetch(jobSubmitUrl, { method: "POST", headers, body: JSON.stringify(data) })
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         if (!data.success) {
           this.setState({ submitInProgress: 0, submitFailed: 1 });
           setTimeout(() => this.setState({ submitFailed: 0 }), 3000);

@@ -5,7 +5,6 @@ import {
   RETRIEVE_DATA,
   SET_QUERY,
   EDIT_QUERY, // on-demand
-  VALIDATE_QUERY,
   EDIT_PRIORITY,
   EDIT_JOB_PARAMS,
   CHANGE_JOB_TYPE,
@@ -80,11 +79,6 @@ export const editQuery = (payload, url = false) => {
     payload,
   };
 };
-
-export const validateQuery = (payload) => ({
-  type: VALIDATE_QUERY,
-  payload,
-});
 
 export const editJobPriority = (payload, url = false) => {
   if (url) constructUrl("priority", payload);

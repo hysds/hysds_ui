@@ -10,7 +10,6 @@ import {
 } from "../constants.js";
 import { ID_COMPONENT } from "../../config/tosca";
 
-// custom ReactiveComponent id's
 const initialState = {
   bboxText: null,
   queryRegion: false,

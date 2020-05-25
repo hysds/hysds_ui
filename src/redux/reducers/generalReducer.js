@@ -21,7 +21,6 @@ import {
   RETRIEVE_DATA,
   TOGGLE_USER_RULE,
   USER_RULE_ACTION_LOADING,
-  VALIDATE_QUERY,
 } from "../constants";
 
 import {
@@ -67,7 +66,7 @@ const generalReducer = (state = initialState, action) => {
   switch (action.type) {
     case CLEAR_REDUX_STORE:
       return initialState;
-    // main-page
+
     case RETRIEVE_DATA:
       return {
         ...state,
@@ -80,29 +79,22 @@ const generalReducer = (state = initialState, action) => {
         query: action.payload,
       };
 
-    // on-demand page
     case EDIT_QUERY:
       return {
         ...state,
         query: action.payload,
       };
-    case VALIDATE_QUERY:
-      var isNull = state.query === "null" || state.query === "";
-      return {
-        ...state,
-        validQuery: action.payload && !isNull,
-      };
-    case GET_JOB_LIST:
-      var newJobList = makeDropdownOptions(action.payload);
-
+    case GET_JOB_LIST: {
+      const newJobList = makeDropdownOptions(action.payload);
       return {
         ...state,
         jobList: newJobList,
       };
-    case LOAD_JOB_PARAMS:
-      var params = action.payload.params || [];
+    }
+    case LOAD_JOB_PARAMS: {
+      const params = action.payload.params || [];
+      const defaultParams = {};
 
-      var defaultParams = {};
       params.map((p) => {
         let name = p.name;
         defaultParams[name] = state.params[name] || p.default || null; // THIS IS THE BUG
@@ -114,6 +106,7 @@ const generalReducer = (state = initialState, action) => {
         submissionType: action.payload.submission_type,
         params: defaultParams,
       };
+    }
     case CHANGE_JOB_TYPE:
       return {
         ...state,
@@ -125,18 +118,21 @@ const generalReducer = (state = initialState, action) => {
         params: {},
       };
     case LOAD_QUEUE_LIST:
-      var queueList = action.payload;
       return {
         ...state,
-        queueList: queueList.map((queue) => ({ label: queue, value: queue })),
+        queueList: action.payload.map((queue) => ({
+          label: queue,
+          value: queue,
+        })),
       };
-    case LOAD_QUEUE:
-      var queues = action.payload;
-      var recommendedQueue = queues.length > 0 ? queues[0] : state.queue;
+    case LOAD_QUEUE: {
+      const queues = action.payload;
+      const recommendedQueue = queues.length > 0 ? queues[0] : state.queue;
       return {
         ...state,
         queue: recommendedQueue,
       };
+    }
     case CHANGE_QUEUE:
       return {
         ...state,
@@ -152,8 +148,8 @@ const generalReducer = (state = initialState, action) => {
         ...state,
         tags: action.payload,
       };
-    case EDIT_JOB_PARAMS:
-      var newParams = {
+    case EDIT_JOB_PARAMS: {
+      const newParams = {
         ...state.params,
         ...{ [action.payload.name]: action.payload.value },
       };
@@ -162,6 +158,7 @@ const generalReducer = (state = initialState, action) => {
         ...state,
         params: newParams,
       };
+    }
     case EDIT_DATA_COUNT:
       return {
         ...state,
@@ -173,8 +170,8 @@ const generalReducer = (state = initialState, action) => {
         userRules: action.payload,
         filteredRules: action.payload,
       };
-    case LOAD_USER_RULE:
-      var payload = action.payload;
+    case LOAD_USER_RULE: {
+      const { payload } = action;
       return {
         ...state,
         query: payload.query_string,
@@ -186,14 +183,15 @@ const generalReducer = (state = initialState, action) => {
         queue: payload.queue,
         priority: payload.priority,
       };
-    case USER_RULE_ACTION_LOADING:
-      var { index, id } = action.payload;
+    }
+    case USER_RULE_ACTION_LOADING: {
+      const { index, id } = action.payload;
 
-      var foundFilteredRule = state.filteredRules[index];
+      const foundFilteredRule = state.filteredRules[index];
       foundFilteredRule.toggleLoading = true;
 
-      var loc = state.userRules.findIndex((x) => x._id === id);
-      var foundRule = state.userRules[loc];
+      const loc = state.userRules.findIndex((x) => x._id === id);
+      const foundRule = state.userRules[loc];
       foundRule.toggleLoading = true;
 
       return {
@@ -209,15 +207,16 @@ const generalReducer = (state = initialState, action) => {
           ...state.filteredRules.slice(index + 1),
         ],
       };
-    case TOGGLE_USER_RULE:
-      var { index, id, updated } = action.payload;
+    }
+    case TOGGLE_USER_RULE: {
+      const { index, id, updated } = action.payload;
 
-      var loc = state.userRules.findIndex((x) => x._id === id);
-      var foundRule = state.userRules[loc];
+      const loc = state.userRules.findIndex((x) => x._id === id);
+      const foundRule = state.userRules[loc];
       foundRule.enabled = updated.enabled;
       foundRule.toggleLoading = false;
 
-      var foundFilteredRule = state.filteredRules[index];
+      const foundFilteredRule = state.filteredRules[index];
       foundFilteredRule.enabled = updated.enabled;
       foundFilteredRule.toggleLoading = false;
 
@@ -234,6 +233,7 @@ const generalReducer = (state = initialState, action) => {
           ...state.filteredRules.slice(index + 1),
         ],
       };
+    }
     case CLEAR_JOB_PARAMS:
       return {
         ...state,
@@ -250,9 +250,9 @@ const generalReducer = (state = initialState, action) => {
         ...state,
         ruleName: action.payload,
       };
-    case DELETE_USER_RULE:
-      var { index, id } = action.payload;
-      var loc = state.userRules.findIndex((x) => x._id === id);
+    case DELETE_USER_RULE: {
+      const { index, id } = action.payload;
+      const loc = state.userRules.findIndex((x) => x._id === id);
 
       return {
         ...state,
@@ -265,9 +265,10 @@ const generalReducer = (state = initialState, action) => {
           ...state.filteredRules.slice(index + 1),
         ],
       };
-    case GLOBAL_SEARCH_USER_RULES:
-      var search = action.payload;
-      var filteredRules = state.userRules.filter((value) => {
+    }
+    case GLOBAL_SEARCH_USER_RULES: {
+      const search = action.payload;
+      const filteredRules = state.userRules.filter((value) => {
         return (
           value.rule_name.toLowerCase().includes(search.toLowerCase()) ||
           value.job_spec.toLowerCase().includes(search.toLowerCase()) ||
@@ -285,6 +286,7 @@ const generalReducer = (state = initialState, action) => {
         ...state,
         filteredRules,
       };
+    }
     default:
       return state;
   }

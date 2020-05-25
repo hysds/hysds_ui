@@ -1,11 +1,8 @@
 import {
   GET_DATASET_ID, // reactivesearch
-  CLEAR_ALL_CUSTOM_COMPONENTS,
-  CLEAR_CUSTOM_COMPONENTS,
   RETRIEVE_DATA,
   SET_QUERY,
   EDIT_QUERY, // on-demand
-  VALIDATE_QUERY,
   EDIT_PRIORITY,
   EDIT_JOB_PARAMS,
   CHANGE_JOB_TYPE,
@@ -47,16 +44,6 @@ export const editCustomFilterId = (componentId, value) => ({
   },
 });
 
-export const clearAllCustomComponents = (payload) => ({
-  type: CLEAR_ALL_CUSTOM_COMPONENTS,
-  payload,
-});
-
-export const clearCustomComponent = (id) => ({
-  type: CLEAR_CUSTOM_COMPONENTS,
-  payload: id,
-});
-
 // ********************************************************************** //
 // TOSCA ACTIONS
 export const retrieveData = (data) => ({
@@ -80,11 +67,6 @@ export const editQuery = (payload, url = false) => {
     payload,
   };
 };
-
-export const validateQuery = (payload) => ({
-  type: VALIDATE_QUERY,
-  payload,
-});
 
 export const editJobPriority = (payload, url = false) => {
   if (url) constructUrl("priority", payload);

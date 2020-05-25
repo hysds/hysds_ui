@@ -128,7 +128,6 @@ class FigaroOnDemand extends React.Component {
     ) : null;
 
     const validSubmission = this._validateSubmission();
-    console.log(validSubmission);
 
     return (
       <div className="figaro-on-demand-page">

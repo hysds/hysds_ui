@@ -1,7 +1,6 @@
 // actions to handle the states for custom ReactiveComponents
 export const BBOX_EDIT = "BBOX_EDIT";
 export const CLEAR_REDUX_STORE = "CLEAR_REDUX_STORE";
-export const CLEAR_ALL_CUSTOM_COMPONENTS = "CLEAR_ALL_CUSTOM_COMPONENTS";
 export const CLEAR_CUSTOM_COMPONENTS = "CLEAR_CUSTOM_COMPONENTS";
 export const CLICK_QUERY_REGION = "CLICK_QUERY_REGION";
 export const EDIT_CUSTOM_FILTER_ID = "EDIT_CUSTOM_FILTER_ID";
@@ -32,7 +31,6 @@ export const LOAD_USER_RULES = "LOAD_USER_RULES";
 export const LOAD_USER_RULE = "LOAD_USER_RULE";
 export const TOGGLE_USER_RULE = "TOGGLE_USER_RULE";
 export const USER_RULE_ACTION_LOADING = "USER_RULE_ACTION_LOADING"; // tag the user rule in the array with loading: true
-export const VALIDATE_QUERY = "VALIDATE_QUERY";
 
 // theme
 export const EDIT_THEME = "EDIT_THEME";

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 import { connect } from "react-redux";
-import { clearReduxStore, editTheme } from "../../redux/actions";
+import { editTheme } from "../../redux/actions";
 
 import { Button } from "../Buttons";
 // import { Link } from "react-router-dom";
@@ -44,11 +44,6 @@ const HeaderBar = (props) => {
     localStorage.setItem("dark-mode", !darkMode);
   };
 
-  // const _handleLinkClick = e => {
-  //   if (e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
-  //   props.clearReduxStore();
-  // };
-
   return (
     <div className={`${theme} header-bar`}>
       <ul className="header-bar-link-wrapper">
@@ -85,7 +80,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  clearReduxStore: () => dispatch(clearReduxStore()),
   editTheme: (darkMode) => dispatch(editTheme(darkMode)),
 });
 

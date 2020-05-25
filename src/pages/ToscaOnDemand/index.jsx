@@ -126,7 +126,6 @@ class ToscaOnDemand extends React.Component {
     ) : null;
 
     const validSubmission = this._validateSubmission();
-    console.log(validSubmission);
 
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 

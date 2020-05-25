@@ -1,7 +1,5 @@
 import {
   GET_DATASET_ID, // reactivesearch
-  CLEAR_ALL_CUSTOM_COMPONENTS,
-  CLEAR_CUSTOM_COMPONENTS,
   RETRIEVE_DATA,
   SET_QUERY,
   EDIT_QUERY, // on-demand
@@ -44,16 +42,6 @@ export const editCustomFilterId = (componentId, value) => ({
   payload: {
     [componentId]: value,
   },
-});
-
-export const clearAllCustomComponents = (payload) => ({
-  type: CLEAR_ALL_CUSTOM_COMPONENTS,
-  payload,
-});
-
-export const clearCustomComponent = (id) => ({
-  type: CLEAR_CUSTOM_COMPONENTS,
-  payload: id,
 });
 
 // ********************************************************************** //

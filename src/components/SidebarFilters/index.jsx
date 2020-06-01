@@ -78,6 +78,7 @@ FigaroFilters.propTypes = {
 
 FigaroFilters.defaultProps = {
   filters: [],
+  queryLogic: null,
 };
 
 export default FigaroFilters;

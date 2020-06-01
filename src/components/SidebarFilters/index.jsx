@@ -45,7 +45,6 @@ const renderFilter = (filter, queryLogic) => {
           dataField={dataField}
           URLParams={true}
           sortBy={sortBy}
-          react={queryLogic}
           className="reactivesearch-input reactivesearch-date"
         />
       );

@@ -64,6 +64,13 @@ export const FigaroDataViewer = (props) => {
         <div className="figaro-traceback">{res.event.traceback}</div>
       ) : null}
       {userTagsComponent}
+      {res.job && res.job.job_info && res.job.job_info.job_url ? (
+        <div>
+          <a href={res.job.job_info.job_url} target="_none">
+            View Job
+          </a>
+        </div>
+      ) : null}
     </div>
   );
 };

@@ -5,7 +5,7 @@ import { SingleList, DateRange, MultiList } from "@appbaseio/reactivesearch";
 
 import "./style.scss";
 
-const renderFilter = filter => {
+const renderFilter = (filter, queryLogic) => {
   const { componentId, dataField, title, type, defaultValue, sortBy } = filter;
   switch (type) {
     case "single":
@@ -18,6 +18,7 @@ const renderFilter = filter => {
           URLParams={true}
           sortBy={sortBy}
           defaultValue={null || defaultValue}
+          react={queryLogic}
           className="reactivesearch-input"
         />
       );
@@ -31,6 +32,7 @@ const renderFilter = filter => {
           URLParams={true}
           sortBy={sortBy}
           defaultValue={null || defaultValue}
+          react={queryLogic}
           className="reactivesearch-input reactivesearch-multilist"
         />
       );
@@ -43,6 +45,7 @@ const renderFilter = filter => {
           dataField={dataField}
           URLParams={true}
           sortBy={sortBy}
+          react={queryLogic}
           className="reactivesearch-input reactivesearch-date"
         />
       );
@@ -56,22 +59,25 @@ const renderFilter = filter => {
           URLParams={true}
           sortBy={sortBy}
           defaultValue={null || defaultValue}
+          react={queryLogic}
           className="reactivesearch-input"
         />
       );
   }
 };
 
-const FigaroFilters = ({ filters }) => (
-  <Fragment>{filters.map(filter => renderFilter(filter))}</Fragment>
+const FigaroFilters = ({ filters, queryLogic }) => (
+  <Fragment>
+    {filters.map((filter) => renderFilter(filter, queryLogic))}
+  </Fragment>
 );
 
 FigaroFilters.propTypes = {
-  filters: PropTypes.array.isRequired
+  filters: PropTypes.array.isRequired,
 };
 
 FigaroFilters.defaultProps = {
-  filters: []
+  filters: [],
 };
 
 export default FigaroFilters;

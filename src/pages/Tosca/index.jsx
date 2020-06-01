@@ -90,7 +90,7 @@ class Tosca extends React.Component {
           <div className="tosca-page-wrapper">
             <div className={`${classTheme} tosca-sidenav`}>
               <div className="sidenav-title">Filters</div>
-              <SidebarFilters filters={FILTERS} />
+              <SidebarFilters filters={FILTERS} queryLogic={QUERY_LOGIC} />
             </div>
 
             <div className="tosca-body" ref={this.pageRef}>

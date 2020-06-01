@@ -14,7 +14,7 @@ import { ButtonLink, ScrollTop } from "../../components/Buttons";
 import { setQuery, editCustomFilterId } from "../../redux/actions";
 
 import { MOZART_ES_URL, MOZART_ES_INDICES } from "../../config";
-import { FILTERS } from "../../config/figaro";
+import { FILTERS, QUERY_LOGIC } from "../../config/figaro";
 
 import "./style.scss";
 
@@ -55,7 +55,7 @@ class Figaro extends React.Component {
           <div className="figaro-page-wrapper">
             <div className={`${classTheme} figaro-sidenav`}>
               <div className="sidenav-title">Filters</div>
-              <SidebarFilters filters={FILTERS} />
+              <SidebarFilters filters={FILTERS} queryLogic={QUERY_LOGIC} />
             </div>
 
             <div className="figaro-body" ref={this.pageRef}>

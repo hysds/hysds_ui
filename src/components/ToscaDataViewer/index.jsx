@@ -22,6 +22,9 @@ const ToscaDataViewer = (props) => {
     props.clickQueryRegion(bbox);
   };
 
+  let browseUrl = null;
+  if (res.urls) browseUrl = res.urls.find((url) => url.startsWith("http"));
+
   return (
     <div key={`${res._index}-${res._id}`} className="tosca-data-viewer">
       <div>id: {res._id}</div>
@@ -37,6 +40,12 @@ const ToscaDataViewer = (props) => {
         index={res._index}
         id={res._id}
       />
+      <a href={browseUrl} />
+      {browseUrl ? (
+        <a href={browseUrl} target="_none">
+          Browse
+        </a>
+      ) : null}
     </div>
   );
 };

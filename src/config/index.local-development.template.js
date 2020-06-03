@@ -7,6 +7,9 @@ exports.GRQ_API_BASE = "http://localhost:8878"; // base url for GRQ API
 exports.GRQ_REST_API_V1 = `${this.GRQ_API_BASE}/api/v0.1`;
 exports.GRQ_REST_API_V2 = `${this.GRQ_API_BASE}/api/v0.2`;
 
+// used to view verdi job worker logs
+exports.MOZART_BASE_URL = "https://100.10.100.100";
+
 // Mozart's ES url
 exports.MOZART_ES_URL = "http://localhost:9998";
 exports.MOZART_ES_INDICES = "job_status";

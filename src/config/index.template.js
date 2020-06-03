@@ -7,6 +7,9 @@ exports.GRQ_API_BASE = "https://{{ MOZART_PVT_IP }}/grq";
 exports.GRQ_REST_API_V1 = `${this.GRQ_API_BASE}/api/v0.1`;
 exports.GRQ_REST_API_V2 = `${this.GRQ_API_BASE}/api/v0.2`;
 
+// used to view verdi job worker logs
+exports.MOZART_BASE_URL = "https://{{ MOZART_PVT_IP }}";
+
 // Mozart's ES url
 exports.MOZART_ES_URL = "https://{{ MOZART_PVT_IP }}/mozart_es";
 exports.MOZART_ES_INDICES = "job_status";

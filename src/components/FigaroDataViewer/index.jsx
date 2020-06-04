@@ -18,7 +18,7 @@ export const FigaroDataViewer = (props) => {
   const { res } = props;
   const endpoint = `${MOZART_REST_API_V1}/user-tags`;
 
-  const createUserTags =
+  const generatedUserTags =
     res.resource === "job" ? (
       <UserTags
         tags={res.user_tags || []}
@@ -86,7 +86,7 @@ export const FigaroDataViewer = (props) => {
       {res.event && res.event.traceback ? (
         <div className="figaro-traceback">{res.event.traceback}</div>
       ) : null}
-      {createUserTags}
+      {generatedUserTags}
       {res.job && res.job.job_info && res.job.job_info.job_url ? (
         <div>
           <a href={createJobUrl(res.job.job_info.job_url)} target="_blank">

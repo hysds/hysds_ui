@@ -23,7 +23,7 @@ class Figaro extends React.Component {
     super(props);
     this.pageRef = React.createRef();
 
-    this.grq_es_url = LOCAL_DEV
+    this.mozart_es_url = LOCAL_DEV
       ? MOZART_ES_URL
       : `${window.origin}/${MOZART_ES_URL}`;
   }
@@ -52,8 +52,8 @@ class Figaro extends React.Component {
         <HeaderBar title="HySDS" theme={classTheme} active="figaro"></HeaderBar>
 
         <ReactiveBase
+          url={this.mozart_es_url}
           app={MOZART_ES_INDICES}
-          url={MOZART_ES_URL}
           transformRequest={this._handleTransformRequest}
         >
           <div className="figaro-page-wrapper">

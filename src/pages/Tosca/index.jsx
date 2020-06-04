@@ -4,7 +4,7 @@ import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
 import { connect } from "react-redux";
 import { setQuery } from "../../redux/actions";
 
-import { GRQ_ES_URL, GRQ_ES_INDICES } from "../../config";
+import { LOCAL_DEV, GRQ_ES_URL, GRQ_ES_INDICES } from "../../config";
 import {
   GRQ_TABLE_VIEW_DEFAULT,
   ID_COMPONENT, // all fields read by Reactivesearch
@@ -38,6 +38,11 @@ class Tosca extends React.Component {
     this.state = {
       tableView: GRQ_TABLE_VIEW_DEFAULT, // boolean
     };
+
+    this.grq_es_url = LOCAL_DEV
+      ? GRQ_ES_URL
+      : `${window.origin}/${GRQ_ES_URL}`;
+
     this.mapRef = React.createRef();
     this.pageRef = React.createRef();
   }
@@ -83,8 +88,8 @@ class Tosca extends React.Component {
         <HeaderBar title="HySDS" theme={classTheme} active="tosca"></HeaderBar>
 
         <ReactiveBase
+          url={this.grq_es_url}
           app={GRQ_ES_INDICES}
-          url={GRQ_ES_URL}
           transformRequest={this._handleTransformRequest}
         >
           <div className="tosca-page-wrapper">

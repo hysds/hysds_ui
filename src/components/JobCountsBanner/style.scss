@@ -3,11 +3,13 @@
 .figaro-job-count-banner {
   margin: 15px 0px 10px 0px;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .figaro-job-count {
   flex: 1;
-  width: 12.5%;
+  flex: 1 0 120px;
   text-align: center;
   padding: 20px 0px 20px 0px;
   margin: 10px 5px 10px 5px;
@@ -15,12 +17,12 @@
 }
 
 .job-count-completed {
-  background-color: #006dcc !important;
+  background-color: $base-color !important;
   color: #ffff !important;
 }
 
 .job-count-started {
-  background-color: #5cb85c !important;
+  background-color: $success-color !important;
   color: #fff !important;
 }
 
@@ -30,12 +32,12 @@
 }
 
 .job-count-failed {
-  background-color: #dc3545 !important;
+  background-color: $fail-color !important;
   color: #fff !important;
 }
 
 .job-count-revoked {
-  background-color: #faa732 !important;
+  background-color: $warning-color !important;
   color: #fff !important;
 }
 

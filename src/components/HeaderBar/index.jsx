@@ -1,19 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
-
 import { Link } from "react-router-dom";
-
 import { connect } from "react-redux";
 import { editTheme } from "../../redux/actions";
-
 import { Button } from "../Buttons";
-// import { Link } from "react-router-dom";
 
 import styles from "../../scss/constants.scss";
-
 import "./style.scss";
-
-console.log("styles", styles);
 
 const HeaderLink = (props) => {
   const { title, href, active } = props;

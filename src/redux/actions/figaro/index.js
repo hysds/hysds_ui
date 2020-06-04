@@ -9,6 +9,7 @@ import {
   TOGGLE_USER_RULE,
   USER_RULE_ACTION_LOADING,
   DELETE_USER_RULE,
+  JOB_COUNTS,
 } from "../../constants.js";
 
 import { editUrlDataCount } from "../../../utils";
@@ -16,9 +17,23 @@ import { editUrlDataCount } from "../../../utils";
 import {
   MOZART_ES_URL,
   MOZART_ES_INDICES,
+  MOZART_REST_API_BASE,
   MOZART_REST_API_V1,
   MOZART_REST_API_V2,
 } from "../../../config";
+
+export const getJobCounts = () => (dispatch) => {
+  const jobCountsEndpoint = `${MOZART_REST_API_BASE}/job_count`;
+
+  return fetch(jobCountsEndpoint)
+    .then((res) => res.json())
+    .then((data) =>
+      dispatch({
+        type: JOB_COUNTS,
+        payload: data.counts,
+      })
+    );
+};
 
 export const getOnDemandJobs = () => (dispatch) => {
   const getJobsEndpoint = `${MOZART_REST_API_V1}/on-demand`;

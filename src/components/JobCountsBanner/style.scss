@@ -1,0 +1,64 @@
+@import "../../scss/constants.scss";
+
+.figaro-job-count-banner {
+  margin: 15px 0px 10px 0px;
+  display: flex;
+}
+
+.figaro-job-count {
+  flex: 1;
+  width: 12.5%;
+  text-align: center;
+  padding: 20px 0px 20px 0px;
+  margin: 10px 5px 10px 5px;
+  border-radius: 5px;
+}
+
+.job-count-completed {
+  background-color: #006dcc !important;
+  color: #ffff !important;
+}
+
+.job-count-started {
+  background-color: #5cb85c !important;
+  color: #fff !important;
+}
+
+.job-count-queued {
+  background-color: #49afcd !important;
+  color: #fff !important;
+}
+
+.job-count-failed {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+.job-count-revoked {
+  background-color: #faa732 !important;
+  color: #fff !important;
+}
+
+.job-count-deduped {
+  background-color: #dd33ff !important;
+  color: #fff !important;
+}
+
+.job-count-offline {
+  background-color: #363636 !important;
+  color: #ffff !important;
+}
+
+.__theme-dark {
+  .figaro-job-count {
+    background-color: $dark-theme-alt;
+    color: $dark-theme-color;
+  }
+}
+
+.__theme-light {
+  .figaro-job-count {
+    background-color: $light-theme-alt;
+    color: $light-theme-color;
+  }
+}

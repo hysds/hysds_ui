@@ -18,8 +18,9 @@ export const FigaroDataViewer = (props) => {
   const { res } = props;
   const endpoint = `${MOZART_REST_API_V1}/user-tags`;
 
+  const allowedStatuses = ["job-started", "job-completed", "job-failed"];
   const generatedUserTags =
-    res.resource === "job" ? (
+    res.resource === "job" && allowedStatuses.indexOf(res.status) > -1 ? (
       <UserTags
         tags={res.user_tags || []}
         endpoint={endpoint}

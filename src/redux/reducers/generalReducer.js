@@ -21,6 +21,7 @@ import {
   RETRIEVE_DATA,
   TOGGLE_USER_RULE,
   USER_RULE_ACTION_LOADING,
+  JOB_COUNTS,
 } from "../constants";
 
 import {
@@ -58,6 +59,7 @@ const initialState = {
   ruleName: null,
   userRules: [], // store all the rules client side
   filteredRules: [], // client global search for user rules
+  jobCounts: {},
 
   toggle: false,
 };
@@ -72,6 +74,11 @@ const generalReducer = (state = initialState, action) => {
         ...state,
         data: action.payload.data,
         dataCount: action.payload.resultStats.numberOfResults,
+      };
+    case JOB_COUNTS:
+      return {
+        ...state,
+        jobCounts: action.payload,
       };
     case SET_QUERY:
       return {
@@ -287,6 +294,7 @@ const generalReducer = (state = initialState, action) => {
         filteredRules,
       };
     }
+
     default:
       return state;
   }

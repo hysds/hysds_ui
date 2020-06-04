@@ -12,6 +12,12 @@
         -ms-box-sizing: border-box;
       }
     </style>
+    <script>
+      var backgroundColor = localStorage.getItem("background-color");
+      if (backgroundColor) {
+        document.documentElement.style.backgroundColor = backgroundColor;
+      }
+    </script>
   </head>
 
   <body>

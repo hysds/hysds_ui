@@ -9,7 +9,11 @@ import { editTheme } from "../../redux/actions";
 import { Button } from "../Buttons";
 // import { Link } from "react-router-dom";
 
+import styles from "../../scss/constants.scss";
+
 import "./style.scss";
+
+console.log("styles", styles);
 
 const HeaderLink = (props) => {
   const { title, href, active } = props;
@@ -19,7 +23,6 @@ const HeaderLink = (props) => {
 
   return (
     <li className={className} {...props}>
-      {/* <a to={href} {...props}>{title}</a> */}
       <Link to={{ pathname: href, state: "desiredState" }}>{title}</Link>
     </li>
   );
@@ -42,6 +45,9 @@ const HeaderBar = (props) => {
     const { darkMode } = props;
     props.editTheme(!darkMode);
     localStorage.setItem("dark-mode", !darkMode);
+    if (!darkMode)
+      localStorage.setItem("background-color", styles.darkthemebackground);
+    else localStorage.setItem("background-color", "#ffff");
   };
 
   return (

@@ -19,3 +19,7 @@ $warning-color: #ffc107;
 
 $hover-percent: 15%;
 $active-percent: 25%;
+
+:export {
+  darkthemebackground: $dark-theme-background;
+}

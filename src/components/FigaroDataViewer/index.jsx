@@ -9,8 +9,7 @@ import { MOZART_BASE_URL, MOZART_REST_API_V1 } from "../../config";
 import "./style.scss";
 
 const createJobUrl = (jobUrl) => {
-  const baseUrl = `${MOZART_BASE_URL}/verdi/`;
-  let newJobUrl = jobUrl.replace("http://", baseUrl);
+  let newJobUrl = jobUrl.replace("http://", `${MOZART_BASE_URL}/verdi/`);
   newJobUrl = newJobUrl.replace(":8085", "");
   return newJobUrl + "/";
 };

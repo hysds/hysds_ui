@@ -3,13 +3,15 @@
 .figaro-data-component {
   padding: 15px;
   margin: 20px;
-  border: 1px solid $dark-theme-light;
+  border-radius: 5px;
+  border: 1px solid $light-theme-title;
 }
 
 .figaro-traceback {
   font-family: "Courier New", Courier, monospace;
   font-size: 11px;
   white-space: pre-line;
+  padding: 5px 0px 10px 0px;
 }
 
 .tosca-data-view-link {
@@ -23,5 +25,6 @@
   .figaro-data-component {
     background-color: $dark-theme-alt;
     color: $dark-theme-color;
+    border: 1px solid $dark-theme-light;
   }
 }

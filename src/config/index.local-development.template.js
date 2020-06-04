@@ -1,3 +1,6 @@
+// settings are changed if you want to do local development
+exports.LOCAL_DEV = true;
+
 // GRQ's ES url
 exports.GRQ_ES_URL = "http://localhost:9200";
 exports.GRQ_ES_INDICES = "grq";

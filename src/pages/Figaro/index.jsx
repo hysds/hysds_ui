@@ -13,7 +13,7 @@ import { ButtonLink, ScrollTop } from "../../components/Buttons";
 
 import { setQuery, editCustomFilterId } from "../../redux/actions";
 
-import { MOZART_ES_URL, MOZART_ES_INDICES } from "../../config";
+import { LOCAL_DEV, MOZART_ES_URL, MOZART_ES_INDICES } from "../../config";
 import { FILTERS, QUERY_LOGIC } from "../../config/figaro";
 
 import "./style.scss";
@@ -22,6 +22,10 @@ class Figaro extends React.Component {
   constructor(props) {
     super(props);
     this.pageRef = React.createRef();
+
+    this.mozart_es_url = LOCAL_DEV
+      ? MOZART_ES_URL
+      : `${window.origin}/${MOZART_ES_URL}`;
   }
 
   _handleTransformRequest = (e) => {
@@ -48,8 +52,8 @@ class Figaro extends React.Component {
         <HeaderBar title="HySDS" theme={classTheme} active="figaro"></HeaderBar>
 
         <ReactiveBase
+          url={this.mozart_es_url}
           app={MOZART_ES_INDICES}
-          url={MOZART_ES_URL}
           transformRequest={this._handleTransformRequest}
         >
           <div className="figaro-page-wrapper">

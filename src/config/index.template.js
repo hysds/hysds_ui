@@ -22,6 +22,10 @@ exports.MOZART_REST_API_BASE = "/mozart";
 exports.MOZART_REST_API_V1 = `${this.MOZART_REST_API_BASE}/api/v0.1`;
 exports.MOZART_REST_API_V2 = `${this.MOZART_REST_API_BASE}/api/v0.2`;
 
+// Metrics URLS
+exports.METRICS_URL = "/metrics";
+exports.KIBANA_URL = `${this.METRICS_URL}/app/kibana`;
+
 // root path for app
 // set to "/" if you are developing locally
 exports.ROOT_PATH = "/hysds_ui/";

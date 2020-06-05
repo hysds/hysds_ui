@@ -4,6 +4,11 @@ import { connect } from "react-redux";
 import { editTheme } from "../../redux/actions";
 import { Button } from "../Buttons";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+
+import { MOZART_REST_API_V1, GRQ_REST_API_V1, KIBANA_URL } from "../../config";
+
 import styles from "../../scss/constants.scss";
 import "./style.scss";
 
@@ -29,6 +34,28 @@ const HeaderTitle = (props) => {
   );
 };
 
+const DropdownSources = () => (
+  <div className="link-dropdown">
+    <button className="link-dropbtn">
+      Sources <FontAwesomeIcon icon={faCaretDown} />
+    </button>
+    <div className="link-dropdown-content">
+      <a href={MOZART_REST_API_V1} target="_blank">
+        Mozart Rest API
+      </a>
+      <a href={GRQ_REST_API_V1} target="_blank">
+        GRQ Rest API
+      </a>
+      <a href={KIBANA_URL} target="_blank">
+        Metrics (Kibana)
+      </a>
+      <a href="https://github.com/hysds" target="_blank">
+        HySDS (Github)
+      </a>
+    </div>
+  </div>
+);
+
 const HeaderBar = (props) => {
   let { title, theme } = props;
   title = props.title || "HySDS";
@@ -39,7 +66,7 @@ const HeaderBar = (props) => {
     localStorage.setItem("dark-mode", !darkMode);
     if (!darkMode)
       localStorage.setItem("background-color", styles.darkthemebackground);
-    else localStorage.setItem("background-color", "#ffff");
+    else localStorage.setItem("background-color", styles.lightthemebackground);
   };
 
   return (
@@ -56,6 +83,9 @@ const HeaderBar = (props) => {
           title="Figaro"
           active={props.active === "figaro" ? 1 : 0}
         />
+
+        <DropdownSources />
+
         <Button
           label={props.darkMode ? "Light Mode" : "Dark Mode"}
           onClick={_themeHandler}

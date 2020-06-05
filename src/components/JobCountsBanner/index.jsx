@@ -4,12 +4,12 @@ import { connect } from "react-redux";
 import "./style.scss";
 
 const JobCount = (props) => {
-  const { title, count } = props;
+  const { title, count, link } = props;
   const cleanCount = count ? count.toLocaleString() : 0;
 
   return (
     <div className={`${props.className} figaro-job-count`}>
-      {title || "Count"}:
+      {title || "Count"}
       <br />
       <span className="figaro-job-count-value">{cleanCount}</span>
     </div>

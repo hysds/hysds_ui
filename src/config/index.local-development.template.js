@@ -26,6 +26,9 @@ exports.MOZART_REST_API_V2 = `${this.MOZART_REST_API_BASE}/api/v0.2`;
 exports.METRICS_URL = "http://localhost:9100";
 exports.KIBANA_URL = `${this.METRICS_URL}/app/kibana`;
 
+// RabbitMQ
+exports.RABBIT_MQ_PORT = 15673;
+
 // root path for app
 // set to "/" if you are developing locally
 exports.ROOT_PATH = "/";

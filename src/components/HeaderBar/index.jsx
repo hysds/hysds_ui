@@ -7,7 +7,7 @@ import { Button } from "../Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-import { MOZART_REST_API_V1, GRQ_REST_API_V1, KIBANA_URL } from "../../config";
+import { MOZART_REST_API_V1, GRQ_REST_API_V1, KIBANA_URL, RABBIT_MQ_PORT } from "../../config";
 
 import styles from "../../scss/constants.scss";
 import "./style.scss";
@@ -37,7 +37,7 @@ const HeaderTitle = (props) => {
 const DropdownSources = () => (
   <div className="link-dropdown">
     <button className="link-dropbtn">
-    <span className="header-source-title">Sources</span>{" "}
+      <span className="header-source-title">Sources</span>{" "}
       <FontAwesomeIcon icon={faCaretDown} />
     </button>
     <div className="link-dropdown-content">
@@ -49,6 +49,12 @@ const DropdownSources = () => (
       </a>
       <a href={KIBANA_URL} target="_blank">
         Metrics (Kibana)
+      </a>
+      <a
+        href={`${window.location.protocol}//${window.location.hostname}:${RABBIT_MQ_PORT}`}
+        target="_blank"
+      >
+        RabbitMQ
       </a>
       <a href="https://github.com/hysds" target="_blank">
         HySDS (Github)

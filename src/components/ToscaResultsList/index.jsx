@@ -133,7 +133,7 @@ class ResultsList extends React.Component {
           onData={this.props.retrieveData}
           react={queryParams}
           renderResultStats={(stats) => (
-            <h3 class="tosca-result-stats">{`${stats.numberOfResults} results in ${stats.time} ms.`}</h3>
+            <h3 className="tosca-result-stats">{`${stats.numberOfResults} results in ${stats.time} ms.`}</h3>
           )}
           renderItem={tableView ? null : this.resultsListHandler}
           render={tableView ? this.renderTable : null}

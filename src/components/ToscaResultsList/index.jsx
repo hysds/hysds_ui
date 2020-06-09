@@ -132,10 +132,9 @@ class ResultsList extends React.Component {
           paginationAt="both"
           onData={this.props.retrieveData}
           react={queryParams}
-          onResultStats={(total, took) =>
-            `Found ${total} results in ${took} ms.`
-          }
-          renderItem={(res) => <div key={res._id}>{res._id}</div>}
+          renderResultStats={(stats) => (
+            <h3 class="tosca-result-stats">{`${stats.numberOfResults} results in ${stats.time} ms.`}</h3>
+          )}
           renderItem={tableView ? null : this.resultsListHandler}
           render={tableView ? this.renderTable : null}
           sortOptions={sortOptions}

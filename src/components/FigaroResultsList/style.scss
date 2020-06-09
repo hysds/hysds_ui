@@ -18,6 +18,17 @@
   }
 }
 
+.figaro-result-stats {
+  margin: 0 auto;
+  padding: 15px;
+}
+
+.__theme-light {
+  .figaro-result-stats {
+    color: $light-theme-color;
+  }
+}
+
 .__theme-dark {
   .results-display-options {
     color: $dark-theme-color;
@@ -26,6 +37,10 @@
       background-color: $dark-theme-alt;
       color: $dark-theme-color;
     }
+  }
+
+  .figaro-result-stats {
+    color: $dark-theme-color;
   }
 
   .reactivesearch-results-list {

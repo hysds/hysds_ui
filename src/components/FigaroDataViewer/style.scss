@@ -17,8 +17,10 @@
 
 .tosca-data-view-link {
   font-size: 16px !important;
+  text-decoration: underline;
+
   &:hover {
-    text-decoration: underline;
+    text-decoration: none;
   }
 }
 

@@ -37,7 +37,8 @@ const HeaderTitle = (props) => {
 const DropdownSources = () => (
   <div className="link-dropdown">
     <button className="link-dropbtn">
-      Sources <FontAwesomeIcon icon={faCaretDown} />
+    <span className="header-source-title">Sources</span>{" "}
+      <FontAwesomeIcon icon={faCaretDown} />
     </button>
     <div className="link-dropdown-content">
       <a href={MOZART_REST_API_V1} target="_blank">

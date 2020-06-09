@@ -1,15 +1,10 @@
 exports.FIGARO_DISPLAY_COLUMNS = [
-  {
-    Header: "status",
-    accessor: "status",
-  },
-  {
-    Header: "resource",
-    accessor: "resource",
-  },
-  { Header: "timestamp", accessor: "@timestamp" },
+  { Header: "status", accessor: "status" },
+  { Header: "ID", accessor: "_id" },
   { Header: "job type", accessor: "job.type" },
+  { Header: "queue", accessor: "job.job_info.job_queue" },
   { Header: "node", accessor: "job.job_info.execute_node" },
+  { Header: "timestamp", accessor: "@timestamp" },
 ];
 
 exports.FILTERS = [
@@ -95,6 +90,7 @@ exports.SORT_OPTIONS = ["@timestamp"];
 // TODO: TRY ADDING .KEYWORD TO COMPONENTID
 exports.QUERY_LOGIC = {
   and: [
+    "_id",
     "tags",
     "status",
     "short_error",
@@ -108,7 +104,6 @@ exports.QUERY_LOGIC = {
     "retry_count",
     "query_string",
     "payload_id",
-    "_id",
     "timestamp",
   ],
 };
@@ -132,6 +127,9 @@ exports.FIELDS = [
   "job.job_info.job_queue",
   "job.job_info.duration",
   "job.job_info.job_url",
+  "job.job_info.time_queued",
+  "job.job_info.time_start",
+  "job.job_info.time_end",
   "event.traceback",
   "user_tags",
 ];

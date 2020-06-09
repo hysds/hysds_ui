@@ -42,7 +42,7 @@ const ToscaDataViewer = (props) => {
       />
       <a href={browseUrl} />
       {browseUrl ? (
-        <a href={browseUrl} target="_none">
+        <a href={browseUrl} target="_blank">
           Browse
         </a>
       ) : null}

@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
 
+import JobCountsBanner from "../../components/JobCountsBanner";
 import SidebarFilters from "../../components/SidebarFilters";
 import SearchQuery from "../../components/SearchQuery";
 import CustomIdFilter from "../../components/CustomIdFilter";
@@ -12,6 +13,7 @@ import { HelperLink } from "../../components/miscellaneous";
 import { ButtonLink, ScrollTop } from "../../components/Buttons";
 
 import { setQuery, editCustomFilterId } from "../../redux/actions";
+import { getJobCounts } from "../../redux/actions/figaro";
 
 import { LOCAL_DEV, MOZART_ES_URL, MOZART_ES_INDICES } from "../../config";
 import { FILTERS, QUERY_LOGIC } from "../../config/figaro";
@@ -26,6 +28,10 @@ class Figaro extends React.Component {
     this.mozart_es_url = LOCAL_DEV
       ? MOZART_ES_URL
       : `${window.origin}/${MOZART_ES_URL}`;
+  }
+
+  componentDidMount() {
+    this.props.getJobCounts();
   }
 
   _handleTransformRequest = (e) => {
@@ -63,6 +69,8 @@ class Figaro extends React.Component {
             </div>
 
             <div className="figaro-body" ref={this.pageRef}>
+              <JobCountsBanner />
+
               <div className="top-bar-wrapper">
                 <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
                 <SearchQuery componentId="query_string" theme={classTheme} />
@@ -127,6 +135,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   setQuery: (query) => dispatch(setQuery(query)),
+  getJobCounts: () => dispatch(getJobCounts()),
   editCustomFilterId: (componentId, value) =>
     dispatch(editCustomFilterId(componentId, value)),
 });

@@ -28,7 +28,7 @@ export const SubmitStatusBar = (props) => {
 export const HelperLink = (props) => {
   return (
     <Fragment>
-      <a href={props.link} target="_none" className="helper-link">
+      <a href={props.link} target="_blank" className="helper-link">
         <FontAwesomeIcon icon={faInfo} />
       </a>
     </Fragment>

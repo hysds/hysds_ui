@@ -1,9 +1,9 @@
-exports.makeDropdownOptions = data =>
-  data.map(job => ({
+exports.makeDropdownOptions = (data) =>
+  data.map((job) => ({
     label: job.version ? `${job.label} [${job.version}]` : job.label,
     value: job.job_spec,
     jobSpec: job.job_spec,
-    hysdsio: job.hysds_io
+    hysdsio: job.hysds_io,
   }));
 
 exports.constructUrl = (key, value) => {
@@ -13,7 +13,7 @@ exports.constructUrl = (key, value) => {
   history.pushState({}, "", newUrl);
 };
 
-exports.sanitizePriority = level => {
+exports.sanitizePriority = (level) => {
   level = parseInt(level);
   if (level) {
     if (level > 9) return 9;
@@ -30,10 +30,10 @@ const IGNORE_QUERY_PARAMS = [
   "queue",
   "priority",
   "total",
-  "tags"
+  "tags",
 ];
 
-exports.extractJobParams = urlParams => {
+exports.extractJobParams = (urlParams) => {
   const params = {};
   urlParams.forEach((value, key) => {
     let isParam = !IGNORE_QUERY_PARAMS.includes(key);
@@ -49,19 +49,22 @@ exports.clearUrlJobParams = () => {
     const key = pair[0];
     if (!IGNORE_QUERY_PARAMS.includes(key)) toDelete.push(key);
   }
-  toDelete.forEach(p => params.delete(p));
+  toDelete.forEach((p) => params.delete(p));
   const newUrl = `${location.origin}${location.pathname}?${params.toString()}`;
   history.pushState({}, "", newUrl);
 };
 
 exports.editUrlJobParam = (key, value) => {
   const params = new URLSearchParams(location.search);
+  try {
+    value = JSON.stringify(value);
+  } catch (err) {}
   params.set(key, value);
   const newUrl = `${location.origin}${location.pathname}?${params.toString()}`;
   history.pushState({}, "", newUrl);
 };
 
-exports.validateUrlQueryParam = query => {
+exports.validateUrlQueryParam = (query) => {
   const params = new URLSearchParams(location.search);
   let urlQueryParam;
   try {
@@ -75,7 +78,7 @@ exports.validateUrlQueryParam = query => {
   history.pushState({}, "", newUrl);
 };
 
-exports.editUrlDataCount = count => {
+exports.editUrlDataCount = (count) => {
   const params = new URLSearchParams(location.search);
   params.set("total", count);
   const newUrl = `${location.origin}${location.pathname}?${params.toString()}`;

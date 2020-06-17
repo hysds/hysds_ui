@@ -3,10 +3,9 @@ import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import Select from "react-select";
-
 import { ButtonLink } from "../../components/Buttons";
 import UserRulesTable from "../../components/UserRulesTable";
+import UserRulesTagsFilter from "../../components/UserRulesTagsFilter";
 
 import {
   globalSearchUserRules,
@@ -79,29 +78,11 @@ const ToscaUserRules = class extends React.Component {
               value={userRuleSearch}
             />
 
-            <Select
-              styles={{
-                container: (styles) => ({
-                  ...styles,
-                  padding: "0px 15px 0px 15px",
-                  flexGrow: 0,
-                  flexShrink: 0,
-                  flexBasis: "30%",
-                }),
-                option: (styles) => ({
-                  ...styles,
-                  // backgroundColor: "black",
-                  color: "black",
-                }),
-              }}
-              options={this.props.tags}
-              placeholder="Tags..."
-              onChange={(e) => this.props.changeUserRuleTagsFilter(e.value)}
-              value={
-                userRuleTagFilter
-                  ? { value: userRuleTagFilter, label: userRuleTagFilter }
-                  : null
-              }
+            <UserRulesTagsFilter
+              darkMode={darkMode}
+              tag={userRuleTagFilter}
+              tags={this.props.tags}
+              changeUserRuleTagsFilter={changeUserRuleTagsFilter}
             />
 
             <div className="user-rules-button-wrapper">

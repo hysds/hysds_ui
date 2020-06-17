@@ -52,6 +52,7 @@ const FigaroUserRules = class extends React.Component {
     } = this.props;
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
     const searchDisabled = userRules.length === 0 && !this.state.globalSearch;
+    const tagFilters = [{ value: null, label: "-" }, ...this.props.tags];
 
     return (
       <div className="figaro-user-rules">
@@ -81,7 +82,7 @@ const FigaroUserRules = class extends React.Component {
             <UserRulesTagsFilter
               darkMode={darkMode}
               tag={userRuleTagFilter}
-              tags={this.props.tags}
+              tags={tagFilters}
               changeUserRuleTagsFilter={changeUserRuleTagsFilter}
             />
 

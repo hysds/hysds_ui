@@ -233,11 +233,10 @@ const generalReducer = (state = initialState, action) => {
       };
     }
     case LOAD_USER_RULES_TAGS: {
-      let tags = action.payload.map((tag) => ({
+      const tags = action.payload.map((tag) => ({
         value: tag,
         label: tag,
-      }));
-      tags = [{ value: null, label: "-" }, ...tags];
+      }));;
       return {
         ...state,
         userRulesTags: tags,

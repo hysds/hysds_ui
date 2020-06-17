@@ -10,6 +10,7 @@ import {
   USER_RULE_ACTION_LOADING,
   DELETE_USER_RULE,
   JOB_COUNTS,
+  LOAD_USER_RULES_TAGS,
 } from "../../constants.js";
 
 import { editUrlDataCount } from "../../../utils";
@@ -48,8 +49,8 @@ export const getOnDemandJobs = () => (dispatch) => {
 };
 
 export const getQueueList = (jobSpec) => (dispatch) => {
-  const getQueuesEndpoint = `${MOZART_REST_API_V2}/queue/list?id=${jobSpec}`;
-  return fetch(getQueuesEndpoint)
+  const queuesEndpoint = `${MOZART_REST_API_V2}/queue/list?id=${jobSpec}`;
+  return fetch(queuesEndpoint)
     .then((res) => res.json())
     .then((data) => {
       dispatch({
@@ -65,8 +66,8 @@ export const getQueueList = (jobSpec) => (dispatch) => {
 
 // /job-params
 export const getParamsList = (jobSpec) => (dispatch) => {
-  const getParamsListEndpoint = `${MOZART_REST_API_V1}/on-demand/job-params?job_type=${jobSpec}`;
-  return fetch(getParamsListEndpoint)
+  const paramsListEndpoint = `${MOZART_REST_API_V1}/on-demand/job-params?job_type=${jobSpec}`;
+  return fetch(paramsListEndpoint)
     .then((res) => res.json())
     .then((data) => {
       dispatch({
@@ -119,8 +120,8 @@ export const getUserRules = () => (dispatch) => {
 };
 
 export const getUserRule = (id) => (dispatch) => {
-  const getUserRuleEndpoint = `${MOZART_REST_API_V1}/user-rules?id=${id}`;
-  return fetch(getUserRuleEndpoint)
+  const userRuleEndpoint = `${MOZART_REST_API_V1}/user-rules?id=${id}`;
+  return fetch(userRuleEndpoint)
     .then((res) => res.json())
     .then((data) => {
       dispatch({
@@ -129,8 +130,8 @@ export const getUserRule = (id) => (dispatch) => {
       });
       const jobSpec = data.rule.job_spec;
 
-      const getQueuesEndpoint = `${MOZART_REST_API_V2}/queue/list?id=${jobSpec}`;
-      fetch(getQueuesEndpoint) // fetching the queue list for this job
+      const queuesEndpoint = `${MOZART_REST_API_V2}/queue/list?id=${jobSpec}`;
+      fetch(queuesEndpoint) // fetching the queue list for this job
         .then((res) => res.json())
         .then((data) =>
           dispatch({
@@ -140,8 +141,8 @@ export const getUserRule = (id) => (dispatch) => {
         )
         .catch((err) => console.error(err));
 
-      const getParamsListEndpoint = `${MOZART_REST_API_V1}/on-demand/job-params?job_type=${jobSpec}`;
-      fetch(getParamsListEndpoint)
+      const paramsListEndpoint = `${MOZART_REST_API_V1}/on-demand/job-params?job_type=${jobSpec}`;
+      fetch(paramsListEndpoint)
         .then((res) => res.json())
         .then((data) =>
           dispatch({
@@ -150,6 +151,18 @@ export const getUserRule = (id) => (dispatch) => {
           })
         );
     });
+};
+
+export const getUserRulesTags = () => (dispatch) => {
+  const endpoint = `${MOZART_REST_API_V1}/user-rules-tags`;
+  fetch(endpoint)
+    .then((res) => res.json())
+    .then((data) =>
+      dispatch({
+        type: LOAD_USER_RULES_TAGS,
+        payload: data.tags,
+      })
+    );
 };
 
 export const toggleUserRule = (index, id, enabled) => (dispatch) => {

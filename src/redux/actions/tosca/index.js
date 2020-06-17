@@ -9,6 +9,7 @@ import {
   TOGGLE_USER_RULE,
   USER_RULE_ACTION_LOADING,
   DELETE_USER_RULE,
+  LOAD_USER_RULES_TAGS,
 } from "../../constants.js";
 
 import { editUrlDataCount } from "../../../utils";
@@ -135,6 +136,18 @@ export const getUserRule = (id) => (dispatch) => {
           })
         );
     });
+};
+
+export const getUserRulesTags = () => (dispatch) => {
+  const endpoint = `${GRQ_REST_API_V1}/grq/user-rules-tags`;
+  fetch(endpoint)
+    .then((res) => res.json())
+    .then((data) =>
+      dispatch({
+        type: LOAD_USER_RULES_TAGS,
+        payload: data.tags,
+      })
+    );
 };
 
 export const toggleUserRule = (index, id, enabled) => (dispatch) => {

@@ -22,6 +22,9 @@ import {
   TOGGLE_USER_RULE,
   USER_RULE_ACTION_LOADING,
   JOB_COUNTS,
+  LOAD_USER_RULES_TAGS,
+  CHANGE_USER_RULE_TAGS_FILTER,
+  CHANGE_USER_RULE_TAG,
 } from "../constants";
 
 import {
@@ -61,7 +64,45 @@ const initialState = {
   filteredRules: [], // client global search for user rules
   jobCounts: {},
 
+  // user rule filters
+  userRuleSearch: "",
+  userRulesTags: [], // aggregated rules from elasticsearch
+  userRuleTagFilter: null,
+  userRuleTag: [], // tags for individual user rule
+
   toggle: false,
+};
+
+const filterUserRules = (rules, string, tag) => {
+  let rulesFiltered = rules;
+
+  if (string) {
+    rulesFiltered = rules.filter((value) => {
+      return (
+        value.rule_name.toLowerCase().includes(string.toLowerCase()) ||
+        value.job_spec.toLowerCase().includes(string.toLowerCase()) ||
+        value.queue.toLowerCase().includes(string.toLowerCase()) ||
+        value.query_string.toLowerCase().includes(string.toLowerCase()) ||
+        value.kwargs.toLowerCase().includes(string.toLowerCase()) ||
+        value.job_type.toLowerCase().includes(string.toLowerCase()) ||
+        value.username.toLowerCase().includes(string.toLowerCase()) ||
+        value.modified_time.toLowerCase().includes(string.toLowerCase()) ||
+        value.creation_time.toLowerCase().includes(string.toLowerCase())
+      );
+    });
+  }
+
+  if (tag) {
+    rulesFiltered = rulesFiltered.filter((rule) => {
+      if (rule.tags) {
+        if (rule.tags.indexOf(tag) > -1) return true;
+        else return false;
+      } else {
+        return false;
+      }
+    });
+  }
+  return rulesFiltered;
 };
 
 const generalReducer = (state = initialState, action) => {
@@ -160,7 +201,6 @@ const generalReducer = (state = initialState, action) => {
         ...state.params,
         ...{ [action.payload.name]: action.payload.value },
       };
-      // editUrlJobParam(action.payload.name, action.payload.value);
       return {
         ...state,
         params: newParams,
@@ -189,6 +229,18 @@ const generalReducer = (state = initialState, action) => {
         ruleName: payload.rule_name,
         queue: payload.queue,
         priority: payload.priority,
+        userRuleTag: payload.tags || [],
+      };
+    }
+    case LOAD_USER_RULES_TAGS: {
+      let tags = action.payload.map((tag) => ({
+        value: tag,
+        label: tag,
+      }));
+      tags = [{ value: null, label: "-" }, ...tags];
+      return {
+        ...state,
+        userRulesTags: tags,
       };
     }
     case USER_RULE_ACTION_LOADING: {
@@ -274,23 +326,34 @@ const generalReducer = (state = initialState, action) => {
       };
     }
     case GLOBAL_SEARCH_USER_RULES: {
+      const { userRules, userRuleTagFilter } = state;
       const search = action.payload;
-      const filteredRules = state.userRules.filter((value) => {
-        return (
-          value.rule_name.toLowerCase().includes(search.toLowerCase()) ||
-          value.job_spec.toLowerCase().includes(search.toLowerCase()) ||
-          value.queue.toLowerCase().includes(search.toLowerCase()) ||
-          value.query_string.toLowerCase().includes(search.toLowerCase()) ||
-          value.kwargs.toLowerCase().includes(search.toLowerCase()) ||
-          value.job_type.toLowerCase().includes(search.toLowerCase()) ||
-          value.username.toLowerCase().includes(search.toLowerCase()) ||
-          value.modified_time.toLowerCase().includes(search.toLowerCase()) ||
-          value.creation_time.toLowerCase().includes(search.toLowerCase())
-        );
-      });
 
+      let filteredRules = filterUserRules(userRules, search, userRuleTagFilter);
       return {
         ...state,
+        userRuleSearch: search,
+        filteredRules,
+      };
+    }
+    case CHANGE_USER_RULE_TAG: {
+      const tags = action.payload.map((tag) => tag.value);
+      return {
+        ...state,
+        userRuleTag: tags,
+      };
+    }
+    case CHANGE_USER_RULE_TAGS_FILTER: {
+      const { userRules, userRuleSearch } = state;
+
+      let filteredRules = filterUserRules(
+        userRules,
+        userRuleSearch,
+        action.payload
+      );
+      return {
+        ...state,
+        userRuleTagFilter: action.payload,
         filteredRules,
       };
     }

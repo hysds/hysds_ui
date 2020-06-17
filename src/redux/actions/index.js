@@ -11,12 +11,14 @@ import {
   CLEAR_JOB_PARAMS,
   EDIT_RULE_NAME,
   GLOBAL_SEARCH_USER_RULES,
+  CHANGE_USER_RULE_TAGS_FILTER,
   BBOX_EDIT,
   CLICK_QUERY_REGION,
   UNCLICK_QUERY_REGION,
   EDIT_THEME,
   EDIT_CUSTOM_FILTER_ID,
   CLEAR_REDUX_STORE,
+  CHANGE_USER_RULE_TAG,
 } from "../constants.js";
 
 import {
@@ -125,6 +127,16 @@ export const editRuleName = (payload, url = false) => {
 export const globalSearchUserRules = (string) => ({
   type: GLOBAL_SEARCH_USER_RULES,
   payload: string,
+});
+
+export const changeUserRuleTagsFilter = (value) => ({
+  type: CHANGE_USER_RULE_TAGS_FILTER,
+  payload: value,
+});
+
+export const changeUserRuleTag = (tag) => ({
+  type: CHANGE_USER_RULE_TAG,
+  payload: tag,
 });
 
 export const bboxEdit = (bbox) => ({

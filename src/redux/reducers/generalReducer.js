@@ -234,9 +234,9 @@ const generalReducer = (state = initialState, action) => {
     }
     case LOAD_USER_RULES_TAGS: {
       const tags = action.payload.map((tag) => ({
-        value: tag,
-        label: tag,
-      }));;
+        value: tag.key,
+        label: `${tag.key} (${tag.count})`,
+      }));
       return {
         ...state,
         userRulesTags: tags,

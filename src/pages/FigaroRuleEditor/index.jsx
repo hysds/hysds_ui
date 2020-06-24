@@ -10,6 +10,7 @@ import JobParams from "../../components/JobParams";
 import UserRuleNameInput from "../../components/UserRuleNameInput";
 import QueueInput from "../../components/QueueInput";
 import PriorityInput from "../../components/PriorityInput";
+import UserRuleTags from "../../components/UserRuleTags";
 
 import { Button, ButtonLink } from "../../components/Buttons";
 import { Border, SubmitStatusBar } from "../../components/miscellaneous";
@@ -26,12 +27,14 @@ import {
   changeQueue,
   editRuleName,
   clearJobParams,
+  changeUserRuleTag,
 } from "../../redux/actions";
 import {
   getUserRule,
   getOnDemandJobs,
   getParamsList,
   getQueueList,
+  getUserRulesTags,
 } from "../../redux/actions/figaro";
 
 import "./style.scss";
@@ -55,6 +58,8 @@ class FigaroRuleEditor extends React.Component {
       this.props.getQueueList(params.rule);
     }
     this.props.getOnDemandJobs();
+
+    if (this.props.tags.length === 0) this.props.getUserRulesTags();
   }
 
   _validateSubmission = () => {
@@ -85,6 +90,7 @@ class FigaroRuleEditor extends React.Component {
     const data = {
       id: ruleId,
       rule_name: this.props.ruleName,
+      tags: this.props.tag,
       query_string: this.props.query,
       priority: this.props.priority,
       workflow: this.props.hysdsio,
@@ -168,6 +174,11 @@ class FigaroRuleEditor extends React.Component {
                 editRuleName={editRuleName}
                 ruleName={this.props.ruleName}
               />
+              <UserRuleTags
+                value={this.props.tag}
+                options={this.props.tags}
+                changeUserRuleTag={changeUserRuleTag}
+              />
               <JobInput
                 changeJobType={changeJobType} // all redux actions
                 getParamsList={getParamsList}
@@ -243,6 +254,8 @@ const mapStateToProps = (state) => ({
   paramsList: state.generalReducer.paramsList,
   params: state.generalReducer.params,
   ruleName: state.generalReducer.ruleName,
+  tag: state.generalReducer.userRuleTag,
+  tags: state.generalReducer.userRulesTags,
 });
 
 // Redux actions
@@ -251,6 +264,8 @@ const mapDispatchToProps = (dispatch) => ({
   getOnDemandJobs: () => dispatch(getOnDemandJobs()),
   clearJobParams: () => dispatch(clearJobParams()),
   getQueueList: (jobSpec) => dispatch(getQueueList(jobSpec)),
+  getUserRulesTags: () => dispatch(getUserRulesTags()),
+  changeUserRuleTag: (tag) => dispatch(changeUserRuleTag(tag)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FigaroRuleEditor);

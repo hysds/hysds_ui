@@ -5,12 +5,17 @@ import { connect } from "react-redux";
 
 import { ButtonLink } from "../../components/Buttons";
 import UserRulesTable from "../../components/UserRulesTable";
+import UserRulesTagsFilter from "../../components/UserRulesTagsFilter";
 
-import { globalSearchUserRules } from "../../redux/actions";
+import {
+  globalSearchUserRules,
+  changeUserRuleTagsFilter,
+} from "../../redux/actions";
 import {
   getUserRules,
   toggleUserRule,
   deleteUserRule,
+  getUserRulesTags,
 } from "../../redux/actions/tosca";
 
 import HeaderBar from "../../components/HeaderBar";
@@ -27,6 +32,7 @@ const ToscaUserRules = class extends React.Component {
 
   componentDidMount() {
     this.props.getUserRules();
+    this.props.getUserRulesTags();
   }
 
   _handleRuleSearch = (e) => {
@@ -38,9 +44,15 @@ const ToscaUserRules = class extends React.Component {
   };
 
   render() {
-    const { darkMode, userRules } = this.props;
+    const {
+      darkMode,
+      userRules,
+      userRuleSearch,
+      userRuleTagFilter,
+    } = this.props;
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
     const searchDisabled = userRules.length === 0 && !this.state.globalSearch;
+    const tagFilters = [{ value: null, label: "-" }, ...this.props.tags];
 
     return (
       <div className="tosca-user-rules">
@@ -64,7 +76,16 @@ const ToscaUserRules = class extends React.Component {
               placeholder="Search..."
               onChange={this._handleRuleSearch}
               disabled={searchDisabled}
+              value={userRuleSearch}
             />
+
+            <UserRulesTagsFilter
+              darkMode={darkMode}
+              tag={userRuleTagFilter}
+              tags={tagFilters}
+              changeUserRuleTagsFilter={changeUserRuleTagsFilter}
+            />
+
             <div className="user-rules-button-wrapper">
               <ButtonLink href="/tosca/user-rule" label="Create Rule" />
             </div>
@@ -93,12 +114,17 @@ ToscaUserRules.propTypes = {
 const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   userRules: state.generalReducer.filteredRules,
+  userRuleSearch: state.generalReducer.userRuleSearch,
+  userRuleTagFilter: state.generalReducer.userRuleTagFilter,
+  tags: state.generalReducer.userRulesTags,
 });
 
 // Redux actions
 const mapDispatchToProps = (dispatch) => ({
   getUserRules: () => dispatch(getUserRules()),
+  getUserRulesTags: () => dispatch(getUserRulesTags()),
   globalSearchUserRules: (search) => dispatch(globalSearchUserRules(search)),
+  changeUserRuleTagsFilter: (tag) => dispatch(changeUserRuleTagsFilter(tag)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ToscaUserRules);

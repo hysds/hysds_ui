@@ -187,6 +187,7 @@ const UserRulesTable = (props) => {
   const _renderSubComponent = (data) => {
     let queryString = data.original.query_string;
     let kwargs = data.original.kwargs;
+    let tags = data.original.tags;
 
     try {
       const query = JSON.parse(queryString);
@@ -202,15 +203,26 @@ const UserRulesTable = (props) => {
       console.error(err);
     }
 
+    try {
+      tags = JSON.stringify(tags, null, 2);
+    } catch (err) {
+      console.error(err);
+    }
+
     return (
       <table className="user-rules-table-query-string">
         <tbody>
           <tr>
             <td>
-              <pre>{queryString}</pre>
+              <pre>query: {queryString}</pre>
             </td>
+            {tags ? (
+              <td>
+                <pre>tags: {tags}</pre>
+              </td>
+            ) : null}
             <td>
-              <pre>{kwargs}</pre>
+              <pre>kwargs: {kwargs}</pre>
             </td>
           </tr>
         </tbody>

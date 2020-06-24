@@ -22,5 +22,9 @@ $active-percent: 25%;
 
 :export {
   darkthemebackground: $dark-theme-background;
+  darkthemealt: $dark-theme-alt;
+  darkthemelight: $dark-theme-light;
+  darkthemecolor: $dark-theme-color;
   lightthemebackground: $light-theme-background;
+  lightthemecolor: $light-theme-color;
 }

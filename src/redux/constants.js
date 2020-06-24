@@ -32,6 +32,9 @@ export const LOAD_USER_RULE = "LOAD_USER_RULE";
 export const TOGGLE_USER_RULE = "TOGGLE_USER_RULE";
 export const USER_RULE_ACTION_LOADING = "USER_RULE_ACTION_LOADING"; // tag the user rule in the array with loading: true
 export const JOB_COUNTS = "JOB_COUNTS";
+export const LOAD_USER_RULES_TAGS = "LOAD_USER_RULES_TAGS";
+export const CHANGE_USER_RULE_TAGS_FILTER = "CHANGE_USER_RULE_TAGS_FILTER";
+export const CHANGE_USER_RULE_TAG = "CHANGE_USER_RULE_TAG";
 
 // theme
 export const EDIT_THEME = "EDIT_THEME";

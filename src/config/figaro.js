@@ -132,4 +132,5 @@ exports.FIELDS = [
   "job.job_info.time_end",
   "event.traceback",
   "user_tags",
+  "dedup_job",
 ];

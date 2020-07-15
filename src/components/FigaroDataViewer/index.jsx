@@ -61,11 +61,23 @@ export const FigaroDataViewer = (props) => {
         </a>
       </div>
       {res.payload_id ? (
+        <div>
+          <a
+            className="tosca-data-view-link"
+            onClick={() =>
+              props.editCustomFilterId("payload_id", res.payload_id)
+            }
+          >
+            payload_id: {res.payload_id}
+          </a>
+        </div>
+      ) : null}
+      {res.status === "job-deduped" && res.dedup_job ? (
         <a
           className="tosca-data-view-link"
-          onClick={() => props.editCustomFilterId("payload_id", res.payload_id)}
+          onClick={() => props.editCustomFilterId("_id", res.dedup_job)}
         >
-          payload_id: {res.payload_id}
+          dedup_job: {res.dedup_job}
         </a>
       ) : null}
       <div>timestamp: {res["@timestamp"]}</div>
@@ -76,7 +88,9 @@ export const FigaroDataViewer = (props) => {
       {res.job && res.job.job_info ? (
         <div>queue: {res.job.job_info.job_queue}</div>
       ) : null}
-      {res.job ? <div>priority: {res.job.priority}</div> : null}
+      {res.job && res.job.priority ? (
+        <div>priority: {res.job.priority}</div>
+      ) : null}
       {res.job && res.job.job_info ? createTimestamps(res.job.job_info) : null}
       {res.job && res.job.job_info && res.job.job_info.duration ? (
         <div>duration: {res.job.job_info.duration}s</div>

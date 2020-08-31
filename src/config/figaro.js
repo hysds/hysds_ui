@@ -1,3 +1,5 @@
+const React = require("react");
+
 exports.FIGARO_DISPLAY_COLUMNS = [
   { Header: "status", accessor: "status" },
   { Header: "ID", accessor: "_id" },
@@ -5,6 +7,17 @@ exports.FIGARO_DISPLAY_COLUMNS = [
   { Header: "queue", accessor: "job.job_info.job_queue" },
   { Header: "node", accessor: "job.job_info.execute_node" },
   { Header: "timestamp", accessor: "@timestamp" },
+  {
+    id: "browse",
+    width: 100,
+    resizable: false,
+    Cell: (state) =>
+      state.original.urls ? (
+        <a target="_blank" href={state.original.urls[0]}>
+          Browse
+        </a>
+      ) : null,
+  },
 ];
 
 exports.FILTERS = [

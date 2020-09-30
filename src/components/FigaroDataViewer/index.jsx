@@ -52,7 +52,7 @@ export const FigaroDataViewer = (props) => {
       const signal = controller.signal;
       setTimeout(() => controller.abort(), 1000);
       fetch(createJobUrl(res.job.job_info.job_url), { signal }).then((res) => {
-        setJobLink(true);
+        if (res.status === 200) setJobLink(true);
       });
     }
   }, []);

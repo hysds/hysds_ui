@@ -63,12 +63,6 @@ exports.FILTERS = [
     type: "single",
   },
   {
-    componentId: "dataset_type",
-    dataField: "dataset_type.keyword",
-    title: "Dataset Type",
-    type: "single",
-  },
-  {
     componentId: "system_version",
     dataField: "system_version.keyword",
     title: "System Version",

@@ -7,8 +7,12 @@ const JobCount = (props) => {
   const { title, count, link } = props;
   const cleanCount = count ? count.toLocaleString() : 0;
 
+  const className = props.className
+    ? `${props.className || ""} figaro-job-count`
+    : "figaro-job-count";
+
   return (
-    <div className={`${props.className} figaro-job-count`}>
+    <div className={className}>
       {title || "Count"}
       <br />
       <span className="figaro-job-count-value">{cleanCount}</span>

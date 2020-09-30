@@ -126,9 +126,11 @@ const UserTags = (props) => {
     flex-wrap: wrap;
     border: 1px solid black;
     border-radius: 5px;
+    border-color: #9b9b9b;
     background-color: #fff;
     color: black;
     padding: 5px;
+    margin: 5px 0px 2px 0px;
   `;
 
   return (

@@ -1,3 +1,5 @@
+const React = require("react");
+
 // DEFINING THE OPTIONS FOR THE LEAFLET MAP
 /*******************************************************************************/
 exports.DISPLAY_MAP = true;
@@ -58,12 +60,6 @@ exports.FILTERS = [
     componentId: "dataset",
     dataField: "dataset.keyword",
     title: "Dataset",
-    type: "single",
-  },
-  {
-    componentId: "dataset_type",
-    dataField: "dataset_type.keyword",
-    title: "Dataset Type",
     type: "single",
   },
   {
@@ -151,6 +147,17 @@ exports.GRQ_DISPLAY_COLUMNS = [
     accessor: (d) =>
       d.metadata ? d.metadata.trackNumber || d.metadata.track_number : null,
     width: 50,
+  },
+  {
+    id: "browse",
+    width: 100,
+    resizable: false,
+    Cell: (state) =>
+      state.original.urls ? (
+        <a target="_blank" href={state.original.urls[0]}>
+          Browse
+        </a>
+      ) : null,
   },
 ];
 

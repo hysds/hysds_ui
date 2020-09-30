@@ -141,7 +141,7 @@ class FigaroResultsList extends React.Component {
               : null
           }
           renderResultStats={(stats) => (
-            <h3 className="figaro-result-stats">{`${stats.numberOfResults} results in ${stats.time} ms.`}</h3>
+            <h3 className="figaro-result-stats">{`${stats.numberOfResults} results`}</h3>
           )}
           includeFields={FIELDS ? FIELDS : null}
         />

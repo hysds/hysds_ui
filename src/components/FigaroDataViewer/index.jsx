@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import ReactTable from "react-table";
@@ -16,6 +16,7 @@ const createJobUrl = (jobUrl) => {
 
 export const FigaroDataViewer = (props) => {
   const { res } = props;
+  const [validJobLink, setJobLink] = useState(false);
   const endpoint = `${MOZART_REST_API_V1}/user-tags`;
 
   const allowedStatuses = ["job-started", "job-completed", "job-failed"];
@@ -43,6 +44,18 @@ export const FigaroDataViewer = (props) => {
     const dedupedTags = [...new Set(tags)];
     return dedupedTags.join(", ");
   };
+
+  useEffect(() => {
+    if (res.job && res.job.job_info && res.job.job_info.job_url) {
+      // setting a timeout and checking if job worker link is still valid
+      const controller = new AbortController();
+      const signal = controller.signal;
+      setTimeout(() => controller.abort(), 1000);
+      fetch(createJobUrl(res.job.job_info.job_url), { signal }).then((res) => {
+        setJobLink(true);
+      });
+    }
+  }, []);
 
   return (
     <div key={`${res._index}-${res._id}`} className="figaro-data-component">
@@ -102,7 +115,7 @@ export const FigaroDataViewer = (props) => {
         <div className="figaro-traceback">{res.event.traceback}</div>
       ) : null}
       {generatedUserTags}
-      {res.job && res.job.job_info && res.job.job_info.job_url ? (
+      {validJobLink ? (
         <div>
           <a href={createJobUrl(res.job.job_info.job_url)} target="_blank">
             View Job

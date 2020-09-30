@@ -50,7 +50,7 @@ export const FigaroDataViewer = (props) => {
       // setting a timeout and checking if job worker link is still valid
       const controller = new AbortController();
       const signal = controller.signal;
-      setTimeout(() => controller.abort(), 1000);
+      setTimeout(() => controller.abort(), 500);
       fetch(createJobUrl(res.job.job_info.job_url), { signal }).then((res) => {
         if (res.status === 200) setJobLink(true);
       });

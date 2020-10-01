@@ -50,7 +50,7 @@ export const FigaroDataViewer = (props) => {
       // setting a timeout and checking if job worker link is still valid
       const controller = new AbortController();
       const signal = controller.signal;
-      setTimeout(() => controller.abort(), 500);
+      setTimeout(() => controller.abort(), 350);
       fetch(createJobUrl(res.job.job_info.job_url), { signal }).then((res) => {
         if (res.status === 200) setJobLink(true);
       });
@@ -105,6 +105,9 @@ export const FigaroDataViewer = (props) => {
         <div>priority: {res.job.priority}</div>
       ) : null}
       {res.job && res.job.job_info ? createTimestamps(res.job.job_info) : null}
+      {res.job && res.job.retry_count ? (
+        <div>retry count: {res.job.retry_count}</div>
+      ) : null}
       {res.job && res.job.job_info && res.job.job_info.duration ? (
         <div>duration: {res.job.job_info.duration}s</div>
       ) : null}

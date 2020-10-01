@@ -134,6 +134,7 @@ exports.FIELDS = [
   "tags",
   "job.name",
   "job.priority",
+  "job.retry_count",
   "job.type",
   "job.job_info.execute_node",
   "job.job_info.facts.ec2_instance_type",

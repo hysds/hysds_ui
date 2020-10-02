@@ -26,8 +26,6 @@ chrome-user-data
 # js gitignore
 src/config/index.js
 dist/
-package-lock.json
-
 
 # General
 .DS_Store

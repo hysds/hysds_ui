@@ -8,6 +8,8 @@ import {
   CHANGE_JOB_TYPE,
   CHANGE_QUEUE,
   EDIT_TAG,
+  EDIT_SOFT_TIME_LIMIT,
+  EDIT_HARD_TIME_LIMIT,
   CLEAR_JOB_PARAMS,
   EDIT_RULE_NAME,
   GLOBAL_SEARCH_USER_RULES,
@@ -99,6 +101,22 @@ export const editTags = (payload, url = false) => {
   if (url) constructUrl("tags", payload);
   return {
     type: EDIT_TAG,
+    payload,
+  };
+};
+
+export const editSoftTimeLimit = (payload, url = false) => {
+  if (url) constructUrl("soft_time_limit", payload);
+  return {
+    type: EDIT_SOFT_TIME_LIMIT,
+    payload,
+  };
+};
+
+export const editHardTimeLimit = (payload, url = false) => {
+  if (url) constructUrl("hard_time_limit", payload);
+  return {
+    type: EDIT_HARD_TIME_LIMIT,
     payload,
   };
 };

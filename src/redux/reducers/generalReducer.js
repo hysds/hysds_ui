@@ -10,6 +10,8 @@ import {
   EDIT_QUERY,
   EDIT_RULE_NAME,
   EDIT_TAG,
+  EDIT_SOFT_TIME_LIMIT,
+  EDIT_HARD_TIME_LIMIT,
   GET_JOB_LIST,
   SET_QUERY,
   GLOBAL_SEARCH_USER_RULES,
@@ -59,6 +61,8 @@ const initialState = {
   params: defaultUrlJobParams || {},
   submissionType: null,
   tags: urlParams.get("tags") || null,
+  softTimeLimit: urlParams.get("soft_time_limit") || "",
+  hardTimeLimit: urlParams.get("hard_time_limit") || "",
   ruleName: null,
   userRules: [], // store all the rules client side
   filteredRules: [], // client global search for user rules
@@ -195,6 +199,16 @@ const generalReducer = (state = initialState, action) => {
       return {
         ...state,
         tags: action.payload,
+      };
+    case EDIT_SOFT_TIME_LIMIT:
+      return {
+        ...state,
+        softTimeLimit: action.payload,
+      };
+    case EDIT_HARD_TIME_LIMIT:
+      return {
+        ...state,
+        hardTimeLimit: action.payload,
       };
     case EDIT_JOB_PARAMS: {
       const newParams = {

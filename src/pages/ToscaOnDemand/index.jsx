@@ -12,6 +12,7 @@ import PriorityInput from "../../components/PriorityInput";
 
 import { Button } from "../../components/Buttons";
 import HeaderBar from "../../components/HeaderBar";
+import TimeLimit from "../../components/TimeLimit";
 
 import { connect } from "react-redux";
 import {
@@ -21,6 +22,8 @@ import {
   editParams,
   editQuery,
   editTags,
+  editSoftTimeLimit,
+  editHardTimeLimit,
 } from "../../redux/actions";
 import {
   getOnDemandJobs,
@@ -196,6 +199,18 @@ class ToscaOnDemand extends React.Component {
                   paramsList={paramsList}
                   params={params}
                 />
+                <TimeLimit
+                  label="Soft Time Limit"
+                  time={this.props.softTimeLimit}
+                  url={true}
+                  editTimeLimit={editSoftTimeLimit}
+                />
+                <TimeLimit
+                  label="Time Limit"
+                  time={this.props.hardTimeLimit}
+                  url={true}
+                  editTimeLimit={editHardTimeLimit}
+                />
                 <div className="tosca-on-demand-button-wrapper">
                   <div className="tosca-on-demand-button">
                     <Button
@@ -252,6 +267,8 @@ const mapStateToProps = (state) => ({
   paramsList: state.generalReducer.paramsList,
   params: state.generalReducer.params,
   tags: state.generalReducer.tags,
+  softTimeLimit: state.generalReducer.softTimeLimit,
+  hardTimeLimit: state.generalReducer.hardTimeLimit,
   submissionType: state.generalReducer.submissionType,
   dataCount: state.generalReducer.dataCount,
 });

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Helmet } from "react-helmet";
 
 import QueryEditor from "../../components/QueryEditor";
@@ -9,6 +9,7 @@ import { Border, SubmitStatusBar } from "../../components/miscellaneous";
 import TagInput from "../../components/TagInput";
 import QueueInput from "../../components/QueueInput";
 import PriorityInput from "../../components/PriorityInput";
+import TimeLimit from "../../components/TimeLimit";
 
 import { Button } from "../../components/Buttons";
 import HeaderBar from "../../components/HeaderBar";
@@ -21,6 +22,8 @@ import {
   editParams,
   editQuery,
   editTags,
+  editSoftTimeLimit,
+  editTimeLimit,
 } from "../../redux/actions";
 import {
   getOnDemandJobs,
@@ -83,6 +86,10 @@ class FigaroOnDemand extends React.Component {
       kwargs: JSON.stringify(this.props.params),
     };
 
+    if (this.props.timeLimit) data.time_limit = this.props.timeLimit;
+    if (this.props.softTimeLimit)
+      data.soft_time_limit = this.props.softTimeLimit;
+
     const jobSubmitUrl = `${MOZART_REST_API_V1}/on-demand`;
     fetch(jobSubmitUrl, { method: "POST", headers, body: JSON.stringify(data) })
       .then((res) => res.json())
@@ -116,7 +123,6 @@ class FigaroOnDemand extends React.Component {
 
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
-    const divider = paramsList.length > 0 ? <Border /> : null;
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
 
     const submissionTypeLabel = this.props.jobSpec ? (
@@ -189,7 +195,7 @@ class FigaroOnDemand extends React.Component {
                     editJobPriority={editJobPriority}
                   />
                 </div>
-                {divider}
+                {paramsList.length > 0 ? <Border /> : null}
                 {hysdsioLabel}
                 <JobParams
                   url={true} // update query params in url
@@ -197,6 +203,23 @@ class FigaroOnDemand extends React.Component {
                   paramsList={paramsList}
                   params={params}
                 />
+                {this.props.jobSpec ? <Border /> : null}
+                {this.props.jobSpec ? (
+                  <Fragment>
+                    <TimeLimit
+                      label="Soft Time Limit"
+                      time={this.props.softTimeLimit}
+                      url={true}
+                      editTimeLimit={editSoftTimeLimit}
+                    />
+                    <TimeLimit
+                      label="Time Limit"
+                      time={this.props.timeLimit}
+                      url={true}
+                      editTimeLimit={editTimeLimit}
+                    />
+                  </Fragment>
+                ) : null}
                 <div className="tosca-on-demand-button-wrapper">
                   <div className="tosca-on-demand-button">
                     <Button
@@ -254,6 +277,8 @@ const mapStateToProps = (state) => ({
   params: state.generalReducer.params,
   tags: state.generalReducer.tags,
   submissionType: state.generalReducer.submissionType,
+  softTimeLimit: state.generalReducer.softTimeLimit,
+  timeLimit: state.generalReducer.timeLimit,
   dataCount: state.generalReducer.dataCount,
 });
 

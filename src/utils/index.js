@@ -8,7 +8,8 @@ exports.makeDropdownOptions = (data) =>
 
 exports.constructUrl = (key, value) => {
   const params = new URLSearchParams(location.search);
-  params.set(key, value);
+  if (value) params.set(key, value);
+  else params.delete(key);
   const newUrl = `${location.origin}${location.pathname}?${params.toString()}`;
   history.pushState({}, "", newUrl);
 };

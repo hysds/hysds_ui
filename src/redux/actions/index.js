@@ -106,15 +106,15 @@ export const editTags = (payload, url = false) => {
 };
 
 export const editSoftTimeLimit = (payload, url = false) => {
-  if (url) constructUrl("soft_time_limit", payload);
+  // if (url) constructUrl("soft_time_limit", payload);
   return {
     type: EDIT_SOFT_TIME_LIMIT,
     payload,
   };
 };
 
-export const editHardTimeLimit = (payload, url = false) => {
-  if (url) constructUrl("hard_time_limit", payload);
+export const editTimeLimit = (payload, url = false) => {
+  // if (url) constructUrl("hard_time_limit", payload);
   return {
     type: EDIT_HARD_TIME_LIMIT,
     payload,

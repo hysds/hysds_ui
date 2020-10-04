@@ -61,8 +61,8 @@ const initialState = {
   params: defaultUrlJobParams || {},
   submissionType: null,
   tags: urlParams.get("tags") || null,
-  softTimeLimit: urlParams.get("soft_time_limit") || "",
-  hardTimeLimit: urlParams.get("hard_time_limit") || "",
+  softTimeLimit: "", // urlParams.get("soft_time_limit")
+  timeLimit: "", // urlParams.get("time_limit")
   ruleName: null,
   userRules: [], // store all the rules client side
   filteredRules: [], // client global search for user rules
@@ -147,6 +147,9 @@ const generalReducer = (state = initialState, action) => {
       const params = action.payload.params || [];
       const defaultParams = {};
 
+      const softTimeLimit = action.payload.soft_time_limit;
+      const timeLimit = action.payload.time_limit;
+
       params.map((p) => {
         let name = p.name;
         defaultParams[name] = state.params[name] || p.default || null; // THIS IS THE BUG
@@ -157,6 +160,8 @@ const generalReducer = (state = initialState, action) => {
         paramsList: params,
         submissionType: action.payload.submission_type,
         params: defaultParams,
+        softTimeLimit,
+        timeLimit,
       };
     }
     case CHANGE_JOB_TYPE:
@@ -208,7 +213,7 @@ const generalReducer = (state = initialState, action) => {
     case EDIT_HARD_TIME_LIMIT:
       return {
         ...state,
-        hardTimeLimit: action.payload,
+        timeLimit: action.payload,
       };
     case EDIT_JOB_PARAMS: {
       const newParams = {

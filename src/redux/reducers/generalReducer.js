@@ -205,16 +205,18 @@ const generalReducer = (state = initialState, action) => {
         ...state,
         tags: action.payload,
       };
-    case EDIT_SOFT_TIME_LIMIT:
+    case EDIT_SOFT_TIME_LIMIT: {
       return {
         ...state,
         softTimeLimit: action.payload,
       };
-    case EDIT_HARD_TIME_LIMIT:
+    }
+    case EDIT_HARD_TIME_LIMIT: {
       return {
         ...state,
         timeLimit: action.payload,
       };
+    }
     case EDIT_JOB_PARAMS: {
       const newParams = {
         ...state.params,

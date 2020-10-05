@@ -8,8 +8,7 @@ const TimeLimit = (props) => {
   const { label, time } = props;
 
   const _handleChange = (e) => {
-    console.log(e.target.value);
-    props.editTimeLimit(e.target.value, true);
+    props.editTimeLimit(e.target.value);
   };
 
   return (

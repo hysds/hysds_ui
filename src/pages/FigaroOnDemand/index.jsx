@@ -86,9 +86,10 @@ class FigaroOnDemand extends React.Component {
       kwargs: JSON.stringify(this.props.params),
     };
 
-    if (this.props.timeLimit) data.time_limit = this.props.timeLimit;
+    if (this.props.timeLimit) data.time_limit = parseInt(this.props.timeLimit);
+
     if (this.props.softTimeLimit)
-      data.soft_time_limit = this.props.softTimeLimit;
+      data.soft_time_limit = parseInt(this.props.softTimeLimit);
 
     const jobSubmitUrl = `${MOZART_REST_API_V1}/on-demand`;
     fetch(jobSubmitUrl, { method: "POST", headers, body: JSON.stringify(data) })

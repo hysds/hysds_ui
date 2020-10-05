@@ -11,7 +11,7 @@ import {
   EDIT_RULE_NAME,
   EDIT_TAG,
   EDIT_SOFT_TIME_LIMIT,
-  EDIT_HARD_TIME_LIMIT,
+  EDIT_TIME_LIMIT,
   GET_JOB_LIST,
   SET_QUERY,
   GLOBAL_SEARCH_USER_RULES,
@@ -211,7 +211,7 @@ const generalReducer = (state = initialState, action) => {
         softTimeLimit: action.payload,
       };
     }
-    case EDIT_HARD_TIME_LIMIT: {
+    case EDIT_TIME_LIMIT: {
       return {
         ...state,
         timeLimit: action.payload,

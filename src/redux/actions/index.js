@@ -9,7 +9,7 @@ import {
   CHANGE_QUEUE,
   EDIT_TAG,
   EDIT_SOFT_TIME_LIMIT,
-  EDIT_HARD_TIME_LIMIT,
+  EDIT_TIME_LIMIT,
   CLEAR_JOB_PARAMS,
   EDIT_RULE_NAME,
   GLOBAL_SEARCH_USER_RULES,
@@ -116,7 +116,7 @@ export const editSoftTimeLimit = (payload) => {
 export const editTimeLimit = (payload) => {
   // if (url) constructUrl("hard_time_limit", payload);
   return {
-    type: EDIT_HARD_TIME_LIMIT,
+    type: EDIT_TIME_LIMIT,
     payload,
   };
 };

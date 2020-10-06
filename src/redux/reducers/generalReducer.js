@@ -27,6 +27,7 @@ import {
   LOAD_USER_RULES_TAGS,
   CHANGE_USER_RULE_TAGS_FILTER,
   CHANGE_USER_RULE_TAG,
+  LOAD_TIME_LIMITS,
 } from "../constants";
 
 import {
@@ -46,8 +47,9 @@ const initialState = {
   // main page
   data: [],
   dataCount: urlParams.get("total") || 0,
+  jobCounts: {},
 
-  // on-demand
+  // form data
   query: urlParams.get("query") || null,
   validQuery: true,
   priority: priority || null,
@@ -61,20 +63,17 @@ const initialState = {
   params: defaultUrlJobParams || {},
   submissionType: null,
   tags: urlParams.get("tags") || null,
-  softTimeLimit: "", // urlParams.get("soft_time_limit")
-  timeLimit: "", // urlParams.get("time_limit")
+  softTimeLimit: "",
+  timeLimit: "",
   ruleName: null,
-  userRules: [], // store all the rules client side
-  filteredRules: [], // client global search for user rules
-  jobCounts: {},
 
   // user rule filters
+  userRules: [], // store all the rules client side
+  filteredRules: [], // client global search for user rules
   userRuleSearch: "",
   userRulesTags: [], // aggregated rules from elasticsearch
   userRuleTagFilter: null,
   userRuleTag: [], // tags for individual user rule
-
-  toggle: false,
 };
 
 const filterUserRules = (rules, string, tag) => {
@@ -146,10 +145,6 @@ const generalReducer = (state = initialState, action) => {
     case LOAD_JOB_PARAMS: {
       const params = action.payload.params || [];
       const defaultParams = {};
-
-      const softTimeLimit = action.payload.soft_time_limit;
-      const timeLimit = action.payload.time_limit;
-
       params.map((p) => {
         let name = p.name;
         defaultParams[name] = state.params[name] || p.default || null; // THIS IS THE BUG
@@ -160,8 +155,14 @@ const generalReducer = (state = initialState, action) => {
         paramsList: params,
         submissionType: action.payload.submission_type,
         params: defaultParams,
-        softTimeLimit,
-        timeLimit,
+      };
+    }
+    case LOAD_TIME_LIMITS: {
+      const { softTimeLimit, timeLimit } = action.payload;
+      return {
+        ...state,
+        softTimeLimit: softTimeLimit || "",
+        timeLimit: timeLimit || "",
       };
     }
     case CHANGE_JOB_TYPE:

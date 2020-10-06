@@ -26,7 +26,7 @@ const TimeLimit = (props) => {
   );
 };
 
-TimeLimit.PropTypes = {
+TimeLimit.propTypes = {
   label: PropTypes.string.isRequired,
   editTimeLimit: PropTypes.func.isRequired,
 };

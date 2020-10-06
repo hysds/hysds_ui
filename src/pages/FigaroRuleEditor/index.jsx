@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Helmet } from "react-helmet";
 
 import { Redirect } from "react-router-dom";
@@ -11,6 +11,7 @@ import UserRuleNameInput from "../../components/UserRuleNameInput";
 import QueueInput from "../../components/QueueInput";
 import PriorityInput from "../../components/PriorityInput";
 import UserRuleTags from "../../components/UserRuleTags";
+import TimeLimit from "../../components/TimeLimit";
 
 import { Button, ButtonLink } from "../../components/Buttons";
 import { Border, SubmitStatusBar } from "../../components/miscellaneous";
@@ -28,6 +29,8 @@ import {
   editRuleName,
   clearJobParams,
   changeUserRuleTag,
+  editSoftTimeLimit,
+  editTimeLimit,
 } from "../../redux/actions";
 import {
   getUserRule,
@@ -58,7 +61,6 @@ class FigaroRuleEditor extends React.Component {
       this.props.getQueueList(params.rule);
     }
     this.props.getOnDemandJobs();
-
     if (this.props.tags.length === 0) this.props.getUserRulesTags();
   }
 
@@ -141,7 +143,6 @@ class FigaroRuleEditor extends React.Component {
 
     const hysdsioLabel =
       this.props.paramsList.length > 0 ? <h2>{this.props.hysdsio}</h2> : null;
-    const divider = this.props.paramsList.length > 0 ? <Border /> : null;
     const validSubmission = this._validateSubmission();
 
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
@@ -196,13 +197,31 @@ class FigaroRuleEditor extends React.Component {
                 priority={this.props.priority}
                 editJobPriority={editJobPriority}
               />
-              {divider}
+              {this.props.paramsList.length > 0 ? <Border /> : null}
               {hysdsioLabel}
               <JobParams
                 editParams={editParams}
                 paramsList={this.props.paramsList}
                 params={this.props.params}
               />
+
+              {this.props.jobSpec ? <Border /> : null}
+              {this.props.jobSpec ? (
+                <Fragment>
+                  <TimeLimit
+                    label="Soft Time Limit"
+                    time={this.props.softTimeLimit}
+                    url={true}
+                    editTimeLimit={editSoftTimeLimit}
+                  />
+                  <TimeLimit
+                    label="Time Limit"
+                    time={this.props.timeLimit}
+                    url={true}
+                    editTimeLimit={editTimeLimit}
+                  />
+                </Fragment>
+              ) : null}
 
               <div className="user-rule-buttons-wrapper">
                 <div className="user-rule-button">
@@ -256,6 +275,8 @@ const mapStateToProps = (state) => ({
   ruleName: state.generalReducer.ruleName,
   tag: state.generalReducer.userRuleTag,
   tags: state.generalReducer.userRulesTags,
+  softTimeLimit: state.generalReducer.softTimeLimit,
+  timeLimit: state.generalReducer.timeLimit,
 });
 
 // Redux actions

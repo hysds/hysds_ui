@@ -11,6 +11,7 @@ import {
   DELETE_USER_RULE,
   JOB_COUNTS,
   LOAD_USER_RULES_TAGS,
+  LOAD_TIME_LIMITS,
 } from "../../constants.js";
 
 import { editUrlDataCount } from "../../../utils";
@@ -74,6 +75,13 @@ export const getParamsList = (jobSpec) => (dispatch) => {
         type: LOAD_JOB_PARAMS,
         payload: data,
       });
+      dispatch({
+        type: LOAD_TIME_LIMITS,
+        payload: {
+          timeLimit: data.time_limit,
+          softTimeLimit: data.soft_time_limit,
+        },
+      });
     });
 };
 
@@ -128,6 +136,14 @@ export const getUserRule = (id) => (dispatch) => {
         type: LOAD_USER_RULE,
         payload: data.rule,
       });
+      dispatch({
+        type: LOAD_TIME_LIMITS,
+        payload: {
+          timeLimit: data.rule.time_limit,
+          softTimeLimit: data.rule.soft_time_limit,
+        },
+      });
+
       const jobSpec = data.rule.job_spec;
 
       const queuesEndpoint = `${MOZART_REST_API_V2}/queue/list?id=${jobSpec}`;

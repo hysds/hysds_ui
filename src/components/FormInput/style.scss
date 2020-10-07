@@ -1,18 +1,18 @@
-.time-limit-input-wrapper {
+.form-input-wrapper {
   display: flex;
   width: 100%;
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
-.time-limit-input-label {
+.form-input-label {
   display: flex;
   margin-top: 10px;
   margin-right: 10px;
   min-width: 73px;
 }
 
-.time-limit-input {
+.form-input {
   flex: 1;
   box-sizing: border-box;
   margin-left: 2px;
@@ -30,7 +30,7 @@
   display: table-cell;
 }
 
-.time-limit-input:focus {
+.form-input:focus {
   border-color: #1c7ce4;
   border-width: 2px;
 }

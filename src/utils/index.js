@@ -57,9 +57,11 @@ exports.clearUrlJobParams = () => {
 
 exports.editUrlJobParam = (key, value) => {
   const params = new URLSearchParams(location.search);
+
   try {
-    value = JSON.stringify(value);
+    if (typeof value === "object") value = JSON.stringify(value);
   } catch (err) {}
+
   params.set(key, value);
   const newUrl = `${location.origin}${location.pathname}?${params.toString()}`;
   history.pushState({}, "", newUrl);

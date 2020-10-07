@@ -11,6 +11,7 @@ import {
   DELETE_USER_RULE,
   LOAD_USER_RULES_TAGS,
   LOAD_TIME_LIMITS,
+  lOAD_DISK_USAGE,
 } from "../../constants.js";
 
 import { editUrlDataCount } from "../../../utils";
@@ -95,6 +96,10 @@ export const getParamsList = (jobSpec) => (dispatch) => {
           softTimeLimit: data.soft_time_limit,
         },
       });
+      dispatch({
+        type: lOAD_DISK_USAGE,
+        payload: data.disk_usage,
+      });
     });
 };
 
@@ -127,6 +132,10 @@ export const getUserRule = (id) => (dispatch) => {
           timeLimit: data.rule.time_limit,
           softTimeLimit: data.rule.soft_time_limit,
         },
+      });
+      dispatch({
+        type: lOAD_DISK_USAGE,
+        payload: data.rule.disk_usage,
       });
 
       const jobSpec = data.rule.job_spec;

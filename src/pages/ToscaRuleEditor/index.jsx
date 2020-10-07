@@ -11,7 +11,7 @@ import UserRuleNameInput from "../../components/UserRuleNameInput";
 import QueueInput from "../../components/QueueInput";
 import PriorityInput from "../../components/PriorityInput";
 import UserRuleTags from "../../components/UserRuleTags";
-import TimeLimit from "../../components/TimeLimit";
+import FormInput from "../../components/FormInput";
 
 import { Button, ButtonLink } from "../../components/Buttons";
 import { Border, SubmitStatusBar } from "../../components/miscellaneous";
@@ -31,6 +31,7 @@ import {
   changeUserRuleTag,
   editSoftTimeLimit,
   editTimeLimit,
+  editDiskUsage,
 } from "../../redux/actions";
 import {
   getUserRule,
@@ -105,6 +106,8 @@ class ToscaRuleEditor extends React.Component {
 
     if (this.props.softTimeLimit)
       data.soft_time_limit = parseInt(this.props.softTimeLimit);
+
+    if (this.props.diskUsage) data.disk_usage = this.props.diskUsage;
 
     this.setState({ submitInProgress: 1 });
 
@@ -212,17 +215,29 @@ class ToscaRuleEditor extends React.Component {
               {this.props.jobSpec ? <Border /> : null}
               {this.props.jobSpec ? (
                 <Fragment>
-                  <TimeLimit
+                  <FormInput
                     label="Soft Time Limit"
-                    time={this.props.softTimeLimit}
+                    value={this.props.softTimeLimit}
                     url={true}
-                    editTimeLimit={editSoftTimeLimit}
+                    editValue={editSoftTimeLimit}
+                    type="number"
+                    min={1}
+                    placeholder="(seconds)"
                   />
-                  <TimeLimit
+                  <FormInput
                     label="Time Limit"
-                    time={this.props.timeLimit}
+                    value={this.props.timeLimit}
                     url={true}
-                    editTimeLimit={editTimeLimit}
+                    editValue={editTimeLimit}
+                    type="number"
+                    min={1}
+                    placeholder="(seconds)"
+                  />
+                  <FormInput
+                    label="Disk Usage"
+                    value={this.props.diskUsage}
+                    editValue={editDiskUsage}
+                    placeholder="(GB)"
                   />
                 </Fragment>
               ) : null}
@@ -281,6 +296,7 @@ const mapStateToProps = (state) => ({
   tags: state.generalReducer.userRulesTags,
   softTimeLimit: state.generalReducer.softTimeLimit,
   timeLimit: state.generalReducer.timeLimit,
+  diskUsage: state.generalReducer.diskUsage,
 });
 
 // Redux actions

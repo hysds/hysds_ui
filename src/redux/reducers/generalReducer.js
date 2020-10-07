@@ -12,6 +12,9 @@ import {
   EDIT_TAG,
   EDIT_SOFT_TIME_LIMIT,
   EDIT_TIME_LIMIT,
+  LOAD_TIME_LIMITS,
+  EDIT_DISK_USAGE,
+  lOAD_DISK_USAGE,
   GET_JOB_LIST,
   SET_QUERY,
   GLOBAL_SEARCH_USER_RULES,
@@ -27,7 +30,6 @@ import {
   LOAD_USER_RULES_TAGS,
   CHANGE_USER_RULE_TAGS_FILTER,
   CHANGE_USER_RULE_TAG,
-  LOAD_TIME_LIMITS,
 } from "../constants";
 
 import {
@@ -65,6 +67,7 @@ const initialState = {
   tags: urlParams.get("tags") || null,
   softTimeLimit: "",
   timeLimit: "",
+  diskUsage: "",
   ruleName: null,
 
   // user rule filters
@@ -209,13 +212,20 @@ const generalReducer = (state = initialState, action) => {
     case EDIT_SOFT_TIME_LIMIT: {
       return {
         ...state,
-        softTimeLimit: action.payload,
+        softTimeLimit: action.payload || "",
       };
     }
     case EDIT_TIME_LIMIT: {
       return {
         ...state,
-        timeLimit: action.payload,
+        timeLimit: action.payload || "",
+      };
+    }
+    case EDIT_DISK_USAGE:
+    case lOAD_DISK_USAGE: {
+      return {
+        ...state,
+        diskUsage: action.payload || "",
       };
     }
     case EDIT_JOB_PARAMS: {

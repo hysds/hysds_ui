@@ -9,7 +9,7 @@ import { Border, SubmitStatusBar } from "../../components/miscellaneous";
 import TagInput from "../../components/TagInput";
 import QueueInput from "../../components/QueueInput";
 import PriorityInput from "../../components/PriorityInput";
-import TimeLimit from "../../components/TimeLimit";
+import FormInput from "../../components/FormInput";
 
 import { Button } from "../../components/Buttons";
 import HeaderBar from "../../components/HeaderBar";
@@ -24,6 +24,7 @@ import {
   editTags,
   editSoftTimeLimit,
   editTimeLimit,
+  editDiskUsage,
 } from "../../redux/actions";
 import {
   getOnDemandJobs,
@@ -90,6 +91,8 @@ class ToscaOnDemand extends React.Component {
 
     if (this.props.softTimeLimit)
       data.soft_time_limit = parseInt(this.props.softTimeLimit);
+
+    if (this.props.diskUsage) data.disk_usage = this.props.diskUsage;
 
     const jobSubmitUrl = `${GRQ_REST_API_V1}/grq/on-demand`;
     fetch(jobSubmitUrl, { method: "POST", headers, body: JSON.stringify(data) })
@@ -206,17 +209,27 @@ class ToscaOnDemand extends React.Component {
                 {this.props.jobSpec ? <Border /> : null}
                 {this.props.jobSpec ? (
                   <Fragment>
-                    <TimeLimit
+                    <FormInput
                       label="Soft Time Limit"
-                      time={this.props.softTimeLimit}
-                      url={true}
-                      editTimeLimit={editSoftTimeLimit}
+                      value={this.props.softTimeLimit}
+                      editValue={editSoftTimeLimit}
+                      type="number"
+                      min={1}
+                      placeholder="(seconds)"
                     />
-                    <TimeLimit
+                    <FormInput
                       label="Time Limit"
-                      time={this.props.timeLimit}
-                      url={true}
-                      editTimeLimit={editTimeLimit}
+                      value={this.props.timeLimit}
+                      editValue={editTimeLimit}
+                      type="number"
+                      min={1}
+                      placeholder="(seconds)"
+                    />
+                    <FormInput
+                      label="Disk Usage"
+                      value={this.props.diskUsage}
+                      editValue={editDiskUsage}
+                      placeholder="(GB)"
                     />
                   </Fragment>
                 ) : null}
@@ -278,6 +291,7 @@ const mapStateToProps = (state) => ({
   tags: state.generalReducer.tags,
   softTimeLimit: state.generalReducer.softTimeLimit,
   timeLimit: state.generalReducer.timeLimit,
+  diskUsage: state.generalReducer.diskUsage,
   submissionType: state.generalReducer.submissionType,
   dataCount: state.generalReducer.dataCount,
 });

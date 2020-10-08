@@ -229,7 +229,7 @@ class ToscaOnDemand extends React.Component {
                       label="Disk Usage"
                       value={this.props.diskUsage}
                       editValue={editDiskUsage}
-                      placeholder="(GB)"
+                      placeholder="(KB, MB, GB)"
                     />
                   </Fragment>
                 ) : null}

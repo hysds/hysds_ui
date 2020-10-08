@@ -100,14 +100,10 @@ class ToscaRuleEditor extends React.Component {
       job_spec: this.props.jobSpec,
       queue: this.props.queue,
       kwargs: JSON.stringify(this.props.params),
+      time_limit: parseInt(this.props.timeLimit) || null,
+      soft_time_limit: parseInt(this.props.softTimeLimit) || null,
+      disk_usage: this.props.diskUsage || null,
     };
-
-    if (this.props.timeLimit) data.time_limit = parseInt(this.props.timeLimit);
-
-    if (this.props.softTimeLimit)
-      data.soft_time_limit = parseInt(this.props.softTimeLimit);
-
-    if (this.props.diskUsage) data.disk_usage = this.props.diskUsage;
 
     this.setState({ submitInProgress: 1 });
 
@@ -237,7 +233,7 @@ class ToscaRuleEditor extends React.Component {
                     label="Disk Usage"
                     value={this.props.diskUsage}
                     editValue={editDiskUsage}
-                    placeholder="(GB)"
+                    placeholder="(KB, MB, GB)"
                   />
                 </Fragment>
               ) : null}

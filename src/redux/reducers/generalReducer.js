@@ -14,7 +14,7 @@ import {
   EDIT_TIME_LIMIT,
   LOAD_TIME_LIMITS,
   EDIT_DISK_USAGE,
-  lOAD_DISK_USAGE,
+  LOAD_DISK_USAGE,
   GET_JOB_LIST,
   SET_QUERY,
   GLOBAL_SEARCH_USER_RULES,
@@ -222,7 +222,7 @@ const generalReducer = (state = initialState, action) => {
       };
     }
     case EDIT_DISK_USAGE:
-    case lOAD_DISK_USAGE: {
+    case LOAD_DISK_USAGE: {
       return {
         ...state,
         diskUsage: action.payload || "",

@@ -12,7 +12,7 @@ import {
   JOB_COUNTS,
   LOAD_USER_RULES_TAGS,
   LOAD_TIME_LIMITS,
-  lOAD_DISK_USAGE,
+  LOAD_DISK_USAGE,
 } from "../../constants.js";
 
 import { editUrlDataCount } from "../../../utils";
@@ -84,7 +84,7 @@ export const getParamsList = (jobSpec) => (dispatch) => {
         },
       });
       dispatch({
-        type: lOAD_DISK_USAGE,
+        type: LOAD_DISK_USAGE,
         payload: data.disk_usage,
       });
     });
@@ -149,7 +149,7 @@ export const getUserRule = (id) => (dispatch) => {
         },
       });
       dispatch({
-        type: lOAD_DISK_USAGE,
+        type: LOAD_DISK_USAGE,
         payload: data.rule.disk_usage,
       });
 

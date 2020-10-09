@@ -6,7 +6,7 @@ import { connect } from "react-redux"; // redux
 import {
   clickDatasetId,
   bboxEdit,
-  unclickQueryRegion
+  unclickQueryRegion,
 } from "../../redux/actions";
 
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
@@ -23,7 +23,7 @@ import {
   LEAFLET_ATTRIBUTION,
   BBOX_COLOR,
   BBOX_WEIGHT,
-  BBOX_OPACITY
+  BBOX_OPACITY,
 } from "../../config/tosca";
 
 import "./style.scss";
@@ -38,7 +38,7 @@ let MapComponent = class extends React.Component {
 
     this.state = {
       displayMap,
-      value: props.bboxText
+      value: props.bboxText,
     };
   }
 
@@ -54,8 +54,8 @@ let MapComponent = class extends React.Component {
       maxZoom: this.props.maxZoom,
       minZoom: this.props.minZoom,
       layers: [
-        L.tileLayer(LEAFLET_TILELAYER, { attribution: LEAFLET_ATTRIBUTION })
-      ]
+        L.tileLayer(LEAFLET_TILELAYER, { attribution: LEAFLET_ATTRIBUTION }),
+      ],
     });
 
     this.drawnItems = new L.FeatureGroup().addTo(this.map); // store all drawn boox's here
@@ -64,7 +64,7 @@ let MapComponent = class extends React.Component {
     this.shapeAttr = {
       color: BBOX_COLOR,
       weight: BBOX_WEIGHT,
-      opacity: BBOX_OPACITY
+      opacity: BBOX_OPACITY,
     };
 
     this.drawControl = new L.Control.Draw({
@@ -77,12 +77,12 @@ let MapComponent = class extends React.Component {
         circlemarker: false,
         polygon: {
           allowIntersection: false,
-          shapeOptions: this.shapeAttr
+          shapeOptions: this.shapeAttr,
         },
         rectangle: {
-          shapeOptions: this.shapeAttr
-        }
-      }
+          shapeOptions: this.shapeAttr,
+        },
+      },
     });
     this.map.addControl(this.drawControl);
 
@@ -98,7 +98,7 @@ let MapComponent = class extends React.Component {
       const query = this._generateQuery(polygon);
       this.props.setQuery({
         query,
-        value: this.props.value
+        value: this.props.value,
       });
       this.setState({ value: this.props.value });
     }
@@ -112,7 +112,7 @@ let MapComponent = class extends React.Component {
       const query = this._generateQuery(polygon);
       this.props.setQuery({
         query,
-        value: this.props.bboxText
+        value: this.props.bboxText,
       });
       this.setState({ value: this.props.bboxText });
       return;
@@ -125,7 +125,7 @@ let MapComponent = class extends React.Component {
         const query = this._generateQuery(polygon);
         this.props.setQuery({
           query,
-          value: this.props.value
+          value: this.props.value,
         });
       } else {
         this.sendEmptyQuery(); // handles onClear (facets)
@@ -137,7 +137,7 @@ let MapComponent = class extends React.Component {
     this._renderDatasets(); // rendering dataset panes
   }
 
-  _generateQuery = polygon => ({
+  _generateQuery = (polygon) => ({
     query: {
       bool: {
         filter: {
@@ -145,27 +145,27 @@ let MapComponent = class extends React.Component {
             location: {
               shape: {
                 type: "polygon",
-                coordinates: [polygon]
-              }
-            }
-          }
-        }
-      }
-    }
+                coordinates: [polygon],
+              },
+            },
+          },
+        },
+      },
+    },
   });
 
   sendEmptyQuery = () => {
     this.drawnItems.clearLayers();
     this.props.setQuery({
       query: null,
-      value: null
+      value: null,
     });
     this.props.bboxEdit(null);
   };
 
-  _handleMapDraw = event => {
+  _handleMapDraw = (event) => {
     let newLayer = event.layer;
-    let polygon = newLayer.getLatLngs()[0].map(cord => [cord.lng, cord.lat]);
+    let polygon = newLayer.getLatLngs()[0].map((cord) => [cord.lng, cord.lat]);
     polygon = [...polygon, polygon[0]];
 
     const query = this._generateQuery(polygon);
@@ -177,10 +177,10 @@ let MapComponent = class extends React.Component {
     this.setState({ value: polygonString });
   };
 
-  _handlePolygonEdit = event => {
+  _handlePolygonEdit = (event) => {
     const layers = event.layers.getLayers();
-    layers.map(layer => {
-      let polygon = layer.getLatLngs()[0].map(cord => [cord.lng, cord.lat]);
+    layers.map((layer) => {
+      let polygon = layer.getLatLngs()[0].map((cord) => [cord.lng, cord.lat]);
       polygon = [...polygon, polygon[0]];
 
       const query = this._generateQuery(polygon);
@@ -202,9 +202,9 @@ let MapComponent = class extends React.Component {
     localStorage.setItem("display-map", !this.state.displayMap);
   };
 
-  _polygonTextChange = e => this.props.bboxEdit(e.target.value);
+  _polygonTextChange = (e) => this.props.bboxEdit(e.target.value);
 
-  _polygonTextInput = e => {
+  _polygonTextInput = (e) => {
     if (e.key === "Enter" && e.shiftKey) {
       e.preventDefault();
       try {
@@ -219,7 +219,7 @@ let MapComponent = class extends React.Component {
 
         this.props.setQuery({
           query,
-          value: polygonString
+          value: polygonString,
         });
         this.setState({ value: polygonString });
         this.props.bboxEdit(polygonString);
@@ -230,9 +230,9 @@ let MapComponent = class extends React.Component {
   };
 
   // utility function to handle the data
-  _switchCoordinates = polygon => polygon.map(row => [row[1], row[0]]);
-  _transformData = data =>
-    data.map(row => {
+  _switchCoordinates = (polygon) => polygon.map((row) => [row[1], row[0]]);
+  _transformData = (data) =>
+    data.map((row) => {
       let [coordinates, center] = [[], []]; // initializing to empty array
       if (!!row.location && !!row.location.coordinates)
         coordinates = this._switchCoordinates(row.location.coordinates[0]);
@@ -244,11 +244,11 @@ let MapComponent = class extends React.Component {
         _index: row._index,
         key: `${row._index}/${row._id}`,
         coordinates,
-        center
+        center,
       };
     });
 
-  _validateRectangle = coord => {
+  _validateRectangle = (coord) => {
     if (
       coord.length === 5 &&
       coord[0][0] === coord[3][0] &&
@@ -274,18 +274,18 @@ let MapComponent = class extends React.Component {
     }
   };
 
-  clickIdHandler = _id => this.props.clickDatasetId(_id); // send clicked _id to reducer
+  clickIdHandler = (_id) => this.props.clickDatasetId(_id); // send clicked _id to reducer
 
   _renderDatasets = () => {
     const { data } = this.props;
 
     if (this.layerGroup) {
       this.layerGroup.clearLayers(); // clearing all the previous datasets
-      this._transformData(data).map(row => {
+      this._transformData(data).map((row) => {
         // parsing data and rendering datasets in the map
         let poly = L.polygon(row.coordinates, {
           fillOpacity: 0,
-          weight: 1.3
+          weight: 1.3,
         });
         const popup = (
           <p
@@ -298,10 +298,7 @@ let MapComponent = class extends React.Component {
 
         let popupElement = document.createElement("div");
         ReactDOM.render(popup, popupElement);
-        poly
-          .bindPopup(popupElement)
-          .addTo(this.layerGroup)
-          .addTo(this.map);
+        poly.bindPopup(popupElement).addTo(this.layerGroup).addTo(this.map);
       });
     }
   };
@@ -311,7 +308,7 @@ let MapComponent = class extends React.Component {
     const { displayMap } = this.state;
 
     // find first occurance of valid center coordinate
-    let validCenter = data.find(row =>
+    let validCenter = data.find((row) =>
       row.center ? row.center.coordinates : null
     );
     if (validCenter && this.map) {
@@ -349,15 +346,15 @@ let MapComponent = class extends React.Component {
 };
 
 // Redux actions
-const mapDispatchToProps = dispatch => ({
-  clickDatasetId: _id => dispatch(clickDatasetId(_id)),
-  bboxEdit: bbox => dispatch(bboxEdit(bbox)),
-  unclickQueryRegion: () => dispatch(unclickQueryRegion())
+const mapDispatchToProps = (dispatch) => ({
+  clickDatasetId: (_id) => dispatch(clickDatasetId(_id)),
+  bboxEdit: (bbox) => dispatch(bboxEdit(bbox)),
+  unclickQueryRegion: () => dispatch(unclickQueryRegion()),
 });
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   bboxText: state.reactivesearchReducer.bboxText,
-  queryRegion: state.reactivesearchReducer.queryRegion
+  queryRegion: state.reactivesearchReducer.queryRegion,
 });
 
 MapComponent = connect(mapStateToProps, mapDispatchToProps)(MapComponent);
@@ -380,14 +377,14 @@ const ReactiveMap = ({ componentId, data, zoom, maxZoom, minZoom }) => (
 );
 
 ReactiveMap.propTypes = {
-  componentId: PropTypes.string.isRequired
+  componentId: PropTypes.string.isRequired,
 };
 
 ReactiveMap.defaultProps = {
   zoom: 6,
   maxZoom: 10,
   minZoom: 0,
-  data: []
+  data: [],
 };
 
 export default ReactiveMap;

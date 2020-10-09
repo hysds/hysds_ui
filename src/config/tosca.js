@@ -57,9 +57,15 @@ exports.GRQ_TABLE_VIEW_DEFAULT = true;
 
 exports.FILTERS = [
   {
-    componentId: "dataset",
-    dataField: "dataset.keyword",
-    title: "Dataset",
+    componentId: "dataset_type",
+    dataField: "dataset_type.keyword",
+    title: "Dataset Type",
+    type: "single",
+  },
+  {
+    componentId: "dataset_level",
+    dataField: "dataset_level.keyword",
+    title: "Dataset Level",
     type: "single",
   },
   {
@@ -79,6 +85,12 @@ exports.FILTERS = [
     dataField: "continent.keyword",
     title: "Continent",
     type: "single",
+  },
+  {
+    componentId: "tags",
+    dataField: "metadata.tags.keyword",
+    title: "Tags",
+    type: "multi",
   },
   {
     componentId: "starttime",

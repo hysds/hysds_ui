@@ -8,6 +8,9 @@ import {
   CHANGE_JOB_TYPE,
   CHANGE_QUEUE,
   EDIT_TAG,
+  EDIT_SOFT_TIME_LIMIT,
+  EDIT_TIME_LIMIT,
+  EDIT_DISK_USAGE,
   CLEAR_JOB_PARAMS,
   EDIT_RULE_NAME,
   GLOBAL_SEARCH_USER_RULES,
@@ -103,8 +106,24 @@ export const editTags = (payload, url = false) => {
   };
 };
 
+export const editSoftTimeLimit = (payload) => ({
+  type: EDIT_SOFT_TIME_LIMIT,
+  payload,
+});
+
+export const editTimeLimit = (payload) => ({
+  type: EDIT_TIME_LIMIT,
+  payload,
+});
+
+export const editDiskUsage = (payload) => ({
+  type: EDIT_DISK_USAGE,
+  payload,
+});
+
 export const editParams = (payload, url = false) => {
-  if (url) editUrlJobParam(payload.name, payload.value);
+  const { name, value } = payload;
+  if (url) editUrlJobParam(name, value);
   return {
     type: EDIT_JOB_PARAMS,
     payload,

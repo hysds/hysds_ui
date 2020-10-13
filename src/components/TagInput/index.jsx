@@ -4,39 +4,39 @@ import PropTypes from "prop-types";
 
 import "./style.css";
 
-const TagInput = props => {
+const TagInput = (props) => {
   const { tags } = props;
-  const _handleTagInput = e => props.editTags(e.target.value);
+  const _handleTagInput = (e) => props.editTags(e.target.value);
 
   return (
-      <div className="tag-input-wrapper">
-        <div className="tag-input-label">Tag:</div>
-        <input
-          type="text"
-          placeholder="Required"
-          name="tag"
-          onChange={_handleTagInput}
-          value={tags || ""}
-          className="tag-input"
-          required
-        />
-      </div>
+    <div className="tag-input-wrapper">
+      <div className="tag-input-label">Tag:</div>
+      <input
+        type="text"
+        placeholder="Required"
+        name="tag"
+        onChange={_handleTagInput}
+        value={tags || ""}
+        className="tag-input"
+        required
+      />
+    </div>
   );
 };
 
 TagInput.propTypes = {
-  editTags: PropTypes.func.isRequired
+  editTags: PropTypes.func.isRequired,
 };
 
 TagInput.defaultProps = {
-  url: false
+  url: false,
 };
 
 // Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { url, editTags } = ownProps;
   return {
-    editTags: tag => dispatch(editTags(tag, url))
+    editTags: (tag) => dispatch(editTags(tag, url)),
   };
 };
 

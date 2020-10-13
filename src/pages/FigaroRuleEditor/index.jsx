@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Helmet } from "react-helmet";
 
 import { Redirect } from "react-router-dom";
@@ -11,6 +11,7 @@ import UserRuleNameInput from "../../components/UserRuleNameInput";
 import QueueInput from "../../components/QueueInput";
 import PriorityInput from "../../components/PriorityInput";
 import UserRuleTags from "../../components/UserRuleTags";
+import FormInput from "../../components/FormInput";
 
 import { Button, ButtonLink } from "../../components/Buttons";
 import { Border, SubmitStatusBar } from "../../components/miscellaneous";
@@ -28,6 +29,9 @@ import {
   editRuleName,
   clearJobParams,
   changeUserRuleTag,
+  editSoftTimeLimit,
+  editTimeLimit,
+  editDiskUsage,
 } from "../../redux/actions";
 import {
   getUserRule,
@@ -58,7 +62,6 @@ class FigaroRuleEditor extends React.Component {
       this.props.getQueueList(params.rule);
     }
     this.props.getOnDemandJobs();
-
     if (this.props.tags.length === 0) this.props.getUserRulesTags();
   }
 
@@ -97,6 +100,9 @@ class FigaroRuleEditor extends React.Component {
       job_spec: this.props.jobSpec,
       queue: this.props.queue,
       kwargs: JSON.stringify(this.props.params),
+      time_limit: parseInt(this.props.timeLimit) || null,
+      soft_time_limit: parseInt(this.props.softTimeLimit) || null,
+      disk_usage: this.props.diskUsage || null,
     };
 
     this.setState({ submitInProgress: 1 });
@@ -141,7 +147,6 @@ class FigaroRuleEditor extends React.Component {
 
     const hysdsioLabel =
       this.props.paramsList.length > 0 ? <h2>{this.props.hysdsio}</h2> : null;
-    const divider = this.props.paramsList.length > 0 ? <Border /> : null;
     const validSubmission = this._validateSubmission();
 
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
@@ -196,13 +201,43 @@ class FigaroRuleEditor extends React.Component {
                 priority={this.props.priority}
                 editJobPriority={editJobPriority}
               />
-              {divider}
+              {this.props.paramsList.length > 0 ? <Border /> : null}
               {hysdsioLabel}
               <JobParams
                 editParams={editParams}
                 paramsList={this.props.paramsList}
                 params={this.props.params}
               />
+
+              {this.props.jobSpec ? <Border /> : null}
+              {this.props.jobSpec ? (
+                <Fragment>
+                  <FormInput
+                    label="Soft Time Limit"
+                    value={this.props.softTimeLimit}
+                    url={true}
+                    editValue={editSoftTimeLimit}
+                    type="number"
+                    min={1}
+                    placeholder="(seconds)"
+                  />
+                  <FormInput
+                    label="Time Limit"
+                    value={this.props.timeLimit}
+                    url={true}
+                    editValue={editTimeLimit}
+                    type="number"
+                    min={1}
+                    placeholder="(seconds)"
+                  />
+                  <FormInput
+                    label="Disk Usage"
+                    value={this.props.diskUsage}
+                    editValue={editDiskUsage}
+                    placeholder="(KB, MB, GB)"
+                  />
+                </Fragment>
+              ) : null}
 
               <div className="user-rule-buttons-wrapper">
                 <div className="user-rule-button">
@@ -256,6 +291,9 @@ const mapStateToProps = (state) => ({
   ruleName: state.generalReducer.ruleName,
   tag: state.generalReducer.userRuleTag,
   tags: state.generalReducer.userRulesTags,
+  softTimeLimit: state.generalReducer.softTimeLimit,
+  timeLimit: state.generalReducer.timeLimit,
+  diskUsage: state.generalReducer.diskUsage,
 });
 
 // Redux actions

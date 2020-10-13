@@ -114,7 +114,7 @@ exports.FILTERS = [
 
 exports.QUERY_LOGIC = {
   and: [
-    "dataset",
+    "dataset_level",
     "dataset_type",
     "starttime",
     "platform",

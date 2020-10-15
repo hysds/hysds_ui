@@ -57,6 +57,7 @@ const JobParams = (props) => {
                 step="1"
                 value={value || ""}
                 name={paramName}
+                placeholder={param.placeholder}
                 onChange={_handleJobParamInputChange}
                 className="params-input"
                 required={param.optional ? false : true}
@@ -105,7 +106,7 @@ const JobParams = (props) => {
                 type="text"
                 value={value || ""}
                 name={paramName}
-                placeholder="Required"
+                placeholder={param.placeholder}
                 onChange={_handleJobParamInputChange}
                 className="params-input"
                 required={param.optional ? false : true}

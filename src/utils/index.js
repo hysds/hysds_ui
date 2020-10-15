@@ -34,6 +34,18 @@ const IGNORE_QUERY_PARAMS = [
   "tags",
 ];
 
+exports.sanitizeJobParams = (params) => {
+  let cleanedParams = {};
+  for (let key in params) {
+    if (params[key])
+      cleanedParams = {
+        ...cleanedParams,
+        ...{ [key]: params[key] },
+      };
+  }
+  return cleanedParams;
+};
+
 exports.extractJobParams = (urlParams) => {
   const params = {};
   urlParams.forEach((value, key) => {

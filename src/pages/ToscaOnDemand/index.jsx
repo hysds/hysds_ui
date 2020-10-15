@@ -33,6 +33,7 @@ import {
   editDataCount,
 } from "../../redux/actions/tosca";
 
+import { sanitizeJobParams } from "../../utils";
 import { GRQ_REST_API_V1 } from "../../config";
 
 import "./style.scss";
@@ -77,6 +78,7 @@ class ToscaOnDemand extends React.Component {
     this.setState({ submitInProgress: 1 });
 
     const headers = { "Content-Type": "application/json" };
+    const newParams = sanitizeJobParams(this.props.params);
     const data = {
       tags: this.props.tags,
       job_type: this.props.hysdsio,
@@ -84,7 +86,7 @@ class ToscaOnDemand extends React.Component {
       queue: this.props.queue,
       priority: this.props.priority,
       query: this.props.query,
-      kwargs: JSON.stringify(this.props.params),
+      kwargs: JSON.stringify(newParams),
     };
 
     if (this.props.timeLimit) data.time_limit = parseInt(this.props.timeLimit);

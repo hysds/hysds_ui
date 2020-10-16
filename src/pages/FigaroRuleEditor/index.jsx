@@ -18,8 +18,6 @@ import { Border, SubmitStatusBar } from "../../components/miscellaneous";
 
 import HeaderBar from "../../components/HeaderBar";
 
-import { MOZART_REST_API_V1 } from "../../config";
-
 import {
   editQuery,
   editJobPriority,
@@ -40,6 +38,9 @@ import {
   getQueueList,
   getUserRulesTags,
 } from "../../redux/actions/figaro";
+
+import { sanitizeJobParams } from "../../utils";
+import { MOZART_REST_API_V1 } from "../../config";
 
 import "./style.scss";
 
@@ -90,6 +91,8 @@ class FigaroRuleEditor extends React.Component {
 
   _handleUserRuleSubmit = () => {
     const ruleId = this.props.match.params.rule;
+
+    const newParams = sanitizeJobParams(this.props.params);
     const data = {
       id: ruleId,
       rule_name: this.props.ruleName,
@@ -99,7 +102,7 @@ class FigaroRuleEditor extends React.Component {
       workflow: this.props.hysdsio,
       job_spec: this.props.jobSpec,
       queue: this.props.queue,
-      kwargs: JSON.stringify(this.props.params),
+      kwargs: JSON.stringify(newParams),
       time_limit: parseInt(this.props.timeLimit) || null,
       soft_time_limit: parseInt(this.props.softTimeLimit) || null,
       disk_usage: this.props.diskUsage || null,

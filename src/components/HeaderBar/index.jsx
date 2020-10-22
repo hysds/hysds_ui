@@ -7,7 +7,12 @@ import { Button } from "../Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-import { MOZART_REST_API_V1, GRQ_REST_API_V1, KIBANA_URL, RABBIT_MQ_PORT } from "../../config";
+import {
+  MOZART_REST_API_V1,
+  GRQ_REST_API_V1,
+  KIBANA_URL,
+  RABBIT_MQ_PORT,
+} from "../../config";
 
 import styles from "../../scss/constants.scss";
 import "./style.scss";
@@ -55,9 +60,6 @@ const DropdownSources = () => (
         target="_blank"
       >
         RabbitMQ
-      </a>
-      <a href="https://github.com/hysds" target="_blank">
-        HySDS (Github)
       </a>
     </div>
   </div>

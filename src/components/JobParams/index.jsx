@@ -18,7 +18,8 @@ const JobParams = (props) => {
     let { name, value } = e.target;
     if (value) {
       try {
-        value = JSON.parse(value);
+        let parsedValue = JSON.parse(value);
+        if (typeof parsedValue === "object") value = parsedValue;
       } catch (err) {}
     }
     const payload = {

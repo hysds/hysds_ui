@@ -88,9 +88,6 @@ const HeaderBar = (props) => {
           onClick={_themeHandler}
         />
         <div className="header-bar-buffer"></div>
-        <li>
-          <a>Logout</a>
-        </li>
       </ul>
     </div>
   );

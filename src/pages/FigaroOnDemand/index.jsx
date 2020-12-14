@@ -147,11 +147,7 @@ class FigaroOnDemand extends React.Component {
           <title>Figaro - On Demand</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
-        <HeaderBar
-          title="HySDS - On Demand"
-          theme={classTheme}
-          active="figaro"
-        />
+        <HeaderBar title="HySDS - On Demand" theme={classTheme} />
 
         <div className={classTheme}>
           <div className="figaro-on-demand">

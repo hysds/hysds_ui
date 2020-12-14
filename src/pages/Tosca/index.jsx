@@ -4,6 +4,22 @@ import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
 import { connect } from "react-redux";
 import { setQuery } from "../../redux/actions";
 
+// custom components we built to handle elasticsearch data
+import ToscaResultsList from "../../components/ToscaResultsList";
+import ReactiveMap from "../../components/ReactiveMap";
+import IdQueryHandler from "../../components/IdQueryHandler";
+import SearchQuery from "../../components/SearchQuery";
+
+// custom utility components
+import { ButtonLink, ScrollTop } from "../../components/Buttons";
+
+import SidebarFilters from "../../components/SidebarFilters";
+import { HelperLink } from "../../components/miscellaneous";
+import HeaderBar, {
+  HeaderLink,
+  DropdownSources,
+} from "../../components/HeaderBar";
+
 import { LOCAL_DEV, GRQ_ES_URL, GRQ_ES_INDICES } from "../../config";
 import {
   GRQ_TABLE_VIEW_DEFAULT,
@@ -16,20 +32,6 @@ import {
   QUERY_LOGIC,
 } from "../../config/tosca";
 
-// custom components we built to handle elasticsearch data
-import ToscaResultsList from "../../components/ToscaResultsList";
-import ReactiveMap from "../../components/ReactiveMap";
-import IdQueryHandler from "../../components/IdQueryHandler";
-import SearchQuery from "../../components/SearchQuery";
-
-// custom utility components
-import { ButtonLink, ScrollTop } from "../../components/Buttons";
-
-import SidebarFilters from "../../components/SidebarFilters";
-
-import { HelperLink } from "../../components/miscellaneous";
-import HeaderBar from "../../components/HeaderBar";
-
 import "./style.scss";
 
 class Tosca extends React.Component {
@@ -39,9 +41,7 @@ class Tosca extends React.Component {
       tableView: GRQ_TABLE_VIEW_DEFAULT, // boolean
     };
 
-    this.grq_es_url = LOCAL_DEV
-      ? GRQ_ES_URL
-      : `${window.origin}/${GRQ_ES_URL}`;
+    this.grq_es_url = LOCAL_DEV ? GRQ_ES_URL : `${window.origin}/${GRQ_ES_URL}`;
 
     this.mapRef = React.createRef();
     this.pageRef = React.createRef();
@@ -85,7 +85,11 @@ class Tosca extends React.Component {
           <title>Tosca - Home</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
-        <HeaderBar title="HySDS" theme={classTheme} active="tosca"></HeaderBar>
+        <HeaderBar title="HySDS" theme={classTheme} active="tosca">
+          <HeaderLink href="/tosca" title="Tosca" active={1} />
+          <HeaderLink href="/figaro" title="Figaro" active={0} />
+          <DropdownSources />
+        </HeaderBar>
 
         <ReactiveBase
           url={this.grq_es_url}

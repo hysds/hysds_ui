@@ -17,7 +17,7 @@ import {
 import styles from "../../scss/constants.scss";
 import "./style.scss";
 
-const HeaderLink = (props) => {
+export const HeaderLink = (props) => {
   const { title, href, active } = props;
 
   let className = "header-bar-link";
@@ -30,7 +30,7 @@ const HeaderLink = (props) => {
   );
 };
 
-const HeaderTitle = (props) => {
+export const HeaderTitle = (props) => {
   let title = props.title || "HySDS";
   return (
     <li className="header-bar-title" {...props}>
@@ -39,7 +39,7 @@ const HeaderTitle = (props) => {
   );
 };
 
-const DropdownSources = () => (
+export const DropdownSources = () => (
   <div className="link-dropdown">
     <button className="link-dropbtn">
       <span className="header-source-title">Sources</span>{" "}
@@ -82,19 +82,7 @@ const HeaderBar = (props) => {
     <div className={`${theme} header-bar`}>
       <ul className="header-bar-link-wrapper">
         <HeaderTitle title={title} />
-        <HeaderLink
-          href="/tosca"
-          title="Tosca"
-          active={props.active === "tosca" ? 1 : 0}
-        />
-        <HeaderLink
-          href="/figaro"
-          title="Figaro"
-          active={props.active === "figaro" ? 1 : 0}
-        />
-
-        <DropdownSources />
-
+        {props.children}
         <Button
           label={props.darkMode ? "Light Mode" : "Dark Mode"}
           onClick={_themeHandler}

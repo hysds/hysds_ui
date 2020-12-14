@@ -40,7 +40,7 @@ class FigaroResultsList extends React.Component {
     this.state = {
       tableView: tableView === "true" ? true : false,
       pageSize: pageSize ? parseInt(pageSize) : 10,
-      sortColumn: localStorage.getItem(SORT_FIELD_STORE) || "None",
+      sortColumn: localStorage.getItem(SORT_FIELD_STORE) || "@timestamp",
       sortOrder: localStorage.getItem(SORT_DIRECTION_STORE) || "desc",
     };
   }

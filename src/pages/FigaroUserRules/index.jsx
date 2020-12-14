@@ -60,11 +60,7 @@ const FigaroUserRules = class extends React.Component {
           <title>Mozart - User Rules</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
-        <HeaderBar
-          title="HySDS - User Rules"
-          theme={classTheme}
-          active="figaro"
-        />
+        <HeaderBar title="HySDS - User Rules" theme={classTheme} />
 
         <div className="user-rules-body">
           <div style={{ textAlign: "center" }}>

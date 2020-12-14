@@ -7,13 +7,17 @@ import JobCountsBanner from "../../components/JobCountsBanner";
 import SidebarFilters from "../../components/SidebarFilters";
 import SearchQuery from "../../components/SearchQuery";
 import CustomIdFilter from "../../components/CustomIdFilter";
-import HeaderBar from "../../components/HeaderBar";
 import FigaroResultsList from "../../components/FigaroResultsList";
 import { HelperLink } from "../../components/miscellaneous";
 import { ButtonLink, ScrollTop } from "../../components/Buttons";
 
 import { setQuery, editCustomFilterId } from "../../redux/actions";
 import { getJobCounts } from "../../redux/actions/figaro";
+
+import HeaderBar, {
+  HeaderLink,
+  DropdownSources,
+} from "../../components/HeaderBar";
 
 import { LOCAL_DEV, MOZART_ES_URL, MOZART_ES_INDICES } from "../../config";
 import { FILTERS, QUERY_LOGIC } from "../../config/figaro";
@@ -55,7 +59,11 @@ class Figaro extends React.Component {
           <title>Figaro - Home</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
-        <HeaderBar title="HySDS" theme={classTheme} active="figaro"></HeaderBar>
+        <HeaderBar title="HySDS" theme={classTheme} active="figaro">
+          <HeaderLink href="/tosca" title="Tosca" active={0} />
+          <HeaderLink href="/figaro" title="Figaro" active={1} />
+          <DropdownSources />
+        </HeaderBar>
 
         <ReactiveBase
           url={this.mozart_es_url}

@@ -160,11 +160,7 @@ class FigaroRuleEditor extends React.Component {
           <title>Mozart - Rule Editor</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
-        <HeaderBar
-          title="HySDS - User Rules"
-          theme={classTheme}
-          active="figaro"
-        />
+        <HeaderBar title="HySDS - User Rules" theme={classTheme} />
 
         <div className="figaro-user-rule-editor">
           <div className="split user-rule-editor-left">

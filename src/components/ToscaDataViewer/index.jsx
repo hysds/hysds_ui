@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux"; // redux
 
+import { Link } from "react-router-dom";
+
 import { clickQueryRegion } from "../../redux/actions";
 import UserTags from "../UserTags";
 import { Button } from "../Buttons";
@@ -46,6 +48,14 @@ const ToscaDataViewer = (props) => {
           Browse
         </a>
       ) : null}
+      <span />
+      <Link
+        className="tosca-metadata-link"
+        to={`/tosca/metadata/${res._index}/${res._id}`}
+        target="_none"
+      >
+        Metadata
+      </Link>
     </div>
   );
 };

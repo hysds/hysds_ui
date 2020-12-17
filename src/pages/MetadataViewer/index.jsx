@@ -67,7 +67,7 @@ const MetadataViewer = (props) => {
         src={metadata}
         displayDataTypes={false}
         theme={theme}
-        style={{ backgroundColor: backgroundColor }}
+        style={{ backgroundColor }}
         displayObjectSize={false}
       />
     );

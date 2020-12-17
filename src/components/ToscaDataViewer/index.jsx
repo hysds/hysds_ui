@@ -84,10 +84,6 @@ const ToscaDataViewer = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  darkMode: state.themeReducer.darkMode,
-});
-
 // Redux actions
 const mapDispatchToProps = (dispatch) => ({
   clickQueryRegion: (bbox) => dispatch(clickQueryRegion(bbox)),
@@ -97,4 +93,4 @@ ToscaDataViewer.propTypes = {
   res: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ToscaDataViewer);
+export default connect(null, mapDispatchToProps)(ToscaDataViewer);

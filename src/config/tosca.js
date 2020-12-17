@@ -27,8 +27,6 @@ exports.DATASET_TYPE_SEARCH_ID = "dataset_type";
 exports.SATELLITE_TYPE_ID = "satellite";
 exports.RESULTS_LIST_COMPONENT_ID = "results";
 exports.DATASET_ID = "dataset";
-exports.TRACK_NUMBER_ID = "track_number";
-exports.TRACK_NUMBER_ID_OLD = "trackNumber";
 exports.START_TIME_ID = "starttime";
 exports.END_TIME_ID = "endtime";
 exports.USER_TAGS = "user_tags";
@@ -43,8 +41,7 @@ exports.FIELDS = [
   "center",
   "urls",
   "datasets",
-  "metadata.track_number",
-  "metadata.trackNumber",
+  "metadata.state",
   "metadata.status",
   "metadata.platform",
   "metadata.sensoroperationalmode",
@@ -105,10 +102,10 @@ exports.FILTERS = [
     type: "date",
   },
   {
-    componentId: "track_number",
-    dataField: "metadata.trackNumber",
-    title: "Track Number",
-    type: "multi",
+    componentId: "state",
+    dataField: "metadata.state",
+    title: "State",
+    type: "single",
   },
 ];
 
@@ -119,7 +116,6 @@ exports.QUERY_LOGIC = {
     "starttime",
     "platform",
     "continent",
-    "track_number",
     "endtime",
     "system_version",
     this.ID_COMPONENT,
@@ -152,13 +148,6 @@ exports.GRQ_DISPLAY_COLUMNS = [
     Header: "direction",
     accessor: "metadata.direction",
     width: 100,
-  },
-  {
-    id: "trackNumber",
-    Header: "track",
-    accessor: (d) =>
-      d.metadata ? d.metadata.trackNumber || d.metadata.track_number : null,
-    width: 50,
   },
   {
     id: "browse",

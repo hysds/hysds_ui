@@ -15,8 +15,24 @@
     color: $dark-theme-color;
     border: 1px solid $dark-theme-light;
   }
+
+  .tosca-metadata-preview {
+    background-color: $dark-theme-alt !important;
+  }
 }
 
-a.tosca-metadata-link {
-  padding: 0px 7px;
+a {
+  &.tosca-metadata-link {
+    padding: 0px 7px;
+  }
+
+  &.tosca-browse-link {
+    padding-right: 7px;
+  }
+}
+
+.tosca-metadata-preview {
+  overflow: scroll;
+  font-size: 11px;
+  padding: 10px;
 }

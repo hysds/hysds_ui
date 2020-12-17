@@ -118,6 +118,7 @@ exports.QUERY_LOGIC = {
     "continent",
     "endtime",
     "system_version",
+    "state",
     this.ID_COMPONENT,
     this.MAP_COMPONENT_ID,
     this.QUERY_SEARCH_COMPONENT_ID,

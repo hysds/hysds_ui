@@ -8,6 +8,7 @@ import HeaderBar from "../../components/HeaderBar";
 
 import { GRQ_ES_URL } from "../../config";
 
+import { darkthemebg, lightthemebg } from "../../scss/constants.scss";
 import "./style.scss";
 
 const MetadataViewer = (props) => {
@@ -24,6 +25,9 @@ const MetadataViewer = (props) => {
       .catch((err) => console.error(err));
   }, []);
 
+  const theme = props.darkMode ? "monokai" : "rjv-default";
+  const backgroundColor = props.darkMode ? darkthemebg : lightthemebg;
+
   return (
     <Fragment>
       <Helmet>
@@ -32,8 +36,15 @@ const MetadataViewer = (props) => {
       <HeaderBar title="GRQ - Metadata" theme={classTheme} />
 
       <div className={classTheme}>
-        <h1>Metadata Viewer</h1>
-        <ReactJson src={metadata} displayDataTypes={false} />
+        <div className="metadata-view-container">
+          <ReactJson
+            src={metadata}
+            displayDataTypes={false}
+            theme={theme}
+            style={{ backgroundColor: backgroundColor }}
+            displayObjectSize={false}
+          />
+        </div>
       </div>
     </Fragment>
   );

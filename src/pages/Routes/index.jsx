@@ -18,6 +18,10 @@ import FigaroOnDemand from "../FigaroOnDemand";
 import FigaroUserRules from "../FigaroUserRules";
 import FigaroRuleEditor from "../FigaroRuleEditor";
 
+import MetadataViewer from "../MetadataViewer";
+
+import NotFound from "../NotFound";
+
 import { ROOT_PATH } from "../../config/index.js";
 
 import "./style.scss";
@@ -32,6 +36,11 @@ const Routes = (props) => {
           <Route exact path="/" render={() => <Redirect to="/tosca" />} />
           <Route exact path="/tosca" component={Tosca} />
           <Route exact path="/tosca/on-demand" component={ToscaOnDemand} />
+          <Route
+            exact
+            path="/tosca/metadata/:index/:id"
+            component={MetadataViewer}
+          />
           <Route exact path="/tosca/user-rules" component={ToscaUserRules} />
           <Route exact path="/tosca/user-rule" component={ToscaRuleEditor} />
           <Route
@@ -39,6 +48,7 @@ const Routes = (props) => {
             path="/tosca/user-rule/:rule"
             component={ToscaRuleEditor}
           />
+
           <Route exact path="/figaro" component={Figaro} />
           <Route exact path="/figaro/on-demand" component={FigaroOnDemand} />
           <Route exact path="/figaro/user-rules" component={FigaroUserRules} />
@@ -48,6 +58,7 @@ const Routes = (props) => {
             path="/figaro/user-rule/:rule"
             component={FigaroRuleEditor}
           />
+          <Route component={NotFound} />
         </Switch>
       </Router>
     </div>

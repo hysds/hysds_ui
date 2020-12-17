@@ -21,10 +21,10 @@ $hover-percent: 15%;
 $active-percent: 25%;
 
 :export {
-  darkthemebackground: $dark-theme-background;
+  darkthemebg: $dark-theme-background;
   darkthemealt: $dark-theme-alt;
   darkthemelight: $dark-theme-light;
   darkthemecolor: $dark-theme-color;
-  lightthemebackground: $light-theme-background;
+  lightthemebg: $light-theme-background;
   lightthemecolor: $light-theme-color;
 }

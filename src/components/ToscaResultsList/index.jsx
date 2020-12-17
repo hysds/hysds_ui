@@ -40,7 +40,7 @@ class ResultsList extends React.Component {
   // callback function to handle the results from ES
   resultsListHandler = (res) => (
     <div key={`${res._index}-${res._id}`}>
-      <ToscaDataViewer res={res} />
+      <ToscaDataViewer res={res} darkMode={this.props.darkMode} />
     </div>
   );
 
@@ -154,9 +154,13 @@ ResultsList.defaultProps = {
   pageSize: 10,
 };
 
+const mapStateToProps = (state) => ({
+  darkMode: state.themeReducer.darkMode,
+});
+
 // Redux actions
 const mapDispatchToProps = (dispatch) => ({
   retrieveData: (data) => dispatch(retrieveData(data)),
 });
 
-export default connect(null, mapDispatchToProps)(ResultsList);
+export default connect(mapStateToProps, mapDispatchToProps)(ResultsList);

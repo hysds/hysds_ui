@@ -55,11 +55,7 @@ const ToscaDataViewer = (props) => {
         </a>
       ) : null}
       <span />
-      <a
-        href="javascript:void(0)"
-        className="tosca-metadata-link"
-        onClick={() => setViewData(!viewData)}
-      >
+      <a className="tosca-metadata-link" onClick={() => setViewData(!viewData)}>
         Preview Metadata
       </a>
       <Link

@@ -24,6 +24,17 @@
 a {
   &.tosca-metadata-link {
     padding: 0px 7px;
+    color: #0000ee;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: none;
+    }
+
+    &:visited {
+      color: #551a8b;
+    }
   }
 
   &.tosca-browse-link {

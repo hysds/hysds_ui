@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
+import { Link } from "react-router-dom";
+
 import ReactTable from "react-table";
 import UserTags from "../UserTags";
 
@@ -16,7 +18,9 @@ const createJobUrl = (jobUrl) => {
 
 export const FigaroDataViewer = (props) => {
   const { res } = props;
+  const [viewProducts, setViewProducts] = useState(false);
   const [validJobLink, setJobLink] = useState(false);
+
   const endpoint = `${MOZART_REST_API_V1}/user-tags`;
 
   const allowedStatuses = ["job-started", "job-completed", "job-failed"];
@@ -67,7 +71,7 @@ export const FigaroDataViewer = (props) => {
       <div>index: {res._index}</div>
       <div>
         <a
-          className="tosca-data-view-link"
+          className="figaro-data-view-link figaro-id-link"
           onClick={() => props.editCustomFilterId("_id", res._id)}
         >
           ID: {res._id}
@@ -76,7 +80,7 @@ export const FigaroDataViewer = (props) => {
       {res.payload_id ? (
         <div>
           <a
-            className="tosca-data-view-link"
+            className="figaro-data-view-link figaro-id-link"
             onClick={() =>
               props.editCustomFilterId("payload_id", res.payload_id)
             }
@@ -87,7 +91,7 @@ export const FigaroDataViewer = (props) => {
       ) : null}
       {res.status === "job-deduped" && res.dedup_job ? (
         <a
-          className="tosca-data-view-link"
+          className="figaro-data-view-link figaro-id-link"
           onClick={() => props.editCustomFilterId("_id", res.dedup_job)}
         >
           dedup_job: {res.dedup_job}
@@ -123,6 +127,28 @@ export const FigaroDataViewer = (props) => {
           <a href={createJobUrl(res.job.job_info.job_url)} target="_blank">
             View Job
           </a>
+        </div>
+      ) : null}
+      {res.status == "job-completed" &&
+      res.job &&
+      res.job.job_info &&
+      res.job.job_info.metrics ? (
+        <div>
+          <a
+            className="figaro-staged-product-link"
+            onClick={() => setViewProducts(!viewProducts)}
+          >
+            View Staged products
+          </a>
+          {viewProducts
+            ? res.job.job_info.metrics.products_staged.map((p) => (
+                <div key={p.id}>
+                  <li>
+                    <Link to={`/tosca?_id="${p.id}"`}>{p.id}</Link>
+                  </li>
+                </div>
+              ))
+            : null}
         </div>
       ) : null}
     </div>

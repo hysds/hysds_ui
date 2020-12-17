@@ -15,9 +15,21 @@
   padding: 5px 0px 10px 0px;
 }
 
-.tosca-data-view-link {
-  font-size: 16px !important;
-  text-decoration: underline;
+a {
+  &.figaro-id-link {
+    font-size: 16px !important;
+  }
+
+  &.figaro-data-view-link {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  &.figaro-staged-product-link {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #0000ee;
+  }
 
   &:hover {
     text-decoration: none;

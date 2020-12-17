@@ -103,7 +103,7 @@ exports.FILTERS = [
   },
   {
     componentId: "state",
-    dataField: "metadata.state",
+    dataField: "metadata.state.keyword",
     title: "State",
     type: "single",
   },

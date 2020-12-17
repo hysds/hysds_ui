@@ -134,6 +134,7 @@ exports.FIELDS = [
   "job.job_info.time_queued",
   "job.job_info.time_start",
   "job.job_info.time_end",
+  "job.job_info.metrics.products_staged.id",
   "event.traceback",
   "user_tags",
   "dedup_job",

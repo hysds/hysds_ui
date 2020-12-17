@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 
 import { Link } from "react-router-dom";
@@ -123,22 +123,24 @@ export const FigaroDataViewer = (props) => {
       ) : null}
       {generatedUserTags}
       {validJobLink ? (
-        <div>
+        <Fragment>
           <a href={createJobUrl(res.job.job_info.job_url)} target="_blank">
             View Job
           </a>
-        </div>
+        </Fragment>
       ) : null}
-      {res.status == "job-completed" &&
-      res.job &&
+      {res.job &&
       res.job.job_info &&
-      res.job.job_info.metrics ? (
-        <div>
+      res.job.job_info.metrics &&
+      res.job.job_info.metrics.products_staged ? (
+        <Fragment>
           <a
             className="figaro-staged-product-link"
             onClick={() => setViewProducts(!viewProducts)}
           >
-            View Staged products
+            {res.status == "job-completed"
+              ? "View staged products"
+              : "View triaged products"}
           </a>
           {viewProducts
             ? res.job.job_info.metrics.products_staged.map((p) => (
@@ -149,7 +151,7 @@ export const FigaroDataViewer = (props) => {
                 </div>
               ))
             : null}
-        </div>
+        </Fragment>
       ) : null}
     </div>
   );

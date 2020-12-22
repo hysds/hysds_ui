@@ -6,6 +6,43 @@
   margin: 20px;
   border-radius: 5px;
   border: 1px solid $light-theme-title;
+
+  a {
+    &.tosca-id-link {
+      font-size: 15px;
+      text-decoration: underline;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    &.tosca-metadata-link {
+      padding: 0px 7px;
+      color: #0000ee;
+      text-decoration: underline;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      &:visited {
+        color: #551a8b;
+      }
+    }
+
+    &.tosca-browse-link {
+      padding-right: 7px;
+    }
+  }
+
+  .tosca-metadata-preview {
+    overflow: scroll;
+    font-size: 11px;
+    padding: 10px;
+  }
 }
 
 .__theme-dark {
@@ -19,31 +56,4 @@
   .tosca-metadata-preview {
     background-color: $dark-theme-alt !important;
   }
-}
-
-a {
-  &.tosca-metadata-link {
-    padding: 0px 7px;
-    color: #0000ee;
-    text-decoration: underline;
-    cursor: pointer;
-
-    &:hover {
-      text-decoration: none;
-    }
-
-    &:visited {
-      color: #551a8b;
-    }
-  }
-
-  &.tosca-browse-link {
-    padding-right: 7px;
-  }
-}
-
-.tosca-metadata-preview {
-  overflow: scroll;
-  font-size: 11px;
-  padding: 10px;
 }

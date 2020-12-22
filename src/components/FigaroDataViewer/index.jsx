@@ -144,11 +144,9 @@ export const FigaroDataViewer = (props) => {
           </a>
           {viewProducts
             ? res.job.job_info.metrics.products_staged.map((p) => (
-                <div key={p.id}>
-                  <li>
-                    <Link to={`/tosca?_id="${p.id}"`}>{p.id}</Link>
-                  </li>
-                </div>
+                <li key={p.id}>
+                  <Link to={`/tosca?_id="${p.id}"`}>{p.id}</Link>
+                </li>
               ))
             : null}
         </Fragment>

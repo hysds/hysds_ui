@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { connect } from "react-redux"; // redux
-import { retrieveData } from "../../redux/actions";
+import { clickDatasetId, retrieveData } from "../../redux/actions";
 
 import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
 import ToscaDataViewer from "../ToscaDataViewer";
@@ -40,7 +40,11 @@ class ResultsList extends React.Component {
   // callback function to handle the results from ES
   resultsListHandler = (res) => (
     <div key={`${res._index}-${res._id}`}>
-      <ToscaDataViewer res={res} darkMode={this.props.darkMode} />
+      <ToscaDataViewer
+        res={res}
+        darkMode={this.props.darkMode}
+        clickDatasetId={this.props.clickDatasetId}
+      />
     </div>
   );
 
@@ -160,6 +164,7 @@ const mapStateToProps = (state) => ({
 
 // Redux actions
 const mapDispatchToProps = (dispatch) => ({
+  clickDatasetId: (_id) => dispatch(clickDatasetId(_id)),
   retrieveData: (data) => dispatch(retrieveData(data)),
 });
 

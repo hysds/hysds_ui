@@ -36,7 +36,12 @@ const ToscaDataViewer = (props) => {
 
   return (
     <div key={`${res._index}-${res._id}`} className="tosca-data-viewer">
-      <div>id: {res._id}</div>
+      <a
+        className="tosca-id-link"
+        onClick={() => props.clickDatasetId(res._id)}
+      >
+        id: {res._id}
+      </a>
       {res["@timestamp"] ? (
         <div>ingest timestamp: {res["@timestamp"]}</div>
       ) : null}

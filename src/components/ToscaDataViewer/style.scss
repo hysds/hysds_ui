@@ -27,10 +27,6 @@
       &:hover {
         text-decoration: none;
       }
-
-      &:visited {
-        color: #551a8b;
-      }
     }
 
     &.tosca-browse-link {
@@ -55,5 +51,23 @@
 
   .tosca-metadata-preview {
     background-color: $dark-theme-alt !important;
+  }
+
+  a {
+    &.tosca-metadata-link {
+      &:visited {
+        color: $dark-theme-color;
+      }
+    }
+  }
+}
+
+.__theme-light {
+  a {
+    &.tosca-metadata-link {
+      &:visited {
+        color: #551a8b;
+      }
+    }
   }
 }

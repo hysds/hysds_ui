@@ -181,7 +181,7 @@ const UserRulesTable = (props) => {
 
   const _handleExpanded = (rows, i) => setExpanded(rows);
   const _handlePageChange = () => setExpanded({});
-  const _handlePageSizeChange = (e) => setExpanded({});
+  const _handlePageSize = (e) => setExpanded({});
   const _handleSortedChange = () => setExpanded({});
 
   const _renderSubComponent = (data) => {
@@ -241,7 +241,7 @@ const UserRulesTable = (props) => {
       expanded={expanded}
       onExpandedChange={_handleExpanded}
       onPageChange={_handlePageChange}
-      onPageSizeChange={_handlePageSizeChange}
+      onPageSizeChange={_handlePageSize}
       onSortedChange={_handleSortedChange}
       {...props}
     />

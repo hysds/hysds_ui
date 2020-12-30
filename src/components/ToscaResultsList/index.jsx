@@ -53,17 +53,17 @@ class ResultsList extends React.Component {
     localStorage.setItem(TABLE_VIEW_STORE, !this.state.tableView);
   };
 
-  _handlePageSizeChange = (e) => {
+  _handlePageSize = (e) => {
     this.setState({ pageSize: parseInt(e.target.value) });
     localStorage.setItem(PAGE_SIZE_STORE, e.target.value);
   };
 
-  _handleSortColumnChange = (e) => {
+  _handleSortColumn = (e) => {
     this.setState({ sortColumn: e.target.value });
     localStorage.setItem(SORT_FIELD_STORE, e.target.value);
   };
 
-  _handleSortDirectionChange = (e) => {
+  _handleSortDirection = (e) => {
     this.setState({ sortOrder: e.target.value });
     localStorage.setItem(SORT_DIRECTION_STORE, e.target.value);
   };
@@ -110,17 +110,17 @@ class ResultsList extends React.Component {
           <SortOptions
             label="Sort By: "
             value={sortColumn}
-            onChange={this._handleSortColumnChange}
+            onChange={this._handleSortColumn}
             options={SORT_OPTIONS}
           />
           <SortDirection
             value={sortOrder}
-            onChange={this._handleSortDirectionChange}
+            onChange={this._handleSortDirection}
           />
           <PageSizeOptions
             label="Page Size: "
             value={pageSize}
-            onChange={this._handlePageSizeChange}
+            onChange={this._handlePageSize}
           />
         </div>
 

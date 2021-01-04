@@ -45,9 +45,6 @@ const ToscaDataViewer = (props) => {
       {res["@timestamp"] ? (
         <div>ingest timestamp: {res["@timestamp"]}</div>
       ) : null}
-      {res.location && res.location.coordinates ? (
-        <Button size="small" label="Query Region" onClick={clickQueryRegion} />
-      ) : null}
       <UserTags
         tags={userTags}
         endpoint={endpoint}
@@ -70,6 +67,9 @@ const ToscaDataViewer = (props) => {
       >
         Full Metadata
       </Link>
+      {res.location && res.location.coordinates ? (
+        <Button size="small" label="Query Region" onClick={clickQueryRegion} />
+      ) : null}
       {viewData ? (
         <div className="tosca-metadata-preview">
           <ReactJson

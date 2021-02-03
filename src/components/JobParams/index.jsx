@@ -100,6 +100,7 @@ const JobParams = (props) => {
             </section>
           );
         }
+        case "region":
         case "object":
         case "textarea": {
           let className = "params-textarea";

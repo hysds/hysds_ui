@@ -140,6 +140,19 @@ exports.buildJobParams = (paramsList, inputParams) => {
 };
 
 exports.validateSubmission = (props) => {
+  let { tags, jobSpec, queue, priority } = props;
+  if (
+    !tags ||
+    !jobSpec ||
+    priority === "" ||
+    priority === undefined ||
+    !queue
+  )
+    return false;
+  return true;
+};
+
+exports.validateUserRule = (props) => {
   let { validQuery, jobSpec, ruleName, queue, priority } = props;
   if (
     !validQuery ||

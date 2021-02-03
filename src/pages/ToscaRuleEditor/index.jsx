@@ -39,7 +39,7 @@ import {
   getUserRulesTags,
 } from "../../redux/actions/tosca";
 
-import { buildJobParams, validateSubmission } from "../../utils";
+import { buildJobParams, validateUserRule } from "../../utils";
 import { GRQ_REST_API_V1 } from "../../config";
 
 import "./style.scss";
@@ -139,7 +139,7 @@ class ToscaRuleEditor extends React.Component {
 
     const hysdsioLabel =
       this.props.paramsList.length > 0 ? <h2>{this.props.hysdsio}</h2> : null;
-    const validSubmission = validateSubmission(this.props);
+    const validSubmission = validateUserRule(this.props);
 
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 

@@ -85,15 +85,24 @@ const filterUserRules = (rules, string, tag) => {
   if (string) {
     rulesFiltered = rules.filter((value) => {
       return (
-        value.rule_name.toLowerCase().includes(string.toLowerCase()) ||
-        value.job_spec.toLowerCase().includes(string.toLowerCase()) ||
-        value.queue.toLowerCase().includes(string.toLowerCase()) ||
-        value.query_string.toLowerCase().includes(string.toLowerCase()) ||
-        value.kwargs.toLowerCase().includes(string.toLowerCase()) ||
-        value.job_type.toLowerCase().includes(string.toLowerCase()) ||
-        value.username.toLowerCase().includes(string.toLowerCase()) ||
-        value.modified_time.toLowerCase().includes(string.toLowerCase()) ||
-        value.creation_time.toLowerCase().includes(string.toLowerCase())
+        (value.rule_name &&
+          value.rule_name.toLowerCase().includes(string.toLowerCase())) ||
+        (value.job_spec &&
+          value.job_spec.toLowerCase().includes(string.toLowerCase())) ||
+        (value.queue &&
+          value.queue.toLowerCase().includes(string.toLowerCase())) ||
+        (value.query_string &&
+          value.query_string.toLowerCase().includes(string.toLowerCase())) ||
+        (value.kwargs &&
+          value.kwargs.toLowerCase().includes(string.toLowerCase())) ||
+        (value.job_type &&
+          value.job_type.toLowerCase().includes(string.toLowerCase())) ||
+        (value.username &&
+          value.username.toLowerCase().includes(string.toLowerCase())) ||
+        (value.modified_time &&
+          value.modified_time.toLowerCase().includes(string.toLowerCase())) ||
+        (value.creation_time &&
+          value.creation_time.toLowerCase().includes(string.toLowerCase()))
       );
     });
   }

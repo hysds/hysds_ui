@@ -39,7 +39,7 @@ import {
   getUserRulesTags,
 } from "../../redux/actions/figaro";
 
-import { sanitizeJobParams } from "../../utils";
+import { buildJobParams, validateSubmission } from "../../utils";
 import { MOZART_REST_API_V1 } from "../../config";
 
 import "./style.scss";
@@ -52,7 +52,7 @@ class FigaroRuleEditor extends React.Component {
       submitSuccess: 0,
       submitFailed: 0,
       failureReason: "",
-      editMode: props.match.params.rule ? true : false, // using the same component for creating new rules and editing existing rules
+      editMode: props.match.params.rule ? true : false,
     };
   }
 
@@ -66,33 +66,23 @@ class FigaroRuleEditor extends React.Component {
     if (this.props.tags.length === 0) this.props.getUserRulesTags();
   }
 
-  _validateSubmission = () => {
-    let {
-      validQuery,
-      jobSpec,
-      ruleName,
-      queue,
-      priority,
-      params,
-      paramsList,
-    } = this.props;
-
-    let validSubmission = true;
-    if (!validQuery || !ruleName || !jobSpec || !priority || !queue)
-      return false;
-
-    paramsList.map((param) => {
-      const paramName = param.name;
-      if (!(param.optional === true) && !params[paramName])
-        validSubmission = false;
-    });
-    return validSubmission;
-  };
-
   _handleUserRuleSubmit = () => {
+    let { paramsList, params } = this.props;
     const ruleId = this.props.match.params.rule;
 
-    const newParams = sanitizeJobParams(this.props.params);
+    let newParams = {};
+    try {
+      newParams = buildJobParams(paramsList, params);
+    } catch (err) {
+      this.setState({
+        submitInProgress: 0,
+        submitFailed: 1,
+        failureReason: err,
+      });
+      setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
+      return;
+    }
+
     const data = {
       id: ruleId,
       rule_name: this.props.ruleName,
@@ -113,7 +103,6 @@ class FigaroRuleEditor extends React.Component {
     const endpoint = `${MOZART_REST_API_V1}/user-rules`;
     const headers = { "Content-Type": "application/json" };
     const method = this.state.editMode ? "PUT" : "POST";
-
     fetch(endpoint, {
       headers,
       method,
@@ -150,7 +139,7 @@ class FigaroRuleEditor extends React.Component {
 
     const hysdsioLabel =
       this.props.paramsList.length > 0 ? <h2>{this.props.hysdsio}</h2> : null;
-    const validSubmission = this._validateSubmission();
+    const validSubmission = validateSubmission(this.props);
 
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 

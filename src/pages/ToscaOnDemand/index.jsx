@@ -33,7 +33,7 @@ import {
   editDataCount,
 } from "../../redux/actions/tosca";
 
-import { buildJobParams } from "../../utils";
+import { buildJobParams, validateSubmission } from "../../utils";
 import { GRQ_REST_API_V1 } from "../../config";
 
 import "./style.scss";
@@ -45,6 +45,7 @@ class ToscaOnDemand extends React.Component {
       submitInProgress: 0,
       submitSuccess: 0,
       submitFailed: 0,
+      failureReason: "",
     };
   }
 
@@ -57,20 +58,6 @@ class ToscaOnDemand extends React.Component {
     }
   }
 
-  _validateSubmission = () => {
-    let { jobSpec, tags, queue, priority } = this.props;
-    let validSubmission = true;
-    if (
-      !tags ||
-      !jobSpec ||
-      priority === "" ||
-      priority === undefined ||
-      !queue
-    )
-      return false;
-    return validSubmission;
-  };
-
   _checkQueryDataCount = () => this.props.editDataCount(this.props.query);
 
   _handleJobSubmit = () => {
@@ -80,8 +67,11 @@ class ToscaOnDemand extends React.Component {
     try {
       newParams = buildJobParams(paramsList, params);
     } catch (err) {
-      alert(err);
-      this.setState({ submitInProgress: 0, submitFailed: 1 });
+      this.setState({
+        submitInProgress: 0,
+        submitFailed: 1,
+        failureReason: err,
+      });
       setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
       return;
     }
@@ -147,7 +137,7 @@ class ToscaOnDemand extends React.Component {
       </div>
     ) : null;
 
-    const validSubmission = this._validateSubmission();
+    const validSubmission = validateSubmission(this.props);
 
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
@@ -214,9 +204,9 @@ class ToscaOnDemand extends React.Component {
                   paramsList={paramsList}
                   params={params}
                 />
-                {this.props.jobSpec ? <Border /> : null}
                 {this.props.jobSpec ? (
                   <Fragment>
+                    <Border />
                     <FormInput
                       label="Soft Time Limit"
                       value={this.props.softTimeLimit}
@@ -278,6 +268,7 @@ class ToscaOnDemand extends React.Component {
           label="Job Submission Failed"
           visible={submitFailed}
           status="failed"
+          reason={this.state.failureReason}
         />
       </div>
     );

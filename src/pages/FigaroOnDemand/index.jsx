@@ -33,7 +33,7 @@ import {
   editDataCount,
 } from "../../redux/actions/figaro";
 
-import { sanitizeJobParams } from "../../utils";
+import { buildJobParams } from "../../utils";
 import { MOZART_REST_API_V1 } from "../../config";
 
 import "./style.scss";
@@ -58,27 +58,34 @@ class FigaroOnDemand extends React.Component {
   }
 
   _validateSubmission = () => {
-    let { jobSpec, tags, queue, priority, params } = this.props;
-    const { paramsList } = this.props;
-
+    let { jobSpec, tags, queue, priority } = this.props;
     let validSubmission = true;
-    if (!tags || !jobSpec || !priority || !queue) return false;
-
-    paramsList.map((param) => {
-      const paramName = param.name;
-      if (!(param.optional === true) && !params[paramName])
-        validSubmission = false;
-    });
+    if (
+      !tags ||
+      !jobSpec ||
+      priority === "" ||
+      priority === undefined ||
+      !queue
+    )
+      return false;
     return validSubmission;
   };
 
   _checkQueryDataCount = () => this.props.editDataCount(this.props.query);
 
   _handleJobSubmit = () => {
-    this.setState({ submitInProgress: 1 });
+    let { paramsList, params } = this.props;
 
-    const headers = { "Content-Type": "application/json" };
-    const newParams = sanitizeJobParams(this.props.params);
+    let newParams = {};
+    try {
+      newParams = buildJobParams(paramsList, params);
+    } catch (err) {
+      alert(err);
+      this.setState({ submitInProgress: 0, submitFailed: 1 });
+      setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
+      return;
+    }
+
     const data = {
       tags: this.props.tags,
       job_type: this.props.hysdsio,
@@ -96,7 +103,10 @@ class FigaroOnDemand extends React.Component {
 
     if (this.props.diskUsage) data.disk_usage = this.props.diskUsage;
 
+    const headers = { "Content-Type": "application/json" };
     const jobSubmitUrl = `${MOZART_REST_API_V1}/on-demand`;
+
+    this.setState({ submitInProgress: 1 });
     fetch(jobSubmitUrl, { method: "POST", headers, body: JSON.stringify(data) })
       .then((res) => res.json())
       .then((data) => {
@@ -127,8 +137,6 @@ class FigaroOnDemand extends React.Component {
     } = this.props;
     const { submitInProgress, submitSuccess, submitFailed } = this.state;
 
-    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
-
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
 
     const submissionTypeLabel = this.props.jobSpec ? (
@@ -140,6 +148,8 @@ class FigaroOnDemand extends React.Component {
     ) : null;
 
     const validSubmission = this._validateSubmission();
+
+    const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
     return (
       <div className="figaro-on-demand-page">

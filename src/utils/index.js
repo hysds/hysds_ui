@@ -18,10 +18,10 @@ exports.sanitizePriority = (level) => {
   level = parseInt(level);
   if (level) {
     if (level > 9) return 9;
-    else if (level < 1) return 1;
+    else if (level < 0) return 0;
     else return level;
   } else {
-    return 1;
+    return 0;
   }
 };
 
@@ -69,11 +69,6 @@ exports.clearUrlJobParams = () => {
 
 exports.editUrlJobParam = (key, value) => {
   const params = new URLSearchParams(location.search);
-
-  try {
-    if (typeof value === "object") value = JSON.stringify(value);
-  } catch (err) {}
-
   params.set(key, value);
   const newUrl = `${location.origin}${location.pathname}?${params.toString()}`;
   history.pushState({}, "", newUrl);
@@ -98,4 +93,60 @@ exports.editUrlDataCount = (count) => {
   params.set("total", count);
   const newUrl = `${location.origin}${location.pathname}?${params.toString()}`;
   history.pushState({}, "", newUrl);
+};
+
+exports.buildJobParams = (paramsList, inputParams) => {
+  /**
+   * @paramsList {Array} array of job parameters from hysds-ios
+   * @params {Object} JSON object of parameters
+   * @return {Object}
+   */
+  let jobParams = {};
+  for (let i = 0; i < paramsList.length; i++) {
+    let p = paramsList[i];
+    let { name, type, optional } = p;
+    let inputValue = inputParams[name];
+
+    if (inputValue === "" || inputValue === undefined || inputValue === null) {
+      if (optional === true) continue;
+      else {
+        throw `param: ${name} is required`;
+      }
+    }
+
+    switch (type) {
+      case "number": {
+        let val = parseFloat(inputValue);
+        if (val === NaN) {
+          throw `param: ${name} cannot parse to number`;
+        }
+        jobParams[name] = val;
+        break;
+      }
+      case "object": {
+        if (typeof inputValue === "string")
+          try {
+            let val = JSON.parse(inputValue);
+            jobParams[name] = val;
+          } catch (err) {
+            throw `param ${name}: ${err}`;
+          }
+        else jobParams[name] = inputValue;
+        break;
+      }
+      case "boolean": {
+        if (typeof inputValue === "boolean") {
+          let val = inputValue === true ? "true" : "false";
+          jobParams[name] = val;
+        } else {
+          jobParams[name] = inputValue;
+        }
+        break;
+      }
+      default: {
+        jobParams[name] = inputValue;
+      }
+    }
+  }
+  return jobParams;
 };

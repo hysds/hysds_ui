@@ -39,7 +39,7 @@ import {
   getUserRulesTags,
 } from "../../redux/actions/tosca";
 
-import { sanitizeJobParams } from "../../utils";
+import { buildJobParams } from "../../utils";
 import { GRQ_REST_API_V1 } from "../../config";
 
 import "./style.scss";
@@ -67,32 +67,39 @@ class ToscaRuleEditor extends React.Component {
   }
 
   _validateSubmission = () => {
-    let {
-      validQuery,
-      jobSpec,
-      ruleName,
-      queue,
-      priority,
-      params,
-      paramsList,
-    } = this.props;
+    let { validQuery, jobSpec, ruleName, queue, priority } = this.props;
 
     let validSubmission = true;
-    if (!validQuery || !ruleName || !jobSpec || !priority || !queue)
+    if (
+      !validQuery ||
+      !ruleName ||
+      !jobSpec ||
+      priority === "" ||
+      priority === undefined ||
+      !queue
+    )
       return false;
-
-    paramsList.map((param) => {
-      const paramName = param.name;
-      if (!(param.optional === true) && !params[paramName])
-        validSubmission = false;
-    });
     return validSubmission;
   };
 
   _handleUserRuleSubmit = () => {
+    let { paramsList, params } = this.props;
+
+    let newParams = {};
+    try {
+      newParams = buildJobParams(paramsList, params);
+    } catch (err) {
+      this.setState({
+        submitInProgress: 0,
+        submitFailed: 1,
+        failureReason: err,
+      });
+      setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
+      return;
+    }
+
     const ruleId = this.props.match.params.rule;
 
-    const newParams = sanitizeJobParams(this.props.params);
     const data = {
       id: ruleId,
       rule_name: this.props.ruleName,

@@ -16,16 +16,7 @@ const customSelectStyles = {
 const JobParams = (props) => {
   const _handleJobParamInputChange = (e) => {
     let { name, value } = e.target;
-    if (value) {
-      try {
-        let parsedValue = JSON.parse(value);
-        if (typeof parsedValue === "object") value = parsedValue;
-      } catch (err) {}
-    }
-    const payload = {
-      name,
-      value,
-    };
+    const payload = { name, value };
     props.editParams(payload);
   };
 
@@ -84,7 +75,33 @@ const JobParams = (props) => {
               </div>
             </section>
           );
-        case "textarea":
+        case "boolean": {
+          let options = [
+            { label: "true", value: true },
+            { label: "false", value: false },
+          ];
+          return (
+            <section className="params-dropdown-wrapper" key={paramName}>
+              <label className="job-params-label">{paramName}:</label>
+              <div className="react-select-wrapper">
+                <Select
+                  label={paramName}
+                  value={
+                    value != undefined
+                      ? { label: value.toString(), value: value || "" }
+                      : null
+                  }
+                  name={paramName}
+                  options={options}
+                  onChange={_handleJobParamDropdownChange}
+                  styles={param.optional ? null : customSelectStyles}
+                />
+              </div>
+            </section>
+          );
+        }
+        case "object":
+        case "textarea": {
           let className = "params-textarea";
           if (!param.optional && !value) className = `${className} required`;
 
@@ -99,6 +116,7 @@ const JobParams = (props) => {
               />
             </div>
           );
+        }
         default:
           return (
             <div className="tag-input-wrapper" key={paramName}>

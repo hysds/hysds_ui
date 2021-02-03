@@ -54,7 +54,7 @@ const initialState = {
   // form data
   query: urlParams.get("query") || null,
   validQuery: true,
-  priority: priority || null,
+  priority: priority || 0,
   jobList: [],
   jobLabel: null,
   jobSpec: urlParams.get("job_spec") || null,
@@ -150,7 +150,7 @@ const generalReducer = (state = initialState, action) => {
       const defaultParams = {};
       params.map((p) => {
         let name = p.name;
-        defaultParams[name] = state.params[name] || p.default || null; // THIS IS THE BUG
+        defaultParams[name] = state.params[name] || p.default || null;
       });
 
       return {

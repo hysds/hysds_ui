@@ -83,8 +83,8 @@ const UserRulesTable = (props) => {
         </select>
       ),
       filterMethod: (filter, row) => {
-        if (filter.value == -1) return row;
-        else if (filter.value == row.priority) return row;
+        if (filter.value === -1) return row;
+        else if (filter.value === row.priority) return row;
       },
     },
     {

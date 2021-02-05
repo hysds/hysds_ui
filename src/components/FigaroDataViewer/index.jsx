@@ -138,7 +138,7 @@ export const FigaroDataViewer = (props) => {
             className="figaro-staged-product-link"
             onClick={() => setViewProducts(!viewProducts)}
           >
-            {res.status == "job-completed"
+            {res.status === "job-completed"
               ? "View staged products"
               : "View triaged products"}
           </a>

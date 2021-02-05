@@ -8,10 +8,10 @@ import "./style.css";
 
 /**
  * generate react-select array objects of queue list:
- * ex. [{value: 0, label: 0}, {value: 1, label: 1}]
+ * ex. [{value: 0, label: 0}, ... , {value: 9, label: 9}]
  */
 const generatePriorityList = (n) =>
-  [...Array(n).keys()].slice(1).map((num) => ({ value: num, label: num }));
+  [...Array(n).keys()].map((num) => ({ value: num, label: num }));
 
 const customSelectStyles = {
   control: (base, value) => ({
@@ -37,8 +37,8 @@ const PriorityInput = (props) => {
           label="Priority"
           name="priority"
           value={{
-            label: priority || "",
-            value: priority || "",
+            label: priority,
+            value: priority.toString(),
           }}
           options={priorityList}
           onChange={_handleEditPriority}

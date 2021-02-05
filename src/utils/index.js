@@ -104,11 +104,6 @@ exports.buildJobParams = (paramsList, inputParams) => {
 
     switch (type) {
       case "number": {
-        // let val = parseFloat(inputValue);
-        // if (val === NaN) {
-        //   throw `param: ${name} cannot parse to number`;
-        // }
-        // jobParams[name] = val;
         const val =
           typeof inputValue === "number" ? inputValue.toString() : inputValue;
         jobParams[name] = val;

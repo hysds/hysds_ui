@@ -104,10 +104,8 @@ exports.buildJobParams = (paramsList, inputParams) => {
 
     switch (type) {
       case "number": {
-        let val = parseFloat(inputValue);
-        if (val === NaN) {
-          throw `param: ${name} cannot parse to number`;
-        }
+        const val =
+          typeof inputValue === "number" ? inputValue.toString() : inputValue;
         jobParams[name] = val;
         break;
       }
@@ -141,13 +139,7 @@ exports.buildJobParams = (paramsList, inputParams) => {
 
 exports.validateSubmission = (props) => {
   let { tags, jobSpec, queue, priority } = props;
-  if (
-    !tags ||
-    !jobSpec ||
-    priority === "" ||
-    priority === undefined ||
-    !queue
-  )
+  if (!tags || !jobSpec || priority === "" || priority === undefined || !queue)
     return false;
   return true;
 };

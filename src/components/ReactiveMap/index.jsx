@@ -79,9 +79,7 @@ let MapComponent = class extends React.Component {
           allowIntersection: false,
           shapeOptions: this.shapeAttr,
         },
-        rectangle: {
-          shapeOptions: this.shapeAttr,
-        },
+        rectangle: { shapeOptions: this.shapeAttr },
       },
     });
     this.map.addControl(this.drawControl);
@@ -96,10 +94,7 @@ let MapComponent = class extends React.Component {
     if (this.props.value) {
       let polygon = JSON.parse(this.props.value);
       const query = this._generateQuery(polygon);
-      this.props.setQuery({
-        query,
-        value: this.props.value,
-      });
+      this.props.setQuery({ query, value: this.props.value });
       this.setState({ value: this.props.value });
     }
   }
@@ -185,7 +180,6 @@ let MapComponent = class extends React.Component {
 
       const query = this._generateQuery(polygon);
       const polygonString = JSON.stringify(polygon);
-
       this.props.setQuery({ query, value: polygonString }); // querying elasticsearch
 
       this.props.bboxEdit(polygonString);
@@ -213,14 +207,10 @@ let MapComponent = class extends React.Component {
           this.sendEmptyQuery();
           return;
         }
-
         let polygon = JSON.parse(polygonString);
         const query = this._generateQuery(polygon);
+        this.props.setQuery({ query, value: polygonString });
 
-        this.props.setQuery({
-          query,
-          value: polygonString,
-        });
         this.setState({ value: polygonString });
         this.props.bboxEdit(polygonString);
       } catch (err) {
@@ -298,7 +288,7 @@ let MapComponent = class extends React.Component {
 
         const geoJson = {
           type: geoJsonType,
-          coordinates: coordinates,
+          coordinates,
         };
 
         let layer;
@@ -368,7 +358,7 @@ let MapComponent = class extends React.Component {
         <textarea
           className="map-coordinates-textbox"
           placeholder={textboxTooltip}
-          value={bboxText || this.props.value || ""} // if this.props.value is null, then blank?
+          value={bboxText || this.props.value || ""}
           onChange={this._polygonTextChange}
           onKeyPress={this._polygonTextInput}
         ></textarea>

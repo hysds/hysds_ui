@@ -75,6 +75,7 @@ const ToscaDataViewer = (props) => {
           <ReactJson
             src={res}
             displayDataTypes={false}
+            enableClipboard={false}
             theme={metadataTheme}
             style={{ backgroundColor }}
             displayObjectSize={false}

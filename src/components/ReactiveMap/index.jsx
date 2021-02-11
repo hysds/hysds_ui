@@ -313,10 +313,8 @@ let MapComponent = class extends React.Component {
             pointToLayer: (feature, latlng) => L.circleMarker(latlng, options),
           }).addTo(this.map);
         } else {
-          const options = {
-            fillOpacity: 0,
-            weight: 1.6,
-          };
+          const weight = geoJsonType.includes("LineString") ? 3.2 : 1.6;
+          const options = { fillOpacity: 0, weight };
           layer = L.geoJSON(geoJson, options).addTo(this.map);
         }
 

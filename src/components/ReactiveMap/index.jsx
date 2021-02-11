@@ -302,10 +302,18 @@ let MapComponent = class extends React.Component {
           layer = L.geoJSON(geoJson, {
             pointToLayer: (feature, latlng) => L.circleMarker(latlng, options),
           }).addTo(this.map);
+          layer.on("mouseover", () => layer.setStyle({ radius: 6 }));
+          layer.on("mouseout", () => layer.setStyle({ radius: 4 }));
         } else {
           const weight = geoJsonType.includes("LineString") ? 2.5 : 1.6;
           const options = { fillOpacity: 0, weight };
           layer = L.geoJSON(geoJson, options).addTo(this.map);
+          layer.on("mouseover", () =>
+            layer.setStyle({ weight: weight * 2, fillOpacity: 0.4 })
+          );
+          layer.on("mouseout", () =>
+            layer.setStyle({ weight, fillOpacity: 0 })
+          );
         }
 
         if (layer) {

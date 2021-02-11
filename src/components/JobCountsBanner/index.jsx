@@ -1,18 +1,19 @@
 import React, { Fragment } from "react";
+import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 
 import "./style.scss";
 
 const JobCount = (props) => {
-  const { title, count, link } = props;
+  let { title, count, className, ...rest } = props;
   const cleanCount = count ? count.toLocaleString() : 0;
 
-  const className = props.className
+  className = className
     ? `${props.className || ""} figaro-job-count`
     : "figaro-job-count";
 
   return (
-    <div className={className}>
+    <div className={className} {...rest}>
       {title || "Count"}
       <br />
       <span className="figaro-job-count-value">{cleanCount}</span>
@@ -21,7 +22,14 @@ const JobCount = (props) => {
 };
 
 const JobCountsBanner = (props) => {
+  let history = useHistory();
   const { dataCounts } = props;
+
+  const changeJobState = (status) =>
+    history.push({
+      search: `?status="${status}"`,
+    });
+
   return (
     <Fragment>
       <div className="figaro-job-count-banner">
@@ -29,37 +37,44 @@ const JobCountsBanner = (props) => {
         <JobCount
           title="Queued"
           count={dataCounts["job-queued"]}
-          className="job-count-queued"
+          className="job-count queued"
+          onClick={() => changeJobState("job-queued")}
         />
         <JobCount
           title="Started"
           count={dataCounts["job-started"]}
-          className="job-count-started"
+          className="job-count started"
+          onClick={() => changeJobState("job-started")}
         />
         <JobCount
           title="Completed"
           count={dataCounts["job-completed"]}
-          className="job-count-completed"
+          className="job-count completed"
+          onClick={() => changeJobState("job-completed")}
         />
         <JobCount
           title="Failed"
           count={dataCounts["job-failed"]}
-          className="job-count-failed"
+          className="job-count failed"
+          onClick={() => changeJobState("job-failed")}
         />
         <JobCount
           title="Revoked"
           count={dataCounts["job-revoked"]}
-          className="job-count-revoked"
+          className="job-count revoked"
+          onClick={() => changeJobState("job-revoked")}
         />
         <JobCount
           title="Deduped"
           count={dataCounts["job-deduped"]}
-          className="job-count-deduped"
+          className="job-count deduped"
+          onClick={() => changeJobState("job-deduped")}
         />
         <JobCount
           title="Offline"
           count={dataCounts["job-offline"]}
-          className="job-count-offline"
+          className="job-count offline"
+          onClick={() => changeJobState("job-offline")}
         />
       </div>
     </Fragment>

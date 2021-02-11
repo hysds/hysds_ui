@@ -15,39 +15,36 @@
   border-radius: 5px;
 }
 
-.job-count-completed {
-  background-color: $base-color !important;
-  color: #ffff !important;
-}
-
-.job-count-started {
-  background-color: $success-color !important;
-  color: #fff !important;
-}
-
-.job-count-queued {
-  background-color: #49afcd !important;
-  color: #fff !important;
-}
-
-.job-count-failed {
-  background-color: $fail-color !important;
-  color: #fff !important;
-}
-
-.job-count-revoked {
-  background-color: $warning-color !important;
-  color: #fff !important;
-}
-
-.job-count-deduped {
-  background-color: #dd33ff !important;
-  color: #fff !important;
-}
-
-.job-count-offline {
-  background-color: #363636 !important;
-  color: #ffff !important;
+.job-count {
+  cursor: pointer;
+  &.completed {
+    background-color: $base-color !important;
+    color: #ffff !important;
+  }
+  &.started {
+    background-color: $success-color !important;
+    color: #fff !important;
+  }
+  &.queued {
+    background-color: #49afcd !important;
+    color: #fff !important;
+  }
+  &.failed {
+    background-color: $fail-color !important;
+    color: #fff !important;
+  }
+  &.revoked {
+    background-color: $warning-color !important;
+    color: #fff !important;
+  }
+  &.deduped {
+    background-color: #dd33ff !important;
+    color: #fff !important;
+  }
+  &.offline {
+    background-color: #363636 !important;
+    color: #ffff !important;
+  }
 }
 
 .__theme-dark {

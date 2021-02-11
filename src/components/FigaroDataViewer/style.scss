@@ -2,7 +2,8 @@
 
 .figaro-data-component {
   padding: 15px;
-  margin: 20px;
+  margin: 20px auto;
+  max-width: 95rem;
   border-radius: 5px;
   border: 1px solid $light-theme-title;
   word-break: break-all;

@@ -33,7 +33,11 @@ const JobCountsBanner = (props) => {
   return (
     <Fragment>
       <div className="figaro-job-count-banner">
-        <JobCount title="Total" count={dataCounts.total} />
+        <JobCount
+          className="job-count total"
+          title="Total"
+          count={dataCounts.total}
+        />
         <JobCount
           title="Queued"
           count={dataCounts["job-queued"]}

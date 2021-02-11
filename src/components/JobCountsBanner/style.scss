@@ -17,46 +17,70 @@
 
 .job-count {
   cursor: pointer;
+  &:hover {
+    transition: background-color 0.2s;
+  }
   &.completed {
-    background-color: $base-color !important;
-    color: #ffff !important;
+    background-color: $base-color;
+    color: #ffff;
+    &:hover {
+      background-color: darken($color: $base-color, $amount: $hover-percent);
+    }
   }
   &.started {
-    background-color: $success-color !important;
-    color: #fff !important;
+    background-color: $success-color;
+    color: #fff;
+    &:hover {
+      background-color: darken($color: $success-color, $amount: $hover-percent);
+    }
   }
   &.queued {
-    background-color: #49afcd !important;
-    color: #fff !important;
+    background-color: #49afcd;
+    color: #fff;
+    &:hover {
+      background-color: darken($color: #49afcd, $amount: $hover-percent);
+    }
   }
   &.failed {
-    background-color: $fail-color !important;
-    color: #fff !important;
+    background-color: $fail-color;
+    color: #fff;
+    &:hover {
+      background-color: darken($color: $fail-color, $amount: $hover-percent);
+    }
   }
   &.revoked {
-    background-color: $warning-color !important;
-    color: #fff !important;
+    background-color: $warning-color;
+    color: #fff;
+    &:hover {
+      background-color: darken($color: $warning-color, $amount: $hover-percent);
+    }
   }
   &.deduped {
-    background-color: #dd33ff !important;
-    color: #fff !important;
+    background-color: #dd33ff;
+    color: #fff;
+    &:hover {
+      background-color: darken($color: #dd33ff, $amount: $hover-percent);
+    }
   }
   &.offline {
-    background-color: #363636 !important;
-    color: #ffff !important;
+    background-color: #363636;
+    color: #ffff;
+    &:hover {
+      background-color: darken($color: #363636, $amount: $hover-percent);
+    }
   }
 }
 
 .__theme-dark {
   .figaro-job-count {
-    background-color: $dark-theme-alt;
     color: $dark-theme-color;
   }
 }
 
 .__theme-light {
-  .figaro-job-count {
-    background-color: $light-theme-alt;
-    color: $light-theme-color;
+  .job-count {
+    &.total {
+      background-color: $light-theme-alt;
+    }
   }
 }

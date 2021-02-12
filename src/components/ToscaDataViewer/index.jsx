@@ -67,7 +67,9 @@ const ToscaDataViewer = (props) => {
       >
         Full Metadata
       </Link>
-      {res.location && res.location.coordinates ? (
+      {res.location &&
+      res.location.coordinates &&
+      (res.location.type === "polygon" || res.location.type === "Polygon") ? (
         <Button size="small" label="Query Region" onClick={clickQueryRegion} />
       ) : null}
       {viewData ? (
@@ -75,6 +77,7 @@ const ToscaDataViewer = (props) => {
           <ReactJson
             src={res}
             displayDataTypes={false}
+            enableClipboard={false}
             theme={metadataTheme}
             style={{ backgroundColor }}
             displayObjectSize={false}

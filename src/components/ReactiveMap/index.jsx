@@ -79,9 +79,7 @@ let MapComponent = class extends React.Component {
           allowIntersection: false,
           shapeOptions: this.shapeAttr,
         },
-        rectangle: {
-          shapeOptions: this.shapeAttr,
-        },
+        rectangle: { shapeOptions: this.shapeAttr },
       },
     });
     this.map.addControl(this.drawControl);
@@ -96,10 +94,7 @@ let MapComponent = class extends React.Component {
     if (this.props.value) {
       let polygon = JSON.parse(this.props.value);
       const query = this._generateQuery(polygon);
-      this.props.setQuery({
-        query,
-        value: this.props.value,
-      });
+      this.props.setQuery({ query, value: this.props.value });
       this.setState({ value: this.props.value });
     }
   }
@@ -185,7 +180,6 @@ let MapComponent = class extends React.Component {
 
       const query = this._generateQuery(polygon);
       const polygonString = JSON.stringify(polygon);
-
       this.props.setQuery({ query, value: polygonString }); // querying elasticsearch
 
       this.props.bboxEdit(polygonString);
@@ -213,14 +207,10 @@ let MapComponent = class extends React.Component {
           this.sendEmptyQuery();
           return;
         }
-
         let polygon = JSON.parse(polygonString);
         const query = this._generateQuery(polygon);
+        this.props.setQuery({ query, value: polygonString });
 
-        this.props.setQuery({
-          query,
-          value: polygonString,
-        });
         this.setState({ value: polygonString });
         this.props.bboxEdit(polygonString);
       } catch (err) {
@@ -231,23 +221,6 @@ let MapComponent = class extends React.Component {
 
   // utility function to handle the data
   _switchCoordinates = (polygon) => polygon.map((row) => [row[1], row[0]]);
-  _transformData = (data) =>
-    data.map((row) => {
-      let [coordinates, center] = [[], []]; // initializing to empty array
-      if (!!row.location && !!row.location.coordinates)
-        coordinates = this._switchCoordinates(row.location.coordinates[0]);
-      if (row.center)
-        center = [row.center.coordinates[1], row.center.coordinates[0]];
-
-      return {
-        _id: row._id,
-        _index: row._index,
-        key: `${row._index}/${row._id}`,
-        coordinates,
-        center,
-      };
-    });
-
   _validateRectangle = (coord) => {
     if (
       coord.length === 5 &&
@@ -276,29 +249,86 @@ let MapComponent = class extends React.Component {
 
   clickIdHandler = (_id) => this.props.clickDatasetId(_id); // send clicked _id to reducer
 
+  _mapGeoJsonType = (t) => {
+    const validTypes = [
+      "Polygon",
+      "MultiPolygon",
+      "Point",
+      "MultiPoint",
+      "LineString",
+      "MultiLineString",
+    ];
+    if (validTypes.indexOf(t) > -1) return t;
+
+    const tLower = t.toLowerCase();
+    if (tLower === "polygon") return "Polygon";
+    else if (tLower === "multipolygon") return "MultiPolygon";
+    else if (tLower === "point") return "Point";
+    else if (tLower === "multipoint") return "MultiPoint";
+    else if (tLower === "linestring") return "LineString";
+    else if (tLower === "multilinestring") return "MultiLineString";
+    else {
+      console.warn(`${t} type not supported`);
+      return null;
+    }
+  };
+
   _renderDatasets = () => {
     const { data } = this.props;
 
     if (this.layerGroup) {
       this.layerGroup.clearLayers(); // clearing all the previous datasets
-      this._transformData(data).map((row) => {
-        // parsing data and rendering datasets in the map
-        let poly = L.polygon(row.coordinates, {
-          fillOpacity: 0,
-          weight: 1.3,
-        });
-        const popup = (
-          <p
-            className="id-popup-link"
-            onClick={() => this.clickIdHandler(row._id)}
-          >
-            {row._id}
-          </p>
-        );
+      data.map((row) => {
+        if (!row.location) return;
+        const { type, coordinates } = row.location;
+        const geoJsonType = this._mapGeoJsonType(type);
 
-        let popupElement = document.createElement("div");
-        ReactDOM.render(popup, popupElement);
-        poly.bindPopup(popupElement).addTo(this.layerGroup).addTo(this.map);
+        if (!geoJsonType || !coordinates) return;
+        location.type = geoJsonType;
+
+        const geoJson = {
+          type: geoJsonType,
+          coordinates,
+        };
+
+        let layer;
+        if (geoJsonType.includes("Point")) {
+          const options = {
+            radius: 4,
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 1,
+          };
+          layer = L.geoJSON(geoJson, {
+            pointToLayer: (feature, latlng) => L.circleMarker(latlng, options),
+          }).addTo(this.map);
+          layer.on("mouseover", () => layer.setStyle({ radius: 6 }));
+          layer.on("mouseout", () => layer.setStyle({ radius: 4 }));
+        } else {
+          const weight = geoJsonType.includes("LineString") ? 2.5 : 1.6;
+          const options = { fillOpacity: 0, weight };
+          layer = L.geoJSON(geoJson, options).addTo(this.map);
+          layer.on("mouseover", () =>
+            layer.setStyle({ weight: weight * 2, fillOpacity: 0.4 })
+          );
+          layer.on("mouseout", () =>
+            layer.setStyle({ weight, fillOpacity: 0 })
+          );
+        }
+
+        if (layer) {
+          const popup = (
+            <p
+              className="id-popup-link"
+              onClick={() => this.clickIdHandler(row._id)}
+            >
+              {row._id}
+            </p>
+          );
+          let popupElement = document.createElement("div");
+          ReactDOM.render(popup, popupElement);
+          layer.bindPopup(popupElement).addTo(this.layerGroup).addTo(this.map);
+        }
       });
     }
   };
@@ -336,7 +366,7 @@ let MapComponent = class extends React.Component {
         <textarea
           className="map-coordinates-textbox"
           placeholder={textboxTooltip}
-          value={bboxText || this.props.value || ""} // if this.props.value is null, then blank?
+          value={bboxText || this.props.value || ""}
           onChange={this._polygonTextChange}
           onKeyPress={this._polygonTextInput}
         ></textarea>

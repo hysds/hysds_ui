@@ -54,6 +54,12 @@ exports.GRQ_TABLE_VIEW_DEFAULT = true;
 
 exports.FILTERS = [
   {
+    componentId: "dataset",
+    dataField: "dataset.keyword",
+    title: "Dataset",
+    type: "single",
+  },
+  {
     componentId: "dataset_type",
     dataField: "dataset_type.keyword",
     title: "Dataset Type",
@@ -111,6 +117,7 @@ exports.FILTERS = [
 
 exports.QUERY_LOGIC = {
   and: [
+    "dataset",
     "dataset_level",
     "dataset_type",
     "starttime",

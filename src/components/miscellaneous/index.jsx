@@ -40,3 +40,10 @@ export const Checkbox = (props) => (
     <input className="miscellaneous-checkbox" type="checkbox" {...props} />
   </Fragment>
 );
+
+export const LastUpdatedAtBanner = ({ time }) =>
+  time ? (
+    <div className="last-updated-banner">
+      <span>Last Updated: {time}</span>
+    </div>
+  ) : null;

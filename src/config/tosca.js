@@ -136,7 +136,7 @@ exports.GRQ_DISPLAY_COLUMNS = [
   {
     Header: "_id",
     accessor: "_id",
-    width: 350,
+    width: 500,
   },
   {
     Header: "ingest_timestamp",

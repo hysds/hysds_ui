@@ -62,3 +62,12 @@
   -o-transform: scale(1.5); /* Opera */
   transform: scale(1.5);
 }
+
+.last-updated-banner {
+  padding: 10px 0 0 0;
+  text-align: right;
+}
+
+.__theme-dark .last-updated-banner {
+  color: white;
+}

@@ -18,6 +18,7 @@ import HeaderBar, {
   HeaderLink,
   DropdownSources,
 } from "../../components/HeaderBar";
+import { LastUpdatedAtBanner } from "../../components/miscellaneous";
 
 import { LOCAL_DEV, MOZART_ES_URL, MOZART_ES_INDICES } from "../../config";
 import { FILTERS, QUERY_LOGIC } from "../../config/figaro";
@@ -32,6 +33,10 @@ class Figaro extends React.Component {
     this.mozart_es_url = LOCAL_DEV
       ? MOZART_ES_URL
       : `${window.origin}/${MOZART_ES_URL}`;
+
+    this.state = {
+      lastUpdatedAt: null,
+    };
   }
 
   componentDidMount() {
@@ -39,6 +44,11 @@ class Figaro extends React.Component {
   }
 
   _handleTransformRequest = (e) => {
+    let d = new Date();
+    this.setState({
+      lastUpdatedAt: `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`,
+    });
+
     const body = e.body.split("\n");
     let [preference, query] = body;
     query = JSON.parse(query);
@@ -77,6 +87,7 @@ class Figaro extends React.Component {
             </div>
 
             <div className="figaro-body" ref={this.pageRef}>
+              <LastUpdatedAtBanner time={this.state.lastUpdatedAt} />
               <JobCountsBanner />
 
               <div className="top-bar-wrapper">

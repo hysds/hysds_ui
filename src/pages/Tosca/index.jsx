@@ -19,6 +19,7 @@ import HeaderBar, {
   HeaderLink,
   DropdownSources,
 } from "../../components/HeaderBar";
+import { LastUpdatedAtBanner } from "../../components/miscellaneous";
 
 import { LOCAL_DEV, GRQ_ES_URL, GRQ_ES_INDICES } from "../../config";
 import {
@@ -39,6 +40,7 @@ class Tosca extends React.Component {
     super(props);
     this.state = {
       tableView: GRQ_TABLE_VIEW_DEFAULT, // boolean
+      lastUpdatedAt: null,
     };
 
     this.grq_es_url = LOCAL_DEV ? GRQ_ES_URL : `${window.origin}/${GRQ_ES_URL}`;
@@ -54,6 +56,11 @@ class Tosca extends React.Component {
   }
 
   _handleTransformRequest = (e) => {
+    let d = new Date();
+    this.setState({
+      lastUpdatedAt: `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`,
+    });
+
     const body = e.body.split("\n");
     let [preference, query] = body;
     query = JSON.parse(query);
@@ -103,6 +110,7 @@ class Tosca extends React.Component {
             </div>
 
             <div className="tosca-body" ref={this.pageRef}>
+              <LastUpdatedAtBanner time={this.state.lastUpdatedAt} />
               <div className="top-bar-wrapper">
                 <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
                 <SearchQuery

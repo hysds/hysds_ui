@@ -38,12 +38,6 @@ exports.FILTERS = [
     type: "date",
   },
   {
-    componentId: "short_error",
-    dataField: "short_error.keyword",
-    title: "Short Error",
-    type: "single",
-  },
-  {
     componentId: "job_type",
     dataField: "job.type",
     title: "Job Type",
@@ -53,6 +47,12 @@ exports.FILTERS = [
     componentId: "queue",
     dataField: "job.job_info.job_queue",
     title: "Job Queue",
+    type: "single",
+  },
+  {
+    componentId: "username",
+    dataField: "job.username",
+    title: "Username",
     type: "single",
   },
   {
@@ -67,6 +67,12 @@ exports.FILTERS = [
     title: "Priority",
     type: "multi",
     sortBy: "desc",
+  },
+  {
+    componentId: "short_error",
+    dataField: "short_error.keyword",
+    title: "Short Error",
+    type: "single",
   },
   {
     componentId: "container_image",
@@ -100,6 +106,7 @@ exports.QUERY_LOGIC = {
     "resource",
     "job_type",
     "queue",
+    "username",
     "node",
     "priority",
     "container_image",

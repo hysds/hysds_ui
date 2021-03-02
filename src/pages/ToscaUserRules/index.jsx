@@ -53,6 +53,7 @@ const ToscaUserRules = class extends React.Component {
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
     const searchDisabled = userRules.length === 0 && !this.state.globalSearch;
     const tagFilters = [{ value: null, label: "-" }, ...this.props.tags];
+    const ruleCount = userRules.length;
 
     return (
       <div className="tosca-user-rules">
@@ -64,7 +65,7 @@ const ToscaUserRules = class extends React.Component {
 
         <div className="user-rules-body">
           <div style={{ textAlign: "center" }}>
-            <h1>GRQ - User Rules</h1>
+            <h1>GRQ - User Rules {ruleCount > 0 ? `(${ruleCount})` : null}</h1>
           </div>
           <div className="user-rules-options-wrapper">
             <input

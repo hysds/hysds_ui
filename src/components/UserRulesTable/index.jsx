@@ -255,7 +255,6 @@ UserRulesTable.propTypes = {
   deleteUserRule: PropTypes.func.isRequired,
 };
 
-// Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { toggleUserRule, deleteUserRule } = ownProps;
   return {

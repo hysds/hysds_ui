@@ -4,7 +4,6 @@
 }
 
 .params-textarea {
-  /* width: 90%; */
   flex: 1;
   resize: vertical;
   outline: none;
@@ -39,4 +38,18 @@
 .params-dropdown-wrapper {
   flex: 1;
   margin-bottom: 20px;
+}
+
+.params-input-wrapper {
+  display: flex;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.params-input-label {
+  display: flex;
+  margin-top: 10px;
+  margin-right: 10px;
+  min-width: 73px;
 }

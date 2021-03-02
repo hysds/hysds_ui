@@ -52,9 +52,13 @@ const initialState = {
   jobCounts: {},
 
   // form data
-  query: urlParams.get("query") || null,
+  query: urlParams.get("query") || "",
   validQuery: true,
   priority: priority || 0,
+  priorityList: [...Array(10).keys()].map((num) => ({
+    value: num,
+    label: num,
+  })),
   jobList: [],
   jobLabel: null,
   jobSpec: urlParams.get("job_spec") || null,
@@ -64,11 +68,11 @@ const initialState = {
   paramsList: [],
   params: defaultUrlJobParams || {},
   submissionType: null,
-  tags: urlParams.get("tags") || null,
+  tags: urlParams.get("tags") || "",
   softTimeLimit: "",
   timeLimit: "",
   diskUsage: "",
-  ruleName: null,
+  ruleName: "",
 
   // user rule filters
   userRules: [], // store all the rules client side

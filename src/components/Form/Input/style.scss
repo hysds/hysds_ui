@@ -1,27 +1,18 @@
-.user-rule-input-wrapper {
-  /* display: table; */
+.form-input-wrapper {
   display: flex;
   width: 100%;
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
-.user-rule-input-label {
+.form-input-label {
   display: flex;
   margin-top: 10px;
   margin-right: 10px;
   min-width: 73px;
 }
 
-input:invalid {
-  border: 2px solid red;
-}
-
-.on-demand-submitter-wrapper {
-  margin: 20px;
-}
-
-.user-rule-input {
+.form-input {
   flex: 1;
   box-sizing: border-box;
   margin-left: 2px;
@@ -37,9 +28,17 @@ input:invalid {
   padding-left: 10px;
   width: 100%;
   display: table-cell;
+
+  &:focus {
+    border-color: #1c7ce4;
+    border-width: 2px;
+  }
+
+  &:invalid {
+    border: 2px solid red;
+  }
 }
 
-.user-rule-input:focus {
-  border-color: #1c7ce4;
-  border-width: 2px;
+input.form-input:invalid {
+  border: 2px solid red;
 }

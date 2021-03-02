@@ -38,7 +38,7 @@
 }
 
 input:invalid {
-  border: 2px solid red;
+  /* border: 2px solid red; */
 }
 
 .on-demand-submitter-wrapper {

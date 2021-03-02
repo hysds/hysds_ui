@@ -88,7 +88,6 @@ const ToscaDataViewer = (props) => {
   );
 };
 
-// Redux actions
 const mapDispatchToProps = (dispatch) => ({
   clickQueryRegion: (bbox) => dispatch(clickQueryRegion(bbox)),
 });

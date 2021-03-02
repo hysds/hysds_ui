@@ -42,8 +42,8 @@ const JobParams = (props) => {
       switch (param.type) {
         case "number":
           return (
-            <div className="tag-input-wrapper" key={paramName}>
-              <label className="tag-input-label">{paramName}:</label>
+            <div className="params-input-wrapper" key={paramName}>
+              <label className="params-input-label">{paramName}:</label>
               <input
                 type="number"
                 step="1"
@@ -120,8 +120,8 @@ const JobParams = (props) => {
         }
         default:
           return (
-            <div className="tag-input-wrapper" key={paramName}>
-              <div className="tag-input-label">{paramName}:</div>
+            <div className="params-input-wrapper" key={paramName}>
+              <div className="params-input-label">{paramName}:</div>
               <input
                 type="text"
                 value={value || ""}
@@ -149,7 +149,6 @@ JobParams.defaultProps = {
   url: false,
 };
 
-// Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { url } = ownProps;
   return {

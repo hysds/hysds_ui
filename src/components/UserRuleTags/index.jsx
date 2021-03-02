@@ -47,7 +47,6 @@ UserRuleTags.defaultProps = {
   tags: [],
 };
 
-// Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { changeUserRuleTag } = ownProps;
   return {

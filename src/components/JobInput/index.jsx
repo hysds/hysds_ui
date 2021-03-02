@@ -54,7 +54,6 @@ JobInput.defaultProps = {
   url: false,
 };
 
-// Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { changeJobType, getParamsList, getQueueList, url } = ownProps;
   return {

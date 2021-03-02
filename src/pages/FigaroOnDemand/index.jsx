@@ -6,10 +6,8 @@ import JobInput from "../../components/JobInput";
 import JobParams from "../../components/JobParams";
 import { Border, SubmitStatusBar } from "../../components/miscellaneous";
 
-import TagInput from "../../components/TagInput";
-import QueueInput from "../../components/QueueInput";
-import PriorityInput from "../../components/PriorityInput";
-import FormInput from "../../components/FormInput";
+import Input from "../../components/Form/Input";
+import Dropdown from "../../components/Form/Dropdown";
 
 import { Button } from "../../components/Buttons";
 import HeaderBar from "../../components/HeaderBar";
@@ -152,11 +150,7 @@ class FigaroOnDemand extends React.Component {
         <div className={classTheme}>
           <div className="figaro-on-demand">
             <div className="split on-demand-left">
-              <QueryEditor
-                url={true} // update query params in url
-                query={query}
-                editQuery={editQuery} // redux action
-              />
+              <QueryEditor url={true} query={query} editQuery={editQuery} />
             </div>
 
             <div className="split on-demand-right">
@@ -166,15 +160,17 @@ class FigaroOnDemand extends React.Component {
                   Total Records: {this.props.dataCount || "N/A"}
                 </div>
 
-                <TagInput
+                <Input
+                  label="Tag"
+                  value={this.props.tags}
+                  editValue={editTags}
+                  placeholder="Required"
                   url={true}
-                  tags={this.props.tags}
-                  editTags={editTags}
+                  required
                 />
-
                 <div className="on-demand-select-wrapper">
                   <JobInput
-                    url={true} // update query params in url
+                    url={true}
                     changeJobType={changeJobType} // all redux actions
                     getParamsList={getParamsList}
                     getQueueList={getQueueList}
@@ -184,23 +180,27 @@ class FigaroOnDemand extends React.Component {
                   />
                 </div>
                 <div className="on-demand-select-wrapper">
-                  <QueueInput
-                    queue={this.props.queue}
-                    queueList={this.props.queueList}
-                    changeQueue={changeQueue}
+                  <Dropdown
+                    label="Queue"
+                    value={this.props.queue}
+                    options={this.props.queueList}
+                    editValue={changeQueue}
+                    required
                   />
                 </div>
                 <div className="on-demand-select-wrapper">
-                  <PriorityInput
+                  <Dropdown
+                    label="Priority"
                     url={true}
-                    priority={this.props.priority}
-                    editJobPriority={editJobPriority}
+                    value={this.props.priority}
+                    options={this.props.priorityList}
+                    editValue={editJobPriority}
                   />
                 </div>
                 {paramsList.length > 0 ? <Border /> : null}
                 {hysdsioLabel}
                 <JobParams
-                  url={true} // update query params in url
+                  url={true}
                   editParams={editParams}
                   paramsList={paramsList}
                   params={params}
@@ -208,25 +208,23 @@ class FigaroOnDemand extends React.Component {
                 {this.props.jobSpec ? (
                   <Fragment>
                     <Border />
-                    <FormInput
+                    <Input
                       label="Soft Time Limit"
                       value={this.props.softTimeLimit}
-                      url={true}
                       editValue={editSoftTimeLimit}
                       type="number"
                       min={1}
                       placeholder="(seconds)"
                     />
-                    <FormInput
+                    <Input
                       label="Time Limit"
                       value={this.props.timeLimit}
-                      url={true}
                       editValue={editTimeLimit}
                       type="number"
                       min={1}
                       placeholder="(seconds)"
                     />
-                    <FormInput
+                    <Input
                       label="Disk Usage"
                       value={this.props.diskUsage}
                       editValue={editDiskUsage}
@@ -288,6 +286,7 @@ const mapStateToProps = (state) => ({
   queueList: state.generalReducer.queueList,
   queue: state.generalReducer.queue,
   priority: state.generalReducer.priority,
+  priorityList: state.generalReducer.priorityList,
   paramsList: state.generalReducer.paramsList,
   params: state.generalReducer.params,
   tags: state.generalReducer.tags,

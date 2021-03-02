@@ -115,7 +115,6 @@ const mapStateToProps = (state) => ({
   tags: state.generalReducer.userRulesTags,
 });
 
-// Redux actions
 const mapDispatchToProps = (dispatch) => ({
   getUserRules: () => dispatch(getUserRules()),
   getUserRulesTags: () => dispatch(getUserRulesTags()),

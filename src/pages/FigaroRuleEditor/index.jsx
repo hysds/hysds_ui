@@ -7,11 +7,9 @@ import { connect } from "react-redux";
 import QueryEditor from "../../components/QueryEditor";
 import JobInput from "../../components/JobInput";
 import JobParams from "../../components/JobParams";
-import UserRuleNameInput from "../../components/UserRuleNameInput";
-import QueueInput from "../../components/QueueInput";
-import PriorityInput from "../../components/PriorityInput";
 import UserRuleTags from "../../components/UserRuleTags";
-import FormInput from "../../components/FormInput";
+import Input from "../../components/Form/Input";
+import Dropdown from "../../components/Form/Dropdown";
 
 import { Button, ButtonLink } from "../../components/Buttons";
 import { Border, SubmitStatusBar } from "../../components/miscellaneous";
@@ -163,9 +161,11 @@ class FigaroRuleEditor extends React.Component {
           <div className="split user-rule-editor-right">
             <div className="user-rule-editor-right-wrapper">
               <h1>Mozart - User Rule Editor</h1>
-              <UserRuleNameInput
-                editRuleName={editRuleName}
-                ruleName={this.props.ruleName}
+              <Input
+                label="Rule Name"
+                value={this.props.ruleName}
+                editValue={editRuleName}
+                placeholder="Required"
               />
               <UserRuleTags
                 value={this.props.tag}
@@ -180,14 +180,18 @@ class FigaroRuleEditor extends React.Component {
                 jobSpec={this.props.jobSpec}
                 jobLabel={this.props.jobLabel}
               />
-              <QueueInput
-                queue={this.props.queue}
-                queueList={this.props.queueList}
-                changeQueue={changeQueue}
+              <Dropdown
+                label="Queue"
+                value={this.props.queue}
+                options={this.props.queueList}
+                editValue={changeQueue}
+                required
               />
-              <PriorityInput
-                priority={this.props.priority}
-                editJobPriority={editJobPriority}
+              <Dropdown
+                label="Priority"
+                value={this.props.priority}
+                options={this.props.priorityList}
+                editValue={editJobPriority}
               />
               {this.props.paramsList.length > 0 ? <Border /> : null}
               {hysdsioLabel}
@@ -200,7 +204,7 @@ class FigaroRuleEditor extends React.Component {
               {this.props.jobSpec ? <Border /> : null}
               {this.props.jobSpec ? (
                 <Fragment>
-                  <FormInput
+                  <Input
                     label="Soft Time Limit"
                     value={this.props.softTimeLimit}
                     url={true}
@@ -209,7 +213,7 @@ class FigaroRuleEditor extends React.Component {
                     min={1}
                     placeholder="(seconds)"
                   />
-                  <FormInput
+                  <Input
                     label="Time Limit"
                     value={this.props.timeLimit}
                     url={true}
@@ -218,7 +222,7 @@ class FigaroRuleEditor extends React.Component {
                     min={1}
                     placeholder="(seconds)"
                   />
-                  <FormInput
+                  <Input
                     label="Disk Usage"
                     value={this.props.diskUsage}
                     editValue={editDiskUsage}
@@ -274,6 +278,7 @@ const mapStateToProps = (state) => ({
   queueList: state.generalReducer.queueList,
   queue: state.generalReducer.queue,
   priority: state.generalReducer.priority,
+  priorityList: state.generalReducer.priorityList,
   paramsList: state.generalReducer.paramsList,
   params: state.generalReducer.params,
   ruleName: state.generalReducer.ruleName,
@@ -284,7 +289,6 @@ const mapStateToProps = (state) => ({
   diskUsage: state.generalReducer.diskUsage,
 });
 
-// Redux actions
 const mapDispatchToProps = (dispatch) => ({
   getUserRule: (id) => dispatch(getUserRule(id)),
   getOnDemandJobs: () => dispatch(getOnDemandJobs()),

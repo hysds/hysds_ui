@@ -34,9 +34,9 @@ InputConnect.defaultProps = {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { editValue } = ownProps;
+  const { editValue, url } = ownProps;
   return {
-    editValue: (value, url) => dispatch(editValue(value, url)),
+    editValue: (value) => dispatch(editValue(value, url)),
   };
 };
 

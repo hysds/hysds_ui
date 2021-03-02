@@ -6,7 +6,7 @@ import { Creatable } from "react-select";
 
 import "./style.scss";
 
-const UserRuleTags = (props) => {
+const Tags = (props) => {
   const value = props.value.map((tag) => ({
     value: tag,
     label: tag,
@@ -17,7 +17,7 @@ const UserRuleTags = (props) => {
       const newRule = e[e.length - 1];
       if (!newRule.value.trim()) return;
     }
-    props.changeUserRuleTag(e);
+    props.changeTag(e);
   };
 
   return (
@@ -37,21 +37,21 @@ const UserRuleTags = (props) => {
   );
 };
 
-UserRuleTags.propTypes = {
+Tags.propTypes = {
   value: PropTypes.array.isRequired,
   options: PropTypes.array.isRequired,
-  changeUserRuleTag: PropTypes.func.isRequired,
+  changeTag: PropTypes.func.isRequired,
 };
 
-UserRuleTags.defaultProps = {
+Tags.defaultProps = {
   tags: [],
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { changeUserRuleTag } = ownProps;
+  const { changeTag } = ownProps;
   return {
-    changeUserRuleTag: (tag) => dispatch(changeUserRuleTag(tag)),
+    changeTag: (tag) => dispatch(changeTag(tag)),
   };
 };
 
-export default connect(null, mapDispatchToProps)(UserRuleTags);
+export default connect(null, mapDispatchToProps)(Tags);

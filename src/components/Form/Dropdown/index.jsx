@@ -50,10 +50,10 @@ Dropdown.defaultProps = {
   url: false,
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch, ownProps, url) => {
   const { editValue } = ownProps;
   return {
-    editValue: (value, url) => dispatch(editValue(value, url)),
+    editValue: (value) => dispatch(editValue(value, url)),
   };
 };
 

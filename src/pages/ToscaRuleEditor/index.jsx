@@ -6,8 +6,8 @@ import { connect } from "react-redux";
 
 import QueryEditor from "../../components/QueryEditor";
 import JobInput from "../../components/JobInput";
-import JobParams from "../../components/JobParams";
-import UserRuleTags from "../../components/UserRuleTags";
+import Params from "../../components/Form/Params";
+import Tags from "../../components/Form/Tags";
 import Input from "../../components/Form/Input";
 import Dropdown from "../../components/Form/Dropdown";
 
@@ -23,7 +23,7 @@ import {
   editParams,
   changeQueue,
   editRuleName,
-  clearJobParams,
+  clearParams,
   changeUserRuleTag,
   editSoftTimeLimit,
   editTimeLimit,
@@ -37,7 +37,7 @@ import {
   getUserRulesTags,
 } from "../../redux/actions/tosca";
 
-import { buildJobParams, validateUserRule } from "../../utils";
+import { buildParams, validateUserRule } from "../../utils";
 import { GRQ_REST_API_V1 } from "../../config";
 
 import "./style.scss";
@@ -70,7 +70,7 @@ class ToscaRuleEditor extends React.Component {
 
     let newParams = {};
     try {
-      newParams = buildJobParams(paramsList, params);
+      newParams = buildParams(paramsList, params);
     } catch (err) {
       this.setState({
         submitInProgress: 0,
@@ -116,7 +116,7 @@ class ToscaRuleEditor extends React.Component {
           });
           setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
         } else {
-          this.props.clearJobParams();
+          this.props.clearParams();
           this.setState({
             submitInProgress: 0,
             submitSuccess: 1,
@@ -167,10 +167,10 @@ class ToscaRuleEditor extends React.Component {
                 editValue={editRuleName}
                 placeholder="Required"
               />
-              <UserRuleTags
+              <Tags
                 value={this.props.tag}
                 options={this.props.tags}
-                changeUserRuleTag={changeUserRuleTag}
+                changeTag={changeUserRuleTag}
               />
               <JobInput
                 changeJobType={changeJobType} // all redux actions
@@ -195,7 +195,7 @@ class ToscaRuleEditor extends React.Component {
               />
               {this.props.paramsList.length > 0 ? <Border /> : null}
               {hysdsioLabel}
-              <JobParams
+              <Params
                 editParams={editParams}
                 paramsList={this.props.paramsList}
                 params={this.props.params}
@@ -245,7 +245,7 @@ class ToscaRuleEditor extends React.Component {
                     label="Cancel"
                     size="large"
                     href="/tosca/user-rules"
-                    onClick={() => this.props.clearJobParams()}
+                    onClick={() => this.props.clearParams()}
                   />
                 </div>
               </div>
@@ -289,7 +289,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getUserRule: (id) => dispatch(getUserRule(id)),
   getOnDemandJobs: () => dispatch(getOnDemandJobs()),
-  clearJobParams: () => dispatch(clearJobParams()),
+  clearParams: () => dispatch(clearParams()),
   getQueueList: (jobSpec) => dispatch(getQueueList(jobSpec)),
   getUserRulesTags: () => dispatch(getUserRulesTags()),
   changeUserRuleTag: (tag) => dispatch(changeUserRuleTag(tag)),

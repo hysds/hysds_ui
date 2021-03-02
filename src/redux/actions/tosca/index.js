@@ -55,12 +55,12 @@ export const getOnDemandJobs = () => (dispatch) => {
   const getJobsEndpoint = `${GRQ_REST_API_V1}/grq/on-demand`;
   return fetch(getJobsEndpoint)
     .then((res) => res.json())
-    .then((data) =>
+    .then((data) => {
       dispatch({
         type: GET_JOB_LIST,
         payload: data.result,
-      })
-    );
+      });
+    });
 };
 
 export const getQueueList = (jobSpec) => (dispatch) => {

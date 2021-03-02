@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 
 import QueryEditor from "../../components/QueryEditor";
 import JobInput from "../../components/JobInput";
-import JobParams from "../../components/JobParams";
+import Params from "../../components/Form/Params";
 import { Border, SubmitStatusBar } from "../../components/miscellaneous";
 
 import Input from "../../components/Form/Input";
@@ -31,7 +31,7 @@ import {
   editDataCount,
 } from "../../redux/actions/figaro";
 
-import { buildJobParams, validateSubmission } from "../../utils";
+import { buildParams, validateSubmission } from "../../utils";
 import { MOZART_REST_API_V1 } from "../../config";
 
 import "./style.scss";
@@ -63,7 +63,7 @@ class FigaroOnDemand extends React.Component {
 
     let newParams = {};
     try {
-      newParams = buildJobParams(paramsList, params);
+      newParams = buildParams(paramsList, params);
     } catch (err) {
       this.setState({
         submitInProgress: 0,
@@ -199,7 +199,7 @@ class FigaroOnDemand extends React.Component {
                 </div>
                 {paramsList.length > 0 ? <Border /> : null}
                 {hysdsioLabel}
-                <JobParams
+                <Params
                   url={true}
                   editParams={editParams}
                   paramsList={paramsList}

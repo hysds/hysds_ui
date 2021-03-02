@@ -13,7 +13,7 @@ const customSelectStyles = {
   }),
 };
 
-const JobParams = (props) => {
+const Params = (props) => {
   const _handleJobParamInputChange = (e) => {
     let { name, value } = e.target;
     const payload = { name, value };
@@ -141,11 +141,11 @@ const JobParams = (props) => {
   return renderedParamsList;
 };
 
-JobParams.propTypes = {
+Params.propTypes = {
   editParams: PropTypes.func.isRequired,
 };
 
-JobParams.defaultProps = {
+Params.defaultProps = {
   url: false,
 };
 
@@ -156,4 +156,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(JobParams);
+export default connect(null, mapDispatchToProps)(Params);

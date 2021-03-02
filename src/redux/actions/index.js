@@ -130,7 +130,7 @@ export const editParams = (payload, url = false) => {
   };
 };
 
-export const clearJobParams = (payload) => ({
+export const clearParams = (payload) => ({
   type: CLEAR_JOB_PARAMS,
   payload,
 });

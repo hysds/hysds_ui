@@ -59,7 +59,7 @@ const Params = (props) => {
         case "enum":
           return (
             <section className="params-dropdown-wrapper" key={paramName}>
-              <label className="job-params-label">{paramName}:</label>
+              <label className="params-label">{paramName}:</label>
               <div className="react-select-wrapper">
                 <Select
                   label={paramName}
@@ -82,7 +82,7 @@ const Params = (props) => {
           ];
           return (
             <section className="params-dropdown-wrapper" key={paramName}>
-              <label className="job-params-label">{paramName}:</label>
+              <label className="params-label">{paramName}:</label>
               <div className="react-select-wrapper">
                 <Select
                   label={paramName}

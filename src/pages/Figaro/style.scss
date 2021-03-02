@@ -1,6 +1,5 @@
 @import "../../scss/constants.scss";
 
-/****************************************************/
 .figaro-body {
   padding: 0px 20px;
   padding-bottom: 50px;
@@ -14,7 +13,6 @@
   height: calc(100vh - 45px);
 }
 
-/****************************************************/
 /* SIDEBAR */
 .figaro-sidenav {
   flex: 0.25;
@@ -51,7 +49,6 @@ li.active:hover {
   }
 }
 
-/****************************************************/
 /* TOP BAR: query string, on demand and trigger rules */
 input:focus {
   outline: none;

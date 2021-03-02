@@ -67,7 +67,6 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
-// ****************************************** //
 
 // SORT OPTIONS
 .sort-results-select-wrapper {
@@ -98,7 +97,6 @@ select[name="sort-options"] {
   display: none !important;
   outline: 1px solid #ffffff !important;
 }
-// ****************************************** //
 
 // PAGE SIZE
 .results-page-select-wrapper {
@@ -115,4 +113,3 @@ select[name="sort-options"] {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
 }
-// ****************************************** //

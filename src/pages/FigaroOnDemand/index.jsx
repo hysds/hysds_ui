@@ -23,6 +23,7 @@ import {
   editSoftTimeLimit,
   editTimeLimit,
   editDiskUsage,
+  editDedup,
 } from "../../redux/actions";
 import {
   getOnDemandJobs,
@@ -230,8 +231,18 @@ class FigaroOnDemand extends React.Component {
                       editValue={editDiskUsage}
                       placeholder="(KB, MB, GB)"
                     />
+                    <Dropdown
+                      label="Enable Dedup"
+                      value={this.props.dedup}
+                      editValue={editDedup}
+                      options={[
+                        { value: true, label: "true" },
+                        { value: false, label: "false" },
+                      ]}
+                    />
                   </Fragment>
                 ) : null}
+
                 <div className="tosca-on-demand-button-wrapper">
                   <div className="tosca-on-demand-button">
                     <Button
@@ -295,6 +306,7 @@ const mapStateToProps = (state) => ({
   timeLimit: state.generalReducer.timeLimit,
   diskUsage: state.generalReducer.diskUsage,
   dataCount: state.generalReducer.dataCount,
+  dedup: state.generalReducer.dedup,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -28,6 +28,7 @@ import {
   editSoftTimeLimit,
   editTimeLimit,
   editDiskUsage,
+  editDedup,
 } from "../../redux/actions";
 import {
   getUserRule,
@@ -55,6 +56,7 @@ class FigaroRuleEditor extends React.Component {
   }
 
   componentDidMount() {
+    this.props.editDedup(null);
     const params = this.props.match.params;
     if (params.rule) {
       this.props.getUserRule(params.rule);
@@ -228,6 +230,16 @@ class FigaroRuleEditor extends React.Component {
                     editValue={editDiskUsage}
                     placeholder="(KB, MB, GB)"
                   />
+                  <Dropdown
+                    label="Enable Dedup"
+                    value={this.props.dedup}
+                    editValue={editDedup}
+                    options={[
+                      { value: true, label: "true" },
+                      { value: false, label: "false" },
+                      { value: null, label: "<none>" },
+                    ]}
+                  />
                 </Fragment>
               ) : null}
 
@@ -287,6 +299,7 @@ const mapStateToProps = (state) => ({
   softTimeLimit: state.generalReducer.softTimeLimit,
   timeLimit: state.generalReducer.timeLimit,
   diskUsage: state.generalReducer.diskUsage,
+  dedup: state.generalReducer.dedup,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -296,6 +309,7 @@ const mapDispatchToProps = (dispatch) => ({
   getQueueList: (jobSpec) => dispatch(getQueueList(jobSpec)),
   getUserRulesTags: () => dispatch(getUserRulesTags()),
   changeUserRuleTag: (tag) => dispatch(changeUserRuleTag(tag)),
+  editDedup: (val) => dispatch(editDedup(val)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FigaroRuleEditor);

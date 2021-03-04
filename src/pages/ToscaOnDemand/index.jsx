@@ -235,15 +235,15 @@ class ToscaOnDemand extends React.Component {
                     <Dropdown
                       label="Enable Dedup"
                       value={this.props.dedup}
+                      editValue={editDedup}
                       options={[
                         { value: true, label: "true" },
                         { value: false, label: "false" },
                       ]}
-                      editValue={editDedup}
-                      simpleValue={false}
                     />
                   </Fragment>
                 ) : null}
+
                 <div className="tosca-on-demand-button-wrapper">
                   <div className="tosca-on-demand-button">
                     <Button

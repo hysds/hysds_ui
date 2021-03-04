@@ -32,7 +32,6 @@ import {
   validateUrlQueryParam,
 } from "../../utils";
 
-// ********************************************************************** //
 // REACTIVESEARCH ACTIONS
 export const clearReduxStore = () => ({
   type: CLEAR_REDUX_STORE,
@@ -50,7 +49,6 @@ export const editCustomFilterId = (componentId, value) => ({
   },
 });
 
-// ********************************************************************** //
 // TOSCA ACTIONS
 export const retrieveData = (data) => ({
   type: RETRIEVE_DATA,
@@ -64,7 +62,6 @@ export const setQuery = (query) => {
   };
 };
 
-// ********************************************************************** //
 // TOSCA ON DEMAND ACTIONS
 export const editQuery = (payload, url = false) => {
   if (url) validateUrlQueryParam(payload);

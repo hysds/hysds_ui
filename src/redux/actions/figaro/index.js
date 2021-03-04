@@ -118,7 +118,6 @@ export const editDataCount = (query) => (dispatch) => {
   }
 };
 
-// ********************************************************************** //
 // TOSCA USER RULES ACTIONS
 export const getUserRules = () => (dispatch) => {
   const getUserRulesEndpoint = `${MOZART_REST_API_V1}/user-rules`;

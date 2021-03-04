@@ -56,6 +56,7 @@ class ToscaRuleEditor extends React.Component {
   }
 
   componentDidMount() {
+    this.props.editDedup(null);
     const params = this.props.match.params;
     if (params.rule) {
       this.props.getUserRule(params.rule);
@@ -231,13 +232,12 @@ class ToscaRuleEditor extends React.Component {
                   <Dropdown
                     label="Enable Dedup"
                     value={this.props.dedup}
+                    editValue={editDedup}
                     options={[
                       { value: true, label: "true" },
                       { value: false, label: "false" },
                       { value: null, label: "<none>" },
                     ]}
-                    editValue={editDedup}
-                    simpleValue={false}
                   />
                 </Fragment>
               ) : null}
@@ -307,6 +307,7 @@ const mapDispatchToProps = (dispatch) => ({
   getQueueList: (jobSpec) => dispatch(getQueueList(jobSpec)),
   getUserRulesTags: () => dispatch(getUserRulesTags()),
   changeUserRuleTag: (tag) => dispatch(changeUserRuleTag(tag)),
+  editDedup: (val) => dispatch(editDedup(val)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ToscaRuleEditor);

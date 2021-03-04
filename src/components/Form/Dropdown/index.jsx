@@ -9,7 +9,7 @@ import "./style.scss";
 const Dropdown = (props) => {
   const { label, value, options, url, required, ...rest } = props;
 
-  const _handleQueueChange = (e) => props.editValue(e.value, url);
+  const handleChange = (e) => props.editValue(e.value, url);
 
   const styles = {
     control: (base, value) => ({
@@ -28,7 +28,7 @@ const Dropdown = (props) => {
             label: value !== null && value !== undefined ? String(value) : "",
             value: value,
           }}
-          onChange={_handleQueueChange}
+          onChange={handleChange}
           isDisabled={!(options.length > 0)}
           styles={styles}
           {...rest}

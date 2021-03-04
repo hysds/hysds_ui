@@ -25,7 +25,7 @@ const Dropdown = (props) => {
         <Select
           options={options}
           value={{
-            label: value,
+            label: value !== null && value !== undefined ? String(value) : "",
             value: value,
           }}
           onChange={_handleQueueChange}
@@ -39,7 +39,11 @@ const Dropdown = (props) => {
 };
 
 Dropdown.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.bool,
+  ]),
   options: PropTypes.array.isRequired,
   editValue: PropTypes.func.isRequired,
 };

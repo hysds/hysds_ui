@@ -28,6 +28,7 @@ import {
   editSoftTimeLimit,
   editTimeLimit,
   editDiskUsage,
+  editDedup,
 } from "../../redux/actions";
 import {
   getUserRule,
@@ -94,6 +95,7 @@ class ToscaRuleEditor extends React.Component {
       time_limit: parseInt(this.props.timeLimit) || null,
       soft_time_limit: parseInt(this.props.softTimeLimit) || null,
       disk_usage: this.props.diskUsage || null,
+      enable_dedup: this.props.dedup,
     };
 
     this.setState({ submitInProgress: 1 });
@@ -226,6 +228,17 @@ class ToscaRuleEditor extends React.Component {
                     editValue={editDiskUsage}
                     placeholder="(KB, MB, GB)"
                   />
+                  <Dropdown
+                    label="Enable Dedup"
+                    value={this.props.dedup}
+                    options={[
+                      { value: true, label: "true" },
+                      { value: false, label: "false" },
+                      { value: null, label: "<none>" },
+                    ]}
+                    editValue={editDedup}
+                    simpleValue={false}
+                  />
                 </Fragment>
               ) : null}
 
@@ -284,6 +297,7 @@ const mapStateToProps = (state) => ({
   softTimeLimit: state.generalReducer.softTimeLimit,
   timeLimit: state.generalReducer.timeLimit,
   diskUsage: state.generalReducer.diskUsage,
+  dedup: state.generalReducer.dedup,
 });
 
 const mapDispatchToProps = (dispatch) => ({

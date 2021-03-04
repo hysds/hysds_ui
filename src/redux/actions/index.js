@@ -11,6 +11,7 @@ import {
   EDIT_SOFT_TIME_LIMIT,
   EDIT_TIME_LIMIT,
   EDIT_DISK_USAGE,
+  EDIT_ENABLE_DEDUP,
   CLEAR_JOB_PARAMS,
   EDIT_RULE_NAME,
   GLOBAL_SEARCH_USER_RULES,
@@ -118,6 +119,11 @@ export const editTimeLimit = (payload) => ({
 
 export const editDiskUsage = (payload) => ({
   type: EDIT_DISK_USAGE,
+  payload,
+});
+
+export const editDedup = (payload) => ({
+  type: EDIT_ENABLE_DEDUP,
   payload,
 });
 

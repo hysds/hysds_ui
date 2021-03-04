@@ -15,6 +15,7 @@ import {
   LOAD_TIME_LIMITS,
   EDIT_DISK_USAGE,
   LOAD_DISK_USAGE,
+  EDIT_ENABLE_DEDUP,
   GET_JOB_LIST,
   SET_QUERY,
   GLOBAL_SEARCH_USER_RULES,
@@ -72,6 +73,7 @@ const initialState = {
   softTimeLimit: "",
   timeLimit: "",
   diskUsage: "",
+  dedup: true,
   ruleName: "",
 
   // user rule filters
@@ -241,6 +243,12 @@ const generalReducer = (state = initialState, action) => {
         diskUsage: action.payload || "",
       };
     }
+    case EDIT_ENABLE_DEDUP: {
+      return {
+        ...state,
+        dedup: action.payload,
+      };
+    }
     case EDIT_JOB_PARAMS: {
       const newParams = {
         ...state.params,
@@ -275,6 +283,7 @@ const generalReducer = (state = initialState, action) => {
         queue: payload.queue,
         priority: payload.priority,
         userRuleTag: payload.tags || [],
+        dedup: payload.enable_dedup === undefined ? null : payload.enable_dedup,
       };
     }
     case LOAD_USER_RULES_TAGS: {

@@ -23,6 +23,7 @@ import {
   editSoftTimeLimit,
   editTimeLimit,
   editDiskUsage,
+  editDedup,
 } from "../../redux/actions";
 import {
   getOnDemandJobs,
@@ -82,6 +83,7 @@ class ToscaOnDemand extends React.Component {
       priority: this.props.priority,
       query: this.props.query,
       kwargs: JSON.stringify(newParams),
+      enable_dedup: this.props.dedup,
     };
 
     if (this.props.timeLimit) data.time_limit = parseInt(this.props.timeLimit);
@@ -150,11 +152,7 @@ class ToscaOnDemand extends React.Component {
         <div className={classTheme}>
           <div className="tosca-on-demand">
             <div className="split on-demand-left">
-              <QueryEditor
-                url={true}
-                query={query}
-                editQuery={editQuery}
-              />
+              <QueryEditor url={true} query={query} editQuery={editQuery} />
             </div>
 
             <div className="split on-demand-right">
@@ -234,6 +232,16 @@ class ToscaOnDemand extends React.Component {
                       editValue={editDiskUsage}
                       placeholder="(KB, MB, GB)"
                     />
+                    <Dropdown
+                      label="Enable Dedup"
+                      value={this.props.dedup}
+                      options={[
+                        { value: true, label: "true" },
+                        { value: false, label: "false" },
+                      ]}
+                      editValue={editDedup}
+                      simpleValue={false}
+                    />
                   </Fragment>
                 ) : null}
                 <div className="tosca-on-demand-button-wrapper">
@@ -297,6 +305,7 @@ const mapStateToProps = (state) => ({
   softTimeLimit: state.generalReducer.softTimeLimit,
   timeLimit: state.generalReducer.timeLimit,
   diskUsage: state.generalReducer.diskUsage,
+  dedup: state.generalReducer.dedup,
   submissionType: state.generalReducer.submissionType,
   dataCount: state.generalReducer.dataCount,
 });

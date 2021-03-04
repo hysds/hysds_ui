@@ -83,6 +83,7 @@ class FigaroOnDemand extends React.Component {
       priority: this.props.priority,
       query: this.props.query,
       kwargs: JSON.stringify(newParams),
+      enable_dedup: this.props.dedup,
     };
 
     if (this.props.timeLimit) data.time_limit = parseInt(this.props.timeLimit);

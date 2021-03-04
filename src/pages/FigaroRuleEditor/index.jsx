@@ -96,6 +96,7 @@ class FigaroRuleEditor extends React.Component {
       time_limit: parseInt(this.props.timeLimit) || null,
       soft_time_limit: parseInt(this.props.softTimeLimit) || null,
       disk_usage: this.props.diskUsage || null,
+      enable_dedup: this.props.dedup,
     };
 
     this.setState({ submitInProgress: 1 });

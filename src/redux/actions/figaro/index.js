@@ -168,12 +168,13 @@ export const getUserRule = (id) => (dispatch) => {
       const paramsListEndpoint = `${MOZART_REST_API_V1}/on-demand/job-params?job_type=${jobSpec}`;
       fetch(paramsListEndpoint)
         .then((res) => res.json())
-        .then((data) =>
+        .then((data) => {
+          delete data.enable_dedup;
           dispatch({
             type: LOAD_JOB_PARAMS,
             payload: data,
-          })
-        );
+          });
+        });
     });
 };
 

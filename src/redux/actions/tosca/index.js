@@ -154,12 +154,13 @@ export const getUserRule = (id) => (dispatch) => {
       const getParamsListEndpoint = `${GRQ_REST_API_V1}/grq/job-params?job_type=${jobSpec}`;
       fetch(getParamsListEndpoint)
         .then((res) => res.json())
-        .then((data) =>
+        .then((data) => {
+          delete data.enable_dedup;
           dispatch({
             type: LOAD_JOB_PARAMS,
             payload: data,
-          })
-        );
+          });
+        });
     });
 };
 

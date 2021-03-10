@@ -56,10 +56,7 @@ const initialState = {
   query: urlParams.get("query") || "",
   validQuery: true,
   priority: priority || 0,
-  priorityList: [...Array(10).keys()].map((num) => ({
-    value: num,
-    label: num,
-  })),
+  priorityList: [...Array(10).keys()].map((n) => ({ value: n, label: n })),
   jobList: [],
   jobLabel: null,
   jobSpec: urlParams.get("job_spec") || null,

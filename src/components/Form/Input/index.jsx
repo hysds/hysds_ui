@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import "./style.scss";
 
-const InputConnect = (props) => {
+const Input = (props) => {
   const { label, value, url, editValue, ...rest } = props;
 
   const _handleChange = (e) => editValue(e.target.value, url);
@@ -22,12 +22,12 @@ const InputConnect = (props) => {
   );
 };
 
-InputConnect.propTypes = {
+Input.propTypes = {
   label: PropTypes.string.isRequired,
   editValue: PropTypes.func.isRequired,
 };
 
-InputConnect.defaultProps = {
+Input.defaultProps = {
   label: "Label",
   url: false,
   required: false,
@@ -40,4 +40,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(InputConnect);
+export default connect(null, mapDispatchToProps)(Input);

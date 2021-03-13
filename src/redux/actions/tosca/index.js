@@ -12,6 +12,7 @@ import {
   LOAD_USER_RULES_TAGS,
   LOAD_TIME_LIMITS,
   LOAD_DISK_USAGE,
+  EDIT_ENABLE_DEDUP,
 } from "../../constants.js";
 
 import { editUrlDataCount } from "../../../utils";
@@ -55,12 +56,12 @@ export const getOnDemandJobs = () => (dispatch) => {
   const getJobsEndpoint = `${GRQ_REST_API_V1}/grq/on-demand`;
   return fetch(getJobsEndpoint)
     .then((res) => res.json())
-    .then((data) =>
+    .then((data) => {
       dispatch({
         type: GET_JOB_LIST,
         payload: data.result,
-      })
-    );
+      });
+    });
 };
 
 export const getQueueList = (jobSpec) => (dispatch) => {
@@ -103,7 +104,6 @@ export const getParamsList = (jobSpec) => (dispatch) => {
     });
 };
 
-// ********************************************************************** //
 // TOSCA USER RULES ACTIONS
 export const getUserRules = () => (dispatch) => {
   const getUserRulesEndpoint = `${GRQ_REST_API_V1}/grq/user-rules`;
@@ -154,12 +154,13 @@ export const getUserRule = (id) => (dispatch) => {
       const getParamsListEndpoint = `${GRQ_REST_API_V1}/grq/job-params?job_type=${jobSpec}`;
       fetch(getParamsListEndpoint)
         .then((res) => res.json())
-        .then((data) =>
+        .then((data) => {
+          delete data.enable_dedup;
           dispatch({
             type: LOAD_JOB_PARAMS,
             payload: data,
-          })
-        );
+          });
+        });
     });
 };
 

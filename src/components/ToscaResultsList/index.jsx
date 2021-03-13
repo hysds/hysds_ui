@@ -162,7 +162,6 @@ const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
 });
 
-// Redux actions
 const mapDispatchToProps = (dispatch) => ({
   clickDatasetId: (_id) => dispatch(clickDatasetId(_id)),
   retrieveData: (data) => dispatch(retrieveData(data)),

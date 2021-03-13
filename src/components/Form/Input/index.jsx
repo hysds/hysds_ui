@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 
 import "./style.scss";
 
-const FormInput = (props) => {
-  const { label, value, url, editValue, ...newProps } = props;
+const Input = (props) => {
+  const { label, value, url, editValue, ...rest } = props;
 
   const _handleChange = (e) => editValue(e.target.value, url);
 
@@ -16,28 +16,28 @@ const FormInput = (props) => {
         onChange={_handleChange}
         value={value}
         className="form-input"
-        {...newProps}
+        {...rest}
       />
     </div>
   );
 };
 
-FormInput.propTypes = {
+Input.propTypes = {
   label: PropTypes.string.isRequired,
   editValue: PropTypes.func.isRequired,
 };
 
-FormInput.defaultProps = {
+Input.defaultProps = {
   label: "Label",
   url: false,
+  required: false,
 };
 
-// Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { editValue } = ownProps;
+  const { editValue, url } = ownProps;
   return {
-    editValue: (value, url) => dispatch(editValue(value, url)),
+    editValue: (value) => dispatch(editValue(value, url)),
   };
 };
 
-export default connect(null, mapDispatchToProps)(FormInput);
+export default connect(null, mapDispatchToProps)(Input);

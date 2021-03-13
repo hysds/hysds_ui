@@ -375,7 +375,6 @@ let MapComponent = class extends React.Component {
   }
 };
 
-// Redux actions
 const mapDispatchToProps = (dispatch) => ({
   clickDatasetId: (_id) => dispatch(clickDatasetId(_id)),
   bboxEdit: (bbox) => dispatch(bboxEdit(bbox)),

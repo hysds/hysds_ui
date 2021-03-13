@@ -13,7 +13,7 @@ const customSelectStyles = {
   }),
 };
 
-const JobParams = (props) => {
+const Params = (props) => {
   const _handleJobParamInputChange = (e) => {
     let { name, value } = e.target;
     const payload = { name, value };
@@ -42,8 +42,8 @@ const JobParams = (props) => {
       switch (param.type) {
         case "number":
           return (
-            <div className="tag-input-wrapper" key={paramName}>
-              <label className="tag-input-label">{paramName}:</label>
+            <div className="params-input-wrapper" key={paramName}>
+              <label className="params-input-label">{paramName}:</label>
               <input
                 type="number"
                 step="1"
@@ -59,7 +59,7 @@ const JobParams = (props) => {
         case "enum":
           return (
             <section className="params-dropdown-wrapper" key={paramName}>
-              <label className="job-params-label">{paramName}:</label>
+              <label className="params-label">{paramName}:</label>
               <div className="react-select-wrapper">
                 <Select
                   label={paramName}
@@ -82,7 +82,7 @@ const JobParams = (props) => {
           ];
           return (
             <section className="params-dropdown-wrapper" key={paramName}>
-              <label className="job-params-label">{paramName}:</label>
+              <label className="params-label">{paramName}:</label>
               <div className="react-select-wrapper">
                 <Select
                   label={paramName}
@@ -120,8 +120,8 @@ const JobParams = (props) => {
         }
         default:
           return (
-            <div className="tag-input-wrapper" key={paramName}>
-              <div className="tag-input-label">{paramName}:</div>
+            <div className="params-input-wrapper" key={paramName}>
+              <div className="params-input-label">{paramName}:</div>
               <input
                 type="text"
                 value={value || ""}
@@ -141,15 +141,14 @@ const JobParams = (props) => {
   return renderedParamsList;
 };
 
-JobParams.propTypes = {
+Params.propTypes = {
   editParams: PropTypes.func.isRequired,
 };
 
-JobParams.defaultProps = {
+Params.defaultProps = {
   url: false,
 };
 
-// Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { url } = ownProps;
   return {
@@ -157,4 +156,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(JobParams);
+export default connect(null, mapDispatchToProps)(Params);

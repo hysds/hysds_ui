@@ -84,7 +84,6 @@ UserRulesTagsFilter.defaultProps = {
   darkMode: false,
 };
 
-// Redux actions
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { changeUserRuleTagsFilter } = ownProps;
   return {

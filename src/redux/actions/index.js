@@ -11,6 +11,7 @@ import {
   EDIT_SOFT_TIME_LIMIT,
   EDIT_TIME_LIMIT,
   EDIT_DISK_USAGE,
+  EDIT_ENABLE_DEDUP,
   CLEAR_JOB_PARAMS,
   EDIT_RULE_NAME,
   GLOBAL_SEARCH_USER_RULES,
@@ -31,7 +32,6 @@ import {
   validateUrlQueryParam,
 } from "../../utils";
 
-// ********************************************************************** //
 // REACTIVESEARCH ACTIONS
 export const clearReduxStore = () => ({
   type: CLEAR_REDUX_STORE,
@@ -49,7 +49,6 @@ export const editCustomFilterId = (componentId, value) => ({
   },
 });
 
-// ********************************************************************** //
 // TOSCA ACTIONS
 export const retrieveData = (data) => ({
   type: RETRIEVE_DATA,
@@ -63,7 +62,6 @@ export const setQuery = (query) => {
   };
 };
 
-// ********************************************************************** //
 // TOSCA ON DEMAND ACTIONS
 export const editQuery = (payload, url = false) => {
   if (url) validateUrlQueryParam(payload);
@@ -121,6 +119,11 @@ export const editDiskUsage = (payload) => ({
   payload,
 });
 
+export const editDedup = (payload) => ({
+  type: EDIT_ENABLE_DEDUP,
+  payload,
+});
+
 export const editParams = (payload, url = false) => {
   const { name, value } = payload;
   if (url) editUrlJobParam(name, value);
@@ -130,7 +133,7 @@ export const editParams = (payload, url = false) => {
   };
 };
 
-export const clearJobParams = (payload) => ({
+export const clearParams = (payload) => ({
   type: CLEAR_JOB_PARAMS,
   payload,
 });

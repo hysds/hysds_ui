@@ -1,7 +1,6 @@
 const React = require("react");
 
 // DEFINING THE OPTIONS FOR THE LEAFLET MAP
-/*******************************************************************************/
 exports.DISPLAY_MAP = true;
 
 // all leaflet styles: https://leaflet-extras.github.io/leaflet-providers/preview/
@@ -13,9 +12,7 @@ exports.LEAFLET_ATTRIBUTION =
 exports.BBOX_COLOR = "#f06eaa";
 exports.BBOX_WEIGHT = 5;
 exports.BBOX_OPACITY = 0.3;
-/*******************************************************************************/
 
-// ************************************************************************* //
 // reactivesearch retrieves data from each component by its componentId
 // custom Reactivesearch component
 exports.ID_COMPONENT = "_id";
@@ -31,7 +28,6 @@ exports.START_TIME_ID = "starttime";
 exports.END_TIME_ID = "endtime";
 exports.USER_TAGS = "user_tags";
 exports.DATASET_VERSION = "version";
-// ************************************************************************* //
 
 // fields returned by Elasticsearch (less fields = faster UI)
 exports.FIELDS = [

@@ -83,7 +83,7 @@ exports.editUrlDataCount = (count) => {
   history.pushState({}, "", newUrl);
 };
 
-exports.buildJobParams = (paramsList, inputParams) => {
+exports.buildParams = (paramsList, inputParams) => {
   /**
    * @paramsList {Array} array of job parameters from hysds-ios
    * @params {Object} JSON object of parameters

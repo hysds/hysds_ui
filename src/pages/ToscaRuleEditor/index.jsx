@@ -6,12 +6,10 @@ import { connect } from "react-redux";
 
 import QueryEditor from "../../components/QueryEditor";
 import JobInput from "../../components/JobInput";
-import JobParams from "../../components/JobParams";
-import UserRuleNameInput from "../../components/UserRuleNameInput";
-import QueueInput from "../../components/QueueInput";
-import PriorityInput from "../../components/PriorityInput";
-import UserRuleTags from "../../components/UserRuleTags";
-import FormInput from "../../components/FormInput";
+import Params from "../../components/Form/Params";
+import Tags from "../../components/Form/Tags";
+import Input from "../../components/Form/Input";
+import Dropdown from "../../components/Form/Dropdown";
 
 import { Button, ButtonLink } from "../../components/Buttons";
 import { Border, SubmitStatusBar } from "../../components/miscellaneous";
@@ -25,11 +23,12 @@ import {
   editParams,
   changeQueue,
   editRuleName,
-  clearJobParams,
+  clearParams,
   changeUserRuleTag,
   editSoftTimeLimit,
   editTimeLimit,
   editDiskUsage,
+  editDedup,
 } from "../../redux/actions";
 import {
   getUserRule,
@@ -39,7 +38,7 @@ import {
   getUserRulesTags,
 } from "../../redux/actions/tosca";
 
-import { buildJobParams, validateUserRule } from "../../utils";
+import { buildParams, validateUserRule } from "../../utils";
 import { GRQ_REST_API_V1 } from "../../config";
 
 import "./style.scss";
@@ -57,6 +56,7 @@ class ToscaRuleEditor extends React.Component {
   }
 
   componentDidMount() {
+    this.props.editDedup(null);
     const params = this.props.match.params;
     if (params.rule) {
       this.props.getUserRule(params.rule);
@@ -72,7 +72,7 @@ class ToscaRuleEditor extends React.Component {
 
     let newParams = {};
     try {
-      newParams = buildJobParams(paramsList, params);
+      newParams = buildParams(paramsList, params);
     } catch (err) {
       this.setState({
         submitInProgress: 0,
@@ -96,6 +96,7 @@ class ToscaRuleEditor extends React.Component {
       time_limit: parseInt(this.props.timeLimit) || null,
       soft_time_limit: parseInt(this.props.softTimeLimit) || null,
       disk_usage: this.props.diskUsage || null,
+      enable_dedup: this.props.dedup,
     };
 
     this.setState({ submitInProgress: 1 });
@@ -118,7 +119,7 @@ class ToscaRuleEditor extends React.Component {
           });
           setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
         } else {
-          this.props.clearJobParams();
+          this.props.clearParams();
           this.setState({
             submitInProgress: 0,
             submitSuccess: 1,
@@ -154,23 +155,25 @@ class ToscaRuleEditor extends React.Component {
         <div className="tosca-user-rule-editor">
           <div className="split user-rule-editor-left">
             <QueryEditor
-              url={true} // update query params in url
+              url={true}
               query={this.props.query}
-              editQuery={editQuery} // redux action
+              editQuery={editQuery}
             />
           </div>
 
           <div className="split user-rule-editor-right">
             <div className="user-rule-editor-right-wrapper">
               <h1>Tosca - User Rule Editor</h1>
-              <UserRuleNameInput
-                editRuleName={editRuleName}
-                ruleName={this.props.ruleName}
+              <Input
+                label="Rule Name"
+                value={this.props.ruleName}
+                editValue={editRuleName}
+                placeholder="Required"
               />
-              <UserRuleTags
+              <Tags
                 value={this.props.tag}
                 options={this.props.tags}
-                changeUserRuleTag={changeUserRuleTag}
+                changeTag={changeUserRuleTag}
               />
               <JobInput
                 changeJobType={changeJobType} // all redux actions
@@ -180,18 +183,22 @@ class ToscaRuleEditor extends React.Component {
                 jobSpec={this.props.jobSpec}
                 jobLabel={this.props.jobLabel}
               />
-              <QueueInput
-                queue={this.props.queue}
-                queueList={this.props.queueList}
-                changeQueue={changeQueue}
+              <Dropdown
+                label="Queue"
+                value={this.props.queue}
+                options={this.props.queueList}
+                editValue={changeQueue}
+                required
               />
-              <PriorityInput
-                priority={this.props.priority}
-                editJobPriority={editJobPriority}
+              <Dropdown
+                label="Priority"
+                value={this.props.priority}
+                options={this.props.priorityList}
+                editValue={editJobPriority}
               />
               {this.props.paramsList.length > 0 ? <Border /> : null}
               {hysdsioLabel}
-              <JobParams
+              <Params
                 editParams={editParams}
                 paramsList={this.props.paramsList}
                 params={this.props.params}
@@ -200,29 +207,37 @@ class ToscaRuleEditor extends React.Component {
               {this.props.jobSpec ? (
                 <Fragment>
                   <Border />
-                  <FormInput
+                  <Input
                     label="Soft Time Limit"
                     value={this.props.softTimeLimit}
-                    url={true}
                     editValue={editSoftTimeLimit}
                     type="number"
                     min={1}
                     placeholder="(seconds)"
                   />
-                  <FormInput
+                  <Input
                     label="Time Limit"
                     value={this.props.timeLimit}
-                    url={true}
                     editValue={editTimeLimit}
                     type="number"
                     min={1}
                     placeholder="(seconds)"
                   />
-                  <FormInput
+                  <Input
                     label="Disk Usage"
                     value={this.props.diskUsage}
                     editValue={editDiskUsage}
                     placeholder="(KB, MB, GB)"
+                  />
+                  <Dropdown
+                    label="Enable Dedup"
+                    value={this.props.dedup}
+                    editValue={editDedup}
+                    options={[
+                      { value: true, label: "true" },
+                      { value: false, label: "false" },
+                      { value: null, label: "<none>" },
+                    ]}
                   />
                 </Fragment>
               ) : null}
@@ -243,7 +258,7 @@ class ToscaRuleEditor extends React.Component {
                     label="Cancel"
                     size="large"
                     href="/tosca/user-rules"
-                    onClick={() => this.props.clearJobParams()}
+                    onClick={() => this.props.clearParams()}
                   />
                 </div>
               </div>
@@ -273,6 +288,7 @@ const mapStateToProps = (state) => ({
   queueList: state.generalReducer.queueList,
   queue: state.generalReducer.queue,
   priority: state.generalReducer.priority,
+  priorityList: state.generalReducer.priorityList,
   paramsList: state.generalReducer.paramsList,
   params: state.generalReducer.params,
   ruleName: state.generalReducer.ruleName,
@@ -281,16 +297,17 @@ const mapStateToProps = (state) => ({
   softTimeLimit: state.generalReducer.softTimeLimit,
   timeLimit: state.generalReducer.timeLimit,
   diskUsage: state.generalReducer.diskUsage,
+  dedup: state.generalReducer.dedup,
 });
 
-// Redux actions
 const mapDispatchToProps = (dispatch) => ({
   getUserRule: (id) => dispatch(getUserRule(id)),
   getOnDemandJobs: () => dispatch(getOnDemandJobs()),
-  clearJobParams: () => dispatch(clearJobParams()),
+  clearParams: () => dispatch(clearParams()),
   getQueueList: (jobSpec) => dispatch(getQueueList(jobSpec)),
   getUserRulesTags: () => dispatch(getUserRulesTags()),
   changeUserRuleTag: (tag) => dispatch(changeUserRuleTag(tag)),
+  editDedup: (val) => dispatch(editDedup(val)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ToscaRuleEditor);

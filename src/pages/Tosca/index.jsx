@@ -179,7 +179,6 @@ const mapStateToProps = (state) => ({
   queryRegion: state.reactivesearchReducer.queryRegion,
 });
 
-// Redux actions
 const mapDispatchToProps = (dispatch) => ({
   setQuery: (query) => dispatch(setQuery(query)),
 });

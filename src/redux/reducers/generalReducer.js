@@ -15,6 +15,7 @@ import {
   LOAD_TIME_LIMITS,
   EDIT_DISK_USAGE,
   LOAD_DISK_USAGE,
+  EDIT_ENABLE_DEDUP,
   GET_JOB_LIST,
   SET_QUERY,
   GLOBAL_SEARCH_USER_RULES,
@@ -52,9 +53,10 @@ const initialState = {
   jobCounts: {},
 
   // form data
-  query: urlParams.get("query") || null,
+  query: urlParams.get("query") || "",
   validQuery: true,
   priority: priority || 0,
+  priorityList: [...Array(10).keys()].map((n) => ({ value: n, label: n })),
   jobList: [],
   jobLabel: null,
   jobSpec: urlParams.get("job_spec") || null,
@@ -64,11 +66,12 @@ const initialState = {
   paramsList: [],
   params: defaultUrlJobParams || {},
   submissionType: null,
-  tags: urlParams.get("tags") || null,
+  tags: urlParams.get("tags") || "",
   softTimeLimit: "",
   timeLimit: "",
   diskUsage: "",
-  ruleName: null,
+  dedup: true,
+  ruleName: "",
 
   // user rule filters
   userRules: [], // store all the rules client side
@@ -155,18 +158,25 @@ const generalReducer = (state = initialState, action) => {
       };
     }
     case LOAD_JOB_PARAMS: {
-      const params = action.payload.params || [];
+      const { payload } = action;
+      const params = payload.params || [];
+      const { enable_dedup } = payload;
       const defaultParams = {};
       params.map((p) => {
         let name = p.name;
         defaultParams[name] = state.params[name] || p.default || null;
       });
 
+      const newState = {
+        paramsList: params,
+        submissionType: payload.submission_type,
+        params: defaultParams,
+      };
+      if (enable_dedup !== undefined) newState.dedup = enable_dedup;
+
       return {
         ...state,
-        paramsList: params,
-        submissionType: action.payload.submission_type,
-        params: defaultParams,
+        ...newState,
       };
     }
     case LOAD_TIME_LIMITS: {
@@ -237,6 +247,12 @@ const generalReducer = (state = initialState, action) => {
         diskUsage: action.payload || "",
       };
     }
+    case EDIT_ENABLE_DEDUP: {
+      return {
+        ...state,
+        dedup: action.payload,
+      };
+    }
     case EDIT_JOB_PARAMS: {
       const newParams = {
         ...state.params,
@@ -271,6 +287,7 @@ const generalReducer = (state = initialState, action) => {
         queue: payload.queue,
         priority: payload.priority,
         userRuleTag: payload.tags || [],
+        dedup: payload.enable_dedup !== undefined ? payload.enable_dedup : null,
       };
     }
     case LOAD_USER_RULES_TAGS: {

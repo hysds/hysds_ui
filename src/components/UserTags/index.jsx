@@ -5,7 +5,7 @@ import { css } from "emotion";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Tag = (props) => {
+function Tag(props) {
   const style = css`
     padding: 3px 7px;
     background-color: #dcdcdc;
@@ -35,14 +35,14 @@ const Tag = (props) => {
       <span className={tagStyle}>{props.value}</span>
     </div>
   );
-};
+}
 
 Tag.propTypes = {
   value: PropTypes.string.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
 
-const Input = (props) => {
+function Input(props) {
   const { value } = props;
 
   const style = css`
@@ -75,7 +75,7 @@ const Input = (props) => {
       className={style}
     />
   );
-};
+}
 
 Input.propTypes = {
   value: PropTypes.string.isRequired,

@@ -45,22 +45,22 @@ class FigaroResultsList extends React.Component {
     };
   }
 
-  _handleTableToggle = () => {
+  handleTableToggle = () => {
     this.setState({ tableView: !this.state.tableView });
     localStorage.setItem(TABLE_VIEW_STORE, !this.state.tableView);
   };
 
-  _handlePageSize = (e) => {
+  handlePageSize = (e) => {
     this.setState({ pageSize: parseInt(e.target.value) });
     localStorage.setItem(PAGE_SIZE_STORE, e.target.value);
   };
 
-  _handleSortColumn = (e) => {
+  handleSortColumn = (e) => {
     this.setState({ sortColumn: e.target.value });
     localStorage.setItem(SORT_FIELD_STORE, e.target.value);
   };
 
-  _handleSortDirection = (e) => {
+  handleSortDirection = (e) => {
     this.setState({ sortOrder: e.target.value });
     localStorage.setItem(SORT_DIRECTION_STORE, e.target.value);
   };
@@ -85,24 +85,24 @@ class FigaroResultsList extends React.Component {
           <ToggleSlider
             label="Table View: "
             value={tableView}
-            onChange={this._handleTableToggle}
+            onChange={this.handleTableToggle}
             checked={tableView}
           />
           <div className="results-display-buffer" />
           <SortOptions
             label="Sort By: "
             value={sortColumn}
-            onChange={this._handleSortColumn}
+            onChange={this.handleSortColumn}
             options={SORT_OPTIONS}
           />
           <SortDirection
             value={sortOrder}
-            onChange={this._handleSortDirection}
+            onChange={this.handleSortDirection}
           />
           <PageSizeOptions
             label="Page Size: "
             value={pageSize}
-            onChange={this._handlePageSize}
+            onChange={this.handlePageSize}
           />
         </div>
 

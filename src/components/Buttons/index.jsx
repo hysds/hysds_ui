@@ -8,7 +8,7 @@ import "./style.scss";
 
 import upArrow from "../../images/arrow-up.png";
 
-export const Button = (props) => {
+export function Button(props) {
   let { label, size, color, loading } = props;
 
   label = loading ? <FontAwesomeIcon icon={faSpinner} spin={true} /> : label;
@@ -45,19 +45,21 @@ export const Button = (props) => {
       {label || "Button"}
     </button>
   );
-};
+}
 
-export const ButtonLink = (props) => (
-  <Link to={props.href} target={props.target}>
-    <Button {...props} />
-  </Link>
-);
+export function ButtonLink(props) {
+  return (
+    <Link to={props.href} target={props.target}>
+      <Button {...props} />
+    </Link>
+  );
+}
 
-export const ScrollTop = (props) => (
-  <img src={upArrow} className="scroll-top-button" {...props} />
-);
+export function ScrollTop(props) {
+  return <img src={upArrow} className="scroll-top-button" {...props} />;
+}
 
-export const ToggleButton = (props) => {
+export function ToggleButton(props) {
   let label = props.enabled ? "On" : "Off";
   label = props.loading ? (
     <FontAwesomeIcon icon={faSpinner} spin={true} />
@@ -73,9 +75,9 @@ export const ToggleButton = (props) => {
       {label}
     </button>
   );
-};
+}
 
-export const DeleteButton = (props) => {
+export function DeleteButton(props) {
   let label = props.label || "Delete";
   label = props.loading ? (
     <FontAwesomeIcon icon={faSpinner} spin={true} />
@@ -91,9 +93,9 @@ export const DeleteButton = (props) => {
       {label}
     </button>
   );
-};
+}
 
-export const EditButton = (props) => {
+export function EditButton(props) {
   let label = props.label || "Edit";
   label = props.loading ? (
     <FontAwesomeIcon icon={faSpinner} spin={true} />
@@ -105,4 +107,4 @@ export const EditButton = (props) => {
       {label}
     </button>
   );
-};
+}

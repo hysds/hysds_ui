@@ -43,7 +43,7 @@ class Figaro extends React.Component {
     this.props.getJobCounts();
   }
 
-  _handleTransformRequest = (e) => {
+  handleTransformRequest = (e) => {
     let d = new Date();
     this.setState({
       lastUpdatedAt: `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`,
@@ -78,7 +78,7 @@ class Figaro extends React.Component {
         <ReactiveBase
           url={this.mozart_es_url}
           app={MOZART_ES_INDICES}
-          transformRequest={this._handleTransformRequest}
+          transformRequest={this.handleTransformRequest}
         >
           <div className="figaro-page-wrapper">
             <div className={`${classTheme} figaro-sidenav`}>

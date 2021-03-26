@@ -22,7 +22,7 @@ const QueryEditor = (props) => {
 
   const numRows = body.split("\n").length;
 
-  const _handleQueryChange = (e) => {
+  const handleQueryChange = (e) => {
     setBody(e.target.value);
     props.editQuery(e.target.value);
   };
@@ -33,7 +33,7 @@ const QueryEditor = (props) => {
         spellCheck="false"
         className="code-input"
         value={body}
-        onChange={_handleQueryChange}
+        onChange={handleQueryChange}
         rows={numRows}
       />
     </div>

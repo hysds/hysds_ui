@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 
 import Select from "react-select";
 
-// import styles from "../../scss/constants.scss";
 import {
   darkthemebg,
   darkthemelight,
@@ -13,7 +12,7 @@ import {
   lightthemebg,
 } from "../../scss/constants.scss";
 
-const UserRulesTagsFilter = (props) => {
+function UserRulesTagsFilter(props) {
   const { tag, tags, darkMode } = props;
 
   const backgroundColor = darkMode ? darkthemelight : lightthemebg;
@@ -72,7 +71,7 @@ const UserRulesTagsFilter = (props) => {
       value={tag ? { value: tag, label: tag } : null}
     />
   );
-};
+}
 
 UserRulesTagsFilter.propTypes = {
   tags: PropTypes.array.isRequired,

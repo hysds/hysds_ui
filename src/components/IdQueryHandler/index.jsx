@@ -8,28 +8,28 @@ var Handler = class extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      _id: props._id
+      _id: props._id,
     };
   }
 
   componentDidMount() {
     const { value } = this.props;
     if (value) {
-      const query = this._generateQuery(value);
+      const query = this.generateQuery(value);
       this.props.setQuery({
         query,
-        value
+        value,
       });
     }
   }
 
-  _generateQuery = _id => ({
+  generateQuery = (_id) => ({
     query: {
-      term: { _id }
-    }
+      term: { _id },
+    },
   });
 
-  _sendEmptyQuery = () => {
+  sendEmptyQuery = () => {
     this.props.setQuery({ query: null, value: null });
     this.setState({ _id: null });
   };
@@ -39,19 +39,19 @@ var Handler = class extends React.Component {
 
     if (this.props._id !== this.state._id) {
       if (!this.state._id) {
-        const query = this._generateQuery(this.props._id);
+        const query = this.generateQuery(this.props._id);
         this.props.setQuery({ query, value: _id });
         this.setState({ _id });
       } else {
-        this._sendEmptyQuery(); // clearing _id facet
+        this.sendEmptyQuery(); // clearing _id facet
       }
     } else if (this.props._id !== this.props.value) {
       // this is to handle page forwards and backwards
       if (this.props.value) {
-        const query = this._generateQuery(this.props.value);
+        const query = this.generateQuery(this.props.value);
         this.props.setQuery({ query, value: this.props.value });
       } else {
-        this._sendEmptyQuery();
+        this.sendEmptyQuery();
       }
       this.props.clickDatasetId(this.props.value);
       this.setState({ _id: this.props.value });
@@ -61,17 +61,17 @@ var Handler = class extends React.Component {
 };
 
 // Redux states and actions
-const mapStateToProps = state => ({
-  _id: state.reactivesearchReducer._id
+const mapStateToProps = (state) => ({
+  _id: state.reactivesearchReducer._id,
 });
 
-const mapDispatchToProps = dispatch => ({
-  clickDatasetId: _id => dispatch(clickDatasetId(_id))
+const mapDispatchToProps = (dispatch) => ({
+  clickDatasetId: (_id) => dispatch(clickDatasetId(_id)),
 });
 
 Handler = connect(mapStateToProps, mapDispatchToProps)(Handler);
 
-const IdQueryHandler = ({ componentId }) => {
+function IdQueryHandler({ componentId }) {
   return (
     <ReactiveComponent
       componentId={componentId}
@@ -81,10 +81,10 @@ const IdQueryHandler = ({ componentId }) => {
       )}
     />
   );
-};
+}
 
 IdQueryHandler.propTypes = {
-  componentId: PropTypes.string.isRequired
+  componentId: PropTypes.string.isRequired,
 };
 
 export default IdQueryHandler;

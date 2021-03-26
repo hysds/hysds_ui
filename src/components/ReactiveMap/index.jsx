@@ -85,15 +85,15 @@ let MapComponent = class extends React.Component {
     this.map.addControl(this.drawControl);
 
     // map event handlers
-    this.map.on("zoomend", this._zoomHandler);
-    this.map.on(L.Draw.Event.DRAWSTART, this._clearBbox);
-    this.map.on(L.Draw.Event.CREATED, this._handleMapDraw);
-    this.map.on(L.Draw.Event.EDITED, this._handlePolygonEdit);
+    this.map.on("zoomend", this.zoomHandler);
+    this.map.on(L.Draw.Event.DRAWSTART, this.clearBbox);
+    this.map.on(L.Draw.Event.CREATED, this.handleMapDraw);
+    this.map.on(L.Draw.Event.EDITED, this.handlePolygonEdit);
 
     // avoid additional "match_all" query on page load if initial bbox
     if (this.props.value) {
       let polygon = JSON.parse(this.props.value);
-      const query = this._generateQuery(polygon);
+      const query = this.generateQuery(polygon);
       this.props.setQuery({ query, value: this.props.value });
       this.setState({ value: this.props.value });
     }
@@ -104,7 +104,7 @@ let MapComponent = class extends React.Component {
       this.props.unclickQueryRegion(); // avoid infinite loop
 
       let polygon = JSON.parse(this.props.bboxText);
-      const query = this._generateQuery(polygon);
+      const query = this.generateQuery(polygon);
       this.props.setQuery({
         query,
         value: this.props.bboxText,
@@ -117,7 +117,7 @@ let MapComponent = class extends React.Component {
       if (this.props.value !== null) {
         // if the page loads with coordinates in the URL
         let polygon = JSON.parse(this.props.value);
-        const query = this._generateQuery(polygon);
+        const query = this.generateQuery(polygon);
         this.props.setQuery({
           query,
           value: this.props.value,
@@ -128,11 +128,11 @@ let MapComponent = class extends React.Component {
       this.setState({ value: this.props.value }); // prevent maximum recursion error
       this.props.bboxEdit(this.props.value);
     }
-    this._renderBbox(); // rendering pink bbox
-    this._renderDatasets(); // rendering dataset panes
+    this.renderBbox(); // rendering pink bbox
+    this.renderDatasets(); // rendering dataset panes
   }
 
-  _generateQuery = (polygon) => ({
+  generateQuery = (polygon) => ({
     query: {
       bool: {
         filter: {
@@ -158,12 +158,12 @@ let MapComponent = class extends React.Component {
     this.props.bboxEdit(null);
   };
 
-  _handleMapDraw = (event) => {
+  handleMapDraw = (event) => {
     let newLayer = event.layer;
     let polygon = newLayer.getLatLngs()[0].map((cord) => [cord.lng, cord.lat]);
     polygon = [...polygon, polygon[0]];
 
-    const query = this._generateQuery(polygon);
+    const query = this.generateQuery(polygon);
     const polygonString = JSON.stringify(polygon);
 
     this.props.setQuery({ query, value: polygonString }); // querying elasticsearch
@@ -172,13 +172,13 @@ let MapComponent = class extends React.Component {
     this.setState({ value: polygonString });
   };
 
-  _handlePolygonEdit = (event) => {
+  handlePolygonEdit = (event) => {
     const layers = event.layers.getLayers();
     layers.map((layer) => {
       let polygon = layer.getLatLngs()[0].map((cord) => [cord.lng, cord.lat]);
       polygon = [...polygon, polygon[0]];
 
-      const query = this._generateQuery(polygon);
+      const query = this.generateQuery(polygon);
       const polygonString = JSON.stringify(polygon);
       this.props.setQuery({ query, value: polygonString }); // querying elasticsearch
 
@@ -188,17 +188,17 @@ let MapComponent = class extends React.Component {
   };
 
   // client side event handlers
-  _clearBbox = () => this.drawnItems.clearLayers();
-  _zoomHandler = () => localStorage.setItem("zoom", this.map.getZoom());
-  _reRenderMap = () => this.map._onResize();
-  _toggleMapDisplay = () => {
-    this.setState({ displayMap: !this.state.displayMap }, this._reRenderMap);
+  clearBbox = () => this.drawnItems.clearLayers();
+  zoomHandler = () => localStorage.setItem("zoom", this.map.getZoom());
+  reRenderMap = () => this.map._onResize();
+  toggleMapDisplay = () => {
+    this.setState({ displayMap: !this.state.displayMap }, this.reRenderMap);
     localStorage.setItem("display-map", !this.state.displayMap);
   };
 
-  _polygonTextChange = (e) => this.props.bboxEdit(e.target.value);
+  polygonTextChange = (e) => this.props.bboxEdit(e.target.value);
 
-  _polygonTextInput = (e) => {
+  polygonTextInput = (e) => {
     if (e.key === "Enter" && e.shiftKey) {
       e.preventDefault();
       try {
@@ -208,7 +208,7 @@ let MapComponent = class extends React.Component {
           return;
         }
         let polygon = JSON.parse(polygonString);
-        const query = this._generateQuery(polygon);
+        const query = this.generateQuery(polygon);
         this.props.setQuery({ query, value: polygonString });
 
         this.setState({ value: polygonString });
@@ -220,8 +220,8 @@ let MapComponent = class extends React.Component {
   };
 
   // utility function to handle the data
-  _switchCoordinates = (polygon) => polygon.map((row) => [row[1], row[0]]);
-  _validateRectangle = (coord) => {
+  switchCoordinates = (polygon) => polygon.map((row) => [row[1], row[0]]);
+  validateRectangle = (coord) => {
     if (
       coord.length === 5 &&
       coord[0][0] === coord[3][0] &&
@@ -233,13 +233,13 @@ let MapComponent = class extends React.Component {
     return false;
   };
 
-  _renderBbox = () => {
+  renderBbox = () => {
     const { value } = this.props;
 
     if (this.drawnItems && value) {
       this.drawnItems.clearLayers();
-      let coordinates = this._switchCoordinates(JSON.parse(value));
-      const isRectangle = this._validateRectangle(coordinates); // checking valid rectangle
+      let coordinates = this.switchCoordinates(JSON.parse(value));
+      const isRectangle = this.validateRectangle(coordinates); // checking valid rectangle
       const poly = isRectangle
         ? L.rectangle(coordinates, this.shapeAttr)
         : L.polygon(coordinates, this.shapeAttr);
@@ -249,7 +249,7 @@ let MapComponent = class extends React.Component {
 
   clickIdHandler = (_id) => this.props.clickDatasetId(_id); // send clicked _id to reducer
 
-  _mapGeoJsonType = (t) => {
+  mapGeoJsonType = (t) => {
     const validTypes = [
       "Polygon",
       "MultiPolygon",
@@ -273,7 +273,7 @@ let MapComponent = class extends React.Component {
     }
   };
 
-  _renderDatasets = () => {
+  renderDatasets = () => {
     const { data } = this.props;
 
     if (this.layerGroup) {
@@ -281,7 +281,7 @@ let MapComponent = class extends React.Component {
       data.map((row) => {
         if (!row.location) return;
         const { type, coordinates } = row.location;
-        const geoJsonType = this._mapGeoJsonType(type);
+        const geoJsonType = this.mapGeoJsonType(type);
 
         if (!geoJsonType || !coordinates) return;
         location.type = geoJsonType;
@@ -356,7 +356,7 @@ let MapComponent = class extends React.Component {
         <Button
           label={displayMap ? "Hide Map" : "Show Map"}
           size="small"
-          onClick={this._toggleMapDisplay}
+          onClick={this.toggleMapDisplay}
         />
 
         <div className="leaflet-map-container" style={mapStyle}>
@@ -367,8 +367,8 @@ let MapComponent = class extends React.Component {
           className="map-coordinates-textbox"
           placeholder={textboxTooltip}
           value={bboxText || this.props.value || ""}
-          onChange={this._polygonTextChange}
-          onKeyPress={this._polygonTextInput}
+          onChange={this.polygonTextChange}
+          onKeyPress={this.polygonTextInput}
         ></textarea>
       </Fragment>
     );
@@ -388,22 +388,24 @@ const mapStateToProps = (state) => ({
 
 MapComponent = connect(mapStateToProps, mapDispatchToProps)(MapComponent);
 
-const ReactiveMap = ({ componentId, data, zoom, maxZoom, minZoom }) => (
-  <ReactiveComponent
-    componentId={componentId}
-    URLParams={true}
-    render={({ setQuery, value }) => (
-      <MapComponent
-        setQuery={setQuery}
-        value={value}
-        data={data}
-        zoom={zoom}
-        maxZoom={maxZoom}
-        minZoom={minZoom}
-      />
-    )}
-  />
-);
+function ReactiveMap({ componentId, data, zoom, maxZoom, minZoom }) {
+  return (
+    <ReactiveComponent
+      componentId={componentId}
+      URLParams={true}
+      render={({ setQuery, value }) => (
+        <MapComponent
+          setQuery={setQuery}
+          value={value}
+          data={data}
+          zoom={zoom}
+          maxZoom={maxZoom}
+          minZoom={minZoom}
+        />
+      )}
+    />
+  );
+}
 
 ReactiveMap.propTypes = {
   componentId: PropTypes.string.isRequired,

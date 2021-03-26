@@ -5,9 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "./style.css";
 
-export const Border = () => <hr className="job-param-border" />;
+export function Border() {
+  return <hr className="job-param-border" />;
+}
 
-export const SubmitStatusBar = (props) => {
+export function SubmitStatusBar(props) {
   const label = props.label || "Please input label";
 
   const status = props.status === "failed" ? "failed" : "success";
@@ -23,9 +25,9 @@ export const SubmitStatusBar = (props) => {
       ) : null}
     </div>
   );
-};
+}
 
-export const HelperLink = (props) => {
+export function HelperLink(props) {
   return (
     <Fragment>
       <a href={props.link} target="_blank" className="helper-link">
@@ -33,17 +35,20 @@ export const HelperLink = (props) => {
       </a>
     </Fragment>
   );
-};
+}
 
-export const Checkbox = (props) => (
-  <Fragment>
-    <input className="miscellaneous-checkbox" type="checkbox" {...props} />
-  </Fragment>
-);
+export function Checkbox(props) {
+  return (
+    <Fragment>
+      <input className="miscellaneous-checkbox" type="checkbox" {...props} />
+    </Fragment>
+  );
+}
 
-export const LastUpdatedAtBanner = ({ time }) =>
-  time ? (
+export function LastUpdatedAtBanner({ time }) {
+  return time ? (
     <div className="last-updated-banner">
       <span>Last Updated: {time}</span>
     </div>
   ) : null;
+}

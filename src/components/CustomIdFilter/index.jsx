@@ -10,7 +10,7 @@ let Handler = class extends React.Component {
 
     const { componentId } = props;
     this.state = {
-      [componentId]: props[componentId]
+      [componentId]: props[componentId],
     };
   }
 
@@ -18,30 +18,30 @@ let Handler = class extends React.Component {
     const { value, dataField } = this.props;
 
     if (value) {
-      const query = this._generateQuery(dataField, value);
+      const query = this.generateQuery(dataField, value);
       this.props.setQuery({
         query,
-        value
+        value,
       });
     }
   }
 
-  _generateQuery = (dataField, value) => ({
+  generateQuery = (dataField, value) => ({
     query: {
       term: {
-        [dataField]: value
-      }
-    }
+        [dataField]: value,
+      },
+    },
   });
 
-  _sendEmptyQuery = () => {
+  sendEmptyQuery = () => {
     const { componentId } = this.props;
     this.props.setQuery({
       query: null,
-      value: null
+      value: null,
     });
     this.setState({
-      [componentId]: null
+      [componentId]: null,
     });
   };
 
@@ -50,31 +50,31 @@ let Handler = class extends React.Component {
 
     if (this.props[componentId] !== this.state[componentId]) {
       if (this.props[componentId]) {
-        const query = this._generateQuery(dataField, this.props[componentId]);
+        const query = this.generateQuery(dataField, this.props[componentId]);
         this.props.setQuery({
           query,
-          value: this.props[componentId]
+          value: this.props[componentId],
         });
         this.setState({
-          [componentId]: this.props[componentId]
+          [componentId]: this.props[componentId],
         });
       } else {
-        this._sendEmptyQuery(); // clearing custom field facet
+        this.sendEmptyQuery(); // clearing custom field facet
       }
     } else if (this.props[componentId] !== this.props.value) {
       // this is to handle page forwards and backwards
       if (this.props.value) {
-        const query = this._generateQuery(dataField, this.props.value);
+        const query = this.generateQuery(dataField, this.props.value);
         this.props.setQuery({
           query,
-          value: this.props.value
+          value: this.props.value,
         });
       } else {
-        this._sendEmptyQuery();
+        this.sendEmptyQuery();
       }
       this.props.editCustomFilterId(componentId, this.props.value);
       this.setState({
-        [componentId]: this.props.value
+        [componentId]: this.props.value,
       });
     }
   }
@@ -86,18 +86,18 @@ let Handler = class extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   const { componentId } = ownProps;
   return {
-    [componentId]: state.reactivesearchReducer[componentId]
+    [componentId]: state.reactivesearchReducer[componentId],
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   editCustomFilterId: (componentId, value) =>
-    dispatch(editCustomFilterId(componentId, value))
+    dispatch(editCustomFilterId(componentId, value)),
 });
 
 Handler = connect(mapStateToProps, mapDispatchToProps)(Handler);
 
-const CustomIdFilter = ({ componentId, dataField }) => {
+function CustomIdFilter({ componentId, dataField }) {
   return (
     <ReactiveComponent
       componentId={componentId}
@@ -112,11 +112,11 @@ const CustomIdFilter = ({ componentId, dataField }) => {
       )}
     />
   );
-};
+}
 
 CustomIdFilter.propTypes = {
   componentId: PropTypes.string.isRequired,
-  dataField: PropTypes.string.isRequired
+  dataField: PropTypes.string.isRequired,
 };
 
 export default CustomIdFilter;

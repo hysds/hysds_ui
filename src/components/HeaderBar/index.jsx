@@ -17,7 +17,7 @@ import {
 import { darkthemebg, lightthemebg } from "../../scss/constants.scss";
 import "./style.scss";
 
-export const HeaderLink = (props) => {
+export function HeaderLink(props) {
   const { title, href, active } = props;
 
   let className = "header-bar-link";
@@ -28,48 +28,50 @@ export const HeaderLink = (props) => {
       <Link to={{ pathname: href, state: "desiredState" }}>{title}</Link>
     </li>
   );
-};
+}
 
-export const HeaderTitle = (props) => {
+export function HeaderTitle(props) {
   let title = props.title || "HySDS";
   return (
     <li className="header-bar-title" {...props}>
       <a>{title}</a>
     </li>
   );
-};
+}
 
-export const DropdownSources = () => (
-  <div className="link-dropdown">
-    <button className="link-dropbtn">
-      <span className="header-source-title">Sources</span>{" "}
-      <FontAwesomeIcon icon={faCaretDown} />
-    </button>
-    <div className="link-dropdown-content">
-      <a href={MOZART_REST_API_V1} target="_blank">
-        Mozart Rest API
-      </a>
-      <a href={GRQ_REST_API_V1} target="_blank">
-        GRQ Rest API
-      </a>
-      <a href={KIBANA_URL} target="_blank">
-        Metrics (Kibana)
-      </a>
-      <a
-        href={`${window.location.protocol}//${window.location.hostname}:${RABBIT_MQ_PORT}`}
-        target="_blank"
-      >
-        RabbitMQ
-      </a>
+export function DropdownSources() {
+  return (
+    <div className="link-dropdown">
+      <button className="link-dropbtn">
+        <span className="header-source-title">Sources</span>{" "}
+        <FontAwesomeIcon icon={faCaretDown} />
+      </button>
+      <div className="link-dropdown-content">
+        <a href={MOZART_REST_API_V1} target="_blank">
+          Mozart Rest API
+        </a>
+        <a href={GRQ_REST_API_V1} target="_blank">
+          GRQ Rest API
+        </a>
+        <a href={KIBANA_URL} target="_blank">
+          Metrics (Kibana)
+        </a>
+        <a
+          href={`${window.location.protocol}//${window.location.hostname}:${RABBIT_MQ_PORT}`}
+          target="_blank"
+        >
+          RabbitMQ
+        </a>
+      </div>
     </div>
-  </div>
-);
+  );
+}
 
-const HeaderBar = (props) => {
+function HeaderBar(props) {
   let { title, theme } = props;
   title = props.title || "HySDS";
 
-  const _themeHandler = () => {
+  const themeHandler = () => {
     const { darkMode } = props;
     props.editTheme(!darkMode);
     localStorage.setItem("dark-mode", !darkMode);
@@ -84,13 +86,13 @@ const HeaderBar = (props) => {
         {props.children}
         <Button
           label={props.darkMode ? "Light Mode" : "Dark Mode"}
-          onClick={_themeHandler}
+          onClick={themeHandler}
         />
         <div className="header-bar-buffer"></div>
       </ul>
     </div>
   );
-};
+}
 
 HeaderBar.defaultProps = {
   theme: "__theme-light",

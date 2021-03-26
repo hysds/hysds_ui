@@ -55,7 +55,7 @@ class Tosca extends React.Component {
       this.mapRef.current.scrollIntoView({ block: "start" });
   }
 
-  _handleTransformRequest = (e) => {
+  handleTransformRequest = (e) => {
     let d = new Date();
     this.setState({
       lastUpdatedAt: `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`,
@@ -101,7 +101,7 @@ class Tosca extends React.Component {
         <ReactiveBase
           url={this.grq_es_url}
           app={GRQ_ES_INDICES}
-          transformRequest={this._handleTransformRequest}
+          transformRequest={this.handleTransformRequest}
         >
           <div className="tosca-page-wrapper">
             <div className={`${classTheme} tosca-sidenav`}>

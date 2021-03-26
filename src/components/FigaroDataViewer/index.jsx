@@ -159,7 +159,7 @@ FigaroDataViewer.propTypes = {
   res: PropTypes.object.isRequired,
 };
 
-export const FigaroDataTable = (props) => {
+export function FigaroDataTable(props) {
   const { columns, data, sortColumn, sortOrder } = props;
 
   return (
@@ -179,4 +179,4 @@ export const FigaroDataTable = (props) => {
       ]}
     />
   );
-};
+}

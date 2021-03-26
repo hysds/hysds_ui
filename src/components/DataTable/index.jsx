@@ -7,7 +7,7 @@ import { GRQ_DISPLAY_COLUMNS } from "../../config/tosca";
 import "react-table/react-table.css";
 import "./style.scss";
 
-const DataTable = props => {
+function DataTable(props) {
   const { data } = props;
   return (
     <ReactTable
@@ -21,15 +21,15 @@ const DataTable = props => {
       defaultSorted={[
         {
           id: props.sortColumn,
-          desc: props.sortOrder === "desc" ? true : false
-        }
+          desc: props.sortOrder === "desc" ? true : false,
+        },
       ]}
     />
   );
-};
+}
 
 DataTable.propTypes = {
-  data: PropTypes.array.isRequired
+  data: PropTypes.array.isRequired,
 };
 
 export default DataTable;

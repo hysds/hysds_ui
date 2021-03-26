@@ -13,14 +13,14 @@ const customSelectStyles = {
   }),
 };
 
-const Params = (props) => {
-  const _handleJobParamInputChange = (e) => {
+function Params(props) {
+  const handleJobParamInputChange = (e) => {
     let { name, value } = e.target;
     const payload = { name, value };
     props.editParams(payload);
   };
 
-  const _handleJobParamDropdownChange = (e, v) => {
+  const handleJobParamDropdownChange = (e, v) => {
     const payload = {
       name: v.name,
       value: e.value,
@@ -28,7 +28,7 @@ const Params = (props) => {
     props.editParams(payload);
   };
 
-  const _renderParamsList = () => {
+  const renderParamsList = () => {
     const { params } = props;
 
     return props.paramsList.map((param) => {
@@ -50,7 +50,7 @@ const Params = (props) => {
                 value={value || ""}
                 name={paramName}
                 placeholder={param.placeholder}
-                onChange={_handleJobParamInputChange}
+                onChange={handleJobParamInputChange}
                 className="params-input"
                 required={param.optional ? false : true}
               />
@@ -69,7 +69,7 @@ const Params = (props) => {
                     label: option,
                     value: option,
                   }))}
-                  onChange={_handleJobParamDropdownChange}
+                  onChange={handleJobParamDropdownChange}
                   styles={param.optional ? null : customSelectStyles}
                 />
               </div>
@@ -93,7 +93,7 @@ const Params = (props) => {
                   }
                   name={paramName}
                   options={options}
-                  onChange={_handleJobParamDropdownChange}
+                  onChange={handleJobParamDropdownChange}
                   styles={param.optional ? null : customSelectStyles}
                 />
               </div>
@@ -113,7 +113,7 @@ const Params = (props) => {
                 className={className}
                 name={paramName}
                 value={value || ""}
-                onChange={_handleJobParamInputChange}
+                onChange={handleJobParamInputChange}
               />
             </div>
           );
@@ -127,7 +127,7 @@ const Params = (props) => {
                 value={value || ""}
                 name={paramName}
                 placeholder={param.placeholder}
-                onChange={_handleJobParamInputChange}
+                onChange={handleJobParamInputChange}
                 className="params-input"
                 required={param.optional ? false : true}
               />
@@ -137,9 +137,9 @@ const Params = (props) => {
     });
   };
 
-  const renderedParamsList = _renderParamsList();
+  const renderedParamsList = renderParamsList();
   return renderedParamsList;
-};
+}
 
 Params.propTypes = {
   editParams: PropTypes.func.isRequired,

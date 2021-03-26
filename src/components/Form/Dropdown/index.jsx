@@ -6,7 +6,7 @@ import Select from "react-select";
 
 import "./style.scss";
 
-const Dropdown = (props) => {
+function Dropdown(props) {
   const { label, value, options, url, required, ...rest } = props;
 
   const handleChange = (e) => props.editValue(e.value, url);
@@ -36,7 +36,7 @@ const Dropdown = (props) => {
       </div>
     </section>
   );
-};
+}
 
 Dropdown.propTypes = {
   value: PropTypes.oneOfType([

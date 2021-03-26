@@ -31,7 +31,7 @@ class SearchQueryHandler extends React.Component {
   componentDidMount() {
     const { value } = this.props;
     if (value) {
-      const query = this._generateQuery(value);
+      const query = this.generateQuery(value);
       this.props.setQuery({ query, value });
     }
   }
@@ -43,19 +43,19 @@ class SearchQueryHandler extends React.Component {
 
     if (this.props.value !== this.state.value) {
       if (this.props.value !== null) {
-        const query = this._generateQuery(this.props.value);
+        const query = this.generateQuery(this.props.value);
         this.props.setQuery({
           query,
           value: this.props.value
         });
       } else {
-        this._sendEmptyQuery();
+        this.sendEmptyQuery();
       }
       this.setState({ value: this.props.value }); // prevent maximum recursion error
     }
   }
 
-  _generateQuery = searchQuery => ({
+  generateQuery = searchQuery => ({
     query: {
       query_string: {
         query: searchQuery,
@@ -64,18 +64,18 @@ class SearchQueryHandler extends React.Component {
     }
   });
 
-  _sendEmptyQuery = () => {
+  sendEmptyQuery = () => {
     this.props.setQuery({ query: null, value: null });
     this.setState({ value: null, userTyping: false });
   };
 
-  _handleSubmit = e => {
+  handleSubmit = e => {
     e.preventDefault();
     const { value } = this.state;
 
-    if (!value) this._sendEmptyQuery();
+    if (!value) this.sendEmptyQuery();
     else {
-      const query = this._generateQuery(value);
+      const query = this.generateQuery(value);
       this.props.setQuery({ query, value }); // sending query to elasticsearch
       this.setState({
         value,
@@ -84,7 +84,7 @@ class SearchQueryHandler extends React.Component {
     }
   };
 
-  _handleChange = e => {
+  handleChange = e => {
     const queryString = e.target.value;
     this.setState({
       userTyping: true,
@@ -99,13 +99,13 @@ class SearchQueryHandler extends React.Component {
       <Fragment>
         <form
           className={`${this.props.theme} query-input-form`}
-          onSubmit={this._handleSubmit}
+          onSubmit={this.handleSubmit}
         >
           <input
             className="query-input-box"
             type="text"
             value={value || ""}
-            onChange={this._handleChange}
+            onChange={this.handleChange}
             placeholder={`Input Elasticsearch query string... ex. _id:"test_id"`}
           />
         </form>

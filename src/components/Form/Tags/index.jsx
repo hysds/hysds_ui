@@ -6,7 +6,7 @@ import { Creatable } from "react-select";
 
 import "./style.scss";
 
-const Tags = (props) => {
+function Tags(props) {
   const value = props.value.map((tag) => ({
     value: tag,
     label: tag,
@@ -35,7 +35,7 @@ const Tags = (props) => {
       </section>
     </Fragment>
   );
-};
+}
 
 Tags.propTypes = {
   value: PropTypes.array.isRequired,

@@ -66,7 +66,7 @@ class ToscaRuleEditor extends React.Component {
     if (this.props.tags.length === 0) this.props.getUserRulesTags();
   }
 
-  _handleUserRuleSubmit = () => {
+  handleUserRuleSubmit = () => {
     let { paramsList, params } = this.props;
     const ruleId = this.props.match.params.rule;
 
@@ -247,7 +247,7 @@ class ToscaRuleEditor extends React.Component {
                   <Button
                     size="large"
                     label={this.state.editMode ? "Save Changes" : "Save"}
-                    onClick={this._handleUserRuleSubmit}
+                    onClick={this.handleUserRuleSubmit}
                     loading={this.state.submitInProgress}
                     disabled={!validSubmission || this.state.submitInProgress}
                   />

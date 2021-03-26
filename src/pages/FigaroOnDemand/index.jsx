@@ -57,9 +57,9 @@ class FigaroOnDemand extends React.Component {
     }
   }
 
-  _checkQueryDataCount = () => this.props.editDataCount(this.props.query);
+  checkQueryDataCount = () => this.props.editDataCount(this.props.query);
 
-  _handleJobSubmit = () => {
+  handleJobSubmit = () => {
     let { paramsList, params } = this.props;
 
     let newParams = {};
@@ -249,7 +249,7 @@ class FigaroOnDemand extends React.Component {
                     <Button
                       size="large"
                       label={"Submit"}
-                      onClick={this._handleJobSubmit}
+                      onClick={this.handleJobSubmit}
                       loading={submitInProgress}
                       disabled={!validSubmission || submitInProgress}
                     />
@@ -259,7 +259,7 @@ class FigaroOnDemand extends React.Component {
                       size="large"
                       color="success"
                       label="Data Count Check"
-                      onClick={this._checkQueryDataCount}
+                      onClick={this.checkQueryDataCount}
                     />
                   </div>
                   <div className="tosca-on-demand-button">

@@ -179,12 +179,12 @@ const UserRulesTable = (props) => {
 
   const [expanded, setExpanded] = useState({});
 
-  const _handleExpanded = (rows, i) => setExpanded(rows);
-  const _handlePageChange = () => setExpanded({});
-  const _handlePageSize = (e) => setExpanded({});
-  const _handleSortedChange = () => setExpanded({});
+  const handleExpanded = (rows, i) => setExpanded(rows);
+  const handlePageChange = () => setExpanded({});
+  const handlePageSize = (e) => setExpanded({});
+  const handleSortedChange = () => setExpanded({});
 
-  const _renderSubComponent = (data) => {
+  const renderSubComponent = (data) => {
     let queryString = data.original.query_string;
     let kwargs = data.original.kwargs;
     let tags = data.original.tags;
@@ -237,12 +237,12 @@ const UserRulesTable = (props) => {
       showPagination={true}
       toggleUserRule={props.toggleUserRule}
       defaultSorted={defaultSorted}
-      SubComponent={(row) => _renderSubComponent(row)}
+      SubComponent={(row) => renderSubComponent(row)}
       expanded={expanded}
-      onExpandedChange={_handleExpanded}
-      onPageChange={_handlePageChange}
-      onPageSizeChange={_handlePageSize}
-      onSortedChange={_handleSortedChange}
+      onExpandedChange={handleExpanded}
+      onPageChange={handlePageChange}
+      onPageSizeChange={handlePageSize}
+      onSortedChange={handleSortedChange}
       {...props}
     />
   );

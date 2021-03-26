@@ -35,7 +35,7 @@ const FigaroUserRules = class extends React.Component {
     this.props.getUserRulesTags();
   }
 
-  _handleRuleSearch = (e) => {
+  handleRuleSearch = (e) => {
     const text = e.target.value;
     this.setState({
       globalSearch: text,
@@ -73,7 +73,7 @@ const FigaroUserRules = class extends React.Component {
             <input
               className="user-rules-global-search"
               placeholder="Search..."
-              onChange={this._handleRuleSearch}
+              onChange={this.handleRuleSearch}
               disabled={searchDisabled}
               value={userRuleSearch}
             />

@@ -4,23 +4,23 @@ import PropTypes from "prop-types";
 
 import "./style.scss";
 
-const Input = (props) => {
+function Input(props) {
   const { label, value, url, editValue, ...rest } = props;
 
-  const _handleChange = (e) => editValue(e.target.value, url);
+  const handleChange = (e) => editValue(e.target.value, url);
 
   return (
     <div className="form-input-wrapper">
       <div className="form-input-label">{label}:</div>
       <input
-        onChange={_handleChange}
+        onChange={handleChange}
         value={value}
         className="form-input"
         {...rest}
       />
     </div>
   );
-};
+}
 
 Input.propTypes = {
   label: PropTypes.string.isRequired,

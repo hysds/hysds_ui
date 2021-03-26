@@ -14,7 +14,7 @@ const JobInput = (props) => {
     }),
   };
 
-  const _handleJobChange = (e) => {
+  const handleJobChange = (e) => {
     if (e.jobSpec === props.jobSpec) return;
     props.changeJobType(e, props.url);
     props.getQueueList(e.jobSpec);
@@ -36,7 +36,7 @@ const JobInput = (props) => {
               label: jobLabel || jobSpec || "",
               value: jobSpec || "",
             }}
-            onChange={_handleJobChange}
+            onChange={handleJobChange}
             styles={customSelectStyles}
           />
         </div>

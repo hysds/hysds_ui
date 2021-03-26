@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 
 import "./style.css";
 
-const NotFound = () => {
+function NotFound() {
   return (
     <Fragment>
       <Helmet>
@@ -14,6 +14,6 @@ const NotFound = () => {
       </div>
     </Fragment>
   );
-};
+}
 
 export default NotFound;

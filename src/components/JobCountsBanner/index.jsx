@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import "./style.scss";
 
-const JobCount = (props) => {
+function JobCount(props) {
   let { title, count, className, ...rest } = props;
   const cleanCount = count ? count.toLocaleString() : 0;
 
@@ -19,9 +19,9 @@ const JobCount = (props) => {
       <span className="figaro-job-count-value">{cleanCount}</span>
     </div>
   );
-};
+}
 
-const JobCountsBanner = (props) => {
+function JobCountsBanner(props) {
   let history = useHistory();
   const { dataCounts } = props;
 
@@ -83,7 +83,7 @@ const JobCountsBanner = (props) => {
       </div>
     </Fragment>
   );
-};
+}
 
 const mapStateToProps = (state) => ({
   dataCounts: state.generalReducer.jobCounts,

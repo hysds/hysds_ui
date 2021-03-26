@@ -4,18 +4,20 @@ import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 import "./style.scss";
 
 // wrapper component for ReactiveComponent
-const SearchQuery = ({ componentId, theme }) => (
-  <ReactiveComponent
-    componentId={componentId}
-    URLParams={true}
-    render={({ setQuery, value }) => (
-      <SearchQueryHandler setQuery={setQuery} value={value} theme={theme} />
-    )}
-  />
-);
+function SearchQuery({ componentId, theme }) {
+  return (
+    <ReactiveComponent
+      componentId={componentId}
+      URLParams={true}
+      render={({ setQuery, value }) => (
+        <SearchQueryHandler setQuery={setQuery} value={value} theme={theme} />
+      )}
+    />
+  );
+}
 
 SearchQuery.defaultProps = {
-  theme: "__theme-light"
+  theme: "__theme-light",
 };
 
 // main component for the search query
@@ -24,7 +26,7 @@ class SearchQueryHandler extends React.Component {
     super(props);
     this.state = {
       userTyping: false,
-      value: props.value
+      value: props.value,
     };
   }
 
@@ -46,7 +48,7 @@ class SearchQueryHandler extends React.Component {
         const query = this.generateQuery(this.props.value);
         this.props.setQuery({
           query,
-          value: this.props.value
+          value: this.props.value,
         });
       } else {
         this.sendEmptyQuery();
@@ -55,13 +57,13 @@ class SearchQueryHandler extends React.Component {
     }
   }
 
-  generateQuery = searchQuery => ({
+  generateQuery = (searchQuery) => ({
     query: {
       query_string: {
         query: searchQuery,
-        default_operator: "OR"
-      }
-    }
+        default_operator: "OR",
+      },
+    },
   });
 
   sendEmptyQuery = () => {
@@ -69,7 +71,7 @@ class SearchQueryHandler extends React.Component {
     this.setState({ value: null, userTyping: false });
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     const { value } = this.state;
 
@@ -79,16 +81,16 @@ class SearchQueryHandler extends React.Component {
       this.props.setQuery({ query, value }); // sending query to elasticsearch
       this.setState({
         value,
-        userTyping: false
+        userTyping: false,
       });
     }
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     const queryString = e.target.value;
     this.setState({
       userTyping: true,
-      value: queryString
+      value: queryString,
     });
   };
 

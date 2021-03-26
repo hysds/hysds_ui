@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -24,24 +24,22 @@ const JobInput = (props) => {
   const { jobSpec, jobLabel, jobs } = props;
 
   return (
-    <Fragment>
-      <section className="job-input-wrapper">
-        <label className="job-input-label">Jobs:</label>
-        <div className="job-input-select-wrapper">
-          <Select
-            label="Select Job"
-            name="job"
-            options={jobs}
-            value={{
-              label: jobLabel || jobSpec || "",
-              value: jobSpec || "",
-            }}
-            onChange={handleJobChange}
-            styles={customSelectStyles}
-          />
-        </div>
-      </section>
-    </Fragment>
+    <section className="job-input-wrapper">
+      <label className="job-input-label">Jobs:</label>
+      <div className="job-input-select-wrapper">
+        <Select
+          label="Select Job"
+          name="job"
+          options={jobs}
+          value={{
+            label: jobLabel || jobSpec || "",
+            value: jobSpec || "",
+          }}
+          onChange={handleJobChange}
+          styles={customSelectStyles}
+        />
+      </div>
+    </section>
   );
 };
 

@@ -5,7 +5,7 @@ import { SingleList, DateRange, MultiList } from "@appbaseio/reactivesearch";
 
 import "./style.scss";
 
-const renderFilter = (filter, queryLogic) => {
+function renderFilter(filter, queryLogic) {
   const { componentId, dataField, title, type, defaultValue, sortBy } = filter;
   switch (type) {
     case "single":
@@ -63,13 +63,15 @@ const renderFilter = (filter, queryLogic) => {
         />
       );
   }
-};
+}
 
-const FigaroFilters = ({ filters, queryLogic }) => (
-  <Fragment>
-    {filters.map((filter) => renderFilter(filter, queryLogic))}
-  </Fragment>
-);
+function FigaroFilters({ filters, queryLogic }) {
+  return (
+    <Fragment>
+      {filters.map((filter) => renderFilter(filter, queryLogic))}
+    </Fragment>
+  );
+}
 
 FigaroFilters.propTypes = {
   filters: PropTypes.array.isRequired,

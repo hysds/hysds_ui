@@ -42,7 +42,7 @@ Tag.propTypes = {
   onDelete: PropTypes.func.isRequired,
 };
 
-const Input = (props) => {
+function Input(props) {
   const { value } = props;
 
   const style = css`
@@ -75,7 +75,7 @@ const Input = (props) => {
       className={style}
     />
   );
-};
+}
 
 Input.propTypes = {
   value: PropTypes.string.isRequired,

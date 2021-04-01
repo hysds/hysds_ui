@@ -1,5 +1,3 @@
-const React = require("react");
-
 exports.FIGARO_DISPLAY_COLUMNS = [
   { Header: "status", accessor: "status" },
   { Header: "job name", accessor: "job.name" },

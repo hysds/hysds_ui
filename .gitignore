@@ -25,6 +25,8 @@ chrome-user-data
 
 # js gitignore
 src/config/index.js
+src/config/tosca.js
+src/config/figaro.js
 dist/
 
 # General

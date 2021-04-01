@@ -1,4 +1,4 @@
-const React = require("react");
+const React = require("react"); // lgtm [js/unused-local-variable]
 
 // DEFINING THE OPTIONS FOR THE LEAFLET MAP
 exports.DISPLAY_MAP = true;
@@ -159,7 +159,11 @@ exports.GRQ_DISPLAY_COLUMNS = [
     resizable: false,
     Cell: (state) =>
       state.original.urls ? (
-        <a target="_blank" href={state.original.urls[0]}>
+        <a
+          target="_blank"
+          href={state.original.urls[0]}
+          rel="noopener noreferrer"
+        >
           Browse
         </a>
       ) : null,

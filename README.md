@@ -1,6 +1,6 @@
 ## Pre-Requisites
 
-- Node 6+ installed on machine
+- Node (>=6 & < 13) installed on machine
 - npm installed
 
 ## Create config file

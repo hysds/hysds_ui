@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { connect } from "react-redux";
 import { editTheme } from "../../redux/actions";
 import { Button } from "../Buttons";
@@ -18,14 +18,13 @@ import style from "../../style/global.css";
 import "./style.css";
 
 export function HeaderLink(props) {
-  const { title, href, active } = props;
-
-  let className = "header-bar-link";
-  if (active) className = `${className} active-link`;
+  const { title, href } = props;
 
   return (
-    <li className={className} {...props}>
-      <Link to={{ pathname: href, state: "desiredState" }}>{title}</Link>
+    <li className="header-bar-link" {...props}>
+      <NavLink to={{ pathname: href }} activeClassName="active-link">
+        {title}
+      </NavLink>
     </li>
   );
 }

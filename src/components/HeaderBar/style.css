@@ -35,7 +35,7 @@
 }
 
 .header-bar-link .active-link {
-  background-color: #1c5bca;
+  background-color: #7ba6f1;
 }
 
 .header-bar-buffer {
@@ -91,7 +91,7 @@
   color: var(--dark-theme-color);
 }
 
-.__theme-dark .header-bar-link.active-link {
+.__theme-dark .header-bar-link .active-link {
   background-color: var(--dark-theme-light);
 }
 

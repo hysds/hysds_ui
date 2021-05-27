@@ -92,7 +92,7 @@ class Tosca extends React.Component {
           <title>Tosca - Home</title>
           <meta name="description" content="Helmet application" />
         </Helmet>
-        <HeaderBar title="HySDS" theme={classTheme} active="tosca">
+        <HeaderBar title="HySDS" theme={classTheme}>
           <HeaderLink href="/tosca" title="Tosca" active={1} />
           <HeaderLink href="/figaro" title="Figaro" active={0} />
           <DropdownSources />

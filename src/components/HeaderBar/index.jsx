@@ -14,6 +14,7 @@ import {
   RABBIT_MQ_PORT,
 } from "../../config";
 
+import style from "../../style/global.css";
 import "./style.css";
 
 export function HeaderLink(props) {

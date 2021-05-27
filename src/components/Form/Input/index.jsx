@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import "./style.scss";
+import "./style.css";
 
 function Input(props) {
   const { label, value, url, editValue, ...rest } = props;

@@ -4,20 +4,16 @@ import { connect } from "react-redux";
 
 import Select from "react-select";
 
-import {
-  darkthemebg,
-  darkthemelight,
-  darkthemecolor,
-  lightthemecolor,
-  lightthemebg,
-} from "../../scss/constants.scss";
-
 function UserRulesTagsFilter(props) {
   const { tag, tags, darkMode } = props;
 
-  const backgroundColor = darkMode ? darkthemelight : lightthemebg;
+  const backgroundColor = darkMode
+    ? "var(--dark-theme-light)"
+    : "var(--light-theme-background)";
 
-  const color = darkMode ? darkthemecolor : lightthemecolor;
+  const color = darkMode
+    ? "var(--dark-theme-color_"
+    : "var(--light-theme-color)";
 
   const theme = (base) => {
     return darkMode
@@ -25,9 +21,9 @@ function UserRulesTagsFilter(props) {
           ...base,
           colors: {
             ...base.colors,
-            primary: darkthemebg,
-            primary25: darkthemebg,
-            primary50: darkthemebg,
+            primary: "var(--dark-theme-background)",
+            primary25: "var(--dark-theme-background)",
+            primary50: "var(--dark-theme-background)",
           },
         }
       : { ...base };

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { SingleList, DateRange, MultiList } from "@appbaseio/reactivesearch";
 
-import "./style.scss";
+import "./style.css";
 
 function renderFilter(filter, queryLogic) {
   const { componentId, dataField, title, type, defaultValue, sortBy } = filter;

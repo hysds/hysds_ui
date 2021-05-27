@@ -33,7 +33,7 @@ import {
   QUERY_LOGIC,
 } from "../../config/tosca";
 
-import "./style.scss";
+import "./style.css";
 
 class Tosca extends React.Component {
   constructor(props) {

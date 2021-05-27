@@ -41,7 +41,7 @@ import {
 import { buildParams, validateUserRule } from "../../utils";
 import { MOZART_REST_API_V1 } from "../../config";
 
-import "./style.scss";
+import "./style.css";
 
 class FigaroRuleEditor extends React.Component {
   constructor(props) {

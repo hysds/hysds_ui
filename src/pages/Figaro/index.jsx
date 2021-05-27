@@ -23,7 +23,7 @@ import { LastUpdatedAtBanner } from "../../components/miscellaneous";
 import { LOCAL_DEV, MOZART_ES_URL, MOZART_ES_INDICES } from "../../config";
 import { FILTERS, QUERY_LOGIC } from "../../config/figaro";
 
-import "./style.scss";
+import "./style.css";
 
 class Figaro extends React.Component {
   constructor(props) {

@@ -26,7 +26,7 @@ import {
   BBOX_OPACITY,
 } from "../../config/tosca";
 
-import "./style.scss";
+import "./style.css";
 
 let MapComponent = class extends React.Component {
   constructor(props) {

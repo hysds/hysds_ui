@@ -1,4 +1,4 @@
-// TOGGLE SLIDER
+/* TOGGLE SLIDER */
 .switch {
   position: relative;
   display: inline-block;
@@ -68,7 +68,7 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-// SORT OPTIONS
+/* SORT OPTIONS */
 .sort-results-select-wrapper {
   width: 190px;
   display: inline-block;
@@ -98,7 +98,7 @@ select[name="sort-options"] {
   outline: 1px solid #ffffff !important;
 }
 
-// PAGE SIZE
+/* PAGE SIZE */
 .results-page-select-wrapper {
   width: 175px;
   display: inline-block;

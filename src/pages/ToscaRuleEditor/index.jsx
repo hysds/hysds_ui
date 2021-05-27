@@ -41,7 +41,7 @@ import {
 import { buildParams, validateUserRule } from "../../utils";
 import { GRQ_REST_API_V1 } from "../../config";
 
-import "./style.scss";
+import "./style.css";
 
 class ToscaRuleEditor extends React.Component {
   constructor(props) {

@@ -23,7 +23,7 @@ import {
   FIELDS,
 } from "../../config/figaro";
 
-import "./style.scss";
+import "./style.css";
 
 const TABLE_VIEW_STORE = "table-view-figaro";
 const PAGE_SIZE_STORE = "page-size-figaro";

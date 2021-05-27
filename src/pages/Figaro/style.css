@@ -1,4 +1,4 @@
-@import "../../scss/constants.scss";
+@import "../../style/global.css";
 
 .figaro-body {
   padding: 0px 20px;
@@ -13,7 +13,6 @@
   height: calc(100vh - 45px);
 }
 
-/* SIDEBAR */
 .figaro-sidenav {
   flex: 0.25;
   min-width: 320px;
@@ -49,7 +48,6 @@ li.active:hover {
   }
 }
 
-/* TOP BAR: query string, on demand and trigger rules */
 input:focus {
   outline: none;
 }
@@ -66,12 +64,9 @@ input:focus {
 
 .filter-list-wrapper {
   margin-bottom: 20px;
-
-  > div {
-    > a span:last-child {
-      border-left: none;
-    }
-  }
+}
+.filter-list-wrapper > div > a span:last-child {
+  border-left: none;
 }
 
 .on-demand-button:hover {
@@ -87,9 +82,7 @@ input:focus {
   padding: 0px 7px;
 }
 
-.__theme-dark {
-  &.figaro-sidenav {
-    background-color: $dark-theme-alt;
-    color: $dark-theme-color;
-  }
+.__theme-dark.figaro-sidenav {
+  background-color: var(--dark-theme-alt);
+  color: var(--dark-theme-color);
 }

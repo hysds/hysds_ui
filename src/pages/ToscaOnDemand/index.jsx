@@ -35,7 +35,7 @@ import {
 import { buildParams, validateSubmission } from "../../utils";
 import { GRQ_REST_API_V1 } from "../../config";
 
-import "./style.scss";
+import "./style.css";
 
 class ToscaOnDemand extends React.Component {
   constructor(props) {
@@ -117,14 +117,8 @@ class ToscaOnDemand extends React.Component {
   };
 
   render() {
-    const {
-      darkMode,
-      query,
-      paramsList,
-      params,
-      hysdsio,
-      submissionType,
-    } = this.props;
+    const { darkMode, query, paramsList, params, hysdsio, submissionType } =
+      this.props;
     const { submitInProgress, submitSuccess, submitFailed } = this.state;
 
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;

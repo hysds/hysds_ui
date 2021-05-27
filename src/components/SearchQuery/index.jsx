@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 
-import "./style.scss";
+import "./style.css";
 
 // wrapper component for ReactiveComponent
 function SearchQuery({ componentId, theme }) {

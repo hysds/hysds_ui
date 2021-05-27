@@ -15,7 +15,8 @@ import {
   PageSizeOptions,
 } from "../../components/TableOptions";
 import { SORT_OPTIONS, FIELDS } from "../../config/tosca";
-import "./style.scss";
+
+import "./style.css";
 
 const TABLE_VIEW_STORE = "table-view-tosca";
 const PAGE_SIZE_STORE = "page-size-tosca";

@@ -5,7 +5,7 @@ import ReactTable from "react-table";
 import { GRQ_DISPLAY_COLUMNS } from "../../config/tosca";
 
 import "react-table/react-table.css";
-import "./style.scss";
+import "./style.css";
 
 function DataTable(props) {
   const { data } = props;

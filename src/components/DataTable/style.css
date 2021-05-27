@@ -1,4 +1,4 @@
-@import "../../scss/constants.scss";
+@import "../../style/global.css";
 
 .ReactTable {
   font-size: 13px;
@@ -13,9 +13,7 @@
   padding: 10px;
 }
 
-.__theme-dark {
-  .ReactTable {
-    background-color: $dark-theme-alt;
-    color: $dark-theme-color;
-  }
+.__theme-dark .ReactTable {
+  background-color: var(--dark-theme-alt);
+  color: var(--dark-theme-color);
 }

@@ -34,7 +34,7 @@
 .button:hover,
 .button-small:hover,
 .button-large:hover {
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
 .button:disabled,

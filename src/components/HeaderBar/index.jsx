@@ -74,7 +74,7 @@ function HeaderBar(props) {
     const { darkMode } = props;
     props.editTheme(!darkMode);
     localStorage.setItem("dark-mode", !darkMode);
-    if (!darkMode) localStorage.setItem("background-color", "#15202a");
+    if (!darkMode) localStorage.setItem("background-color", style.darkthemebg);
     else localStorage.setItem("background-color", "#ffff");
   };
 

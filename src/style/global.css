@@ -20,3 +20,7 @@
 
   --link-color: #0000ee;
 }
+
+:export {
+  darkthemebg: #15202a;
+}

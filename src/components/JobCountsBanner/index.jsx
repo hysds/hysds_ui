@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 
-import "./style.scss";
+import "./style.css";
 
 function JobCount(props) {
   let { title, count, className, ...rest } = props;

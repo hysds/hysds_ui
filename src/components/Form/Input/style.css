@@ -28,15 +28,15 @@
   padding-left: 10px;
   width: 100%;
   display: table-cell;
+}
 
-  &:focus {
-    border-color: #1c7ce4;
-    border-width: 2px;
-  }
+.form-input:focus {
+  border-color: #1c7ce4;
+  border-width: 2px;
+}
 
-  &:invalid {
-    border: 2px solid red;
-  }
+.form-input:invalid {
+  border: 2px solid red;
 }
 
 input.form-input:invalid {

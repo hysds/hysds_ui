@@ -14,8 +14,8 @@
   background-color: transparent;
   color: inherit;
   resize: none;
+}
 
-  &:focus {
-    outline: none;
-  }
+.code-input:focus {
+  outline: none;
 }

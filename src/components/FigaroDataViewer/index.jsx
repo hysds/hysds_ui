@@ -8,7 +8,7 @@ import UserTags from "../UserTags";
 
 import { MOZART_BASE_URL, MOZART_REST_API_V1 } from "../../config";
 
-import "./style.scss";
+import "./style.css";
 
 const createJobUrl = (jobUrl) => {
   let newJobUrl = jobUrl.replace("http://", `${MOZART_BASE_URL}/verdi/`);

@@ -1,8 +1,4 @@
-@import "../../scss/constants.scss";
-
-body {
-  font-family: "Oswald", sans-serif !important;
-}
+@import "../../style/global.css";
 
 .figaro-on-demand-page {
   min-width: 650px;
@@ -55,27 +51,26 @@ body {
   }
 }
 
-.__theme-dark {
-  .on-demand-select-wrapper {
-    color: black;
-    label {
-      color: $dark-theme-color;
-    }
-  }
+.__theme-dark .on-demand-select-wrapper {
+  color: black;
+}
 
-  section {
-    color: black;
-  }
-  label {
-    color: $dark-theme-color;
-  }
+.__theme-dark .on-demand-select-wrapper label {
+  color: var(--dark-theme-color);
+}
 
-  hr {
-    border-color: $dark-theme-color;
-  }
+.__theme-dark section {
+  color: black;
+}
+.__theme-dark label {
+  color: var(--dark-theme-color);
+}
 
-  .on-demand-submission-type {
-    background-color: $dark-theme-background;
-    color: $dark-theme-color;
-  }
+.__theme-dark hr {
+  border-color: var(--dark-theme-color);
+}
+
+.__theme-dark .on-demand-submission-type {
+  background-color: var(--dark-theme-background);
+  color: var(--dark-theme-color);
 }

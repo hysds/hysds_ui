@@ -14,8 +14,7 @@ import {
   RABBIT_MQ_PORT,
 } from "../../config";
 
-import { darkthemebg, lightthemebg } from "../../scss/constants.scss";
-import "./style.scss";
+import "./style.css";
 
 export function HeaderLink(props) {
   const { title, href, active } = props;
@@ -75,8 +74,8 @@ function HeaderBar(props) {
     const { darkMode } = props;
     props.editTheme(!darkMode);
     localStorage.setItem("dark-mode", !darkMode);
-    if (!darkMode) localStorage.setItem("background-color", darkthemebg);
-    else localStorage.setItem("background-color", lightthemebg);
+    if (!darkMode) localStorage.setItem("background-color", "#15202a");
+    else localStorage.setItem("background-color", "#ffff");
   };
 
   return (

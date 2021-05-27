@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import "./style.scss";
+import "./style.css";
 
 import upArrow from "../../images/arrow-up.png";
 

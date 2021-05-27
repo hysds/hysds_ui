@@ -1,0 +1,59 @@
+@import "../../style/global.css";
+
+.figaro-job-count-banner {
+  margin: 15px 0px 10px 0px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.figaro-job-count {
+  flex: 0 1 10em;
+  text-align: center;
+  padding: 20px 0px 20px 0px;
+  margin: 10px 5px 10px 5px;
+  border-radius: 5px;
+}
+
+.job-count {
+  color: #ffff;
+  cursor: pointer;
+}
+
+.job-count:hover {
+  transition: all 0.2s;
+  filter: brightness(85%);
+}
+
+.job-count.total {
+  color: var(--light-theme-color);
+}
+.job-count.completed {
+  background-color: var(--base-color);
+}
+.job-count.started {
+  background-color: var(--success-color);
+}
+.job-count.queued {
+  background-color: #49afcd;
+}
+.job-count.failed {
+  background-color: var(--fail-color);
+}
+.job-count.revoked {
+  background-color: var(--warning-color);
+}
+.job-count.deduped {
+  background-color: #dd33ff;
+}
+.job-count.offline {
+  background-color: #363636;
+}
+
+.__theme-dark .figaro-job-count {
+  color: var(--dark-theme-color);
+}
+
+.__theme-light .job-count.total {
+  background-color: var(--light-theme-alt);
+}

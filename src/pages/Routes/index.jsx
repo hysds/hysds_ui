@@ -24,7 +24,7 @@ import NotFound from "../NotFound";
 
 import { ROOT_PATH } from "../../config/index.js";
 
-import "./style.scss";
+import "./style.css";
 
 const Routes = (props) => {
   const classTheme = props.darkMode ? "__theme-dark" : "__theme-light";

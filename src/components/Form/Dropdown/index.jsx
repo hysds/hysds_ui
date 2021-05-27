@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import Select from "react-select";
 
-import "./style.scss";
+import "./style.css";
 
 function Dropdown(props) {
   const { label, value, options, url, required, ...rest } = props;

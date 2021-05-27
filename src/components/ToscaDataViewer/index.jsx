@@ -11,8 +11,7 @@ import { Button } from "../Buttons";
 
 import { GRQ_REST_API_V1 } from "../../config";
 
-import { darkthemealt, lightthemebg } from "../../scss/constants.scss";
-import "./style.scss";
+import "./style.css";
 
 const ToscaDataViewer = (props) => {
   const { res } = props;
@@ -24,7 +23,9 @@ const ToscaDataViewer = (props) => {
     res.metadata && res.metadata.user_tags ? res.metadata.user_tags : [];
 
   const metadataTheme = props.darkMode ? "monokai" : "rjv-default";
-  const backgroundColor = props.darkMode ? darkthemealt : lightthemebg;
+  const backgroundColor = props.darkMode
+    ? "var(--dark-theme-alt)"
+    : "var(--light-theme-background)";
 
   let browseUrl = null;
   if (res.urls) browseUrl = res.urls.find((url) => url.startsWith("http"));

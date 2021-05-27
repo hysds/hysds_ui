@@ -1,4 +1,4 @@
-@import "../../scss/constants.scss";
+@import "../../style/global.css";
 
 body {
   font-family: "Oswald", sans-serif !important;
@@ -50,22 +50,22 @@ body {
   }
 }
 
-.__theme-dark {
-  .rule-editor-select-wrapper {
-    color: black;
-    label {
-      color: $dark-theme-color;
-    }
-  }
+.__theme-dark .rule-editor-select-wrapper {
+  color: black;
+}
 
-  section {
-    color: black;
-  }
-  label {
-    color: $dark-theme-color;
-  }
+.__theme-dark .rule-editor-select-wrapper label {
+  color: var(--dark-theme-color);
+}
 
-  hr {
-    border-color: $dark-theme-color;
-  }
+.__theme-dark section {
+  color: black;
+}
+
+.__theme-dark label {
+  color: var(--dark-theme-color);
+}
+
+.__theme-dark hr {
+  border-color: var(--dark-theme-color);
 }

@@ -20,7 +20,7 @@ import {
 
 import HeaderBar from "../../components/HeaderBar";
 
-import "./style.scss";
+import "./style.css";
 
 const FigaroUserRules = class extends React.Component {
   constructor(props) {
@@ -44,12 +44,8 @@ const FigaroUserRules = class extends React.Component {
   };
 
   render() {
-    const {
-      darkMode,
-      userRules,
-      userRuleSearch,
-      userRuleTagFilter,
-    } = this.props;
+    const { darkMode, userRules, userRuleSearch, userRuleTagFilter } =
+      this.props;
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
     const searchDisabled = userRules.length === 0 && !this.state.globalSearch;
     const tagFilters = [{ value: null, label: "-" }, ...this.props.tags];

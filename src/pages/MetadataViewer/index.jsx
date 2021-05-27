@@ -9,8 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import HeaderBar from "../../components/HeaderBar";
 
 import { GRQ_ES_URL } from "../../config";
-import { darkthemebg, lightthemebg } from "../../scss/constants.scss";
-import "./style.scss";
+
+import "./style.css";
 
 const MetadataViewer = (props) => {
   const { id, index } = props.match.params;
@@ -43,7 +43,9 @@ const MetadataViewer = (props) => {
   }, []);
 
   const theme = props.darkMode ? "monokai" : "rjv-default";
-  const backgroundColor = props.darkMode ? darkthemebg : lightthemebg;
+  const backgroundColor = props.darkMode
+    ? "var(--dark-theme-background)"
+    : "var(--light-theme-background)";
 
   let view = null;
   if (error) {

@@ -1,0 +1,22 @@
+:root {
+  --dark-theme-background: #15202a;
+  --dark-theme-alt: #182734;
+  --dark-theme-light: #243341;
+  --dark-theme-color: #ffff;
+  --dark-theme-border: #303030;
+  --dark-theme-title: #ffff;
+  --dark-theme-editor: #131313;
+
+  --light-theme-background: #ffff;
+  --light-theme-alt: #eeeeee;
+  --light-theme-color: #424242;
+  --light-theme-border: #303030;
+  --light-theme-title: #9b9b9b;
+
+  --base-color: #4387ff;
+  --success-color: #5cb85c;
+  --fail-color: #dc3545;
+  --warning-color: #ffc107;
+
+  --link-color: #0000ee;
+}

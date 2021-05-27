@@ -4,8 +4,6 @@ import PropTypes from "prop-types";
 
 import { Creatable } from "react-select";
 
-import "./style.scss";
-
 function Tags(props) {
   const value = props.value.map((tag) => ({
     value: tag,

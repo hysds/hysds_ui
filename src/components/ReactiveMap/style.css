@@ -1,8 +1,4 @@
-@import "../../scss/constants.scss";
-
-p {
-  text-align: center;
-}
+@import "../../style/global.css";
 
 .leaflet-map {
   width: 95%;
@@ -65,16 +61,12 @@ p {
   text-decoration: underline;
 }
 
-.__theme-dark {
-  .map-coordinates-textbox {
-    background-color: $dark-theme-alt;
-    color: $dark-theme-color;
-    border: $dark-theme-border;
-  }
+.__theme-dark .map-coordinates-textbox {
+  background-color: var(--dark-theme-alt);
+  color: var(--dark-theme-color);
+  border: var(--dark-theme-border);
 }
 
-.__theme-light {
-  .map-coordinates-textbox {
-    border: 1px solid #b2b2b2;
-  }
+.__theme-light .map-coordinates-textbox {
+  border: 1px solid #b2b2b2;
 }

@@ -22,7 +22,6 @@
 
 .job-count:hover {
   transition: all 0.2s;
-  filter: brightness(85%);
 }
 
 .job-count.total {
@@ -31,23 +30,44 @@
 .job-count.completed {
   background-color: var(--base-color);
 }
+.job-count.completed:hover {
+  background-color: var(--base-color-hover);
+}
 .job-count.started {
   background-color: var(--success-color);
 }
+.job-count.started:hover {
+  background-color: var(--success-color-hover);
+}
 .job-count.queued {
-  background-color: #49afcd;
+  background-color: var(--queued-color);
+}
+.job-count.queued:hover {
+  background-color: var(--queued-color-hover);
 }
 .job-count.failed {
   background-color: var(--fail-color);
 }
+.job-count.failed:hover {
+  background-color: var(--fail-color-hover);
+}
 .job-count.revoked {
   background-color: var(--warning-color);
 }
+.job-count.revoked:hover {
+  background-color: var(--warning-color-hover);
+}
 .job-count.deduped {
-  background-color: #dd33ff;
+  background-color: var(--deduped-color);
+}
+.job-count.deduped:hover {
+  background-color: var(--deduped-color-hover);
 }
 .job-count.offline {
-  background-color: #363636;
+  background-color: var(--offline-color);
+}
+.job-count.offline:hover {
+  background-color: var(--offline-color-hover);
 }
 
 .__theme-dark .figaro-job-count {

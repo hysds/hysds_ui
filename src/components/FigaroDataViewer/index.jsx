@@ -54,7 +54,7 @@ export const FigaroDataViewer = (props) => {
     return dedupedTags.join(", ");
   };
 
-  const renderJobData = (type) => {
+  const renderJobTabInfo = (type) => {
     switch (type) {
       case "products": {
         return (
@@ -197,15 +197,15 @@ export const FigaroDataViewer = (props) => {
               : "View triaged products"}
           </a>
         ) : null}
+        {validJobLink ? (
+          <>
+            <a href={createJobUrl(res.job.job_info.job_url)} target="_blank">
+              View Job
+            </a>
+          </>
+        ) : null}
       </div>
-      {validJobLink ? (
-        <>
-          <a href={createJobUrl(res.job.job_info.job_url)} target="_blank">
-            View Job
-          </a>
-        </>
-      ) : null}
-      {renderJobData(viewType)}
+      {renderJobTabInfo(viewType)}
     </div>
   );
 };

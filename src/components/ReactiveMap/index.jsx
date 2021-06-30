@@ -1,4 +1,4 @@
-import React, { Fragment } from "react"; // react imports
+import React from "react"; // react imports
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
@@ -352,7 +352,7 @@ let MapComponent = class extends React.Component {
     const mapStyle = { display: displayMap ? "block" : "none" };
 
     return (
-      <Fragment>
+      <>
         <Button
           label={displayMap ? "Hide Map" : "Show Map"}
           size="small"
@@ -370,7 +370,7 @@ let MapComponent = class extends React.Component {
           onChange={this.polygonTextChange}
           onKeyPress={this.polygonTextInput}
         ></textarea>
-      </Fragment>
+      </>
     );
   }
 };

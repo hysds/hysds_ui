@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Helmet } from "react-helmet";
 
 import QueryEditor from "../../components/QueryEditor";
@@ -202,7 +202,7 @@ class FigaroOnDemand extends React.Component {
                   params={params}
                 />
                 {this.props.jobSpec ? (
-                  <Fragment>
+                  <>
                     <Border />
                     <Input
                       label="Soft Time Limit"
@@ -235,7 +235,7 @@ class FigaroOnDemand extends React.Component {
                         { value: false, label: "false" },
                       ]}
                     />
-                  </Fragment>
+                  </>
                 ) : null}
 
                 <div className="tosca-on-demand-button-wrapper">

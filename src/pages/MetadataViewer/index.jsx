@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 
@@ -76,7 +76,7 @@ const MetadataViewer = (props) => {
   }
 
   return (
-    <Fragment>
+    <>
       <Helmet>
         <title>GRQ - Metadata</title>
       </Helmet>
@@ -85,7 +85,7 @@ const MetadataViewer = (props) => {
       <div className={classTheme}>
         <div className="metadata-view-container">{view}</div>
       </div>
-    </Fragment>
+    </>
   );
 };
 

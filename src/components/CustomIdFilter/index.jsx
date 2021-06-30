@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux"; // redux
 import { editCustomFilterId } from "../../redux/actions";
@@ -79,7 +79,7 @@ let Handler = class extends React.Component {
     }
   }
 
-  render = () => <Fragment />;
+  render = () => <></>;
 };
 
 // Redux states and actions

@@ -126,6 +126,7 @@ exports.FIELDS = [
   "short_error",
   "error",
   "traceback",
+  "msg_details",
   "tags",
   "job.name",
   "job.priority",

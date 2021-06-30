@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -19,7 +19,7 @@ function Tags(props) {
   };
 
   return (
-    <Fragment>
+    <>
       <section className="job-input-wrapper">
         <label className="job-input-label">Tags:</label>
         <div className="job-input-select-wrapper">
@@ -31,7 +31,7 @@ function Tags(props) {
           />
         </div>
       </section>
-    </Fragment>
+    </>
   );
 }
 

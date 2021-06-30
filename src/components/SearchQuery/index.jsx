@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 
 import "./style.css";
@@ -98,7 +98,7 @@ class SearchQueryHandler extends React.Component {
     const { value } = this.state;
 
     return (
-      <Fragment>
+      <>
         <form
           className={`${this.props.theme} query-input-form`}
           onSubmit={this.handleSubmit}
@@ -111,7 +111,7 @@ class SearchQueryHandler extends React.Component {
             placeholder={`Input Elasticsearch query string... ex. _id:"test_id"`}
           />
         </form>
-      </Fragment>
+      </>
     );
   }
 }

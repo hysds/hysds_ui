@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
 import { SingleList, DateRange, MultiList } from "@appbaseio/reactivesearch";
@@ -66,11 +66,7 @@ function renderFilter(filter, queryLogic) {
 }
 
 function FigaroFilters({ filters, queryLogic }) {
-  return (
-    <Fragment>
-      {filters.map((filter) => renderFilter(filter, queryLogic))}
-    </Fragment>
-  );
+  return <>{filters.map((filter) => renderFilter(filter, queryLogic))}</>;
 }
 
 FigaroFilters.propTypes = {

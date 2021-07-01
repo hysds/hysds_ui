@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux"; // redux
 import { clickDatasetId } from "../../redux/actions";
@@ -57,7 +57,7 @@ var Handler = class extends React.Component {
       this.setState({ _id: this.props.value });
     }
   }
-  render = () => <Fragment />;
+  render = () => <></>;
 };
 
 // Redux states and actions

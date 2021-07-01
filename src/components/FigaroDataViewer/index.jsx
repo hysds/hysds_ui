@@ -20,7 +20,7 @@ export const FigaroDataViewer = (props) => {
   const { res } = props;
   const [validJobLink, setJobLink] = useState(false);
 
-  const [viewType, setViewType] = useState(null);
+  const [viewType, setViewType] = useState("traceback");
   const handleViewTypeChange = (type) => {
     if (type === viewType) setViewType(null);
     else setViewType(type);

@@ -7,7 +7,7 @@
 }
 
 .header-bar ul {
-  background-color: #4288ff;
+  background-color: var(--main-theme-color);
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -31,11 +31,11 @@
 .header-bar-title {
   margin-left: 40px;
   margin-right: 40px;
-  background-color: #4288ff;
+  background-color: var(--main-theme-color);
 }
 
 .header-bar-link .active-link {
-  background-color: #7ba6f1;
+  background-color: var(--base-color-hover);
 }
 
 .header-bar-buffer {

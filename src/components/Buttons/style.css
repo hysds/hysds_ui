@@ -43,42 +43,36 @@
   opacity: 0.5;
 }
 
-.button:hover,
-.button-small:hover,
-.button-large:hover,
-.rules-table-button:hover {
-  filter: brightness(85%);
-}
-
-.button:active,
-.button-small:active,
-.button-large:active,
-.rules-table-button:active {
-  filter: brightness(75%);
-}
-
-/* basic button (blue) */
 .button-basic {
   background-color: var(--base-color);
   color: #ffffff;
 }
+.button-basic:hover {
+  background-color: var(--base-color-hover);
+}
 
-/* success button (green) */
 .button-success {
   background-color: var(--success-color);
   color: #ffffff;
 }
+.button-success:hover {
+  background-color: var(--success-color-hover);
+}
 
-/* fail button (red) */
 .button-fail {
   background-color: var(--fail-color);
   color: #ffffff;
 }
+.button-fail:hover {
+  background-color: var(--fail-color-hover);
+}
 
-/* warning button (yellow) */
 .button-warning {
   background-color: var(--warning-color);
   color: #ffffff;
+}
+.button-warning:hover {
+  background-color: var(--warning-color-hover);
 }
 
 .scroll-top-button {
@@ -93,6 +87,7 @@
   text-decoration: none;
   font-size: 12px;
   z-index: 999;
+  transition: opacity 0.25s;
   -webkit-transition: opacity 0.25s;
 }
 

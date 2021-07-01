@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Link } from "react-router-dom";
@@ -18,8 +18,13 @@ const createJobUrl = (jobUrl) => {
 
 export const FigaroDataViewer = (props) => {
   const { res } = props;
-  const [viewProducts, setViewProducts] = useState(false);
   const [validJobLink, setJobLink] = useState(false);
+
+  const [viewType, setViewType] = useState("traceback");
+  const handleViewTypeChange = (type) => {
+    if (type === viewType) setViewType(null);
+    else setViewType(type);
+  };
 
   const endpoint = `${MOZART_REST_API_V1}/user-tags`;
 
@@ -47,6 +52,52 @@ export const FigaroDataViewer = (props) => {
   const generateTags = (tags) => {
     const dedupedTags = [...new Set(tags)];
     return dedupedTags.join(", ");
+  };
+
+  const renderJobTabInfo = (type) => {
+    switch (type) {
+      case "products": {
+        return (
+          <>
+            {res.job &&
+            res.job.job_info &&
+            res.job.job_info.metrics &&
+            res.job.job_info.metrics.products_staged ? (
+              <>
+                {res.job.job_info.metrics.products_staged.map((p) => (
+                  <li key={p.id}>
+                    <Link to={`/tosca?_id="${p.id}"`}>{p.id}</Link>
+                  </li>
+                ))}
+              </>
+            ) : null}
+          </>
+        );
+      }
+      case "traceback": {
+        return (
+          <>
+            {res.traceback ? (
+              <div className="figaro-code-format">{res.traceback}</div>
+            ) : null}
+            {res.event && res.event.traceback ? (
+              <div className="figaro-code-format">{res.event.traceback}</div>
+            ) : null}
+          </>
+        );
+      }
+      case "details": {
+        return (
+          <>
+            {res.msg_details ? (
+              <div className="figaro-code-format">{res.msg_details}</div>
+            ) : null}
+          </>
+        );
+      }
+      default:
+        return null;
+    }
   };
 
   useEffect(() => {
@@ -115,42 +166,46 @@ export const FigaroDataViewer = (props) => {
       {res.job && res.job.job_info && res.job.job_info.duration ? (
         <div>duration: {res.job.job_info.duration}s</div>
       ) : null}
-      {res.traceback ? (
-        <div className="figaro-traceback">{res.traceback}</div>
-      ) : null}
-      {res.event && res.event.traceback ? (
-        <div className="figaro-traceback">{res.event.traceback}</div>
-      ) : null}
       {generatedUserTags}
-      {validJobLink ? (
-        <Fragment>
-          <a href={createJobUrl(res.job.job_info.job_url)} target="_blank">
-            View Job
-          </a>
-        </Fragment>
-      ) : null}
-      {res.job &&
-      res.job.job_info &&
-      res.job.job_info.metrics &&
-      res.job.job_info.metrics.products_staged ? (
-        <Fragment>
+      <div>
+        {res.traceback || (res.event && res.event.traceback) ? (
           <a
-            className="figaro-staged-product-link"
-            onClick={() => setViewProducts(!viewProducts)}
+            className="figaro-job-info-link"
+            onClick={() => handleViewTypeChange("traceback")}
+          >
+            Traceback
+          </a>
+        ) : null}
+        {res.msg_details ? (
+          <a
+            className="figaro-job-info-link"
+            onClick={() => handleViewTypeChange("details")}
+          >
+            Job Details
+          </a>
+        ) : null}
+        {res.job &&
+        res.job.job_info &&
+        res.job.job_info.metrics &&
+        res.job.job_info.metrics.products_staged ? (
+          <a
+            className="figaro-job-info-link"
+            onClick={() => handleViewTypeChange("products")}
           >
             {res.status === "job-completed"
               ? "View staged products"
               : "View triaged products"}
           </a>
-          {viewProducts
-            ? res.job.job_info.metrics.products_staged.map((p) => (
-                <li key={p.id}>
-                  <Link to={`/tosca?_id="${p.id}"`}>{p.id}</Link>
-                </li>
-              ))
-            : null}
-        </Fragment>
-      ) : null}
+        ) : null}
+        {validJobLink ? (
+          <>
+            <a href={createJobUrl(res.job.job_info.job_url)} target="_blank">
+              View Job
+            </a>
+          </>
+        ) : null}
+      </div>
+      {renderJobTabInfo(viewType)}
     </div>
   );
 };

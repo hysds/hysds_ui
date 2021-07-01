@@ -73,6 +73,12 @@ exports.FILTERS = [
     type: "single",
   },
   {
+    componentId: "job_detail",
+    dataField: "msg.keyword",
+    title: "Job Detail",
+    type: "single",
+  },
+  {
     componentId: "container_image",
     dataField: "job.container_image_name",
     title: "Container Image",
@@ -101,6 +107,7 @@ exports.QUERY_LOGIC = {
     "tags",
     "status",
     "short_error",
+    "job_detail",
     "resource",
     "job_type",
     "queue",
@@ -126,6 +133,7 @@ exports.FIELDS = [
   "short_error",
   "error",
   "traceback",
+  "msg_details",
   "tags",
   "job.name",
   "job.priority",

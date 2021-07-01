@@ -8,7 +8,7 @@
   word-break: break-all;
 }
 
-.figaro-traceback {
+.figaro-code-format {
   font-family: "Courier New", Courier, monospace;
   font-size: 11px;
   white-space: pre-line;
@@ -24,7 +24,7 @@ a.figaro-data-view-link {
   text-decoration: underline;
 }
 
-a.figaro-staged-product-link {
+a.figaro-job-info-link {
   cursor: pointer;
   text-decoration: underline;
   color: var(--link-color);

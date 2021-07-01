@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
@@ -64,7 +64,7 @@ class Figaro extends React.Component {
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
     return (
-      <Fragment>
+      <>
         <Helmet>
           <title>Figaro - Home</title>
           <meta name="description" content="Helmet application" />
@@ -137,7 +137,7 @@ class Figaro extends React.Component {
             <ScrollTop onClick={() => this.pageRef.current.scrollTo(0, 0)} />
           </div>
         </ReactiveBase>
-      </Fragment>
+      </>
     );
   }
 }

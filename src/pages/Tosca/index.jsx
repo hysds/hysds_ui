@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Helmet } from "react-helmet";
 import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
 import { connect } from "react-redux";
@@ -87,7 +87,7 @@ class Tosca extends React.Component {
     ) : null;
 
     return (
-      <Fragment>
+      <>
         <Helmet>
           <title>Tosca - Home</title>
           <meta name="description" content="Helmet application" />
@@ -161,7 +161,7 @@ class Tosca extends React.Component {
             <ScrollTop onClick={() => this.pageRef.current.scrollTo(0, 0)} />
           </div>
         </ReactiveBase>
-      </Fragment>
+      </>
     );
   }
 }

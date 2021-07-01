@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Helmet } from "react-helmet";
 
 import { Redirect } from "react-router-dom";
@@ -205,7 +205,7 @@ class ToscaRuleEditor extends React.Component {
               />
 
               {this.props.jobSpec ? (
-                <Fragment>
+                <>
                   <Border />
                   <Input
                     label="Soft Time Limit"
@@ -239,7 +239,7 @@ class ToscaRuleEditor extends React.Component {
                       { value: null, label: "<none>" },
                     ]}
                   />
-                </Fragment>
+                </>
               ) : null}
 
               <div className="user-rule-buttons-wrapper">

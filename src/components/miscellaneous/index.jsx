@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 import { faInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,19 +29,19 @@ export function SubmitStatusBar(props) {
 
 export function HelperLink(props) {
   return (
-    <Fragment>
+    <>
       <a href={props.link} target="_blank" className="helper-link">
         <FontAwesomeIcon icon={faInfo} />
       </a>
-    </Fragment>
+    </>
   );
 }
 
 export function Checkbox(props) {
   return (
-    <Fragment>
+    <>
       <input className="miscellaneous-checkbox" type="checkbox" {...props} />
-    </Fragment>
+    </>
   );
 }
 

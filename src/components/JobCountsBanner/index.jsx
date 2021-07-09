@@ -25,10 +25,12 @@ function JobCountsBanner(props) {
   let history = useHistory();
   const { dataCounts } = props;
 
-  const changeJobState = (status) =>
+  const changeJobState = (status) => {
+    props.updateCount();
     history.push({
       search: `?resource="job"&status="${status}"`,
     });
+  };
 
   return (
     <div className="figaro-job-count-banner">

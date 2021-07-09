@@ -88,7 +88,7 @@ class Figaro extends React.Component {
 
             <div className="figaro-body" ref={this.pageRef}>
               <LastUpdatedAtBanner time={this.state.lastUpdatedAt} />
-              <JobCountsBanner />
+              <JobCountsBanner updateCount={this.props.getJobCounts} />
 
               <div className="top-bar-wrapper">
                 <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />

@@ -40,7 +40,6 @@ let MapComponent = class extends React.Component {
     super(props);
 
     this.mapId = "leaflet-map-id";
-    this.ref = createRef();
     let displayMap = localStorage.getItem(DISPLAY_MAP_LS);
     displayMap = displayMap === "false" ? false : true;
 
@@ -401,11 +400,7 @@ let MapComponent = class extends React.Component {
 
         <div className="leaflet-map-container" style={mapStyle}>
           <div id={this.mapId} className="leaflet-map" />
-          <div
-            className="map-handler"
-            ref={this.ref}
-            onMouseDown={this.dragMap}
-          />
+          <div className="map-handler" onMouseDown={this.dragMap} />
         </div>
 
         <textarea

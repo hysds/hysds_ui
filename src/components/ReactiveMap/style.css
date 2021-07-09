@@ -1,7 +1,7 @@
 @import "../../style/global.css";
 
 :root {
-  --min-map-height: 300px;
+  --min-map-height: 250px;
 }
 
 .leaflet-map {

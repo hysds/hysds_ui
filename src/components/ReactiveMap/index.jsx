@@ -28,6 +28,7 @@ import {
 
 import "./style.css";
 
+const MIN_MAP_HEIGHT = 250;
 const DEFAULT_MAP_HEIGHT = 450;
 const MAP_HEIGHT_LS = "map-height";
 const DISPLAY_MAP_LS = "display-map";
@@ -350,7 +351,10 @@ let MapComponent = class extends React.Component {
 
     const dragMouseHandler = (me) => {
       me.preventDefault();
-      const newMapHeight = (yOffset - me.pageY) * -1 + mapHeight;
+      const newMapHeight = Math.max(
+        me.pageY - yOffset + mapHeight,
+        MIN_MAP_HEIGHT
+      );
 
       if (!(me.buttons === 1)) {
         document.body.removeEventListener("pointermove", dragMouseHandler);

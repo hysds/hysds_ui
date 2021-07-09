@@ -107,27 +107,6 @@ let MapComponent = class extends React.Component {
       this.props.setQuery({ query, value: this.props.value });
       this.setState({ value: this.props.value });
     }
-
-    const ele = this.ref.current;
-    console.log(ele);
-    ele.addEventListener("resize", (e) => {
-      const { height } = e.detail;
-      this.setState({ mapHeight: height });
-      localStorage.setItem(MAP_HEIGHT_LS, height);
-      this.map.invalidateSize();
-    });
-
-    const checkResize = (mutations) => {
-      if (!mutations) return;
-
-      const el = mutations[0].target;
-      const h = el.clientHeight;
-      const event = new CustomEvent("resize", { detail: { height: h } });
-      el.dispatchEvent(event);
-    };
-
-    const observer = new MutationObserver(checkResize);
-    observer.observe(ele, { attributes: true });
   }
 
   componentDidUpdate() {
@@ -364,10 +343,24 @@ let MapComponent = class extends React.Component {
     }
   };
 
-  mouseUpOnMap = () => {
-    // workaround for resizing the map on Safari
-    localStorage.setItem(MAP_HEIGHT_LS, this.ref.current.clientHeight);
-    this.map.invalidateSize();
+  dragMap = (e) => {
+    e.preventDefault();
+    const { mapHeight } = this.state;
+    const yOffset = e.pageY;
+
+    const dragMouseHandler = (me) => {
+      me.preventDefault();
+      const newMapHeight = (yOffset - me.pageY) * -1 + mapHeight;
+
+      if (!(me.buttons === 1)) {
+        document.body.removeEventListener("pointermove", dragMouseHandler);
+        return;
+      }
+      this.setState({ mapHeight: newMapHeight });
+      localStorage.setItem(MAP_HEIGHT_LS, newMapHeight);
+      this.map.invalidateSize();
+    };
+    document.body.addEventListener("pointermove", dragMouseHandler);
   };
 
   render() {
@@ -390,7 +383,7 @@ let MapComponent = class extends React.Component {
     const textboxTooltip =
       "Press SHIFT + ENTER to manually input polygon... \nex. [ [-125.09335, 42.47589], ... ,[-125.09335, 42.47589] ]";
     const mapStyle = {
-      display: displayMap ? "block" : "none",
+      display: displayMap ? null : "none",
       height: mapHeight,
     };
 
@@ -402,13 +395,13 @@ let MapComponent = class extends React.Component {
           onClick={this.toggleMapDisplay}
         />
 
-        <div
-          className="leaflet-map-container"
-          style={mapStyle}
-          ref={this.ref}
-          onMouseUp={this.mouseUpOnMap}
-        >
+        <div className="leaflet-map-container" style={mapStyle}>
           <div id={this.mapId} className="leaflet-map" />
+          <div
+            className="map-handler"
+            ref={this.ref}
+            onMouseDown={this.dragMap}
+          />
         </div>
 
         <textarea

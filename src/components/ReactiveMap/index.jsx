@@ -344,7 +344,6 @@ let MapComponent = class extends React.Component {
   };
 
   dragMap = (e) => {
-    e.preventDefault();
     const { mapHeight } = this.state;
     const yOffset = e.pageY;
 

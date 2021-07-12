@@ -388,6 +388,7 @@ let MapComponent = class extends React.Component {
     const mapStyle = {
       display: displayMap ? null : "none",
       height: mapHeight,
+      minHeight: MIN_MAP_HEIGHT,
     };
 
     return (

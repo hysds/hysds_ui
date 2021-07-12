@@ -1,4 +1,4 @@
-import React, { createRef } from "react"; // react imports
+import React from "react"; // react imports
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 

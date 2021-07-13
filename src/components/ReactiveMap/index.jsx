@@ -354,7 +354,7 @@ let MapComponent = class extends React.Component {
         MIN_MAP_HEIGHT
       );
 
-      if (!(me.buttons === 1)) {
+      if (me.buttons !== 1) {
         document.body.removeEventListener("pointermove", dragMouseHandler);
         return;
       }

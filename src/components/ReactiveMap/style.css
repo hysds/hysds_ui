@@ -1,17 +1,40 @@
 @import "../../style/global.css";
 
 .leaflet-map {
-  width: 95%;
   height: inherit;
   margin: 0 auto;
+  margin-bottom: 5px;
 }
 
 .leaflet-map-container {
-  min-height: 500px;
-  height: 750px;
+  padding: 0px 35px;
   margin-top: 10px;
   margin-left: 10px;
   margin-right: 10px;
+  padding-bottom: 5px;
+}
+
+.map-handler {
+  margin: 0 auto;
+  height: 1px;
+  cursor: ns-resize;
+  z-index: 100;
+}
+
+.map-handler::after {
+  content: "";
+  display: block;
+  height: 10px;
+  z-index: 101;
+}
+
+.map-handler:hover::after {
+  background-color: var(--light-theme-title);
+  transition: background-color 0.2s ease-out;
+}
+
+.map-handler:active::after {
+  background-color: var(--light-theme-title);
 }
 
 .map-coordinates-textbox {

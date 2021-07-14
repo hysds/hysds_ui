@@ -28,29 +28,39 @@ import {
 
 import "./style.css";
 
+const MIN_MAP_HEIGHT = 250;
+const DEFAULT_MAP_HEIGHT = 450;
+const MAP_HEIGHT_LS = "map-height";
+const DISPLAY_MAP_LS = "display-map";
+const MAP_ZOOM_LS = "zoom";
+const MAP_CENTER_LS = "center";
+
 let MapComponent = class extends React.Component {
   constructor(props) {
     super(props);
 
     this.mapId = "leaflet-map-id";
-    let displayMap = localStorage.getItem("display-map");
+    let displayMap = localStorage.getItem(DISPLAY_MAP_LS);
     displayMap = displayMap === "false" ? false : true;
+
+    const mapHeight = parseInt(localStorage.getItem(MAP_HEIGHT_LS));
 
     this.state = {
       displayMap,
       value: props.bboxText,
+      mapHeight: mapHeight ? mapHeight : DEFAULT_MAP_HEIGHT,
     };
   }
 
   componentDidMount() {
-    let center = window.localStorage.getItem("center");
+    let center = window.localStorage.getItem(MAP_CENTER_LS);
     center = center ? JSON.parse(center) : [36.7783, -119.4179];
 
     // initializing the map
     this.map = L.map(this.mapId, {
       attributionControl: false,
       center,
-      zoom: localStorage.getItem("zoom") || this.props.zoom,
+      zoom: localStorage.getItem(MAP_ZOOM_LS) || this.props.zoom,
       maxZoom: this.props.maxZoom,
       minZoom: this.props.minZoom,
       layers: [
@@ -189,11 +199,11 @@ let MapComponent = class extends React.Component {
 
   // client side event handlers
   clearBbox = () => this.drawnItems.clearLayers();
-  zoomHandler = () => localStorage.setItem("zoom", this.map.getZoom());
+  zoomHandler = () => localStorage.setItem(MAP_ZOOM_LS, this.map.getZoom());
   reRenderMap = () => this.map._onResize();
   toggleMapDisplay = () => {
     this.setState({ displayMap: !this.state.displayMap }, this.reRenderMap);
-    localStorage.setItem("display-map", !this.state.displayMap);
+    localStorage.setItem(DISPLAY_MAP_LS, !this.state.displayMap);
   };
 
   polygonTextChange = (e) => this.props.bboxEdit(e.target.value);
@@ -333,9 +343,31 @@ let MapComponent = class extends React.Component {
     }
   };
 
+  dragMap = (e) => {
+    const { mapHeight } = this.state;
+    const yOffset = e.pageY;
+
+    const dragMouseHandler = (me) => {
+      me.preventDefault();
+      const newMapHeight = Math.max(
+        me.pageY - yOffset + mapHeight,
+        MIN_MAP_HEIGHT
+      );
+
+      if (me.buttons !== 1) {
+        document.body.removeEventListener("pointermove", dragMouseHandler);
+        return;
+      }
+      this.setState({ mapHeight: newMapHeight });
+      localStorage.setItem(MAP_HEIGHT_LS, newMapHeight);
+      this.map.invalidateSize();
+    };
+    document.body.addEventListener("pointermove", dragMouseHandler);
+  };
+
   render() {
     const { data, bboxText } = this.props;
-    const { displayMap } = this.state;
+    const { displayMap, mapHeight } = this.state;
 
     // find first occurance of valid center coordinate
     let validCenter = data.find((row) =>
@@ -344,12 +376,19 @@ let MapComponent = class extends React.Component {
     if (validCenter && this.map) {
       let center = validCenter.center.coordinates;
       this.map.panTo(new L.LatLng(center[1], center[0]));
-      localStorage.setItem("center", JSON.stringify([center[1], center[0]]));
+      localStorage.setItem(
+        MAP_CENTER_LS,
+        JSON.stringify([center[1], center[0]])
+      );
     }
 
     const textboxTooltip =
       "Press SHIFT + ENTER to manually input polygon... \nex. [ [-125.09335, 42.47589], ... ,[-125.09335, 42.47589] ]";
-    const mapStyle = { display: displayMap ? "block" : "none" };
+    const mapStyle = {
+      display: displayMap ? null : "none",
+      height: mapHeight,
+      minHeight: MIN_MAP_HEIGHT,
+    };
 
     return (
       <>
@@ -361,6 +400,7 @@ let MapComponent = class extends React.Component {
 
         <div className="leaflet-map-container" style={mapStyle}>
           <div id={this.mapId} className="leaflet-map" />
+          <div className="map-handler" onMouseDown={this.dragMap} />
         </div>
 
         <textarea

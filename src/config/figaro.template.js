@@ -74,7 +74,7 @@ exports.FILTERS = [
   },
   {
     componentId: "job_detail",
-    dataField: "msg.keyword",
+    dataField: "msg",
     title: "Job Detail",
     type: "single",
   },

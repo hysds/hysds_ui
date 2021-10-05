@@ -5,23 +5,17 @@ import { SingleList, DateRange, MultiList } from "@appbaseio/reactivesearch";
 
 import "./style.css";
 
-function renderFilter(filter, queryLogic) {
-  const { componentId, dataField, title, type, defaultValue, sortBy } = filter;
+function Filter({
+  componentId,
+  dataField,
+  title,
+  type,
+  sortBy,
+  defaultValue,
+  size,
+  queryLogic,
+}) {
   switch (type) {
-    case "single":
-      return (
-        <SingleList
-          componentId={componentId}
-          key={componentId}
-          dataField={dataField}
-          title={title}
-          URLParams={true}
-          sortBy={sortBy}
-          defaultValue={null || defaultValue}
-          react={queryLogic}
-          className="reactivesearch-input"
-        />
-      );
     case "multi":
       return (
         <MultiList
@@ -31,6 +25,7 @@ function renderFilter(filter, queryLogic) {
           title={title}
           URLParams={true}
           sortBy={sortBy}
+          size={size || 1000}
           defaultValue={null || defaultValue}
           react={queryLogic}
           className="reactivesearch-input reactivesearch-multilist"
@@ -44,10 +39,10 @@ function renderFilter(filter, queryLogic) {
           title={title}
           dataField={dataField}
           URLParams={true}
-          sortBy={sortBy}
           className="reactivesearch-input reactivesearch-date"
         />
       );
+    case "single":
     default:
       return (
         <SingleList
@@ -57,6 +52,7 @@ function renderFilter(filter, queryLogic) {
           title={title}
           URLParams={true}
           sortBy={sortBy}
+          size={size || 1000}
           defaultValue={null || defaultValue}
           react={queryLogic}
           className="reactivesearch-input"
@@ -65,17 +61,19 @@ function renderFilter(filter, queryLogic) {
   }
 }
 
-function FigaroFilters({ filters, queryLogic }) {
-  return <>{filters.map((filter) => renderFilter(filter, queryLogic))}</>;
+function SidebarFilters({ filters, queryLogic }) {
+  return filters.map((filter) => (
+    <Filter key={filter.componentId} queryLogic={queryLogic} {...filter} />
+  ));
 }
 
-FigaroFilters.propTypes = {
+SidebarFilters.propTypes = {
   filters: PropTypes.array.isRequired,
 };
 
-FigaroFilters.defaultProps = {
+SidebarFilters.defaultProps = {
   filters: [],
   queryLogic: null,
 };
 
-export default FigaroFilters;
+export default SidebarFilters;

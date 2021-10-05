@@ -54,24 +54,28 @@ exports.FILTERS = [
     dataField: "dataset.keyword",
     title: "Dataset",
     type: "single",
+    size: 1000,
   },
   {
     componentId: "dataset_type",
     dataField: "dataset_type.keyword",
     title: "Dataset Type",
     type: "single",
+    size: 1000,
   },
   {
     componentId: "dataset_level",
     dataField: "dataset_level.keyword",
     title: "Dataset Level",
     type: "single",
+    size: 1000,
   },
   {
     componentId: "system_version",
     dataField: "system_version.keyword",
     title: "System Version",
     type: "single",
+    size: 1000,
   },
   {
     componentId: "platform",
@@ -90,6 +94,7 @@ exports.FILTERS = [
     dataField: "metadata.tags.keyword",
     title: "Tags",
     type: "multi",
+    size: 1000,
   },
   {
     componentId: "starttime",
@@ -108,6 +113,7 @@ exports.FILTERS = [
     dataField: "metadata.state.keyword",
     title: "State",
     type: "single",
+    size: 1000,
   },
 ];
 

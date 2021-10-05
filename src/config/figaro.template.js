@@ -28,6 +28,7 @@ exports.FILTERS = [
     dataField: "tags.keyword",
     title: "Tags",
     type: "multi",
+    size: 1000,
   },
   {
     componentId: "timestamp",
@@ -40,6 +41,7 @@ exports.FILTERS = [
     dataField: "job.type",
     title: "Job Type",
     type: "single",
+    size: 1000,
   },
   {
     componentId: "queue",
@@ -58,6 +60,7 @@ exports.FILTERS = [
     dataField: "job.job_info.execute_node",
     title: "Node",
     type: "single",
+    size: 1000,
   },
   {
     componentId: "priority",
@@ -71,6 +74,7 @@ exports.FILTERS = [
     dataField: "short_error.keyword",
     title: "Short Error",
     type: "single",
+    size: 1000,
   },
   {
     componentId: "job_detail",

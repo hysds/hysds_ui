@@ -27,8 +27,9 @@ const ToscaDataViewer = (props) => {
     ? "var(--dark-theme-alt)"
     : "var(--light-theme-background)";
 
-  let browseUrl = null;
-  if (res.urls) browseUrl = res.urls.find((url) => url.startsWith("http"));
+  let browseUrl = res.browse_urls || res.urls;
+  if (browseUrl)
+    browseUrl = browseUrl.find((url) => url.startsWith("http"));
 
   const clickQueryRegion = () => {
     const bbox = JSON.stringify(res.location.coordinates[0]);

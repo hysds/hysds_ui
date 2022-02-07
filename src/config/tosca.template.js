@@ -36,6 +36,7 @@ exports.FIELDS = [
   "location",
   "center",
   "urls",
+  "browse_urls",
   "datasets",
   "metadata.state",
   "metadata.status",

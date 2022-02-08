@@ -28,7 +28,7 @@ function JobCountsBanner(props) {
   const changeJobState = (status) => {
     props.updateCount();
     history.push({
-      search: `?resource="job"&status="${status}"`,
+      search: `?status="${status}"`,
     });
   };
 

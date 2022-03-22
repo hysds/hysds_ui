@@ -6,13 +6,6 @@ import Select from "react-select";
 
 import "./style.css";
 
-const customSelectStyles = {
-  control: (base, value) => ({
-    ...base,
-    border: value.hasValue ? null : "2px solid red",
-  }),
-};
-
 function Params(props) {
   const handleJobParamInputChange = (e) => {
     let { name, value } = e.target;
@@ -26,6 +19,13 @@ function Params(props) {
       value: e.value,
     };
     props.editParams(payload);
+  };
+
+  const incompleteStyle = {
+    control: (base, value) => ({
+      ...base,
+      border: value.hasValue ? null : "2px solid red",
+    }),
   };
 
   const renderParamsList = () => {
@@ -70,7 +70,7 @@ function Params(props) {
                     value: option,
                   }))}
                   onChange={handleJobParamDropdownChange}
-                  styles={param.optional ? null : customSelectStyles}
+                  styles={param.optional ? {} : incompleteStyle}
                 />
               </div>
             </section>
@@ -94,7 +94,7 @@ function Params(props) {
                   name={paramName}
                   options={options}
                   onChange={handleJobParamDropdownChange}
-                  styles={param.optional ? null : customSelectStyles}
+                  styles={param.optional ? {} : incompleteStyle}
                 />
               </div>
             </section>

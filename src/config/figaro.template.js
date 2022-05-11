@@ -106,6 +106,12 @@ exports.FILTERS = [
     title: "Endpoint ID",
     type: "single",
   },
+  {
+    componentId: "redelivered",
+    dataField: "job.delivery_info.redelivered",
+    title: "Redelivered",
+    type: "single"
+  }
 ];
 
 exports.SORT_OPTIONS = ["@timestamp"];
@@ -131,6 +137,7 @@ exports.QUERY_LOGIC = {
     "payload_id",
     "timestamp",
     "endpoint_id",
+    "redelivered",
   ],
 };
 
@@ -163,4 +170,5 @@ exports.FIELDS = [
   "user_tags",
   "dedup_job",
   "endpoint_id",
+  "job.delivery_info.redelivered",
 ];

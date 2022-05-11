@@ -24,6 +24,12 @@ exports.FILTERS = [
     sortBy: "asc",
   },
   {
+    componentId: "redelivered",
+    dataField: "job.delivery_info.redelivered",
+    title: "Redelivered",
+    type: "single"
+  },
+  {
     componentId: "tags",
     dataField: "tags.keyword",
     title: "Tags",
@@ -105,12 +111,6 @@ exports.FILTERS = [
     dataField: "endpoint_id.keyword",
     title: "Endpoint ID",
     type: "single",
-  },
-  {
-    componentId: "redelivered",
-    dataField: "job.delivery_info.redelivered",
-    title: "Redelivered",
-    type: "single"
   }
 ];
 

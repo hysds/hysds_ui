@@ -42,6 +42,27 @@ function Filter({
           className="reactivesearch-input reactivesearch-date"
         />
       );
+    case "bool":
+    case "boolean":
+      return (
+        <SingleList
+          componentId={componentId}
+          key={componentId}
+          dataField={dataField}
+          title={title}
+          URLParams={true}
+          react={queryLogic}
+          className="reactivesearch-input"
+          transformData={(list) =>
+            list
+              .filter((d) => d.key === 1 || d.key === 0)
+              .map((d) => ({
+                key: d.key_as_string,
+                doc_count: d.doc_count,
+              }))
+          }
+        />
+      );
     case "single":
     default:
       return (

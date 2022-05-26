@@ -27,7 +27,7 @@ exports.FILTERS = [
     componentId: "redelivered",
     dataField: "job.delivery_info.redelivered",
     title: "Redelivered",
-    type: "single"
+    type: "boolean",
   },
   {
     componentId: "tags",
@@ -111,7 +111,7 @@ exports.FILTERS = [
     dataField: "endpoint_id.keyword",
     title: "Endpoint ID",
     type: "single",
-  }
+  },
 ];
 
 exports.SORT_OPTIONS = ["@timestamp"];
@@ -166,9 +166,9 @@ exports.FIELDS = [
   "job.job_info.time_start",
   "job.job_info.time_end",
   "job.job_info.metrics.products_staged.id",
+  "job.delivery_info.redelivered",
   "event.traceback",
   "user_tags",
   "dedup_job",
   "endpoint_id",
-  "job.delivery_info.redelivered",
 ];

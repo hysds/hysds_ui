@@ -44,6 +44,7 @@ exports.FIELDS = [
   "metadata.sensoroperationalmode",
   "metadata.polarisationmode",
   "metadata.user_tags",
+  "metadata.existsInS3",
   "@timestamp",
 ];
 
@@ -122,6 +123,12 @@ exports.FILTERS = [
     type: "single",
     size: 1000,
   },
+  {
+    componentId: "existsInS3",
+    dataField: "metadata.existsInS3",
+    title: "ExistsInS3",
+    type: "boolean"
+  },
 ];
 
 exports.QUERY_LOGIC = {
@@ -137,6 +144,7 @@ exports.QUERY_LOGIC = {
     "continent",
     "state",
     "tags",
+    "existsInS3",
     this.ID_COMPONENT,
     this.MAP_COMPONENT_ID,
     this.QUERY_SEARCH_COMPONENT_ID,

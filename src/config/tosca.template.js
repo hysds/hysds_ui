@@ -126,7 +126,7 @@ exports.FILTERS = [
   {
     componentId: "existsInS3",
     dataField: "metadata.existsInS3",
-    title: "ExistsInS3",
+    title: "Exists In S3",
     type: "boolean"
   },
 ];

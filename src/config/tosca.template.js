@@ -127,8 +127,7 @@ exports.FILTERS = [
     componentId: "exists_in_s3_rs",
     dataField: "metadata.exists_in_s3_rs",
     title: "Exists In S3-RS",
-    type: "single",
-    size: 1000,
+    type: "boolean",
   },
 ];
 
@@ -145,6 +144,7 @@ exports.QUERY_LOGIC = {
     "continent",
     "state",
     "tags",
+    "exists_in_s3_rs",
     this.ID_COMPONENT,
     this.MAP_COMPONENT_ID,
     this.QUERY_SEARCH_COMPONENT_ID,

@@ -44,6 +44,7 @@ exports.FIELDS = [
   "metadata.sensoroperationalmode",
   "metadata.polarisationmode",
   "metadata.user_tags",
+  "metadata.exists_in_s3_rs",
   "@timestamp",
 ];
 
@@ -119,6 +120,13 @@ exports.FILTERS = [
     componentId: "state",
     dataField: "metadata.state.keyword",
     title: "State",
+    type: "single",
+    size: 1000,
+  },
+  {
+    componentId: "exists_in_s3_rs",
+    dataField: "metadata.exists_in_s3_rs",
+    title: "Exists In S3-RS",
     type: "single",
     size: 1000,
   },

@@ -54,12 +54,13 @@ const ToscaDataViewer = (props) => {
         index={res._index}
         id={res._id}
       />
-      {browseUrl && existInS3 ? (
+      
+      {existInS3 ? (browseUrl ? (
        
         <a className="tosca-browse-link" href={browseUrl} target="_blank">
           Browse
         </a>
-      ) : null}
+      ) : null) : null }
       <span />
       <a className="tosca-metadata-link" onClick={() => setViewData(!viewData)}>
         Preview Metadata

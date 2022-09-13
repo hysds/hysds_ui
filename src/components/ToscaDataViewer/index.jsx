@@ -54,9 +54,7 @@ const ToscaDataViewer = (props) => {
         index={res._index}
         id={res._id}
       />
-      
       {existInS3 ? (browseUrl ? (
-       
         <a className="tosca-browse-link" href={browseUrl} target="_blank">
           Browse
         </a>

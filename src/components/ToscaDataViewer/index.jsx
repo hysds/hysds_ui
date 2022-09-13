@@ -27,6 +27,8 @@ const ToscaDataViewer = (props) => {
     ? "var(--dark-theme-alt)"
     : "var(--light-theme-background)";
 
+  let existInS3 = true
+  if (res.exists_in_s3_rs) existInS3 = Boolean(res.exists_in_s3_rs)
   let browseUrl = res.urls || res.browse_urls;
   if (browseUrl) browseUrl = browseUrl.find((url) => url.startsWith("http"));
 
@@ -52,7 +54,8 @@ const ToscaDataViewer = (props) => {
         index={res._index}
         id={res._id}
       />
-      {browseUrl ? (
+      {browseUrl && existInS3 ? (
+       
         <a className="tosca-browse-link" href={browseUrl} target="_blank">
           Browse
         </a>

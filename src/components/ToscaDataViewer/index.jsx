@@ -52,7 +52,8 @@ const ToscaDataViewer = (props) => {
         index={res._index}
         id={res._id}
       />
-      {((res.metadata && res.metadata.exists_in_s3_rs !== false) && browseUrl) ? (
+      let hide_browse_url = (res.metadata && res.metadata.exists_in_s3 === false) ? true : false
+      {(!(hide_browse_url) && browseUrl) ? (
         <a className="tosca-browse-link" href={browseUrl} target="_blank">
           Browse
         </a>

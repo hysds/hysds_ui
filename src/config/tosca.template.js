@@ -126,7 +126,7 @@ exports.FILTERS = [
   {
     componentId: "exists_in_object_store",
     dataField: "metadata.exists_in_object_store",
-    title: "Exists In S3",
+    title: "Exists In Object Store",
     type: "boolean",
   },
 ];

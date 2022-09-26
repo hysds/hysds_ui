@@ -44,7 +44,7 @@ exports.FIELDS = [
   "metadata.sensoroperationalmode",
   "metadata.polarisationmode",
   "metadata.user_tags",
-  "metadata.exists_in_s3",
+  "metadata.exists_in_object_store",
   "@timestamp",
 ];
 
@@ -124,8 +124,8 @@ exports.FILTERS = [
     size: 1000,
   },
   {
-    componentId: "exists_in_s3",
-    dataField: "metadata.exists_in_s3",
+    componentId: "exists_in_object_store",
+    dataField: "metadata.exists_in_object_store",
     title: "Exists In S3",
     type: "boolean",
   },
@@ -144,7 +144,7 @@ exports.QUERY_LOGIC = {
     "continent",
     "state",
     "tags",
-    "exists_in_s3",
+    "exists_in_object_store",
     this.ID_COMPONENT,
     this.MAP_COMPONENT_ID,
     this.QUERY_SEARCH_COMPONENT_ID,

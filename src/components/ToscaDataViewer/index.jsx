@@ -30,7 +30,7 @@ const ToscaDataViewer = (props) => {
   let browseUrl = res.urls || res.browse_urls;
   if (browseUrl) browseUrl = browseUrl.find((url) => url.startsWith("http"));
 
-  let hideBrowseLink = ((res.metadata && res.metadata.exists_in_s3 === false) ? true : false);
+  let hideBrowseLink = ((res.metadata && res.metadata.exists_in_object_store === false) ? true : false);
   
   console.log("hideBrowseLink:");
   console.log(hideBrowseLink);

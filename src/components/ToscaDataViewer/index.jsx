@@ -32,9 +32,6 @@ const ToscaDataViewer = (props) => {
 
   let hideBrowseLink = ((res.metadata && res.metadata.exists_in_object_store === false) ? true : false);
   
-  console.log("hideBrowseLink:");
-  console.log(hideBrowseLink);
-
   const clickQueryRegion = () => {
     const bbox = JSON.stringify(res.location.coordinates[0]);
     props.clickQueryRegion(bbox);

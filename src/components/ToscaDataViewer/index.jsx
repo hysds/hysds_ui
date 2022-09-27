@@ -30,7 +30,7 @@ const ToscaDataViewer = (props) => {
   let browseUrl = res.urls || res.browse_urls;
   if (browseUrl) browseUrl = browseUrl.find((url) => url.startsWith("http"));
 
-  let hideBrowseLink = ((res.metadata && res.metadata.exists_in_object_store === false) ? true : false);
+  const hideBrowseLink = res.metadata && res.metadata.exists_in_object_store === false ? true : false;
   
   const clickQueryRegion = () => {
     const bbox = JSON.stringify(res.location.coordinates[0]);

@@ -89,21 +89,23 @@ class FigaroResultsList extends React.Component {
             checked={tableView}
           />
           <div className="results-display-buffer" />
-          <SortOptions
-            label="Sort By: "
-            value={sortColumn}
-            onChange={this.handleSortColumn}
-            options={SORT_OPTIONS}
-          />
-          <SortDirection
-            value={sortOrder}
-            onChange={this.handleSortDirection}
-          />
-          <PageSizeOptions
-            label="Page Size: "
-            value={pageSize}
-            onChange={this.handlePageSize}
-          />
+          <div className="sort-wrapper">
+            <SortOptions
+              label="Sort By: "
+              value={sortColumn}
+              onChange={this.handleSortColumn}
+              options={SORT_OPTIONS}
+            />
+            <SortDirection
+              value={sortOrder}
+              onChange={this.handleSortDirection}
+            />
+            <PageSizeOptions
+              label="Page Size: "
+              value={pageSize}
+              onChange={this.handlePageSize}
+            />
+          </div>
         </div>
 
         <ReactiveList

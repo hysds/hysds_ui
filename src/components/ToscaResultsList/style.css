@@ -33,6 +33,16 @@
   padding: 15px;
 }
 
+@media screen and (max-width: 1050px) {
+  .results-display-options {
+    display: block;
+  }
+
+  .sort-wrapper {
+    padding: 7px 0px;
+  }
+}
+
 .__theme-light .tosca-result-stats {
   color: var(--light-theme-color);
 }

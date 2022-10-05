@@ -112,7 +112,7 @@ class Tosca extends React.Component {
             <div className="tosca-body" ref={this.pageRef}>
               <LastUpdatedAtBanner time={this.state.lastUpdatedAt} />
               <div className="top-bar-wrapper">
-                <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
+                {/* <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" /> */}
                 <SearchQuery
                   componentId={QUERY_SEARCH_COMPONENT_ID}
                   theme={classTheme}

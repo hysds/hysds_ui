@@ -91,8 +91,8 @@ class Figaro extends React.Component {
               <JobCountsBanner updateCount={this.props.getJobCounts} />
 
               <div className="top-bar-wrapper">
-                <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
-                <SearchQuery componentId="query_string" theme={classTheme} />
+                {/* <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
+                <SearchQuery componentId="query_string" theme={classTheme} /> */}
 
                 <div className="button-wrapper">
                   <div className="figaro-button">

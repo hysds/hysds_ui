@@ -44,6 +44,7 @@ exports.FIELDS = [
   "metadata.sensoroperationalmode",
   "metadata.polarisationmode",
   "metadata.user_tags",
+  "metadata.exists_in_object_store",
   "@timestamp",
 ];
 
@@ -122,6 +123,12 @@ exports.FILTERS = [
     type: "single",
     size: 1000,
   },
+  {
+    componentId: "exists_in_object_store",
+    dataField: "metadata.exists_in_object_store",
+    title: "Exists In Object Store",
+    type: "boolean",
+  },
 ];
 
 exports.QUERY_LOGIC = {
@@ -137,6 +144,7 @@ exports.QUERY_LOGIC = {
     "continent",
     "state",
     "tags",
+    "exists_in_object_store",
     this.ID_COMPONENT,
     this.MAP_COMPONENT_ID,
     this.QUERY_SEARCH_COMPONENT_ID,

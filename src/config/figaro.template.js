@@ -4,7 +4,7 @@ exports.FIGARO_DISPLAY_COLUMNS = [
   { Header: "job type", accessor: "job.type" },
   { Header: "queue", accessor: "job.job_info.job_queue" },
   { Header: "node", accessor: "job.job_info.execute_node" },
-  { Header: "timestamp", accessor: "@timestamp" },
+  { Header: "timestamp", accessor: "@timestamp", width: 200 },
   { Header: "duration", accessor: "job.job_info.duration" },
 ];
 
@@ -13,8 +13,8 @@ exports.FILTERS = [
     componentId: "resource",
     dataField: "resource",
     title: "Resource",
-    type: "single",
-    defaultValue: "job",
+    type: "multi",
+    defaultValue: ["job"],
   },
   {
     componentId: "status",
@@ -22,12 +22,6 @@ exports.FILTERS = [
     title: "Status",
     type: "single",
     sortBy: "asc",
-  },
-  {
-    componentId: "redelivered",
-    dataField: "job.delivery_info.redelivered",
-    title: "Redelivered",
-    type: "boolean",
   },
   {
     componentId: "tags",
@@ -114,8 +108,6 @@ exports.FILTERS = [
   },
 ];
 
-exports.SORT_OPTIONS = ["@timestamp"];
-
 // TODO: TRY ADDING .KEYWORD TO COMPONENTID
 exports.QUERY_LOGIC = {
   and: [
@@ -137,7 +129,6 @@ exports.QUERY_LOGIC = {
     "payload_id",
     "timestamp",
     "endpoint_id",
-    "redelivered",
   ],
 };
 
@@ -166,7 +157,6 @@ exports.FIELDS = [
   "job.job_info.time_start",
   "job.job_info.time_end",
   "job.job_info.metrics.products_staged.id",
-  "job.delivery_info.redelivered",
   "event.traceback",
   "user_tags",
   "dedup_job",

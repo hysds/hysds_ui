@@ -14,7 +14,7 @@ import {
   SortDirection,
   PageSizeOptions,
 } from "../../components/TableOptions";
-import { SORT_OPTIONS, FIELDS } from "../../config/tosca";
+import { FIELDS, GRQ_DISPLAY_COLUMNS } from "../../config/tosca";
 
 import "./style.css";
 
@@ -69,18 +69,17 @@ class ResultsList extends React.Component {
     localStorage.setItem(SORT_DIRECTION_STORE, e.target.value);
   };
 
-  renderTable = ({ data, loading }) => {
-    const { sortColumn, sortOrder } = this.state;
+  handleTableSort = (sortColumn, direction) =>
+    this.setState({ sortColumn, sortOrder: direction });
 
-    return data.length > 0 ? (
+  renderTable = ({ data }) =>
+    data.length > 0 ? (
       <DataTable
         data={data}
-        sortColumn={sortColumn}
-        sortOrder={sortOrder}
-        theme={this.props.theme}
+        columns={GRQ_DISPLAY_COLUMNS}
+        sortHandler={this.handleTableSort}
       />
     ) : null;
-  };
 
   render() {
     const { componentId, queryParams } = this.props;
@@ -112,7 +111,9 @@ class ResultsList extends React.Component {
             label="Sort By: "
             value={sortColumn}
             onChange={this.handleSortColumn}
-            options={SORT_OPTIONS}
+            options={GRQ_DISPLAY_COLUMNS.filter((d) => d.accessor).map((d) =>
+              d.keyword ? `${d.accessor}.keyword` : d.accessor
+            )}
           />
           <SortDirection
             value={sortOrder}
@@ -142,6 +143,11 @@ class ResultsList extends React.Component {
           )}
           renderItem={tableView ? null : this.resultsListHandler}
           render={tableView ? this.renderTable : null}
+          onError={(e) => {
+            if (e.responses) {
+              alert(JSON.stringify(e.responses));
+            }
+          }}
           sortOptions={sortOptions}
           includeFields={FIELDS ? FIELDS : null}
         />

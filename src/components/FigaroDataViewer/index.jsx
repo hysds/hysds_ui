@@ -211,27 +211,5 @@ export const FigaroDataViewer = (props) => {
 };
 
 FigaroDataViewer.propTypes = {
-  res: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
 };
-
-export function FigaroDataTable(props) {
-  const { columns, data, sortColumn, sortOrder } = props;
-
-  return (
-    <ReactTable
-      manual
-      data={data}
-      columns={columns}
-      showPagination={false}
-      showPageSizeOptions={false}
-      pageSize={data.length}
-      sortable={false}
-      defaultSorted={[
-        {
-          id: sortColumn,
-          desc: sortOrder === "desc" ? true : false,
-        },
-      ]}
-    />
-  );
-}

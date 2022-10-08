@@ -2,34 +2,33 @@ import React from "react";
 import PropTypes from "prop-types";
 import ReactTable from "react-table";
 
-import { GRQ_DISPLAY_COLUMNS } from "../../config/tosca";
-
 import "react-table/react-table.css";
 import "./style.css";
 
-function DataTable(props) {
-  const { data } = props;
+function DataTable({ data, columns, sortHandler }) {
   return (
     <ReactTable
       manual
       data={data}
-      columns={GRQ_DISPLAY_COLUMNS}
+      columns={columns}
       showPagination={false}
       showPageSizeOptions={false}
       pageSize={data.length}
-      sortable={false}
-      defaultSorted={[
-        {
-          id: props.sortColumn,
-          desc: props.sortOrder === "desc" ? true : false,
-        },
-      ]}
+      sortable={sortHandler ? true : false}
+      onSortedChange={(sorted, column) => {
+        const col = sorted[0];
+        const direction = col.desc ? "desc" : "asc";
+        const sortKey = column.keyword ? `${col.id}.keyword` : col.id;
+        if (sortHandler) sortHandler(sortKey, direction);
+      }}
     />
   );
 }
 
 DataTable.propTypes = {
   data: PropTypes.array.isRequired,
+  columns: PropTypes.array.isRequired,
+  sortHandler: PropTypes.func,
 };
 
 export default DataTable;

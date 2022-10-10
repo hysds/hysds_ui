@@ -13,8 +13,8 @@ exports.FILTERS = [
     componentId: "resource",
     dataField: "resource",
     title: "Resource",
-    type: "multi",
-    defaultValue: ["job"],
+    type: "single",
+    defaultValue: "job",
   },
   {
     componentId: "status",
@@ -22,6 +22,12 @@ exports.FILTERS = [
     title: "Status",
     type: "single",
     sortBy: "asc",
+  },
+  {
+    componentId: "redelivered",
+    dataField: "job.delivery_info.redelivered",
+    title: "Redelivered",
+    type: "boolean",
   },
   {
     componentId: "tags",
@@ -129,6 +135,7 @@ exports.QUERY_LOGIC = {
     "payload_id",
     "timestamp",
     "endpoint_id",
+    "redelivered",
   ],
 };
 
@@ -157,6 +164,7 @@ exports.FIELDS = [
   "job.job_info.time_start",
   "job.job_info.time_end",
   "job.job_info.metrics.products_staged.id",
+  "job.delivery_info.redelivered",
   "event.traceback",
   "user_tags",
   "dedup_job",

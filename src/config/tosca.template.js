@@ -145,6 +145,8 @@ exports.QUERY_LOGIC = {
   ],
 };
 
+// NOTE: add "keyword: true" to the column if the field is sorted by keyword, ex. id.keyword
+// check your Elasticsearch mapping
 exports.GRQ_DISPLAY_COLUMNS = [
   { Header: "ID", accessor: "id", width: 400, keyword: true },
   {

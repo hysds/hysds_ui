@@ -1,3 +1,5 @@
+// NOTE: add "keyword: true" to the column if the field is sorted by keyword, ex. id.keyword
+// check your Elasticsearch mapping
 exports.FIGARO_DISPLAY_COLUMNS = [
   { Header: "status", accessor: "status" },
   { Header: "job name", accessor: "job.name" },

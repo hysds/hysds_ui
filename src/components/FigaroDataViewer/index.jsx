@@ -16,8 +16,7 @@ const createJobUrl = (jobUrl) => {
   return newJobUrl + "/";
 };
 
-export const FigaroDataViewer = (props) => {
-  const { res } = props;
+export const FigaroDataViewer = ({ res }) => {
   const [validJobLink, setJobLink] = useState(false);
 
   const [viewType, setViewType] = useState("traceback");
@@ -211,5 +210,5 @@ export const FigaroDataViewer = (props) => {
 };
 
 FigaroDataViewer.propTypes = {
-  data: PropTypes.object.isRequired,
+  res: PropTypes.object.isRequired,
 };

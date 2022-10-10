@@ -63,8 +63,11 @@ class FigaroResultsList extends React.Component {
     localStorage.setItem(SORT_DIRECTION_STORE, e.target.value);
   };
 
-  handleTableSort = (sortColumn, direction) =>
+  handleTableSort = (sortColumn, direction) => {
     this.setState({ sortColumn, sortOrder: direction });
+    localStorage.setItem(SORT_FIELD_STORE, sortColumn);
+    localStorage.setItem(SORT_DIRECTION_STORE, direction);
+  };
 
   render() {
     const { pageSize, tableView, sortColumn, sortOrder } = this.state;
@@ -149,9 +152,7 @@ class FigaroResultsList extends React.Component {
           )}
           includeFields={FIELDS ? FIELDS : null}
           onError={(e) => {
-            if (e.responses) {
-              alert(JSON.stringify(e.responses));
-            }
+            if (e.responses) alert(JSON.stringify(e.responses));
           }}
         />
       </div>

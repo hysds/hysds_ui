@@ -69,8 +69,11 @@ class ResultsList extends React.Component {
     localStorage.setItem(SORT_DIRECTION_STORE, e.target.value);
   };
 
-  handleTableSort = (sortColumn, direction) =>
+  handleTableSort = (sortColumn, direction) => {
     this.setState({ sortColumn, sortOrder: direction });
+    localStorage.setItem(SORT_FIELD_STORE, sortColumn);
+    localStorage.setItem(SORT_DIRECTION_STORE, direction);
+  };
 
   renderTable = ({ data }) =>
     data.length > 0 ? (
@@ -144,9 +147,7 @@ class ResultsList extends React.Component {
           renderItem={tableView ? null : this.resultsListHandler}
           render={tableView ? this.renderTable : null}
           onError={(e) => {
-            if (e.responses) {
-              alert(JSON.stringify(e.responses));
-            }
+            if (e.responses) alert(JSON.stringify(e.responses));
           }}
           sortOptions={sortOptions}
           includeFields={FIELDS ? FIELDS : null}

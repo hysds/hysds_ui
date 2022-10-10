@@ -5,7 +5,7 @@ exports.FIGARO_DISPLAY_COLUMNS = [
   { Header: "queue", accessor: "job.job_info.job_queue" },
   { Header: "node", accessor: "job.job_info.execute_node" },
   { Header: "timestamp", accessor: "@timestamp", width: 200 },
-  { Header: "duration", accessor: "job.job_info.duration" },
+  { Header: "duration (sec)", accessor: "job.job_info.duration" },
 ];
 
 exports.FILTERS = [

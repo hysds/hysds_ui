@@ -142,6 +142,8 @@ class FigaroResultsList extends React.Component {
                     <DataTable
                       data={data}
                       columns={FIGARO_DISPLAY_COLUMNS}
+                      sortColumn={this.state.sortColumn}
+                      sortOrder={this.state.sortOrder}
                       sortHandler={this.handleTableSort}
                     />
                   ) : null

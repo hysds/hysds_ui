@@ -5,7 +5,7 @@ import ReactTable from "react-table";
 import "react-table/react-table.css";
 import "./style.css";
 
-function DataTable({ data, columns, sortHandler }) {
+function DataTable({ data, columns, sortColumn, sortOrder, sortHandler }) {
   return (
     <ReactTable
       manual
@@ -21,6 +21,12 @@ function DataTable({ data, columns, sortHandler }) {
         const sortKey = column.keyword ? `${col.id}.keyword` : col.id;
         if (sortHandler) sortHandler(sortKey, direction);
       }}
+      defaultSorted={[
+        {
+          id: sortColumn.replace(".keyword", ""),
+          desc: sortOrder === "desc" ? true : false,
+        },
+      ]}
     />
   );
 }
@@ -28,6 +34,8 @@ function DataTable({ data, columns, sortHandler }) {
 DataTable.propTypes = {
   data: PropTypes.array.isRequired,
   columns: PropTypes.array.isRequired,
+  sortOrder: PropTypes.string,
+  sortHandler: PropTypes.string,
   sortHandler: PropTypes.func,
 };
 

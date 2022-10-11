@@ -80,6 +80,8 @@ class ResultsList extends React.Component {
       <DataTable
         data={data}
         columns={GRQ_DISPLAY_COLUMNS}
+        sortColumn={this.state.sortColumn}
+        sortOrder={this.state.sortOrder}
         sortHandler={this.handleTableSort}
       />
     ) : null;

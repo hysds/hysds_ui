@@ -25,7 +25,7 @@ export function SortOptions(props) {
         </option>
         {options.map((field) => (
           <option key={`sort-column-${field}`} value={field}>
-            {field}
+            {field.replace(".keyword", "")}
           </option>
         ))}
       </select>

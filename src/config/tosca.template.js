@@ -164,10 +164,10 @@ exports.GRQ_DISPLAY_COLUMNS = [
     width: 100,
     resizable: false,
     Cell: (state) =>
-      state.original.browse_urls && state.original.browse_urls.length > 0 ? (
+      state.original.urls && state.original.urls.length > 0 ? (
         <a
           target="_blank"
-          href={state.original.browse_urls[0]}
+          href={state.original.urls[0]}
           rel="noopener noreferrer"
         >
           Browse

@@ -82,7 +82,7 @@ input:checked + .slider:before {
 .sort-column-dropdown,
 .sort-order-dropdown {
   height: 29px;
-  font-size: 16px;
+  font-size: 14px;
   width: 120px;
   border-radius: 5px;
   background-color: #ffffff;

@@ -46,7 +46,7 @@ const ToscaDataViewer = (props) => {
         id: {res._id}
       </a>
       {res["@timestamp"] ? (
-        <div>ingest timestamp: {res["@timestamp"]}</div>
+        <div>last modified: {res["@timestamp"]}</div>
       ) : null}
       <UserTags
         tags={userTags}

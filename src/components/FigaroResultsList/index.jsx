@@ -4,10 +4,9 @@ import { connect } from "react-redux"; // redux
 import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
 import { retrieveData, editCustomFilterId } from "../../redux/actions";
 
-import {
-  FigaroDataViewer,
-  FigaroDataTable,
-} from "../../components/FigaroDataViewer";
+import { FigaroDataViewer } from "../../components/FigaroDataViewer";
+
+import DataTable from "../../components/DataTable";
 
 import {
   ToggleSlider,
@@ -19,7 +18,6 @@ import {
 import {
   QUERY_LOGIC,
   FIGARO_DISPLAY_COLUMNS,
-  SORT_OPTIONS,
   FIELDS,
 } from "../../config/figaro";
 
@@ -65,6 +63,12 @@ class FigaroResultsList extends React.Component {
     localStorage.setItem(SORT_DIRECTION_STORE, e.target.value);
   };
 
+  handleTableSort = (sortColumn, direction) => {
+    this.setState({ sortColumn, sortOrder: direction });
+    localStorage.setItem(SORT_FIELD_STORE, sortColumn);
+    localStorage.setItem(SORT_DIRECTION_STORE, direction);
+  };
+
   render() {
     const { pageSize, tableView, sortColumn, sortOrder } = this.state;
 
@@ -93,7 +97,9 @@ class FigaroResultsList extends React.Component {
             label="Sort By: "
             value={sortColumn}
             onChange={this.handleSortColumn}
-            options={SORT_OPTIONS}
+            options={FIGARO_DISPLAY_COLUMNS.filter((d) => d.accessor).map((d) =>
+              d.keyword ? `${d.accessor}.keyword` : d.accessor
+            )}
           />
           <SortDirection
             value={sortOrder}
@@ -133,9 +139,12 @@ class FigaroResultsList extends React.Component {
             tableView
               ? ({ data }) =>
                   data.length > 0 ? (
-                    <FigaroDataTable
+                    <DataTable
                       data={data}
                       columns={FIGARO_DISPLAY_COLUMNS}
+                      sortColumn={this.state.sortColumn}
+                      sortOrder={this.state.sortOrder}
+                      sortHandler={this.handleTableSort}
                     />
                   ) : null
               : null
@@ -144,6 +153,9 @@ class FigaroResultsList extends React.Component {
             <h3 className="figaro-result-stats">{`${stats.numberOfResults} results`}</h3>
           )}
           includeFields={FIELDS ? FIELDS : null}
+          onError={(e) => {
+            if (e.responses) alert(JSON.stringify(e.responses));
+          }}
         />
       </div>
     );

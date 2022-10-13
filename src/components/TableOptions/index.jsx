@@ -15,16 +15,17 @@ export function ToggleSlider(props) {
 }
 
 export function SortOptions(props) {
+  const { options, label } = props;
   return (
     <div className="sort-results-select-wrapper">
-      <span>{props.label || "Label: "} </span>
+      <span>{label || "Label: "} </span>
       <select className="sort-column-dropdown" {...props}>
         <option key="sort-column-none" value="None">
-          None
+          -
         </option>
-        {props.options.map((field) => (
+        {options.map((field) => (
           <option key={`sort-column-${field}`} value={field}>
-            {field}
+            {field.replace(".keyword", "")}
           </option>
         ))}
       </select>

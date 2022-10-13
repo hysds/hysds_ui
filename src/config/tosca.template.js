@@ -20,17 +20,11 @@ exports.QUERY_SEARCH_COMPONENT_ID = "query_string";
 exports.MAP_COMPONENT_ID = "polygon";
 
 // built in Reactivesearch component id
-exports.DATASET_TYPE_SEARCH_ID = "dataset_type";
-exports.SATELLITE_TYPE_ID = "satellite";
 exports.RESULTS_LIST_COMPONENT_ID = "results";
-exports.DATASET_ID = "dataset";
-exports.START_TIME_ID = "starttime";
-exports.END_TIME_ID = "endtime";
-exports.USER_TAGS = "user_tags";
-exports.DATASET_VERSION = "version";
 
 // fields returned by Elasticsearch (less fields = faster UI)
 exports.FIELDS = [
+  "id",
   "starttime",
   "endtime",
   "location",
@@ -39,13 +33,13 @@ exports.FIELDS = [
   "browse_urls",
   "datasets",
   "metadata.state",
-  "metadata.status",
   "metadata.platform",
   "metadata.sensoroperationalmode",
   "metadata.polarisationmode",
   "metadata.user_tags",
   "metadata.exists_in_object_store",
   "@timestamp",
+  "dataset",
 ];
 
 exports.GRQ_TABLE_VIEW_DEFAULT = true;
@@ -151,37 +145,26 @@ exports.QUERY_LOGIC = {
   ],
 };
 
+// NOTE: add "keyword: true" to the column if the field is sorted by keyword, ex. id.keyword
+// check your Elasticsearch mapping
 exports.GRQ_DISPLAY_COLUMNS = [
+  { Header: "ID", accessor: "id", width: 400, keyword: true },
   {
-    Header: "_id",
-    accessor: "_id",
-    width: 500,
+    Header: "Dataset",
+    accessor: "dataset",
+    className: "keyword",
+    keyword: true,
   },
-  {
-    Header: "ingest_timestamp",
-    accessor: "@timestamp",
-    width: 200,
-  },
-  {
-    Header: "start_time",
-    accessor: "starttime",
-  },
+  { Header: "last_modified", accessor: "@timestamp", width: 200 },
+  { Header: "start_time", accessor: "starttime" },
   { Header: "end_time", accessor: "endtime" },
   {
-    Header: "status",
-    accessor: "metadata.status",
-  },
-  {
-    Header: "direction",
-    accessor: "metadata.direction",
-    width: 100,
-  },
-  {
     id: "browse",
+    sortable: false,
     width: 100,
     resizable: false,
     Cell: (state) =>
-      state.original.urls ? (
+      state.original.urls && state.original.urls.length > 0 ? (
         <a
           target="_blank"
           href={state.original.urls[0]}
@@ -191,11 +174,4 @@ exports.GRQ_DISPLAY_COLUMNS = [
         </a>
       ) : null,
   },
-];
-
-exports.SORT_OPTIONS = [
-  "@timestamp",
-  "starttime",
-  "endtime",
-  "creation_timestamp",
 ];

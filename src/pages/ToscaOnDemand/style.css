@@ -9,7 +9,6 @@
   height: calc(100vh - 43px);
 }
 
-/* Control the left and right side */
 .on-demand-left,
 .on-demand-right {
   flex: 1;

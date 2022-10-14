@@ -13,13 +13,11 @@ body {
   height: calc(100vh - 44px);
 }
 
-/* Control the left side */
 .user-rule-editor-left {
   flex: 1;
   overflow: auto;
 }
 
-/* Control the right side */
 .user-rule-editor-right {
   flex: 1;
   overflow: auto;

@@ -12,6 +12,7 @@
   font-size: 15px;
   text-decoration: underline;
   cursor: pointer;
+  word-break: break-word;
 }
 
 .tosca-data-viewer a.tosca-id-link:hover {
@@ -37,6 +38,12 @@
   overflow: scroll;
   font-size: 11px;
   padding: 10px;
+}
+
+@media screen and (max-width: 875px) {
+  .tosca-data-viewer {
+    margin: 10px 0px;
+  }
 }
 
 .__theme-dark .tosca-data-viewer {

@@ -112,23 +112,25 @@ class ResultsList extends React.Component {
           />
 
           <div className="results-display-buffer" />
-          <SortOptions
-            label="Sort By: "
-            value={sortColumn}
-            onChange={this.handleSortColumn}
-            options={GRQ_DISPLAY_COLUMNS.filter((d) => d.accessor).map((d) =>
-              d.keyword ? `${d.accessor}.keyword` : d.accessor
-            )}
-          />
-          <SortDirection
-            value={sortOrder}
-            onChange={this.handleSortDirection}
-          />
-          <PageSizeOptions
-            label="Page Size: "
-            value={pageSize}
-            onChange={this.handlePageSize}
-          />
+          <div className="sort-wrapper">
+            <SortOptions
+              label="Sort:"
+              value={sortColumn}
+              onChange={this.handleSortColumn}
+              options={GRQ_DISPLAY_COLUMNS.filter((d) => d.accessor).map((d) =>
+                d.keyword ? `${d.accessor}.keyword` : d.accessor
+              )}
+            />
+            <SortDirection
+              value={sortOrder}
+              onChange={this.handleSortDirection}
+            />
+            <PageSizeOptions
+              label="Page Size: "
+              value={pageSize}
+              onChange={this.handlePageSize}
+            />
+          </div>
         </div>
 
         <ReactiveList

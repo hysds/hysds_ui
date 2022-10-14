@@ -35,6 +35,12 @@ a:hover {
   text-decoration: none;
 }
 
+@media screen and (max-width: 875px) {
+  .figaro-data-component {
+    margin: 10px 0px;
+  }
+}
+
 .__theme-dark .figaro-data-component {
   background-color: var(--dark-theme-alt);
   color: var(--dark-theme-color);

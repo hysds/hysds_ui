@@ -1,18 +1,23 @@
 import React from "react";
 import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
 
+import { HelperLink } from "../miscellaneous";
+
 import "./style.css";
 
 // wrapper component for ReactiveComponent
 function SearchQuery({ componentId, theme }) {
   return (
-    <ReactiveComponent
-      componentId={componentId}
-      URLParams={true}
-      render={({ setQuery, value }) => (
-        <SearchQueryHandler setQuery={setQuery} value={value} theme={theme} />
-      )}
-    />
+    <div className="search-query">
+      <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
+      <ReactiveComponent
+        componentId={componentId}
+        URLParams={true}
+        render={({ setQuery, value }) => (
+          <SearchQueryHandler setQuery={setQuery} value={value} theme={theme} />
+        )}
+      />
+    </div>
   );
 }
 

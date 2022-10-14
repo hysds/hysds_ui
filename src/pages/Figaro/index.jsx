@@ -8,7 +8,7 @@ import SidebarFilters from "../../components/SidebarFilters";
 import SearchQuery from "../../components/SearchQuery";
 import CustomIdFilter from "../../components/CustomIdFilter";
 import FigaroResultsList from "../../components/FigaroResultsList";
-import { HelperLink } from "../../components/miscellaneous";
+// import { HelperLink } from "../../components/miscellaneous";
 import { ButtonLink, ScrollTop } from "../../components/Buttons";
 
 import { setQuery, editCustomFilterId } from "../../redux/actions";
@@ -50,7 +50,7 @@ class Figaro extends React.Component {
     });
 
     const body = e.body.split("\n");
-    let [preference, query] = body;
+    let [_, query] = body;
     query = JSON.parse(query);
 
     let parsedQuery = query.query;
@@ -91,7 +91,6 @@ class Figaro extends React.Component {
               <JobCountsBanner updateCount={this.props.getJobCounts} />
 
               <div className="top-bar-wrapper">
-                <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
                 <SearchQuery componentId="query_string" theme={classTheme} />
 
                 <div className="button-wrapper">

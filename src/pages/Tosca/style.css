@@ -80,8 +80,8 @@ input:focus {
   }
 
   .tosca-sidenav {
-    padding-top: 15px;
     min-width: 240px;
+    padding: 15px 16px 20px 16px;
   }
 
   .top-bar-wrapper {

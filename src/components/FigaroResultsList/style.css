@@ -22,7 +22,6 @@
 }
 
 @media screen and (max-width: 1000px) {
-/* @media screen and (max-width: var(--breakpoint-xl)) { */
   .results-display-options {
     display: block;
   }

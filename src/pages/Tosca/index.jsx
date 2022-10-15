@@ -14,7 +14,6 @@ import SearchQuery from "../../components/SearchQuery";
 import { ButtonLink, ScrollTop } from "../../components/Buttons";
 
 import SidebarFilters from "../../components/SidebarFilters";
-import { HelperLink } from "../../components/miscellaneous";
 import HeaderBar, {
   HeaderLink,
   DropdownSources,

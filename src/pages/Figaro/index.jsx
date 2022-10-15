@@ -8,7 +8,6 @@ import SidebarFilters from "../../components/SidebarFilters";
 import SearchQuery from "../../components/SearchQuery";
 import CustomIdFilter from "../../components/CustomIdFilter";
 import FigaroResultsList from "../../components/FigaroResultsList";
-// import { HelperLink } from "../../components/miscellaneous";
 import { ButtonLink, ScrollTop } from "../../components/Buttons";
 
 import { setQuery, editCustomFilterId } from "../../redux/actions";

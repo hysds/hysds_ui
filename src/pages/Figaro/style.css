@@ -72,7 +72,7 @@ input:focus {
   padding: 0px 5px;
 }
 
-@media screen and (max-width: 875px) {
+@media screen and (max-width: 900px) {
   .figaro-body {
     padding: 0px 12px;
   }

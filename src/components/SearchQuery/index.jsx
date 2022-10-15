@@ -1,5 +1,5 @@
 import React from "react";
-import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
+import { ReactiveComponent } from "@appbaseio/reactivesearch";
 
 import { HelperLink } from "../miscellaneous";
 

@@ -1,7 +1,7 @@
 import React from "react";
-import { connect } from "react-redux"; // redux
+import { connect } from "react-redux";
 
-import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
+import { ReactiveList } from "@appbaseio/reactivesearch";
 import { retrieveData, editCustomFilterId } from "../../redux/actions";
 
 import { FigaroDataViewer } from "../../components/FigaroDataViewer";

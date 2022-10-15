@@ -37,7 +37,7 @@ body {
   margin: 5px;
 }
 
-@media (max-width: 950px) {
+@media (max-width: 900px) {
   .figaro-user-rule-editor {
     display: block;
     overflow: auto;

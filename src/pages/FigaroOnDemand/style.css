@@ -39,7 +39,7 @@
   padding: 15px;
 }
 
-@media (max-width: 950px) {
+@media (max-width: 900px) {
   .figaro-on-demand {
     display: block;
     overflow: auto;

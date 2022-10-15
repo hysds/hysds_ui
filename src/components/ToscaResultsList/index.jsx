@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { connect } from "react-redux"; // redux
+import { connect } from "react-redux";
 import { clickDatasetId, retrieveData } from "../../redux/actions";
 
-import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
+import { ReactiveList } from "@appbaseio/reactivesearch";
 import ToscaDataViewer from "../ToscaDataViewer";
 import DataTable from "../DataTable";
 

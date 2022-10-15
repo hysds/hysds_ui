@@ -169,7 +169,6 @@ Tosca.defaultProps = {
   theme: "__theme-light",
 };
 
-// redux state data
 const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   data: state.generalReducer.data,

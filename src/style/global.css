@@ -31,6 +31,9 @@
   --offline-color-hover: #101010;
 
   --link-color: #0000ee;
+
+  /* --breakpoint-xl: 1050px; */
+  /* --breakpoint-lg: 900px; */
 }
 
 :export {

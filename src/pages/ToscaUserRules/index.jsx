@@ -52,7 +52,7 @@ const ToscaUserRules = class extends React.Component {
     const ruleCount = userRules.length;
 
     return (
-      <div className="tosca-user-rules">
+      <>
         <Helmet>
           <title>Tosca - User Rules</title>
           <meta name="description" content="Helmet application" />
@@ -60,24 +60,26 @@ const ToscaUserRules = class extends React.Component {
         <HeaderBar title="HySDS - User Rules" theme={classTheme} />
 
         <div className="user-rules-body">
-          <div style={{ textAlign: "center" }}>
+          <div className="user-rules-banner">
             <h1>GRQ - User Rules {ruleCount > 0 ? `(${ruleCount})` : null}</h1>
           </div>
           <div className="user-rules-options-wrapper">
-            <input
-              className="user-rules-global-search"
-              placeholder="Search..."
-              onChange={this.handleRuleSearch}
-              disabled={searchDisabled}
-              value={userRuleSearch}
-            />
+            <div className="user-rules-options">
+              <input
+                className="user-rules-global-search"
+                placeholder="Search..."
+                onChange={this.handleRuleSearch}
+                disabled={searchDisabled}
+                value={userRuleSearch}
+              />
 
-            <UserRulesTagsFilter
-              darkMode={darkMode}
-              tag={userRuleTagFilter}
-              tags={tagFilters}
-              changeUserRuleTagsFilter={changeUserRuleTagsFilter}
-            />
+              <UserRulesTagsFilter
+                darkMode={darkMode}
+                tag={userRuleTagFilter}
+                tags={tagFilters}
+                changeUserRuleTagsFilter={changeUserRuleTagsFilter}
+              />
+            </div>
 
             <div className="user-rules-button-wrapper">
               <ButtonLink href="/tosca/user-rule" label="Create Rule" />
@@ -93,7 +95,7 @@ const ToscaUserRules = class extends React.Component {
             />
           </div>
         </div>
-      </div>
+      </>
     );
   }
 };
@@ -103,7 +105,6 @@ ToscaUserRules.propTypes = {
   userRules: PropTypes.array.isRequired,
 };
 
-// redux state data
 const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   userRules: state.generalReducer.filteredRules,

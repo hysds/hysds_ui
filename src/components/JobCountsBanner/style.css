@@ -15,7 +15,7 @@
   border-radius: 5px;
 }
 
-@media screen and (max-width: 875px) {
+@media screen and (max-width: 900px) {
   .figaro-job-count {
     margin: 5px 5px 0px 0px;
   }

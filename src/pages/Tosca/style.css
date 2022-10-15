@@ -74,7 +74,7 @@ input:focus {
   padding: 0px 7px;
 }
 
-@media screen and (max-width: 875px) {
+@media screen and (max-width: 900px) {
   .tosca-body {
     padding: 0px 12px;
   }

@@ -37,14 +37,6 @@ export function HelperLink(props) {
   );
 }
 
-export function Checkbox(props) {
-  return (
-    <>
-      <input className="miscellaneous-checkbox" type="checkbox" {...props} />
-    </>
-  );
-}
-
 export function LastUpdatedAtBanner({ time }) {
   return time ? (
     <div className="last-updated-banner">

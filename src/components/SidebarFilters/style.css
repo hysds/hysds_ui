@@ -32,6 +32,10 @@
   padding-right: 15px;
 }
 
+.reactivesearch-input > ul > li > label > span > span:first-of-type {
+  word-break: break-all;
+}
+
 .reactivesearch-input > ul > li > label::before {
   width: calc(12px + 1px);
   height: 12px;

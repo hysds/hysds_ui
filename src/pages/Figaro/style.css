@@ -9,7 +9,6 @@
 
 .figaro-page-wrapper {
   display: flex;
-  min-width: 1100px;
   height: calc(100vh - 45px);
 }
 
@@ -42,12 +41,6 @@ li.active:hover {
   height: 100%;
 }
 
-@media screen and (max-height: 450px) {
-  .figaro-sidenav {
-    padding-top: 15px;
-  }
-}
-
 input:focus {
   outline: none;
 }
@@ -55,10 +48,7 @@ input:focus {
 .top-bar-wrapper {
   margin: 0 auto;
   display: flex;
-  width: 95%;
   align-items: center;
-  min-width: 500px;
-  margin-top: 20px;
   margin-bottom: 15px;
 }
 
@@ -79,7 +69,26 @@ input:focus {
 }
 
 .figaro-button {
-  padding: 0px 7px;
+  padding: 0px 5px;
+}
+
+@media screen and (max-width: 900px) {
+  .figaro-body {
+    padding: 0px 12px;
+  }
+
+  .figaro-sidenav {
+    min-width: 240px;
+    padding: 15px 16px 20px 16px;
+  }
+
+  .top-bar-wrapper {
+    display: block !important;
+  }
+
+  .button-wrapper {
+    margin-top: 10px;
+  }
 }
 
 .__theme-dark.figaro-sidenav {

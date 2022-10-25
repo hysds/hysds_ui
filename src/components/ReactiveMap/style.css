@@ -7,7 +7,7 @@
 }
 
 .leaflet-map-container {
-  padding: 0px 35px;
+  padding: 0px 25px;
   margin-top: 10px;
   margin-left: 10px;
   margin-right: 10px;
@@ -82,6 +82,12 @@
 .id-popup-link:hover {
   cursor: pointer;
   text-decoration: underline;
+}
+
+@media screen and (max-width: 900px) {
+  .leaflet-map-container {
+    padding: 0px;
+  }
 }
 
 .__theme-dark .map-coordinates-textbox {

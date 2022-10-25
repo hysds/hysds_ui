@@ -4,9 +4,18 @@
   height: calc(100vh - 47px);
 }
 
+.user-rules-banner {
+  text-align: center;
+}
+
 .user-rules-options-wrapper {
   display: flex;
-  padding: 15px 15px 45px 15px;
+  padding: 15px 15px 35px 15px;
+}
+
+.user-rules-options {
+  display: flex;
+  flex-grow: 1;
 }
 
 .user-rules-button-wrapper {
@@ -21,8 +30,14 @@
   border: solid 1px #dfdfdf;
 }
 
-.tosca-user-rules {
-  min-width: 750px;
+@media screen and (max-width: 750px) {
+  .user-rules-options-wrapper {
+    display: block !important;
+  }
+
+  .user-rules-options {
+    margin-bottom: 10px;
+  }
 }
 
 .__theme-dark .user-rules-options-wrapper input {

@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux"; // redux
+import { connect } from "react-redux";
 import { editCustomFilterId } from "../../redux/actions";
-import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
+import { ReactiveComponent } from "@appbaseio/reactivesearch";
 
 let Handler = class extends React.Component {
   constructor(props) {
@@ -82,7 +82,6 @@ let Handler = class extends React.Component {
   render = () => <></>;
 };
 
-// Redux states and actions
 const mapStateToProps = (state, ownProps) => {
   const { componentId } = ownProps;
   return {

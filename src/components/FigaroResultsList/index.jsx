@@ -1,7 +1,7 @@
 import React from "react";
-import { connect } from "react-redux"; // redux
+import { connect } from "react-redux";
 
-import { ReactiveList } from "@appbaseio/reactivesearch"; // reactivesearch
+import { ReactiveList } from "@appbaseio/reactivesearch";
 import { retrieveData, editCustomFilterId } from "../../redux/actions";
 
 import { FigaroDataViewer } from "../../components/FigaroDataViewer";
@@ -93,23 +93,25 @@ class FigaroResultsList extends React.Component {
             checked={tableView}
           />
           <div className="results-display-buffer" />
-          <SortOptions
-            label="Sort By: "
-            value={sortColumn}
-            onChange={this.handleSortColumn}
-            options={FIGARO_DISPLAY_COLUMNS.filter((d) => d.accessor).map((d) =>
-              d.keyword ? `${d.accessor}.keyword` : d.accessor
-            )}
-          />
-          <SortDirection
-            value={sortOrder}
-            onChange={this.handleSortDirection}
-          />
-          <PageSizeOptions
-            label="Page Size: "
-            value={pageSize}
-            onChange={this.handlePageSize}
-          />
+          <div className="sort-wrapper">
+            <SortOptions
+              label="Sort:"
+              value={sortColumn}
+              onChange={this.handleSortColumn}
+              options={FIGARO_DISPLAY_COLUMNS.filter((d) => d.accessor).map(
+                (d) => (d.keyword ? `${d.accessor}.keyword` : d.accessor)
+              )}
+            />
+            <SortDirection
+              value={sortOrder}
+              onChange={this.handleSortDirection}
+            />
+            <PageSizeOptions
+              label="Page Size: "
+              value={pageSize}
+              onChange={this.handlePageSize}
+            />
+          </div>
         </div>
 
         <ReactiveList

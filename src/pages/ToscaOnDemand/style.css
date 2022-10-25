@@ -1,15 +1,10 @@
 @import "../../style/global.css";
 
-.tosca-on-demand-page {
-  min-width: 650px;
-}
-
 .tosca-on-demand {
   display: flex;
   height: calc(100vh - 43px);
 }
 
-/* Control the left and right side */
 .on-demand-left,
 .on-demand-right {
   flex: 1;
@@ -40,7 +35,7 @@
   padding: 15px;
 }
 
-@media (max-width: 950px) {
+@media (max-width: 900px) {
   .tosca-on-demand {
     display: block;
     overflow: auto;

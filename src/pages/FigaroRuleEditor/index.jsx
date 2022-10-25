@@ -278,7 +278,6 @@ class FigaroRuleEditor extends React.Component {
   }
 }
 
-// redux state data
 const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   userRules: state.generalReducer.userRules,

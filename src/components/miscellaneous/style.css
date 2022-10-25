@@ -1,11 +1,9 @@
-/* Border */
 .job-param-border {
   border: 1px solid #000000b0;
   margin-top: 35px;
   margin-bottom: 35px;
 }
 
-/* Status Bar */
 .job-submit-status-bar {
   position: fixed;
   left: 0;
@@ -55,16 +53,9 @@
   margin-right: 10px;
 }
 
-.miscellaneous-checkbox {
-  -ms-transform: scale(1.5); /* IE */
-  -moz-transform: scale(1.5); /* FF */
-  -webkit-transform: scale(1.5); /* Safari and Chrome */
-  -o-transform: scale(1.5); /* Opera */
-  transform: scale(1.5);
-}
-
 .last-updated-banner {
-  padding: 10px 0 0 0;
+  padding: 10px 0 10px 0;
+  font-size: 12px;
   text-align: right;
 }
 

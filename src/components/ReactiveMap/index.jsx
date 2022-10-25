@@ -2,14 +2,14 @@ import React from "react"; // react imports
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
-import { connect } from "react-redux"; // redux
+import { connect } from "react-redux";
 import {
   clickDatasetId,
   bboxEdit,
   unclickQueryRegion,
 } from "../../redux/actions";
 
-import { ReactiveComponent } from "@appbaseio/reactivesearch"; // reactivesearch
+import { ReactiveComponent } from "@appbaseio/reactivesearch";
 
 import L from "leaflet"; // lealfet
 import "leaflet-draw";
@@ -132,9 +132,8 @@ let MapComponent = class extends React.Component {
           query,
           value: this.props.value,
         });
-      } else {
-        this.sendEmptyQuery(); // handles onClear (facets)
-      }
+      } else this.sendEmptyQuery(); // handles onClear (facets)
+
       this.setState({ value: this.props.value }); // prevent maximum recursion error
       this.props.bboxEdit(this.props.value);
     }

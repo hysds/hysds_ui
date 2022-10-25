@@ -14,7 +14,6 @@ import SearchQuery from "../../components/SearchQuery";
 import { ButtonLink, ScrollTop } from "../../components/Buttons";
 
 import SidebarFilters from "../../components/SidebarFilters";
-import { HelperLink } from "../../components/miscellaneous";
 import HeaderBar, {
   HeaderLink,
   DropdownSources,
@@ -112,7 +111,6 @@ class Tosca extends React.Component {
             <div className="tosca-body" ref={this.pageRef}>
               <LastUpdatedAtBanner time={this.state.lastUpdatedAt} />
               <div className="top-bar-wrapper">
-                <HelperLink link="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html" />
                 <SearchQuery
                   componentId={QUERY_SEARCH_COMPONENT_ID}
                   theme={classTheme}
@@ -170,7 +168,6 @@ Tosca.defaultProps = {
   theme: "__theme-light",
 };
 
-// redux state data
 const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   data: state.generalReducer.data,

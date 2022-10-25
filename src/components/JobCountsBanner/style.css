@@ -1,7 +1,7 @@
 @import "../../style/global.css";
 
 .figaro-job-count-banner {
-  margin: 15px 0px 10px 0px;
+  margin: 0px 0px 10px 0px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -11,8 +11,14 @@
   flex: 0 1 10em;
   text-align: center;
   padding: 20px 0px 20px 0px;
-  margin: 10px 5px 10px 5px;
+  margin: 5px 5px 5px 5px;
   border-radius: 5px;
+}
+
+@media screen and (max-width: 900px) {
+  .figaro-job-count {
+    margin: 5px 5px 0px 0px;
+  }
 }
 
 .job-count {

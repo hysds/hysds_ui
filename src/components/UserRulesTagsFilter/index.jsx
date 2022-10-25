@@ -33,9 +33,7 @@ function UserRulesTagsFilter(props) {
     container: (base) => ({
       ...base,
       padding: "0px 15px 0px 15px",
-      flexGrow: 0,
-      flexShrink: 0,
-      flexBasis: "30%",
+      width: 300,
     }),
     control: (base) => ({
       ...base,

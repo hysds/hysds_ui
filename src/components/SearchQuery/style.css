@@ -1,5 +1,11 @@
 @import "../../style/global.css";
 
+.search-query {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+}
+
 .query-input-box {
   height: 30px;
   width: 100%;
@@ -10,9 +16,7 @@
 }
 
 .query-input-form {
-  min-width: 250px;
   flex: 1;
-  margin-right: 20px;
 }
 
 .__theme-dark .query-input-box {

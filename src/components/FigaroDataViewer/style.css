@@ -11,8 +11,15 @@
 .figaro-code-format {
   font-family: "Courier New", Courier, monospace;
   font-size: 11px;
-  white-space: pre-line;
-  padding: 5px 0px 10px 0px;
+  padding: 5px 0px 0px 0px;
+}
+
+.figaro-code-format > pre > code {
+  white-space: pre-wrap; /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
 a.figaro-id-link {

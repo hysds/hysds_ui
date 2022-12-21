@@ -78,10 +78,18 @@ export const FigaroDataViewer = (props) => {
         return (
           <>
             {res.traceback ? (
-              <div className="figaro-code-format">{res.traceback}</div>
+              <div className="figaro-code-format">
+                <pre>
+                  <code>{res.traceback}</code>
+                </pre>
+              </div>
             ) : null}
             {res.event && res.event.traceback ? (
-              <div className="figaro-code-format">{res.event.traceback}</div>
+              <div className="figaro-code-format">
+                <pre>
+                  <code>{res.event.traceback}</code>
+                </pre>
+              </div>
             ) : null}
           </>
         );
@@ -90,7 +98,11 @@ export const FigaroDataViewer = (props) => {
         return (
           <>
             {res.msg_details ? (
-              <div className="figaro-code-format">{res.msg_details}</div>
+              <div className="figaro-code-format">
+                <pre>
+                  <code>{res.msg_details}</code>
+                </pre>
+              </div>
             ) : null}
           </>
         );

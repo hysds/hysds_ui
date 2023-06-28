@@ -110,7 +110,7 @@ class ToscaOnDemand extends React.Component {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         this.setState({ submitInProgress: 0, submitFailed: 1 });
         setTimeout(() => this.setState({ submitFailed: 0 }), 3000);
       });

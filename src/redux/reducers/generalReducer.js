@@ -293,6 +293,7 @@ const generalReducer = (state = initialState, action) => {
         ruleName: payload.rule_name,
         queue: payload.queue,
         priority: payload.priority,
+        indexPattern: payload.index_pattern || "",
         userRuleTag: payload.tags || [],
         dedup: payload.enable_dedup !== undefined ? payload.enable_dedup : null,
       };

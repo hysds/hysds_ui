@@ -7,6 +7,7 @@ import {
   EDIT_DATA_COUNT,
   EDIT_JOB_PARAMS,
   EDIT_PRIORITY,
+  EDIT_INDEX_PATTERN,
   EDIT_QUERY,
   EDIT_RULE_NAME,
   EDIT_TAG,
@@ -57,6 +58,7 @@ const initialState = {
   validQuery: true,
   priority: priority || 0,
   priorityList: [...Array(10).keys()].map((n) => ({ value: n, label: n })),
+  indexPattern: "",
   jobList: [],
   jobLabel: null,
   jobSpec: urlParams.get("job_spec") || null,
@@ -222,6 +224,11 @@ const generalReducer = (state = initialState, action) => {
       return {
         ...state,
         priority: action.payload,
+      };
+    case EDIT_INDEX_PATTERN:
+      return {
+        ...state,
+        indexPattern: action.payload,
       };
     case EDIT_TAG:
       return {

@@ -21,7 +21,7 @@ function Filter({
           (o, [k, v]) => ({ ...o, [k]: v.filter((d) => d !== componentId) }),
           {}
         )
-      : null;
+      : queryLogic;
 
   switch (type) {
     case "multi":

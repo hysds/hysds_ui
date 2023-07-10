@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 
 import { SingleList, DateRange, MultiList } from "@appbaseio/reactivesearch";
@@ -15,13 +15,16 @@ function Filter({
   size,
   queryLogic,
 }) {
-  const _queryLogic =
-    queryLogic && queryLogic.constructor === Object
-      ? Object.entries(queryLogic).reduce(
-          (o, [k, v]) => ({ ...o, [k]: v.filter((d) => d !== componentId) }),
-          {}
-        )
-      : queryLogic;
+  const _queryLogic = useMemo(
+    () =>
+      queryLogic && queryLogic.constructor === Object
+        ? Object.entries(queryLogic).reduce(
+            (o, [k, v]) => ({ ...o, [k]: v.filter((d) => d !== componentId) }),
+            {}
+          )
+        : queryLogic,
+    []
+  );
 
   switch (type) {
     case "multi":

@@ -4,6 +4,7 @@ import {
   SET_QUERY,
   EDIT_QUERY, // on-demand
   EDIT_PRIORITY,
+  EDIT_INDEX_PATTERN,
   EDIT_JOB_PARAMS,
   CHANGE_JOB_TYPE,
   CHANGE_QUEUE,
@@ -78,6 +79,11 @@ export const editJobPriority = (payload, url = false) => {
     payload,
   };
 };
+
+export const editIndexPattern = (payload) => ({
+  type: EDIT_INDEX_PATTERN,
+  payload,
+});
 
 export const changeJobType = (payload, url = false) => {
   if (url) {

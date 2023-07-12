@@ -51,6 +51,23 @@ const ToscaUserRules = class extends React.Component {
     const tagFilters = [{ value: null, label: "-" }, ...this.props.tags];
     const ruleCount = userRules.length;
 
+    const extraColumns = [
+      {
+        Header: "Index",
+        accessor: "index_pattern",
+        filterable: true,
+        width: 155,
+        resizable: true,
+        filterMethod: (filter, row) => {
+          if (
+            row.index_pattern &&
+            row.index_pattern.toLowerCase().includes(filter.value.toLowerCase())
+          )
+            return row;
+        },
+      },
+    ];
+
     return (
       <>
         <Helmet>
@@ -92,6 +109,7 @@ const ToscaUserRules = class extends React.Component {
               toggleUserRule={toggleUserRule}
               deleteUserRule={deleteUserRule}
               link="/tosca/user-rule"
+              extraColumns={extraColumns}
             />
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 
 import { SingleList, DateRange, MultiList } from "@appbaseio/reactivesearch";
@@ -15,6 +15,17 @@ function Filter({
   size,
   queryLogic,
 }) {
+  const _queryLogic = useMemo(
+    () =>
+      queryLogic && queryLogic.constructor === Object
+        ? Object.entries(queryLogic).reduce(
+            (o, [k, v]) => ({ ...o, [k]: v.filter((d) => d !== componentId) }),
+            {}
+          )
+        : queryLogic,
+    []
+  );
+
   switch (type) {
     case "multi":
       return (
@@ -27,7 +38,7 @@ function Filter({
           sortBy={sortBy}
           size={size || 1000}
           defaultValue={null || defaultValue}
-          react={queryLogic}
+          react={_queryLogic}
           className="reactivesearch-input reactivesearch-multilist"
         />
       );
@@ -51,7 +62,7 @@ function Filter({
           dataField={dataField}
           title={title}
           URLParams={true}
-          react={queryLogic}
+          react={_queryLogic}
           className="reactivesearch-input"
           transformData={(list) =>
             list
@@ -75,7 +86,7 @@ function Filter({
           sortBy={sortBy}
           size={size || 1000}
           defaultValue={null || defaultValue}
-          react={queryLogic}
+          react={_queryLogic}
           className="reactivesearch-input"
         />
       );
@@ -89,7 +100,11 @@ function SidebarFilters({ filters, queryLogic }) {
 }
 
 SidebarFilters.propTypes = {
+  componentId: PropTypes.string.isRequired,
+  dataField: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
   filters: PropTypes.array.isRequired,
+  queryLogic: PropTypes.object,
 };
 
 SidebarFilters.defaultProps = {

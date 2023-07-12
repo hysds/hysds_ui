@@ -20,6 +20,7 @@ export const EDIT_DATA_COUNT = "EDIT_DATA_COUNT";
 export const EDIT_JOB_PARAMS = "EDIT_JOB_PARAMS";
 export const EDIT_QUERY = "EDIT_QUERY";
 export const EDIT_PRIORITY = "EDIT_PRIORITY";
+export const EDIT_INDEX_PATTERN = "EDIT_INDEX_PATTERN";
 export const EDIT_RULE_NAME = "EDIT_RULE_NAME";
 export const EDIT_TAG = "EDIT_TAG";
 export const EDIT_SOFT_TIME_LIMIT = "EDIT_SOFT_TIME_LIMIT";

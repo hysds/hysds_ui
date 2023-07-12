@@ -19,6 +19,7 @@ import HeaderBar from "../../components/HeaderBar";
 import {
   editQuery,
   editJobPriority,
+  editIndexPattern,
   changeJobType,
   editParams,
   changeQueue,
@@ -89,6 +90,7 @@ class ToscaRuleEditor extends React.Component {
       tags: this.props.tag,
       query_string: this.props.query,
       priority: this.props.priority,
+      index_pattern: this.props.indexPattern,
       workflow: this.props.hysdsio,
       job_spec: this.props.jobSpec,
       queue: this.props.queue,
@@ -196,6 +198,12 @@ class ToscaRuleEditor extends React.Component {
                 options={this.props.priorityList}
                 editValue={editJobPriority}
               />
+              <Input
+                label="Index Pattern"
+                value={this.props.indexPattern}
+                editValue={editIndexPattern}
+                placeholder="Alias or index pattern; ex. grq_*"
+              />
               {this.props.paramsList.length > 0 ? <Border /> : null}
               {hysdsioLabel}
               <Params
@@ -288,6 +296,7 @@ const mapStateToProps = (state) => ({
   queueList: state.generalReducer.queueList,
   queue: state.generalReducer.queue,
   priority: state.generalReducer.priority,
+  indexPattern: state.generalReducer.indexPattern,
   priorityList: state.generalReducer.priorityList,
   paramsList: state.generalReducer.paramsList,
   params: state.generalReducer.params,

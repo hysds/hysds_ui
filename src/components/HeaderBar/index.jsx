@@ -53,7 +53,7 @@ export function DropdownSources() {
           GRQ Rest API
         </a>
         <a href={KIBANA_URL} target="_blank">
-          Metrics (Kibana)
+          Metrics
         </a>
         <a
           href={`${window.location.protocol}//${window.location.hostname}:${RABBIT_MQ_PORT}`}

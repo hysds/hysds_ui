@@ -128,12 +128,6 @@ class Figaro extends React.Component {
                 <CustomIdFilter componentId="_id" dataField="_id" />
               </div>
 
-              <div>
-                <pre style={{ whiteSpace: "pre-wrap" }}>
-                  {JSON.stringify(this.state.query)}
-                </pre>
-              </div>
-
               <FigaroResultsList />
             </div>
             <ScrollTop onClick={() => this.pageRef.current.scrollTo(0, 0)} />

@@ -145,12 +145,6 @@ class Tosca extends React.Component {
                 <SelectedFilters className="filter-list" />
               </div>
 
-              <div>
-                <pre style={{ whiteSpace: "pre-wrap" }}>
-                  {JSON.stringify(query)}
-                </pre>
-              </div>
-
               <div ref={this.mapRef}>{reactiveMap}</div>
               <ToscaResultsList
                 componentId={RESULTS_LIST_COMPONENT_ID}

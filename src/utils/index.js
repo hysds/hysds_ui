@@ -158,6 +158,12 @@ exports.validateUserRule = (props) => {
   return true;
 };
 
+/**
+ *
+ * @param {String} body - the _msearch query body
+ * @param {Stirng} componentId - corresponding component-id for the reactivesearch component
+ * @returns {String} - the corresponding ES query for the displayed results
+ */
 exports.parseFacetQuery = (body, componentId) => {
   const splitBody = body.split("\n");
   const idx = splitBody.findIndex(

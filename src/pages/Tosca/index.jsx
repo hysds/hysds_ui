@@ -2,7 +2,6 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
 import { connect } from "react-redux";
-import { setQuery } from "../../redux/actions";
 
 // custom components we built to handle elasticsearch data
 import ToscaResultsList from "../../components/ToscaResultsList";
@@ -33,6 +32,7 @@ import {
 } from "../../config/tosca";
 
 import "./style.css";
+import { parseFacetQuery } from "../../utils";
 
 class Tosca extends React.Component {
   constructor(props) {
@@ -40,6 +40,7 @@ class Tosca extends React.Component {
     this.state = {
       tableView: GRQ_TABLE_VIEW_DEFAULT, // boolean
       lastUpdatedAt: null,
+      query: null,
     };
 
     this.grq_es_url = LOCAL_DEV ? GRQ_ES_URL : `${window.origin}/${GRQ_ES_URL}`;
@@ -60,19 +61,14 @@ class Tosca extends React.Component {
       lastUpdatedAt: `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`,
     });
 
-    const body = e.body.split("\n");
-    let [preference, query] = body;
-    query = JSON.parse(query);
-
-    // main query ran to get the data
-    let parsedQuery = query.query;
-    parsedQuery = JSON.stringify(parsedQuery);
-    this.props.setQuery(parsedQuery);
+    const query = parseFacetQuery(e.body, RESULTS_LIST_COMPONENT_ID);
+    if (query) this.setState({ query });
     return e;
   };
 
   render() {
-    const { darkMode, data, dataCount, query } = this.props;
+    const { darkMode, data, dataCount } = this.props;
+    const { query } = this.state;
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
     const reactiveMap = DISPLAY_MAP ? (
@@ -148,6 +144,13 @@ class Tosca extends React.Component {
               <div className="filter-list-wrapper">
                 <SelectedFilters className="filter-list" />
               </div>
+
+              <div>
+                <pre style={{ whiteSpace: "pre-wrap" }}>
+                  {JSON.stringify(query)}
+                </pre>
+              </div>
+
               <div ref={this.mapRef}>{reactiveMap}</div>
               <ToscaResultsList
                 componentId={RESULTS_LIST_COMPONENT_ID}
@@ -172,12 +175,7 @@ const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   data: state.generalReducer.data,
   dataCount: state.generalReducer.dataCount,
-  query: state.generalReducer.query,
   queryRegion: state.reactivesearchReducer.queryRegion,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  setQuery: (query) => dispatch(setQuery(query)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Tosca);
+export default connect(mapStateToProps)(Tosca);

@@ -100,9 +100,9 @@ function SidebarFilters({ filters, queryLogic }) {
 }
 
 SidebarFilters.propTypes = {
-  componentId: PropTypes.string.isRequired,
-  dataField: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
+  // componentId: PropTypes.string.isRequired,
+  // dataField: PropTypes.string.isRequired,
+  // title: PropTypes.string.isRequired,
   filters: PropTypes.array.isRequired,
   queryLogic: PropTypes.object,
 };

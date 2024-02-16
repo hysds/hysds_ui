@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 
 import Select from "react-select";
 
+import { parseFacetQuery } from "../../../utils";
+
 import "./style.css";
 
 function Params(props) {

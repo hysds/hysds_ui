@@ -157,3 +157,22 @@ exports.validateUserRule = (props) => {
     return false;
   return true;
 };
+
+/**
+ *
+ * @param {String} body - the _msearch query body
+ * @param {Stirng} componentId - corresponding component-id for the reactivesearch component
+ * @returns {String} - the corresponding ES query for the displayed results
+ */
+exports.parseFacetQuery = (body, componentId) => {
+  const splitBody = body.split("\n");
+  const idx = splitBody.findIndex(
+    (d) => d === `{"preference":"${componentId}"}`
+  );
+  if (idx === -1) return null;
+  let query = splitBody[idx + 1];
+  query = JSON.parse(query);
+
+  // main query ran to get the data
+  return JSON.stringify(query.query);
+};

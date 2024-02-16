@@ -10,7 +10,7 @@ import CustomIdFilter from "../../components/CustomIdFilter";
 import FigaroResultsList from "../../components/FigaroResultsList";
 import { ButtonLink, ScrollTop } from "../../components/Buttons";
 
-import { setQuery, editCustomFilterId } from "../../redux/actions";
+import { editCustomFilterId } from "../../redux/actions";
 import { getJobCounts } from "../../redux/actions/figaro";
 
 import HeaderBar, {
@@ -19,6 +19,7 @@ import HeaderBar, {
 } from "../../components/HeaderBar";
 import { LastUpdatedAtBanner } from "../../components/miscellaneous";
 
+import { parseFacetQuery } from "../../utils";
 import { LOCAL_DEV, MOZART_ES_URL, MOZART_ES_INDICES } from "../../config";
 import { FILTERS, QUERY_LOGIC } from "../../config/figaro";
 
@@ -35,6 +36,7 @@ class Figaro extends React.Component {
 
     this.state = {
       lastUpdatedAt: null,
+      query: null,
     };
   }
 
@@ -48,18 +50,14 @@ class Figaro extends React.Component {
       lastUpdatedAt: `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`,
     });
 
-    const body = e.body.split("\n");
-    let [_, query] = body;
-    query = JSON.parse(query);
-
-    let parsedQuery = query.query;
-    parsedQuery = JSON.stringify(parsedQuery);
-    this.props.setQuery(parsedQuery);
+    const query = parseFacetQuery(e.body, "figaro-results");
+    if (query) this.setState({ query });
     return e;
   };
 
   render() {
-    const { darkMode, query, dataCount } = this.props;
+    const { darkMode, dataCount } = this.props;
+    const { query } = this.state;
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
     return (
@@ -146,12 +144,10 @@ Figaro.defaultProps = {
 
 const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
-  query: state.generalReducer.query,
   dataCount: state.generalReducer.dataCount,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setQuery: (query) => dispatch(setQuery(query)),
   getJobCounts: () => dispatch(getJobCounts()),
   editCustomFilterId: (componentId, value) =>
     dispatch(editCustomFilterId(componentId, value)),

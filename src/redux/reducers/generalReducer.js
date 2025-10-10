@@ -53,7 +53,6 @@ const initialState = {
   dataCount: (() => {
     const total = urlParams.get("total");
     const parsed = total ? parseInt(total, 10) : 0;
-    console.log('Initial state dataCount setup - URL total:', total, 'parsed:', parsed);
     return isNaN(parsed) ? 0 : parsed;
   })(),
   jobCounts: {},
@@ -276,7 +275,6 @@ const generalReducer = (state = initialState, action) => {
       };
     }
     case EDIT_DATA_COUNT:
-      console.log('generalReducer EDIT_DATA_COUNT:', action.payload);
       return {
         ...state,
         dataCount: action.payload,

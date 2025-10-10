@@ -52,11 +52,6 @@ class ToscaOnDemand extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.dataCount !== this.props.dataCount) {
-      console.log('ToscaOnDemand componentDidUpdate - dataCount changed from', prevProps.dataCount, 'to', this.props.dataCount);
-    }
-  }
 
   componentDidMount() {
     const { jobSpec } = this.props;
@@ -66,17 +61,8 @@ class ToscaOnDemand extends React.Component {
       this.props.getParamsList(jobSpec);
     }
     
-    // Debug: Log the dataCount prop and URL params
-    console.log('ToscaOnDemand componentDidMount - dataCount:', this.props.dataCount);
-    console.log('ToscaOnDemand componentDidMount - URL total param:', new URLSearchParams(window.location.search).get("total"));
-    
     // Sync URL parameters with Redux store
     this.props.syncUrlParams();
-    
-    // Debug: Log after sync
-    setTimeout(() => {
-      console.log('ToscaOnDemand after sync - dataCount:', this.props.dataCount);
-    }, 100);
   }
 
   checkQueryDataCount = () => {
@@ -185,9 +171,6 @@ class ToscaOnDemand extends React.Component {
       this.props;
     const { submitInProgress, submitSuccess, submitFailed, showConfirmationModal, dataCountLoading } = this.state;
 
-    // Debug: Log the dataCount prop in render
-    console.log('ToscaOnDemand render - dataCount:', this.props.dataCount, 'type:', typeof this.props.dataCount);
-
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
 
     const submissionTypeLabel = this.props.jobSpec ? (
@@ -219,8 +202,8 @@ class ToscaOnDemand extends React.Component {
             <div className="split on-demand-right">
               <div className="on-demand-submitter-wrapper">
                 <h1>Tosca - On-Demand Job</h1>
-                <div className="data-count-header" style={{backgroundColor: 'yellow', border: '2px solid red', fontSize: '30px', fontWeight: 'bold'}}>
-                  🔍 DEBUG: Total Records: {this.props.dataCount || "N/A"} 🔍
+                <div className="data-count-header">
+                  Total Records: {this.props.dataCount || "N/A"}
                 </div>
 
                 <Input

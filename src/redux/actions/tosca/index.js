@@ -32,7 +32,7 @@ export const editDataCount = (query) => (dispatch) => {
     console.warn('editDataCount: Query is empty or undefined');
     editUrlDataCount(null);
     dispatch({ type: EDIT_DATA_COUNT, payload: null });
-    return;
+    return Promise.resolve();
   }
 
   try {
@@ -43,7 +43,7 @@ export const editDataCount = (query) => (dispatch) => {
       body: JSON.stringify(parsedQuery),
     };
 
-    fetch(ES_QUERY_DATA_COUNT_ENDPOINT, headers)
+    return fetch(ES_QUERY_DATA_COUNT_ENDPOINT, headers)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -70,6 +70,7 @@ export const editDataCount = (query) => (dispatch) => {
     console.error('editDataCount JSON parse error:', err);
     editUrlDataCount(null);
     dispatch({ type: EDIT_DATA_COUNT, payload: null });
+    return Promise.resolve();
   }
 };
 

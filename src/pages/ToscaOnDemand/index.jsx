@@ -70,12 +70,21 @@ class ToscaOnDemand extends React.Component {
       // Validate that the query is valid JSON
       JSON.parse(this.props.query);
       this.setState({ dataCountLoading: true });
-      this.props.editDataCount(this.props.query);
       
-      // Reset loading state after a timeout (in case the action doesn't complete)
-      setTimeout(() => {
-        this.setState({ dataCountLoading: false });
-      }, 10000);
+      // Create a promise to track when the action completes
+      const dataCountPromise = this.props.editDataCount(this.props.query);
+      
+      // Reset loading state when the promise resolves
+      if (dataCountPromise && typeof dataCountPromise.then === 'function') {
+        dataCountPromise.finally(() => {
+          this.setState({ dataCountLoading: false });
+        });
+      } else {
+        // Fallback timeout if the action doesn't return a promise
+        setTimeout(() => {
+          this.setState({ dataCountLoading: false });
+        }, 5000);
+      }
     } catch (error) {
       console.error('Data Count Check: Invalid JSON query:', error);
       this.setState({ dataCountLoading: false });

@@ -11,6 +11,7 @@ import Dropdown from "../../components/Form/Dropdown";
 
 import { Button } from "../../components/Buttons";
 import HeaderBar from "../../components/HeaderBar";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 import { connect } from "react-redux";
 import {
@@ -45,6 +46,7 @@ class FigaroOnDemand extends React.Component {
       submitSuccess: 0,
       submitFailed: 0,
       failureReason: "",
+      showConfirmationModal: false,
     };
   }
 
@@ -58,6 +60,19 @@ class FigaroOnDemand extends React.Component {
   }
 
   checkQueryDataCount = () => this.props.editDataCount(this.props.query);
+
+  handleSubmitClick = () => {
+    this.setState({ showConfirmationModal: true });
+  };
+
+  handleConfirmSubmit = () => {
+    this.setState({ showConfirmationModal: false });
+    this.handleJobSubmit();
+  };
+
+  handleCancelSubmit = () => {
+    this.setState({ showConfirmationModal: false });
+  };
 
   handleJobSubmit = () => {
     let { paramsList, params } = this.props;
@@ -119,7 +134,7 @@ class FigaroOnDemand extends React.Component {
   render() {
     const { darkMode, query, paramsList, params, hysdsio, submissionType } =
       this.props;
-    const { submitInProgress, submitSuccess, submitFailed } = this.state;
+    const { submitInProgress, submitSuccess, submitFailed, showConfirmationModal } = this.state;
 
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
 
@@ -243,7 +258,7 @@ class FigaroOnDemand extends React.Component {
                     <Button
                       size="large"
                       label={"Submit"}
-                      onClick={this.handleJobSubmit}
+                      onClick={this.handleSubmitClick}
                       loading={submitInProgress}
                       disabled={!validSubmission || submitInProgress}
                     />
@@ -276,6 +291,17 @@ class FigaroOnDemand extends React.Component {
           visible={submitFailed}
           status="failed"
           reason={this.state.failureReason}
+        />
+        <ConfirmationModal
+          isOpen={showConfirmationModal}
+          onClose={this.handleCancelSubmit}
+          onConfirm={this.handleConfirmSubmit}
+          title="Confirm Job Submission"
+          message={`Are you sure you want to submit this ${hysdsio || 'job'}? This action cannot be undone.`}
+          confirmText="Submit Job"
+          cancelText="Cancel"
+          confirmColor="success"
+          loading={submitInProgress}
         />
       </div>
     );

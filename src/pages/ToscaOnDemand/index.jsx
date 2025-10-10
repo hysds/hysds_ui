@@ -219,8 +219,8 @@ class ToscaOnDemand extends React.Component {
             <div className="split on-demand-right">
               <div className="on-demand-submitter-wrapper">
                 <h1>Tosca - On-Demand Job</h1>
-                <div className="data-count-header">
-                  Total Records: {this.props.dataCount || "N/A"}
+                <div className="data-count-header" style={{backgroundColor: 'yellow', border: '2px solid red', fontSize: '30px', fontWeight: 'bold'}}>
+                  🔍 DEBUG: Total Records: {this.props.dataCount || "N/A"} 🔍
                 </div>
 
                 <Input

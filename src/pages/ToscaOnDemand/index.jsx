@@ -52,6 +52,12 @@ class ToscaOnDemand extends React.Component {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.dataCount !== this.props.dataCount) {
+      console.log('ToscaOnDemand componentDidUpdate - dataCount changed from', prevProps.dataCount, 'to', this.props.dataCount);
+    }
+  }
+
   componentDidMount() {
     const { jobSpec } = this.props;
     this.props.getOnDemandJobs();
@@ -60,8 +66,17 @@ class ToscaOnDemand extends React.Component {
       this.props.getParamsList(jobSpec);
     }
     
+    // Debug: Log the dataCount prop and URL params
+    console.log('ToscaOnDemand componentDidMount - dataCount:', this.props.dataCount);
+    console.log('ToscaOnDemand componentDidMount - URL total param:', new URLSearchParams(window.location.search).get("total"));
+    
     // Sync URL parameters with Redux store
     this.props.syncUrlParams();
+    
+    // Debug: Log after sync
+    setTimeout(() => {
+      console.log('ToscaOnDemand after sync - dataCount:', this.props.dataCount);
+    }, 100);
   }
 
   checkQueryDataCount = () => {
@@ -169,6 +184,9 @@ class ToscaOnDemand extends React.Component {
     const { darkMode, query, paramsList, params, hysdsio, submissionType } =
       this.props;
     const { submitInProgress, submitSuccess, submitFailed, showConfirmationModal, dataCountLoading } = this.state;
+
+    // Debug: Log the dataCount prop in render
+    console.log('ToscaOnDemand render - dataCount:', this.props.dataCount, 'type:', typeof this.props.dataCount);
 
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
 

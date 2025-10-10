@@ -30,8 +30,18 @@ export const syncUrlParams = () => (dispatch) => {
   const urlParams = new URLSearchParams(window.location.search);
   const total = urlParams.get("total");
   
+  console.log('syncUrlParams: URL total param:', total);
+  
   if (total) {
-    dispatch({ type: 'EDIT_DATA_COUNT', payload: parseInt(total) });
+    const parsed = parseInt(total, 10);
+    if (!isNaN(parsed)) {
+      console.log('syncUrlParams: Dispatching EDIT_DATA_COUNT with:', parsed);
+      dispatch({ type: 'EDIT_DATA_COUNT', payload: parsed });
+    } else {
+      console.log('syncUrlParams: Invalid total parameter:', total);
+    }
+  } else {
+    console.log('syncUrlParams: No total parameter found in URL');
   }
 };
 

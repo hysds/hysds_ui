@@ -47,6 +47,7 @@ class FigaroOnDemand extends React.Component {
       submitFailed: 0,
       failureReason: "",
       showConfirmationModal: false,
+      dataCountLoading: false,
     };
   }
 
@@ -59,7 +60,27 @@ class FigaroOnDemand extends React.Component {
     }
   }
 
-  checkQueryDataCount = () => this.props.editDataCount(this.props.query);
+  checkQueryDataCount = () => {
+    if (!this.props.query || this.props.query.trim() === '') {
+      console.warn('Data Count Check: Query is empty or undefined');
+      return;
+    }
+    
+    try {
+      // Validate that the query is valid JSON
+      JSON.parse(this.props.query);
+      this.setState({ dataCountLoading: true });
+      this.props.editDataCount(this.props.query);
+      
+      // Reset loading state after a timeout (in case the action doesn't complete)
+      setTimeout(() => {
+        this.setState({ dataCountLoading: false });
+      }, 10000);
+    } catch (error) {
+      console.error('Data Count Check: Invalid JSON query:', error);
+      this.setState({ dataCountLoading: false });
+    }
+  };
 
   handleSubmitClick = () => {
     this.setState({ showConfirmationModal: true });
@@ -134,7 +155,7 @@ class FigaroOnDemand extends React.Component {
   render() {
     const { darkMode, query, paramsList, params, hysdsio, submissionType } =
       this.props;
-    const { submitInProgress, submitSuccess, submitFailed, showConfirmationModal } = this.state;
+    const { submitInProgress, submitSuccess, submitFailed, showConfirmationModal, dataCountLoading } = this.state;
 
     const hysdsioLabel = paramsList.length > 0 ? <h2>{hysdsio}</h2> : null;
 
@@ -269,6 +290,8 @@ class FigaroOnDemand extends React.Component {
                       color="success"
                       label="Data Count Check"
                       onClick={this.checkQueryDataCount}
+                      loading={dataCountLoading}
+                      disabled={dataCountLoading}
                     />
                   </div>
                   <div className="tosca-on-demand-button">

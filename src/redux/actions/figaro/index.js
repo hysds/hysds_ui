@@ -72,6 +72,10 @@ export const getParamsList = (jobSpec) => (dispatch) => {
   return fetch(paramsListEndpoint)
     .then((res) => res.json())
     .then((data) => {
+      // Debug: Log the API response to see submission_type value
+      console.log('getParamsList API response:', data);
+      console.log('submission_type:', data.submission_type);
+      
       dispatch({
         type: LOAD_JOB_PARAMS,
         payload: data,

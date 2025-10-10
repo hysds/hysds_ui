@@ -25,6 +25,7 @@ import {
   editTimeLimit,
   editDiskUsage,
   editDedup,
+  syncUrlParams,
 } from "../../redux/actions";
 import {
   getOnDemandJobs,
@@ -58,6 +59,9 @@ class ToscaOnDemand extends React.Component {
       this.props.getQueueList(jobSpec);
       this.props.getParamsList(jobSpec);
     }
+    
+    // Sync URL parameters with Redux store
+    this.props.syncUrlParams();
   }
 
   checkQueryDataCount = () => {
@@ -367,6 +371,7 @@ const mapDispatchToProps = (dispatch) => ({
   getQueueList: (jobSpec) => dispatch(getQueueList(jobSpec)),
   getParamsList: (jobSpec) => dispatch(getParamsList(jobSpec)),
   editDataCount: (query) => dispatch(editDataCount(query)),
+  syncUrlParams: () => dispatch(syncUrlParams()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ToscaOnDemand);

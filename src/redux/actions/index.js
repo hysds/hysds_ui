@@ -26,6 +26,15 @@ import {
   CHANGE_USER_RULE_TAG,
 } from "../constants.js";
 
+export const syncUrlParams = () => (dispatch) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const total = urlParams.get("total");
+  
+  if (total) {
+    dispatch({ type: 'EDIT_DATA_COUNT', payload: parseInt(total) });
+  }
+};
+
 import {
   constructUrl,
   clearUrlJobParams,

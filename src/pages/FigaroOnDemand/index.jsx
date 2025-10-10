@@ -104,6 +104,17 @@ class FigaroOnDemand extends React.Component {
     this.setState({ showConfirmationModal: false });
   };
 
+  getConfirmationMessage = () => {
+    const { hysdsio, submissionType, dataCount } = this.props;
+    const jobName = hysdsio || 'job';
+    
+    if (submissionType === 'iteration') {
+      return `Are you sure you want to submit ${dataCount} ${jobName} jobs? This will submit one job for each of the ${dataCount} records found. This action cannot be undone.`;
+    } else {
+      return `Are you sure you want to submit an individual ${jobName} job for the ${dataCount} results? This action cannot be undone.`;
+    }
+  };
+
   handleJobSubmit = () => {
     let { paramsList, params } = this.props;
 
@@ -329,7 +340,7 @@ class FigaroOnDemand extends React.Component {
           onClose={this.handleCancelSubmit}
           onConfirm={this.handleConfirmSubmit}
           title="Confirm Job Submission"
-          message={`Are you sure you want to submit this ${hysdsio || 'job'}? This action cannot be undone.`}
+          message={this.getConfirmationMessage()}
           confirmText="Submit Job"
           cancelText="Cancel"
           confirmColor="success"

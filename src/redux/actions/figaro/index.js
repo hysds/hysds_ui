@@ -93,6 +93,14 @@ export const getParamsList = (jobSpec) => (dispatch) => {
 export const editDataCount = (query) => (dispatch) => {
   const ES_QUERY_DATA_COUNT_ENDPOINT = `${MOZART_ES_URL}/${MOZART_ES_INDICES}/_count`;
 
+  // Early validation
+  if (!query || query.trim() === '') {
+    console.warn('editDataCount: Query is empty or undefined');
+    editUrlDataCount(null);
+    dispatch({ type: EDIT_DATA_COUNT, payload: null });
+    return;
+  }
+
   try {
     let parsedQuery = { query: JSON.parse(query) };
     const headers = {
@@ -102,17 +110,30 @@ export const editDataCount = (query) => (dispatch) => {
     };
 
     fetch(ES_QUERY_DATA_COUNT_ENDPOINT, headers)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
         if (data.error) {
+          console.error('Elasticsearch error:', data.error);
           editUrlDataCount(null);
           dispatch({ type: EDIT_DATA_COUNT, payload: null });
         } else {
+          console.log('Data count result:', data.count);
           editUrlDataCount(data.count);
           dispatch({ type: EDIT_DATA_COUNT, payload: data.count });
         }
+      })
+      .catch((err) => {
+        console.error('editDataCount fetch error:', err);
+        editUrlDataCount(null);
+        dispatch({ type: EDIT_DATA_COUNT, payload: null });
       });
   } catch (err) {
+    console.error('editDataCount JSON parse error:', err);
     editUrlDataCount(null);
     dispatch({ type: EDIT_DATA_COUNT, payload: null });
   }

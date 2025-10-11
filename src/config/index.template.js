@@ -2,7 +2,7 @@
 exports.LOCAL_DEV = false;
 
 // Venue configuration - displays in the top banner
-exports.VENUE = "some-venue-string";
+exports.VENUE = "{{ VENUE }}";
 
 // GRQ's ES url
 exports.GRQ_ES_URL = "/grq_es";

@@ -48,6 +48,8 @@ class FigaroOnDemand extends React.Component {
       failureReason: "",
       showConfirmationModal: false,
       dataCountLoading: false,
+      queryModified: false,
+      lastValidatedQuery: props.query || "",
     };
   }
 
@@ -57,6 +59,15 @@ class FigaroOnDemand extends React.Component {
     if (jobSpec) {
       this.props.getQueueList(jobSpec);
       this.props.getParamsList(jobSpec);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    // Track query changes to determine if validation is needed
+    if (prevProps.query !== this.props.query) {
+      this.setState({
+        queryModified: this.props.query !== this.state.lastValidatedQuery,
+      });
     }
   }
 
@@ -76,7 +87,14 @@ class FigaroOnDemand extends React.Component {
       
       // Reset loading state when the promise resolves
       if (dataCountPromise && typeof dataCountPromise.then === 'function') {
-        dataCountPromise.finally(() => {
+        dataCountPromise.then(() => {
+          // Mark query as validated on successful data count check
+          this.setState({ 
+            dataCountLoading: false,
+            queryModified: false,
+            lastValidatedQuery: this.props.query,
+          });
+        }).catch(() => {
           this.setState({ dataCountLoading: false });
         });
       } else {
@@ -116,6 +134,38 @@ class FigaroOnDemand extends React.Component {
     } else {
       return `Are you sure you want to submit an individual ${jobName} job for the ${dataCount} results? This action cannot be undone.`;
     }
+  };
+
+  isFormSubmissionDisabled = () => {
+    const { queryModified } = this.state;
+    const { dataCount } = this.props;
+    
+    // Disable if query has been modified since last validation
+    if (queryModified) {
+      return true;
+    }
+    
+    // Disable if no data count or data count is 0
+    if (!dataCount || dataCount === 0) {
+      return true;
+    }
+    
+    return false;
+  };
+
+  getValidationMessage = () => {
+    const { queryModified } = this.state;
+    const { dataCount } = this.props;
+    
+    if (queryModified) {
+      return "Query has been modified. Please click 'Data Count Check' to validate the search results.";
+    }
+    
+    if (!dataCount || dataCount === 0) {
+      return "No results found for the current query. Please modify your query and try again.";
+    }
+    
+    return null;
   };
 
   handleJobSubmit = () => {
@@ -191,6 +241,8 @@ class FigaroOnDemand extends React.Component {
     ) : null;
 
     const validSubmission = validateSubmission(this.props);
+    const isFormDisabled = this.isFormSubmissionDisabled();
+    const validationMessage = this.getValidationMessage();
 
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
@@ -214,6 +266,11 @@ class FigaroOnDemand extends React.Component {
                 <div className="data-count-header">
                   Total Records: {this.props.dataCount || "N/A"}
                 </div>
+                {validationMessage && (
+                  <div className="validation-message">
+                    <p>{validationMessage}</p>
+                  </div>
+                )}
 
                 <Input
                   label="Tag"
@@ -304,7 +361,7 @@ class FigaroOnDemand extends React.Component {
                       label={"Submit"}
                       onClick={this.handleSubmitClick}
                       loading={submitInProgress}
-                      disabled={!validSubmission || submitInProgress}
+                      disabled={!validSubmission || submitInProgress || isFormDisabled}
                     />
                   </div>
                   <div className="tosca-on-demand-button">

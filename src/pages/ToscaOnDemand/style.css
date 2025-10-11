@@ -43,6 +43,28 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.validation-message {
+  padding: 10px 15px;
+  margin: 10px 0;
+  border-radius: 6px;
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  color: #856404;
+  font-size: 14px;
+  text-align: center;
+}
+
+.validation-message p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.__theme-dark .validation-message {
+  background-color: #2c3e50;
+  border-color: #f39c12;
+  color: #f39c12;
+}
+
 @media (max-width: 900px) {
   .tosca-on-demand {
     display: block;

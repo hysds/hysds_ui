@@ -113,10 +113,10 @@ class ToscaOnDemand extends React.Component {
     const { hysdsio, submissionType, dataCount } = this.props;
     const jobName = hysdsio || 'job';
     
-    // Debug: Log the submissionType value
-    console.log('getConfirmationMessage - submissionType:', submissionType, 'type:', typeof submissionType);
+    // Default to iteration mode if submissionType is null (matching UI behavior)
+    const actualSubmissionType = submissionType || 'iteration';
     
-    if (submissionType === 'iteration') {
+    if (actualSubmissionType === 'iteration') {
       return `Are you sure you want to submit ${dataCount} ${jobName} jobs? This will submit one job for each of the ${dataCount} records found. This action cannot be undone.`;
     } else {
       return `Are you sure you want to submit an individual ${jobName} job for the ${dataCount} results? This action cannot be undone.`;

@@ -1,6 +1,9 @@
 // settings are changed if you want to do local development
 exports.LOCAL_DEV = false;
 
+// Venue configuration - displays in the top banner
+exports.VENUE = "some-venue-string";
+
 // GRQ's ES url
 exports.GRQ_ES_URL = "/grq_es";
 exports.GRQ_ES_INDICES = "grq";

@@ -12,6 +12,7 @@ import {
   GRQ_REST_API_V1,
   KIBANA_URL,
   RABBIT_MQ_PORT,
+  VENUE,
 } from "../../config";
 
 import style from "../../style/global.css";
@@ -34,6 +35,16 @@ export function HeaderTitle(props) {
   return (
     <li className="header-bar-title" {...props}>
       <a>{title}</a>
+    </li>
+  );
+}
+
+export function VenueDisplay() {
+  if (!VENUE) return null;
+  
+  return (
+    <li className="header-bar-venue">
+      <span className="venue-text">{VENUE}</span>
     </li>
   );
 }
@@ -88,6 +99,7 @@ function HeaderBar(props) {
           onClick={themeHandler}
         />
         <div className="header-bar-buffer"></div>
+        <VenueDisplay />
       </ul>
     </div>
   );

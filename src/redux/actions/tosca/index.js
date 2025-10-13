@@ -61,11 +61,12 @@ export const editDataCount = (query) => (dispatch) => {
       .catch((err) => {
         editUrlDataCount(null);
         dispatch({ type: EDIT_DATA_COUNT, payload: null });
+        return Promise.reject(err);
       });
   } catch (err) {
     editUrlDataCount(null);
     dispatch({ type: EDIT_DATA_COUNT, payload: null });
-    return Promise.resolve();
+    return Promise.reject(err);
   }
 };
 

@@ -24,6 +24,7 @@ import {
   EDIT_CUSTOM_FILTER_ID,
   CLEAR_REDUX_STORE,
   CHANGE_USER_RULE_TAG,
+  EDIT_DATA_COUNT,
 } from "../constants.js";
 
 export const syncUrlParams = () => (dispatch) => {
@@ -33,7 +34,7 @@ export const syncUrlParams = () => (dispatch) => {
   if (total) {
     const parsed = parseInt(total, 10);
     if (!isNaN(parsed)) {
-      dispatch({ type: 'EDIT_DATA_COUNT', payload: parsed });
+      dispatch({ type: EDIT_DATA_COUNT, payload: parsed });
     }
   }
 };

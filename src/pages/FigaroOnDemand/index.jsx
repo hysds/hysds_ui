@@ -79,19 +79,23 @@ class FigaroOnDemand extends React.Component {
     try {
       // Validate that the query is valid JSON
       JSON.parse(this.props.query);
+      
+      // Capture the query at the start of validation to prevent race conditions
+      const queryBeingValidated = this.props.query;
       this.setState({ dataCountLoading: true });
       
       // Create a promise to track when the action completes
-      const dataCountPromise = this.props.editDataCount(this.props.query);
+      const dataCountPromise = this.props.editDataCount(queryBeingValidated);
       
       // Reset loading state when the promise resolves
       if (dataCountPromise && typeof dataCountPromise.then === 'function') {
         dataCountPromise.then(() => {
           // Mark query as validated on successful data count check
+          // Use the captured query value, not the current props.query
           this.setState({ 
             dataCountLoading: false,
             queryModified: false,
-            lastValidatedQuery: this.props.query,
+            lastValidatedQuery: queryBeingValidated,
           });
         }).catch(() => {
           this.setState({ dataCountLoading: false });

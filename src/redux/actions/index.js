@@ -24,7 +24,20 @@ import {
   EDIT_CUSTOM_FILTER_ID,
   CLEAR_REDUX_STORE,
   CHANGE_USER_RULE_TAG,
+  EDIT_DATA_COUNT,
 } from "../constants.js";
+
+export const syncUrlParams = () => (dispatch) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const total = urlParams.get("total");
+  
+  if (total) {
+    const parsed = parseInt(total, 10);
+    if (!isNaN(parsed)) {
+      dispatch({ type: EDIT_DATA_COUNT, payload: parsed });
+    }
+  }
+};
 
 import {
   constructUrl,

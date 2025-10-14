@@ -50,7 +50,11 @@ let defaultUrlJobParams = extractJobParams(urlParams);
 const initialState = {
   // main page
   data: [],
-  dataCount: urlParams.get("total") || 0,
+  dataCount: (() => {
+    const total = urlParams.get("total");
+    const parsed = total ? parseInt(total, 10) : 0;
+    return isNaN(parsed) ? 0 : parsed;
+  })(),
   jobCounts: {},
 
   // form data

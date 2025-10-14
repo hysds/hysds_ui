@@ -93,6 +93,13 @@ export const getParamsList = (jobSpec) => (dispatch) => {
 export const editDataCount = (query) => (dispatch) => {
   const ES_QUERY_DATA_COUNT_ENDPOINT = `${MOZART_ES_URL}/${MOZART_ES_INDICES}/_count`;
 
+  // Early validation
+  if (!query || query.trim() === '') {
+    editUrlDataCount(null);
+    dispatch({ type: EDIT_DATA_COUNT, payload: null });
+    return Promise.resolve();
+  }
+
   try {
     let parsedQuery = { query: JSON.parse(query) };
     const headers = {
@@ -101,8 +108,13 @@ export const editDataCount = (query) => (dispatch) => {
       body: JSON.stringify(parsedQuery),
     };
 
-    fetch(ES_QUERY_DATA_COUNT_ENDPOINT, headers)
-      .then((res) => res.json())
+    return fetch(ES_QUERY_DATA_COUNT_ENDPOINT, headers)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
         if (data.error) {
           editUrlDataCount(null);
@@ -111,10 +123,16 @@ export const editDataCount = (query) => (dispatch) => {
           editUrlDataCount(data.count);
           dispatch({ type: EDIT_DATA_COUNT, payload: data.count });
         }
+      })
+      .catch((err) => {
+        editUrlDataCount(null);
+        dispatch({ type: EDIT_DATA_COUNT, payload: null });
+        return Promise.reject(err);
       });
   } catch (err) {
     editUrlDataCount(null);
     dispatch({ type: EDIT_DATA_COUNT, payload: null });
+    return Promise.reject(err);
   }
 };
 

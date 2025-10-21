@@ -35,7 +35,7 @@ import {
 } from "../../redux/actions/tosca";
 
 import { buildParams, validateSubmission } from "../../utils";
-import { GRQ_REST_API_V1 } from "../../config";
+import { GRQ_REST_API_V1, CONFIRMATION_THRESHOLD } from "../../config";
 
 import "./style.css";
 
@@ -117,7 +117,16 @@ class ToscaOnDemand extends React.Component {
   };
 
   handleSubmitClick = () => {
-    this.setState({ showConfirmationModal: true });
+    const { dataCount } = this.props;
+    const threshold = parseInt(CONFIRMATION_THRESHOLD, 10) || 1000;
+    
+    // Only show confirmation modal if data count exceeds threshold
+    if (dataCount && dataCount > threshold) {
+      this.setState({ showConfirmationModal: true });
+    } else {
+      // Submit directly without confirmation for counts below threshold
+      this.handleJobSubmit();
+    }
   };
 
   handleConfirmSubmit = () => {

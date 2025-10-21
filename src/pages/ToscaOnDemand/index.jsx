@@ -118,7 +118,7 @@ class ToscaOnDemand extends React.Component {
 
   handleSubmitClick = () => {
     const { dataCount } = this.props;
-    const threshold = parseInt(CONFIRMATION_THRESHOLD, 1000) || 0;
+    const threshold = parseInt(CONFIRMATION_THRESHOLD, 10) || 1000;
     
     // Only show confirmation modal if data count exceeds threshold
     if (dataCount && dataCount > threshold) {

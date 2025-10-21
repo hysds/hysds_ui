@@ -4,6 +4,9 @@ exports.LOCAL_DEV = false;
 // Venue configuration - displays in the top banner
 exports.VENUE = "{{ VENUE }}";
 
+// Confirmation threshold - only show confirmation modal if data count exceeds this value
+exports.CONFIRMATION_THRESHOLD = 1000;
+
 // GRQ's ES url
 exports.GRQ_ES_URL = "/grq_es";
 exports.GRQ_ES_INDICES = "grq";

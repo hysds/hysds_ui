@@ -35,7 +35,7 @@ import {
 } from "../../redux/actions/figaro";
 
 import { buildParams, validateSubmission } from "../../utils";
-import { MOZART_REST_API_V1 } from "../../config";
+import { MOZART_REST_API_V1, CONFIRMATION_THRESHOLD } from "../../config";
 
 import "./style.css";
 
@@ -116,7 +116,16 @@ class FigaroOnDemand extends React.Component {
   };
 
   handleSubmitClick = () => {
-    this.setState({ showConfirmationModal: true });
+    const { dataCount } = this.props;
+    const threshold = parseInt(CONFIRMATION_THRESHOLD, 1000) || 0;
+    
+    // Only show confirmation modal if data count exceeds threshold
+    if (dataCount && dataCount > threshold) {
+      this.setState({ showConfirmationModal: true });
+    } else {
+      // Submit directly without confirmation for counts below threshold
+      this.handleJobSubmit();
+    }
   };
 
   handleConfirmSubmit = () => {

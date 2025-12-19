@@ -104,6 +104,13 @@ export const FigaroDataViewer = (props) => {
                 </pre>
               </div>
             ) : null}
+            {res.status === "job-deduped" && res.dedup_msg ? (
+              <div className="figaro-code-format">
+                <pre>
+                  <code>{res.dedup_msg}</code>
+                </pre>
+              </div>
+            ) : null}
           </>
         );
       }
@@ -188,7 +195,7 @@ export const FigaroDataViewer = (props) => {
             Traceback
           </a>
         ) : null}
-        {res.msg_details ? (
+        {res.msg_details || (res.status === "job-deduped" && res.dedup_msg) ? (
           <a
             className="figaro-job-info-link"
             onClick={() => handleViewTypeChange("details")}

@@ -152,6 +152,7 @@ exports.FIELDS = [
   "error",
   "traceback",
   "msg_details",
+  "dedup_msg",
   "tags",
   "job.name",
   "job.priority",

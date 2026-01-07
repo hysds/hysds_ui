@@ -52,6 +52,13 @@ class Figaro extends React.Component {
 
     const query = parseFacetQuery(e.body, "figaro-results");
     if (query) this.setState({ query });
+
+    // Add parameters to handle closed indices (HC-600)
+    if (e.url && !e.url.includes("ignore_unavailable")) {
+      const separator = e.url.includes("?") ? "&" : "?";
+      e.url = `${e.url}${separator}ignore_unavailable=true&allow_no_indices=true&expand_wildcards=open`;
+    }
+
     return e;
   };
 

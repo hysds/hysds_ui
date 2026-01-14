@@ -114,6 +114,13 @@ exports.FILTERS = [
     title: "Endpoint ID",
     type: "single",
   },
+  {
+    componentId: "job_deduped_detail",
+    dataField: "dedup_msg",
+    title: "Job Deduped Detail",
+    type: "single",
+    size: 1000,
+  },
 ];
 
 // TODO: TRY ADDING .KEYWORD TO COMPONENTID
@@ -138,6 +145,7 @@ exports.QUERY_LOGIC = {
     "timestamp",
     "endpoint_id",
     "redelivered",
+    "job_deduped_detail",
   ],
 };
 

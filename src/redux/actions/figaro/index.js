@@ -16,6 +16,7 @@ import {
 } from "../../constants.js";
 
 import { editUrlDataCount } from "../../../utils";
+import { appendClosedIndexParams } from "../../../utils/esHelpers";
 
 import {
   MOZART_ES_URL,
@@ -91,7 +92,9 @@ export const getParamsList = (jobSpec) => (dispatch) => {
 };
 
 export const editDataCount = (query) => (dispatch) => {
-  const ES_QUERY_DATA_COUNT_ENDPOINT = `${MOZART_ES_URL}/${MOZART_ES_INDICES}/_count`;
+  const ES_QUERY_DATA_COUNT_ENDPOINT = appendClosedIndexParams(
+    `${MOZART_ES_URL}/${MOZART_ES_INDICES}/_count`
+  );
 
   // Early validation
   if (!query || query.trim() === '') {

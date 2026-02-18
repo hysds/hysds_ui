@@ -16,6 +16,7 @@ import {
 } from "../../constants.js";
 
 import { editUrlDataCount } from "../../../utils";
+import { appendClosedIndexParams } from "../../../utils/esHelpers";
 
 import {
   MOZART_REST_API_V2,
@@ -25,7 +26,9 @@ import {
 } from "../../../config";
 
 export const editDataCount = (query) => (dispatch) => {
-  const ES_QUERY_DATA_COUNT_ENDPOINT = `${GRQ_ES_URL}/${GRQ_ES_INDICES}/_count`;
+  const ES_QUERY_DATA_COUNT_ENDPOINT = appendClosedIndexParams(
+    `${GRQ_ES_URL}/${GRQ_ES_INDICES}/_count`
+  );
 
   // Early validation
   if (!query || query.trim() === '') {

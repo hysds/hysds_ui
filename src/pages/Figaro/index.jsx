@@ -20,6 +20,7 @@ import HeaderBar, {
 import { LastUpdatedAtBanner } from "../../components/miscellaneous";
 
 import { parseFacetQuery } from "../../utils";
+import { appendClosedIndexParams } from "../../utils/esHelpers";
 import { LOCAL_DEV, MOZART_ES_URL, MOZART_ES_INDICES } from "../../config";
 import { FILTERS, QUERY_LOGIC } from "../../config/figaro";
 
@@ -53,11 +54,7 @@ class Figaro extends React.Component {
     const query = parseFacetQuery(e.body, "figaro-results");
     if (query) this.setState({ query });
 
-    // Add parameters to handle closed indices (HC-600)
-    if (e.url && !e.url.includes("ignore_unavailable")) {
-      const separator = e.url.includes("?") ? "&" : "?";
-      e.url = `${e.url}${separator}ignore_unavailable=true&allow_no_indices=true&expand_wildcards=open`;
-    }
+    e.url = appendClosedIndexParams(e.url);
 
     return e;
   };

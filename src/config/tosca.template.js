@@ -4,10 +4,12 @@ const React = require("react"); // lgtm [js/unused-local-variable]
 exports.DISPLAY_MAP = true;
 
 // all leaflet styles: https://leaflet-extras.github.io/leaflet-providers/preview/
-exports.LEAFLET_TILELAYER =
-  "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png";
+// NOTE: CARTO's free raster basemaps (basemaps.cartocdn.com) now require an API
+// key and render an "API KEY REQUIRED" watermark without one, so default to
+// OpenStreetMap's keyless standard tiles
+exports.LEAFLET_TILELAYER = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 exports.LEAFLET_ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 exports.BBOX_COLOR = "#f06eaa";
 exports.BBOX_WEIGHT = 5;

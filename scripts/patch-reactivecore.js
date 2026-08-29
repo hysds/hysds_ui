@@ -10,7 +10,7 @@
  * because npm 6 running as root -- which is what the Dockerfile does, on node:13 --
  * refuses to run the root package's lifecycle scripts and merely warns:
  *
- *   npm WARN lifecycle hysds_ui@1.3.2~postinstall: cannot run in wd ... (wd=/usr/src/app)
+ *   npm WARN lifecycle hysds_ui@<version>~postinstall: cannot run in wd ... (wd=/usr/src/app)
  *
  * The install still exits 0, so relying on postinstall alone would silently produce an
  * unpatched bundle in exactly the environment that builds the production image.

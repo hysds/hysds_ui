@@ -155,7 +155,6 @@ class ResultsList extends React.Component {
           componentId={componentId}
           className="reactivesearch-results-list"
           dataField="tosca_reactive_list"
-          showResultStats={false}
           size={pageSize}
           pages={7}
           pagination={true}
@@ -164,6 +163,9 @@ class ResultsList extends React.Component {
           onData={this.props.retrieveData}
           react={queryParams}
           render={tableView ? this.renderTableResults : this.renderListResults}
+          renderResultStats={(stats) => (
+            <h3 className="tosca-result-stats">{`${stats.numberOfResults} results`}</h3>
+          )}
           onError={(e) => console.error("results query failed:", e)}
           sortOptions={sortOptions}
           includeFields={FIELDS ? FIELDS : null}

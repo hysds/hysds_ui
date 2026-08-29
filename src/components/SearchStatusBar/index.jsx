@@ -131,7 +131,7 @@ class SearchStatusBar extends React.Component {
   };
 
   render() {
-    const { loading, error, count } = this.props;
+    const { loading, error } = this.props;
     const { updatedAt, unchanged, durationMs, elapsedMs } = this.state;
 
     // A failure outranks everything: `searching` is only released in componentDidUpdate,
@@ -158,12 +158,7 @@ class SearchStatusBar extends React.Component {
     if (!updatedAt) return null;
 
     const time = formatUtc(updatedAt, true);
-    const total = typeof count === "number" ? count.toLocaleString() : count;
     const took = this.formatDuration(durationMs);
-    // Elasticsearch caps hits.total at 10,000 by default, so `count` is usually that
-    // ceiling rather than a real total, and two different result sets routinely report the
-    // same number. The bar must only claim what it can actually see.
-    const capped = count === 10000;
 
     return (
       <div
@@ -173,7 +168,7 @@ class SearchStatusBar extends React.Component {
       >
         {unchanged
           ? `No change - the results on screen are the same as before (checked ${time}).`
-          : `Updated ${time} - showing ${capped ? `${total}+` : total} results for your current filters.`}
+          : `Updated ${time} - these results match your current filters.`}
         {took ? <span className="search-status-timing"> Took {took}.</span> : null}
       </div>
     );

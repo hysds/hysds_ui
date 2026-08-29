@@ -153,7 +153,6 @@ class FigaroResultsList extends React.Component {
         <ReactiveList
           componentId="figaro-results"
           dataField="figaro-reactive-list"
-          showResultStats={false}
           className="reactivesearch-results-list"
           pagination={true}
           size={pageSize}
@@ -163,6 +162,9 @@ class FigaroResultsList extends React.Component {
           react={QUERY_LOGIC}
           onData={this.props.retrieveData}
           render={tableView ? this.renderTableResults : this.renderListResults}
+          renderResultStats={(stats) => (
+            <h3 className="figaro-result-stats">{`${stats.numberOfResults} results`}</h3>
+          )}
           includeFields={FIELDS ? FIELDS : null}
           onError={(e) => console.error("results query failed:", e)}
         />

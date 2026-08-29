@@ -37,10 +37,16 @@ export function HelperLink(props) {
   );
 }
 
+// `time` is the epoch-ms of the last successful results response, so the banner tracks
+// when the data on screen actually arrived -- not when a request went out.
 export function LastUpdatedAtBanner({ time }) {
-  return time ? (
+  if (!time) return null;
+  const d = new Date(time);
+  return (
     <div className="last-updated-banner">
-      <span>Last Updated: {time}</span>
+      <span>
+        Last Updated: {`${d.toLocaleDateString()} ${d.toLocaleTimeString()}`}
+      </span>
     </div>
-  ) : null;
+  );
 }

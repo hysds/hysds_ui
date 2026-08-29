@@ -36,7 +36,6 @@ class Figaro extends React.Component {
       : `${window.origin}/${MOZART_ES_URL}`;
 
     this.state = {
-      lastUpdatedAt: null,
       query: null,
     };
   }
@@ -46,11 +45,6 @@ class Figaro extends React.Component {
   }
 
   handleTransformRequest = (e) => {
-    let d = new Date();
-    this.setState({
-      lastUpdatedAt: `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`,
-    });
-
     const query = parseFacetQuery(e.body, "figaro-results");
     if (query) this.setState({ query });
 
@@ -60,7 +54,7 @@ class Figaro extends React.Component {
   };
 
   render() {
-    const { darkMode, dataCount } = this.props;
+    const { darkMode, dataCount, dataUpdatedAt } = this.props;
     const { query } = this.state;
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
@@ -88,7 +82,7 @@ class Figaro extends React.Component {
             </div>
 
             <div className="figaro-body" ref={this.pageRef}>
-              <LastUpdatedAtBanner time={this.state.lastUpdatedAt} />
+              <LastUpdatedAtBanner time={dataUpdatedAt} />
               <JobCountsBanner updateCount={this.props.getJobCounts} />
 
               <div className="top-bar-wrapper">
@@ -149,6 +143,7 @@ Figaro.defaultProps = {
 const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   dataCount: state.generalReducer.dataCount,
+  dataUpdatedAt: state.generalReducer.dataUpdatedAt,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -50,6 +50,7 @@ let defaultUrlJobParams = extractJobParams(urlParams);
 const initialState = {
   // main page
   data: [],
+  dataUpdatedAt: null, // when the displayed results last came back from Elasticsearch
   dataCount: (() => {
     const total = urlParams.get("total");
     const parsed = total ? parseInt(total, 10) : 0;
@@ -139,6 +140,7 @@ const generalReducer = (state = initialState, action) => {
         ...state,
         data: action.payload.data,
         dataCount: action.payload.resultStats.numberOfResults,
+        dataUpdatedAt: Date.now(),
       };
     case JOB_COUNTS:
       return {

@@ -112,8 +112,9 @@ async function main() {
     const target = require.resolve("@appbaseio/reactivecore/lib/actions/query.js");
     assert.ok(
       fs.readFileSync(target, "utf8").includes("_msearchSeq"),
-      "@appbaseio/reactivecore is not patched -- run `node scripts/patch-reactivecore.js` " +
-        "(npm install does this automatically via the postinstall script)"
+      "@appbaseio/reactivecore is not patched -- run `node scripts/patch-reactivecore.js`. " +
+        "npm install/build normally do this via the postinstall and prebuild hooks, but " +
+        "npm 6 running as root skips lifecycle scripts with only a warning."
     );
   });
 

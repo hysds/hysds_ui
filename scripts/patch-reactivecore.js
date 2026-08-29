@@ -1,10 +1,19 @@
 /**
  * Patches @appbaseio/reactivecore's query engine at install time.
  *
- * Runs from the "postinstall" npm script, and is idempotent: re-running it on an
- * already-patched tree is a no-op. If the anchors below are not found exactly once
- * (i.e. reactivecore changed), the script fails loudly so the build stops instead of
- * silently shipping an unpatched bundle.
+ * Runs from the "postinstall", "prebuild" and "prestart" npm scripts, and is idempotent:
+ * re-running it on an already-patched tree is a no-op. If the anchors below are not found
+ * exactly once (i.e. reactivecore changed), the script fails loudly so the build stops
+ * instead of silently shipping an unpatched bundle.
+ *
+ * It is deliberately hooked to the build and start scripts as well as to postinstall,
+ * because npm 6 running as root -- which is what the Dockerfile does, on node:13 --
+ * refuses to run the root package's lifecycle scripts and merely warns:
+ *
+ *   npm WARN lifecycle hysds_ui@1.3.2~postinstall: cannot run in wd ... (wd=/usr/src/app)
+ *
+ * The install still exits 0, so relying on postinstall alone would silently produce an
+ * unpatched bundle in exactly the environment that builds the production image.
  *
  * WHY THIS EXISTS
  * ---------------

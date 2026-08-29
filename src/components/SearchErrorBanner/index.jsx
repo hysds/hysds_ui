@@ -50,19 +50,25 @@ function SearchErrorBanner({ error, staleSince }) {
     detail = "Could not decode the error returned by Elasticsearch.";
   }
 
+  // With no previous successful search there is nothing below and no filter change to
+  // have failed -- the page simply could not load.
+  const firstLoad = !staleSince;
+
   return (
     <div className="search-error-banner">
       <div className="search-error-banner-label">
-        Search failed &mdash; your filter change was NOT applied.
+        {firstLoad
+          ? "Search failed \u2014 no results could be loaded."
+          : "Search failed \u2014 your filter change was NOT applied."}
       </div>
       <div className="search-error-banner-help">
-        {staleSince
-          ? `The results below are the previous ones, from ${formatUtc(
+        {firstLoad
+          ? "Nothing is shown below. Check that Elasticsearch is reachable, then retry."
+          : `The results below are the previous ones, from ${formatUtc(
               staleSince,
               true
-            )}. They do not match the filters shown above.`
-          : "The results below do not match the filters shown above."}{" "}
-        Adjust a filter (or re-click the same one) to retry.
+            )}. They do not match the filters shown above.`}{" "}
+        {firstLoad ? "" : "Adjust a filter (or re-click the same one) to retry."}
       </div>
       {detail ? (
         <details className="search-error-banner-details">

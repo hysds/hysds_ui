@@ -7,6 +7,7 @@
     "start": "webpack-dev-server --open --mode development",
     "build": "webpack --mode production",
     "prod": "webpack-dev-server --open --mode production",
+    "preprod": "node scripts/patch-reactivecore.js",
     "test": "node tests/reactivecore-patch.test.js",
     "prestart": "node scripts/patch-reactivecore.js",
     "prebuild": "node scripts/patch-reactivecore.js",

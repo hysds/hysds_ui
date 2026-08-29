@@ -42,6 +42,7 @@ class SearchStatusBar extends React.Component {
     this.state = { updatedAt: null, unchanged: false, durationMs: null, elapsedMs: 0 };
     this.searching = false;
     this.signatureBeforeSearch = null;
+    this.lastReportedSignature = null;
     this.settleTimer = null;
     this.tickTimer = null;
     this.startedAt = null;
@@ -51,63 +52,87 @@ class SearchStatusBar extends React.Component {
   componentDidUpdate(prevProps) {
     const { loading, error } = this.props;
 
-    if (loading && !prevProps.loading) {
-      // A search started. Remember what was on screen BEFORE it, so that when the dust
-      // settles we compare against the view the user was looking at when they clicked --
-      // not against some intermediate response from the same interaction.
-      if (!this.searching) {
-        this.searching = true;
-        this.signatureBeforeSearch = this.signature();
-        this.startedAt = Date.now();
-        // Queries can take anything from tens of milliseconds to tens of seconds
-        // depending on how much of the index is already cached, so count up while we
-        // wait: a slow search should look slow, not hung.
-        this.setState({ elapsedMs: 0, durationMs: null });
-        clearInterval(this.tickTimer);
-        this.tickTimer = setInterval(
-          () => this.setState({ elapsedMs: Date.now() - this.startedAt }),
-          1000
-        );
-      }
-      clearTimeout(this.settleTimer);
+    if (loading && !prevProps.loading) this.beginLeg();
+
+    // An error ends the interaction wherever it lands. It can arrive without a falling
+    // edge at all -- a superseded batch rejecting after this one already finished -- and
+    // leaving the flag set would mis-anchor the next interaction's start time and verdict.
+    if (error && !prevProps.error) {
+      this.endInteraction(false);
       return;
     }
 
     if (!loading && prevProps.loading) {
       this.finishedAt = Date.now();
       clearInterval(this.tickTimer);
-
-      // A failed search ends the interaction -- the error banner stands until the user
-      // tries again. Without releasing the flag here it stays set (the settle callback
-      // below, which normally clears it, is only scheduled on success), so the next
-      // search would never re-anchor: it would keep the failed search's start time and
-      // report a duration spanning the failure and however long the user waited before
-      // retrying, and would not restart the elapsed counter.
-      if (error) this.searching = false;
+      this.tickTimer = null;
+      // The rows are already the new ones by now: reactivecore dispatches updateHits
+      // before setLoading(false). Publish the arrival immediately rather than from the
+      // settle timer, which a route change can cancel.
+      if (!error && this.props.onSettled) this.props.onSettled(this.finishedAt);
+      this.scheduleSettle();
+      return;
     }
 
-    if (!loading && prevProps.loading && !error) {
-      clearTimeout(this.settleTimer);
-      this.settleTimer = setTimeout(() => {
-        if (this.props.loading || this.props.error) return;
-        const signature = this.signature();
-        this.searching = false;
-        const settledAt = this.finishedAt || Date.now();
-        this.setState({
-          updatedAt: settledAt,
-          // the settle delay is ours, so report the time the queries actually took
-          durationMs:
-            this.startedAt && this.finishedAt ? this.finishedAt - this.startedAt : null,
-          unchanged:
-            this.signatureBeforeSearch !== null &&
-            signature === this.signatureBeforeSearch,
-        });
-        // One authoritative "results arrived" event, so the page-level banner and this bar
-        // cannot disagree, and neither advances on a prop change that moved no data.
-        if (this.props.onSettled) this.props.onSettled(settledAt);
-      }, SETTLE_MS);
+    // A concurrent interaction can deliver rows with no loading edge of its own: while one
+    // request is in flight a second setLoading(true) is a no-op, so its response arrives
+    // with `loading` already false. Watch the data itself so those still settle.
+    if (
+      this.startedAt !== null && // a search has run at least once; ignore mount noise
+      !loading &&
+      !error &&
+      this.signature() !== this.lastReportedSignature
+    ) {
+      this.finishedAt = Date.now();
+      if (this.props.onSettled) this.props.onSettled(this.finishedAt);
+      this.scheduleSettle();
     }
   }
+
+  // A single click fires several queries (the results list plus each facet aggregation),
+  // so an interaction spans several legs. Only the first anchors the comparison and the
+  // clock; every leg re-arms the ticker.
+  beginLeg = () => {
+    if (!this.searching) {
+      this.searching = true;
+      this.signatureBeforeSearch = this.signature();
+      this.startedAt = Date.now();
+      this.setState({ elapsedMs: 0, durationMs: null });
+    }
+    clearTimeout(this.settleTimer);
+    clearInterval(this.tickTimer);
+    this.tickTimer = setInterval(
+      () => this.setState({ elapsedMs: Date.now() - this.startedAt }),
+      1000
+    );
+  };
+
+  scheduleSettle = () => {
+    clearTimeout(this.settleTimer);
+    this.settleTimer = setTimeout(() => {
+      if (this.props.loading) return; // another leg started; it will settle
+      this.endInteraction(!this.props.error);
+    }, SETTLE_MS);
+  };
+
+  endInteraction = (report) => {
+    clearTimeout(this.settleTimer);
+    clearInterval(this.tickTimer);
+    this.tickTimer = null;
+    this.searching = false;
+    if (!report) return;
+
+    const signature = this.signature();
+    this.lastReportedSignature = signature;
+    this.setState({
+      updatedAt: this.finishedAt || Date.now(),
+      durationMs:
+        this.startedAt && this.finishedAt ? this.finishedAt - this.startedAt : null,
+      unchanged:
+        this.signatureBeforeSearch !== null &&
+        signature === this.signatureBeforeSearch,
+    });
+  };
 
   componentWillUnmount() {
     clearTimeout(this.settleTimer);
@@ -117,9 +142,11 @@ class SearchStatusBar extends React.Component {
   formatDuration = (ms) => {
     if (ms === null || ms === undefined) return null;
     if (ms < 1000) return `${ms}ms`;
-    if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
-    const m = Math.floor(ms / 60000);
-    return `${m}m ${Math.round((ms % 60000) / 1000)}s`;
+    // Round to whole seconds FIRST, then split: rounding the remainder independently of
+    // the minutes produced "1m 60s", and toFixed on 59,980ms produced "60.0s".
+    const secs = Math.round(ms / 1000);
+    if (secs < 60) return `${(ms / 1000).toFixed(1)}s`;
+    return `${Math.floor(secs / 60)}m ${secs % 60}s`;
   };
 
   // The result *count* is not enough to tell two result sets apart: Elasticsearch caps
@@ -134,14 +161,10 @@ class SearchStatusBar extends React.Component {
     const { loading, error } = this.props;
     const { updatedAt, unchanged, durationMs, elapsedMs } = this.state;
 
-    // A failure outranks everything: `searching` is only released in componentDidUpdate,
-    // which runs after this render and mutates an instance field, so testing it first
-    // would swallow the error banner until some later prop change forced a re-render.
-    if (error) return <SearchErrorBanner error={error} staleSince={updatedAt} />;
-
-    // `searching` stays true through the settle window, so the bar keeps reporting work in
-    // progress instead of briefly asserting the previous run's timestamp over new rows.
-    if (loading || this.searching)
+    // A retry in flight outranks the error it is retrying: `error` is not cleared until
+    // the retry answers, so testing it first left "your filter change was NOT applied"
+    // standing over the entire flight of a change that was being applied.
+    if (loading)
       return (
         <div className="search-status search-status-searching">
           <span className="search-status-spinner" />
@@ -152,6 +175,18 @@ class SearchStatusBar extends React.Component {
               {this.formatDuration(elapsedMs)} so far
             </span>
           ) : null}
+        </div>
+      );
+
+    if (error) return <SearchErrorBanner error={error} staleSince={updatedAt} />;
+
+    // Settling: the rows on screen are already the new ones (updateHits lands before
+    // setLoading(false)), so this must not repeat the "previous ones" claim.
+    if (this.searching)
+      return (
+        <div className="search-status search-status-searching">
+          <span className="search-status-spinner" />
+          Updating results&hellip;
         </div>
       );
 

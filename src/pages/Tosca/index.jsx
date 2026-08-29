@@ -32,6 +32,7 @@ import {
 } from "../../config/tosca";
 
 import "./style.css";
+import { resetDataFreshness } from "../../redux/actions";
 import { parseFacetQuery } from "../../utils";
 import { appendClosedIndexParams } from "../../utils/esHelpers";
 
@@ -47,6 +48,10 @@ class Tosca extends React.Component {
 
     this.mapRef = React.createRef();
     this.pageRef = React.createRef();
+  }
+
+  componentDidMount() {
+    this.props.resetDataFreshness();
   }
 
   componentDidUpdate() {
@@ -163,6 +168,10 @@ Tosca.defaultProps = {
   theme: "__theme-light",
 };
 
+const mapDispatchToProps = (dispatch) => ({
+  resetDataFreshness: () => dispatch(resetDataFreshness()),
+});
+
 const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   data: state.generalReducer.data,
@@ -171,4 +180,4 @@ const mapStateToProps = (state) => ({
   queryRegion: state.reactivesearchReducer.queryRegion,
 });
 
-export default connect(mapStateToProps)(Tosca);
+export default connect(mapStateToProps, mapDispatchToProps)(Tosca);

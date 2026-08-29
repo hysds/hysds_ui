@@ -10,7 +10,7 @@ import CustomIdFilter from "../../components/CustomIdFilter";
 import FigaroResultsList from "../../components/FigaroResultsList";
 import { ButtonLink, ScrollTop } from "../../components/Buttons";
 
-import { editCustomFilterId } from "../../redux/actions";
+import { editCustomFilterId, resetDataFreshness } from "../../redux/actions";
 import { getJobCounts } from "../../redux/actions/figaro";
 
 import HeaderBar, {
@@ -41,6 +41,7 @@ class Figaro extends React.Component {
   }
 
   componentDidMount() {
+    this.props.resetDataFreshness();
     this.props.getJobCounts();
   }
 
@@ -148,6 +149,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getJobCounts: () => dispatch(getJobCounts()),
+  resetDataFreshness: () => dispatch(resetDataFreshness()),
   editCustomFilterId: (componentId, value) =>
     dispatch(editCustomFilterId(componentId, value)),
 });

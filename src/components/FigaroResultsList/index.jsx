@@ -90,8 +90,7 @@ class FigaroResultsList extends React.Component {
       />
     ) : null;
 
-  // See ToscaResultsList for why this goes through `render` and why there are two
-  // bound variants.
+  // See ToscaResultsList for why this goes through `render`.
   renderBody = (args, tableView) => (
     <ResultsBody
       {...args}
@@ -102,8 +101,6 @@ class FigaroResultsList extends React.Component {
     />
   );
 
-  renderListResults = (args) => this.renderBody(args, false);
-  renderTableResults = (args) => this.renderBody(args, true);
 
   render() {
     const { pageSize, tableView, sortColumn, sortOrder } = this.state;
@@ -161,7 +158,7 @@ class FigaroResultsList extends React.Component {
           paginationAt="both"
           react={QUERY_LOGIC}
           onData={this.props.retrieveData}
-          render={tableView ? this.renderTableResults : this.renderListResults}
+          render={(args) => this.renderBody(args, tableView)}
           renderResultStats={(stats) => (
             <h3 className="figaro-result-stats">{`${stats.numberOfResults} results`}</h3>
           )}

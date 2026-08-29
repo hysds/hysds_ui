@@ -7,8 +7,11 @@
  *
  * Run: npm test
  *
- * Every test here FAILS against unpatched reactivecore@9.0.3 -- that is the point. To see
- * the pre-fix behaviour, restore the pristine file from a fresh `npm install` of
+ * The behavioural tests (RC1, RC2, RC3-ordering, the two superseded-batch cases, and
+ * error recovery) FAIL against unpatched reactivecore@9.0.3 -- that is the point. The
+ * others are guards rather than regressions: the marker check, the msearch sanity check
+ * and the late-straggler case pass either way and exist to catch drift. To see the pre-fix
+ * behaviour, restore the pristine file from a fresh `npm install` of
  * @appbaseio/reactivecore (without running the postinstall patch) and re-run.
  */
 
@@ -141,11 +144,11 @@ async function main() {
     sent[0].reject(new Error("Failed to fetch"));
     await tick();
 
-    assert.strictEqual(
-      store.getState().queryLog[RESULTS],
-      null,
-      "query log must be rolled back after a failed request"
-    );
+    const rolledBack = store.getState().queryLog[RESULTS];
+    assert.ok(rolledBack && rolledBack.__rolledBack, "query log must be rolled back");
+    // Truthy on purpose: ReactiveList gates its page-reset on queryLog being truthy on
+    // both sides of the change, so a null here would disable it for two updates.
+    assert.ok(rolledBack, "the rollback marker must stay truthy for ReactiveList");
     assert.ok(store.getState().error[RESULTS], "error state should be set");
     assert.strictEqual(store.getState().isLoading[RESULTS], false, "loading must be cleared");
 
@@ -174,7 +177,8 @@ async function main() {
     const state = store.getState();
     assert.ok(state.error[RESULTS], "failing component must report an error");
     assert.strictEqual(state.isLoading[RESULTS], false, "failing component must clear loading");
-    assert.strictEqual(state.queryLog[RESULTS], null, "failing component's query log must roll back");
+    assert.ok(state.queryLog[RESULTS] && state.queryLog[RESULTS].__rolledBack,
+      "failing component's query log must roll back");
     assert.ok(!state.hits[RESULTS], "failing component must not be given hits");
 
     // ...while the component that succeeded in the same batch is unaffected.
@@ -239,6 +243,42 @@ async function main() {
     sent[0].resolve(hitsBody(42, 0));
     await tick();
     assert.strictEqual(store.getState().hits[RESULTS].total, 42);
+  });
+
+  // Review finding #1: the whole-batch rejection path never checked or stamped the
+  // sequence, so a superseded batch's failure/success could still overwrite newer state.
+  await test("a superseded batch's rejection cannot bury newer results", async () => {
+    const { store, sent, clickFacet } = makeStore();
+    clickFacet("L0B"); // batch 1 (slow)
+    clickFacet("L1"); // batch 2
+    sent[1].resolve(hitsBody(222, Date.now())); // newer succeeds
+    await tick();
+    sent[0].reject(new Error("Failed to fetch")); // older finally fails
+    await tick();
+
+    // never-set is `undefined`, explicitly-cleared is `null` -- either is fine here
+    assert.ok(
+      !store.getState().error[RESULTS],
+      "a stale failure must not paint an error over newer, valid results"
+    );
+    assert.strictEqual(store.getState().hits[RESULTS].total, 222);
+  });
+
+  await test("a straggling success cannot clear a newer batch's error", async () => {
+    const { store, sent, clickFacet } = makeStore();
+    clickFacet("L0B"); // batch 1 (slow)
+    clickFacet("L1"); // batch 2
+    sent[1].reject(new Error("Failed to fetch")); // newer fails
+    await tick();
+    assert.ok(store.getState().error[RESULTS], "precondition: newer batch errored");
+    sent[0].resolve(hitsBody(111, Date.now())); // older straggles in
+    await tick();
+
+    assert.ok(
+      store.getState().error[RESULTS],
+      "a superseded success must not clear the newer batch's error"
+    );
+    assert.ok(!store.getState().hits[RESULTS], "nor install its stale hits");
   });
 
   await test("recovery: a successful response clears a previously-set error", async () => {

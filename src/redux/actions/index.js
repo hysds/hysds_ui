@@ -78,6 +78,14 @@ export const dataSettled = (timestamp) => ({
   payload: timestamp,
 });
 
+// The freshness timestamp lives in the store shared by both routes, so a page must clear
+// it on mount -- otherwise navigating Tosca <-> Figaro shows the other page's settle time
+// above data that has not arrived yet.
+export const resetDataFreshness = () => ({
+  type: DATA_SETTLED,
+  payload: null,
+});
+
 export const setQuery = (query) => {
   return {
     type: SET_QUERY,

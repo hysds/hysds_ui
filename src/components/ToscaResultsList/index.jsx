@@ -51,9 +51,8 @@ class ResultsList extends React.Component {
   );
 
   // Rendered through `render` rather than `renderItem`: that is the only prop
-  // reactivesearch gives the live loading/error flags to. Two bound variants keep the
-  // prop identity changing with the table/list toggle, because ReactiveList is connected
-  // and otherwise bails out of re-rendering when its props are shallow-equal.
+  // reactivesearch gives the live loading and error flags to, and the status bar has to
+  // report the real request state rather than infer it from what changed on screen.
   renderBody = (args, tableView) => (
     <ResultsBody
       {...args}
@@ -64,8 +63,6 @@ class ResultsList extends React.Component {
     />
   );
 
-  renderListResults = (args) => this.renderBody(args, false);
-  renderTableResults = (args) => this.renderBody(args, true);
 
   handleTableToggle = () => {
     this.setState({ tableView: !this.state.tableView });
@@ -162,7 +159,7 @@ class ResultsList extends React.Component {
           paginationAt="both"
           onData={this.props.retrieveData}
           react={queryParams}
-          render={tableView ? this.renderTableResults : this.renderListResults}
+          render={(args) => this.renderBody(args, tableView)}
           renderResultStats={(stats) => (
             <h3 className="tosca-result-stats">{`${stats.numberOfResults} results`}</h3>
           )}

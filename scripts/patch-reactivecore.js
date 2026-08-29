@@ -56,6 +56,12 @@ const MARKER = "_msearchSeq"; // presence => already patched
 // usually flattens to a single copy, but a version conflict can nest a second under
 // @appbaseio/reactivesearch/node_modules -- and patching only the top-level copy would
 // then leave the bundled code unpatched while every check here still reported success.
+const log = (msg) => console.log(`[patch-reactivecore] ${msg}`);
+const fail = (msg) => {
+  console.error(`\n[patch-reactivecore] ERROR: ${msg}\n`);
+  process.exit(1);
+};
+
 const appRoot = path.join(__dirname, "..");
 function resolveTarget() {
   const fromReactivesearch = (() => {
@@ -71,28 +77,45 @@ function resolveTarget() {
     }
   })();
   if (fromReactivesearch) return fromReactivesearch;
+  return require.resolve(`${PKG}/${REL_TARGET.split(path.sep).join("/")}`, {
+    paths: [appRoot],
+  });
+}
+
+// Resolve the package root separately: a checkout living under a path that itself
+// contains "lib/actions" (a CI runner at /var/lib/actions-runner, say) made a substring
+// search for it point at the wrong directory entirely.
+function resolvePkgDir() {
   try {
-    return require.resolve(`${PKG}/${REL_TARGET.split(path.sep).join("/")}`, {
+    const rs = require.resolve("@appbaseio/reactivesearch/package.json", {
       paths: [appRoot],
     });
+    return path.dirname(
+      require.resolve(`${PKG}/package.json`, { paths: [path.dirname(rs)] })
+    );
   } catch (e) {
-    return path.join(appRoot, "node_modules", ...PKG.split("/"), REL_TARGET);
+    return path.dirname(require.resolve(`${PKG}/package.json`, { paths: [appRoot] }));
   }
 }
-const target = resolveTarget();
-const pkgDir = path.join(target.slice(0, target.indexOf(path.join("lib", "actions"))));
 
-const log = (msg) => console.log(`[patch-reactivecore] ${msg}`);
-const fail = (msg) => {
-  console.error(`\n[patch-reactivecore] ERROR: ${msg}\n`);
-  process.exit(1);
-};
-
-// Not installed at all (e.g. a production-only install): nothing to patch. The webpack
-// build could not run in that tree anyway, so warn rather than break the install.
-if (!fs.existsSync(target)) {
+// Absent entirely (a production-only install) is a legitimate skip; present but not where
+// we expect is not -- that must fail loudly rather than quietly ship an unpatched bundle.
+let pkgDir;
+try {
+  pkgDir = resolvePkgDir();
+} catch (e) {
   log(`${PKG} not present -- skipping (nothing to patch).`);
   process.exit(0);
+}
+
+let target;
+try {
+  target = resolveTarget();
+} catch (e) {
+  fail(
+    `${PKG} is installed at ${pkgDir}, but ${REL_TARGET} could not be resolved.\n` +
+      `  The module layout changed; re-verify the patch against this version.`
+  );
 }
 
 const version = require(path.join(pkgDir, "package.json")).version;
@@ -134,9 +157,15 @@ const EDITS = [
     //     // LOG_QUERY, so an unchanged reference proves no newer query was logged for
     //     // this component since we sent ours -- only then is it ours to roll back.
     //     if (getState().queryLog[component] === loggedAtDispatch[component]) {
-    //       dispatch(logQuery(component, null));
+    //       dispatch(logQuery(component, { __rolledBack: true }));
     //     }
     //   };
+    //
+    // The rollback value is a sentinel object rather than null. It only has to compare
+    // unequal to every real query (isEqual walks the keys, so it does), and ReactiveList
+    // gates its "query changed -> back to page 1" reset on `prevProps.queryLog &&
+    // this.props.queryLog` -- a null on either side silently disabled that reset for two
+    // updates, leaving page-3 highlighted over page-1 rows.
     //
     // Clearing the log entry is what lets an identical retry re-execute: executeQuery
     // skips a query only when it deep-equals the logged one, and isEqual(query, null)
@@ -147,16 +176,37 @@ const EDITS = [
       "var requestSeq=++_msearchSeq;var loggedAtDispatch={};" +
       "orderOfQueries.forEach(function(component){loggedAtDispatch[component]=getState().queryLog[component];dispatch(setLoading(component,true));});" +
       "var rollbackQueryLog=function rollbackQueryLog(component){" +
-      "if(getState().queryLog[component]===loggedAtDispatch[component]){dispatch(logQuery(component,null));}};",
+      "if(getState().queryLog[component]===loggedAtDispatch[component]){dispatch(logQuery(component,{__rolledBack:true}));}};",
   },
   {
-    name: "roll back the query log when the request fails",
-    // handleError already reports the error and clears the loading flag; it just never
-    // undid the pre-flight logQuery, which is what wedged the component.
+    name: "roll back the query log when the request fails, if still current",
+    // handleError already reported the error and cleared the loading flag; it never undid
+    // the pre-flight logQuery, which is what wedged the component.
+    //
+    // It also acted unconditionally, with no notion of which batch it belonged to, so a
+    // superseded batch could corrupt newer state in both directions: a slow batch's late
+    // rejection painted a failure over newer valid rows (and the banner's own advice --
+    // re-click the facet -- was then skipped as a duplicate), and a straggling success
+    // could clear a newer batch's legitimate error and install its stale hits, which is
+    // strictly worse than unpatched 9.0.3. Both are fenced here:
+    //
+    //   var superseded =
+    //     getState().queryLog[component] !== loggedAtDispatch[component] ||   // newer query logged
+    //     !(ts[component] === undefined || ts[component] < requestSeq);       // newer answer seen
+    //   if (superseded) return;
+    //   dispatch(setTimestamp(component, requestSeq));                        // claim the slot
+    //
+    // Stamping matters as much as the guard: without it a later straggler sees no
+    // timestamp and sails through the success path's ordering check.
     find:
       "var handleError=function handleError(error){console.error(error);orderOfQueries.forEach(function(component){",
     replace:
-      "var handleError=function handleError(error){console.error(error);orderOfQueries.forEach(function(component){rollbackQueryLog(component);",
+      "var handleError=function handleError(error){console.error(error);orderOfQueries.forEach(function(component){" +
+      "var _st=getState();" +
+      "if(_st.queryLog[component]!==loggedAtDispatch[component])return;" +
+      "if(!(_st.timestamp[component]===undefined||_st.timestamp[component]<requestSeq))return;" +
+      "dispatch(setTimestamp(component,requestSeq));" +
+      "rollbackQueryLog(component);",
   },
   {
     name: "surface per-item errors, clear stale ones, order by sequence",

@@ -105,13 +105,3 @@
 .__theme-dark .reactivesearch-input > h2 {
   color: var(--dark-theme-title);
 }
-
-.filter-load-error {
-  font-size: 11px;
-  color: #d93025;
-  padding: 2px 0 6px 0;
-}
-
-.__theme-dark .filter-load-error {
-  color: #f16c60;
-}

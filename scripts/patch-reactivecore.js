@@ -52,8 +52,35 @@ const EXPECTED_VERSION = "9.0.3";
 const REL_TARGET = path.join("lib", "actions", "query.js");
 const MARKER = "_msearchSeq"; // presence => already patched
 
-const pkgDir = path.join(__dirname, "..", "node_modules", ...PKG.split("/"));
-const target = path.join(pkgDir, REL_TARGET);
+// Resolve the copy reactivesearch itself would load, not merely the hoisted one. npm
+// usually flattens to a single copy, but a version conflict can nest a second under
+// @appbaseio/reactivesearch/node_modules -- and patching only the top-level copy would
+// then leave the bundled code unpatched while every check here still reported success.
+const appRoot = path.join(__dirname, "..");
+function resolveTarget() {
+  const fromReactivesearch = (() => {
+    try {
+      const rs = require.resolve("@appbaseio/reactivesearch/package.json", {
+        paths: [appRoot],
+      });
+      return require.resolve(`${PKG}/${REL_TARGET.split(path.sep).join("/")}`, {
+        paths: [path.dirname(rs)],
+      });
+    } catch (e) {
+      return null;
+    }
+  })();
+  if (fromReactivesearch) return fromReactivesearch;
+  try {
+    return require.resolve(`${PKG}/${REL_TARGET.split(path.sep).join("/")}`, {
+      paths: [appRoot],
+    });
+  } catch (e) {
+    return path.join(appRoot, "node_modules", ...PKG.split("/"), REL_TARGET);
+  }
+}
+const target = resolveTarget();
+const pkgDir = path.join(target.slice(0, target.indexOf(path.join("lib", "actions"))));
 
 const log = (msg) => console.log(`[patch-reactivecore] ${msg}`);
 const fail = (msg) => {

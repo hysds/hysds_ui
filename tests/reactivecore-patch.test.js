@@ -78,6 +78,9 @@ function makeStore() {
 
 const tick = () => new Promise((r) => setImmediate(r));
 
+// `_timestamp` is deliberately still present and deliberately identical across batches:
+// the patched engine must ignore it entirely and order by its own sequence instead. If a
+// future change reintroduces a wall-clock path, the RC3 tests below will start failing.
 const hitsBody = (total, stamp) => ({
   _timestamp: stamp,
   responses: [
@@ -226,6 +229,16 @@ async function main() {
       222,
       "a stale response must not clobber newer results"
     );
+  });
+
+  await test("the wall clock in a response is ignored entirely", async () => {
+    const { store, sent, clickFacet } = makeStore();
+    clickFacet("L0B");
+    // A response stamped far in the past must still be accepted: ordering comes from the
+    // batch sequence now, not from res._timestamp.
+    sent[0].resolve(hitsBody(42, 0));
+    await tick();
+    assert.strictEqual(store.getState().hits[RESULTS].total, 42);
   });
 
   await test("recovery: a successful response clears a previously-set error", async () => {

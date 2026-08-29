@@ -9,6 +9,13 @@ COPY . /usr/src/app
 RUN npm install --silent
 RUN npm run build
 
+# npm 6 running as root (which is what this build is) skips the root package's lifecycle
+# scripts with only a warning and still exits 0, so the reactivecore patch can silently
+# fail to apply. `prebuild` covers that, but verify rather than assume: an unpatched bundle
+# looks identical and reintroduces the stale-results bug.
+RUN grep -q "_msearchSeq" node_modules/@appbaseio/reactivecore/lib/actions/query.js \
+ && npm test
+
 
 # Creating the web server
 FROM nginx:1.13.12-alpine

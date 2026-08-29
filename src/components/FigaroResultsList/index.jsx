@@ -2,12 +2,12 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { ReactiveList } from "@appbaseio/reactivesearch";
-import { retrieveData, editCustomFilterId } from "../../redux/actions";
+import { retrieveData, editCustomFilterId, dataSettled } from "../../redux/actions";
 
 import { FigaroDataViewer } from "../../components/FigaroDataViewer";
 
 import DataTable from "../../components/DataTable";
-import SearchStatusBar from "../../components/SearchStatusBar";
+import ResultsBody from "../../components/ResultsBody";
 
 import {
   ToggleSlider,
@@ -79,37 +79,31 @@ class FigaroResultsList extends React.Component {
     </div>
   );
 
-  // See ToscaResultsList: `render` is the only prop that receives the live loading/error
-  // state, and the two bound variants keep the prop identity changing with the toggle so
-  // the `connect`ed ReactiveList actually re-renders.
-  renderWithStatus = ({ data, loading, error, resultStats }, tableView) => (
-    <>
-      <SearchStatusBar
-        loading={loading}
-        error={error}
-        count={resultStats && resultStats.numberOfResults}
+  renderTableBody = ({ data }) =>
+    data.length > 0 ? (
+      <DataTable
         data={data}
+        columns={FIGARO_DISPLAY_COLUMNS}
+        sortColumn={this.state.sortColumn}
+        sortOrder={this.state.sortOrder}
+        sortHandler={this.handleTableSort}
       />
-      <div className={loading ? "results-stale" : null}>
-        {tableView ? (
-          data.length > 0 ? (
-            <DataTable
-              data={data}
-              columns={FIGARO_DISPLAY_COLUMNS}
-              sortColumn={this.state.sortColumn}
-              sortOrder={this.state.sortOrder}
-              sortHandler={this.handleTableSort}
-            />
-          ) : null
-        ) : (
-          data.map(this.resultsListHandler)
-        )}
-      </div>
-    </>
+    ) : null;
+
+  // See ToscaResultsList for why this goes through `render` and why there are two
+  // bound variants.
+  renderBody = (args, tableView) => (
+    <ResultsBody
+      {...args}
+      tableView={tableView}
+      renderTable={this.renderTableBody}
+      renderItem={this.resultsListHandler}
+      onSettled={this.props.dataSettled}
+    />
   );
 
-  renderListResults = (args) => this.renderWithStatus(args, false);
-  renderTableResults = (args) => this.renderWithStatus(args, true);
+  renderListResults = (args) => this.renderBody(args, false);
+  renderTableResults = (args) => this.renderBody(args, true);
 
   render() {
     const { pageSize, tableView, sortColumn, sortOrder } = this.state;
@@ -159,6 +153,7 @@ class FigaroResultsList extends React.Component {
         <ReactiveList
           componentId="figaro-results"
           dataField="figaro-reactive-list"
+          showResultStats={false}
           className="reactivesearch-results-list"
           pagination={true}
           size={pageSize}
@@ -168,9 +163,6 @@ class FigaroResultsList extends React.Component {
           react={QUERY_LOGIC}
           onData={this.props.retrieveData}
           render={tableView ? this.renderTableResults : this.renderListResults}
-          renderResultStats={(stats) => (
-            <h3 className="figaro-result-stats">{`${stats.numberOfResults} results`}</h3>
-          )}
           includeFields={FIELDS ? FIELDS : null}
           onError={(e) => console.error("results query failed:", e)}
         />
@@ -181,6 +173,7 @@ class FigaroResultsList extends React.Component {
 
 const mapDispatchToProps = (dispatch) => ({
   retrieveData: (data) => dispatch(retrieveData(data)),
+  dataSettled: (t) => dispatch(dataSettled(t)),
   editCustomFilterId: (componentId, value) =>
     dispatch(editCustomFilterId(componentId, value)),
 });

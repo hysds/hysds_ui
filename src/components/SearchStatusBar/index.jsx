@@ -18,8 +18,14 @@ import "./style.css";
  *
  *   searching  - a query is in flight; the results below are the PREVIOUS ones
  *   failed     - the query failed; the results below are stale and do not match the filters
- *   unchanged  - the query succeeded and returned exactly the same documents as before
+ *   unchanged  - the query succeeded and the rows on screen are the same ones as before
  *   updated    - the query succeeded and the results below match the filters shown
+ *
+ * It reports what the query engine did, so it cannot speak for an interaction that never
+ * reached the engine: when reactivesearch legitimately skips a query as a duplicate of one
+ * already run, no loading transition occurs and the previous verdict simply stands. That
+ * is accurate -- the rows really do match the current filters -- but it is not a state
+ * this component detects.
  *
  * `loading` and `error` come straight from reactivesearch's own store (via ReactiveList's
  * render prop), so this reflects the real request state rather than a guess.
@@ -86,8 +92,9 @@ class SearchStatusBar extends React.Component {
         if (this.props.loading || this.props.error) return;
         const signature = this.signature();
         this.searching = false;
+        const settledAt = this.finishedAt || Date.now();
         this.setState({
-          updatedAt: Date.now(),
+          updatedAt: settledAt,
           // the settle delay is ours, so report the time the queries actually took
           durationMs:
             this.startedAt && this.finishedAt ? this.finishedAt - this.startedAt : null,
@@ -95,6 +102,9 @@ class SearchStatusBar extends React.Component {
             this.signatureBeforeSearch !== null &&
             signature === this.signatureBeforeSearch,
         });
+        // One authoritative "results arrived" event, so the page-level banner and this bar
+        // cannot disagree, and neither advances on a prop change that moved no data.
+        if (this.props.onSettled) this.props.onSettled(settledAt);
       }, SETTLE_MS);
     }
   }
@@ -124,7 +134,9 @@ class SearchStatusBar extends React.Component {
     const { loading, error, count } = this.props;
     const { updatedAt, unchanged, durationMs, elapsedMs } = this.state;
 
-    if (loading)
+    // `searching` stays true through the settle window, so the bar keeps reporting work in
+    // progress instead of briefly asserting the previous run's timestamp over new rows.
+    if (loading || this.searching)
       return (
         <div className="search-status search-status-searching">
           <span className="search-status-spinner" />
@@ -145,6 +157,10 @@ class SearchStatusBar extends React.Component {
     const time = formatUtc(updatedAt, true);
     const total = typeof count === "number" ? count.toLocaleString() : count;
     const took = this.formatDuration(durationMs);
+    // Elasticsearch caps hits.total at 10,000 by default, so `count` is usually that
+    // ceiling rather than a real total, and two different result sets routinely report the
+    // same number. The bar must only claim what it can actually see.
+    const capped = count === 10000;
 
     return (
       <div
@@ -153,8 +169,8 @@ class SearchStatusBar extends React.Component {
         }`}
       >
         {unchanged
-          ? `No change - the same ${total} results match your filters (checked ${time}).`
-          : `Updated ${time} - showing ${total} results for your current filters.`}
+          ? `No change - the results on screen are the same as before (checked ${time}).`
+          : `Updated ${time} - showing ${capped ? `${total}+` : total} results for your current filters.`}
         {took ? <span className="search-status-timing"> Took {took}.</span> : null}
       </div>
     );
@@ -162,6 +178,7 @@ class SearchStatusBar extends React.Component {
 }
 
 SearchStatusBar.propTypes = {
+  onSettled: PropTypes.func,
   loading: PropTypes.bool,
   error: PropTypes.any,
   count: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

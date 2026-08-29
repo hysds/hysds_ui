@@ -18,7 +18,9 @@ export function describeSearchError(error) {
   if (!error) return null;
   if (typeof error === "string") return error;
 
-  if (error.responses) {
+  // Be defensive: this runs inside render() and the app has no error boundary, so a throw
+  // here would blank the page -- the opposite of "previous results stay on screen".
+  if (Array.isArray(error.responses)) {
     const failed = error.responses.filter((r) => r && r.error);
     if (failed.length) return describeSearchError(failed[0].error);
   }
@@ -41,7 +43,12 @@ export function describeSearchError(error) {
 }
 
 function SearchErrorBanner({ error, staleSince }) {
-  const detail = describeSearchError(error);
+  let detail;
+  try {
+    detail = describeSearchError(error);
+  } catch (e) {
+    detail = "Could not decode the error returned by Elasticsearch.";
+  }
 
   return (
     <div className="search-error-banner">

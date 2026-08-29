@@ -26,6 +26,7 @@ import {
   LOAD_USER_RULE,
   LOAD_USER_RULES,
   RETRIEVE_DATA,
+  DATA_SETTLED,
   TOGGLE_USER_RULE,
   USER_RULE_ACTION_LOADING,
   JOB_COUNTS,
@@ -140,7 +141,11 @@ const generalReducer = (state = initialState, action) => {
         ...state,
         data: action.payload.data,
         dataCount: action.payload.resultStats.numberOfResults,
-        dataUpdatedAt: Date.now(),
+      };
+    case DATA_SETTLED:
+      return {
+        ...state,
+        dataUpdatedAt: action.payload,
       };
     case JOB_COUNTS:
       return {

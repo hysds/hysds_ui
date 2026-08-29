@@ -1,6 +1,7 @@
 import {
   GET_DATASET_ID, // reactivesearch
   RETRIEVE_DATA,
+  DATA_SETTLED,
   SET_QUERY,
   EDIT_QUERY, // on-demand
   EDIT_PRIORITY,
@@ -67,6 +68,14 @@ export const editCustomFilterId = (componentId, value) => ({
 export const retrieveData = (data) => ({
   type: RETRIEVE_DATA,
   payload: data,
+});
+
+// Fired when a search actually settles. ReactiveList's onData cannot serve this purpose:
+// it also fires on `size` and `hidden` prop changes, so driving the freshness banner off
+// it advanced the timestamp when nothing had come back from Elasticsearch at all.
+export const dataSettled = (timestamp) => ({
+  type: DATA_SETTLED,
+  payload: timestamp,
 });
 
 export const setQuery = (query) => {

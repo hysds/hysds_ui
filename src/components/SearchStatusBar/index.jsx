@@ -63,14 +63,9 @@ class SearchStatusBar extends React.Component {
     }
 
     if (!loading && prevProps.loading) {
-      this.finishedAt = Date.now();
       clearInterval(this.tickTimer);
       this.tickTimer = null;
-      // The rows are already the new ones by now: reactivecore dispatches updateHits
-      // before setLoading(false). Publish the arrival immediately rather than from the
-      // settle timer, which a route change can cancel.
-      if (!error && this.props.onSettled) this.props.onSettled(this.finishedAt);
-      this.scheduleSettle();
+      this.noteArrival(!error);
       return;
     }
 
@@ -83,11 +78,23 @@ class SearchStatusBar extends React.Component {
       !error &&
       this.signature() !== this.lastReportedSignature
     ) {
-      this.finishedAt = Date.now();
-      if (this.props.onSettled) this.props.onSettled(this.finishedAt);
-      this.scheduleSettle();
+      this.noteArrival(true);
     }
   }
+
+  // Results arrived. The signature is recorded HERE, not just when the interaction is
+  // finally reported: `onSettled` dispatches, which re-renders, which re-enters
+  // componentDidUpdate -- so leaving the marker stale until the settle callback 500ms
+  // later meant the data-watch branch re-fired on every one of those renders and React
+  // aborted with "maximum update depth exceeded".
+  noteArrival = (publish) => {
+    this.finishedAt = Date.now();
+    this.lastReportedSignature = this.signature();
+    // Published at arrival rather than from the settle timer, which a route change can
+    // cancel before it ever fires.
+    if (publish && this.props.onSettled) this.props.onSettled(this.finishedAt);
+    this.scheduleSettle();
+  };
 
   // A single click fires several queries (the results list plus each facet aggregation),
   // so an interaction spans several legs. Only the first anchors the comparison and the

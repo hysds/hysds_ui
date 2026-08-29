@@ -40,6 +40,9 @@ function Filter({
           defaultValue={null || defaultValue}
           react={_queryLogic}
           className="reactivesearch-input reactivesearch-multilist"
+          renderError={() => (
+            <div className="filter-load-error">failed to load options</div>
+          )}
         />
       );
     case "date":
@@ -64,6 +67,9 @@ function Filter({
           URLParams={true}
           react={_queryLogic}
           className="reactivesearch-input"
+          renderError={() => (
+            <div className="filter-load-error">failed to load options</div>
+          )}
           transformData={(list) =>
             list
               .filter((d) => d.key === 1 || d.key === 0)
@@ -88,6 +94,9 @@ function Filter({
           defaultValue={null || defaultValue}
           react={_queryLogic}
           className="reactivesearch-input"
+          renderError={() => (
+            <div className="filter-load-error">failed to load options</div>
+          )}
         />
       );
   }

@@ -7,6 +7,7 @@ import { retrieveData, editCustomFilterId } from "../../redux/actions";
 import { FigaroDataViewer } from "../../components/FigaroDataViewer";
 
 import DataTable from "../../components/DataTable";
+import SearchStatusBar from "../../components/SearchStatusBar";
 
 import {
   ToggleSlider,
@@ -69,6 +70,47 @@ class FigaroResultsList extends React.Component {
     localStorage.setItem(SORT_DIRECTION_STORE, direction);
   };
 
+  resultsListHandler = (res) => (
+    <div key={`${res._index}-${res._id}`}>
+      <FigaroDataViewer
+        res={res}
+        editCustomFilterId={this.props.editCustomFilterId}
+      />
+    </div>
+  );
+
+  // See ToscaResultsList: `render` is the only prop that receives the live loading/error
+  // state, and the two bound variants keep the prop identity changing with the toggle so
+  // the `connect`ed ReactiveList actually re-renders.
+  renderWithStatus = ({ data, loading, error, resultStats }, tableView) => (
+    <>
+      <SearchStatusBar
+        loading={loading}
+        error={error}
+        count={resultStats && resultStats.numberOfResults}
+        data={data}
+      />
+      <div className={loading ? "results-stale" : null}>
+        {tableView ? (
+          data.length > 0 ? (
+            <DataTable
+              data={data}
+              columns={FIGARO_DISPLAY_COLUMNS}
+              sortColumn={this.state.sortColumn}
+              sortOrder={this.state.sortOrder}
+              sortHandler={this.handleTableSort}
+            />
+          ) : null
+        ) : (
+          data.map(this.resultsListHandler)
+        )}
+      </div>
+    </>
+  );
+
+  renderListResults = (args) => this.renderWithStatus(args, false);
+  renderTableResults = (args) => this.renderWithStatus(args, true);
+
   render() {
     const { pageSize, tableView, sortColumn, sortOrder } = this.state;
 
@@ -125,39 +167,12 @@ class FigaroResultsList extends React.Component {
           paginationAt="both"
           react={QUERY_LOGIC}
           onData={this.props.retrieveData}
-          renderItem={
-            tableView
-              ? null
-              : (res) => (
-                  <div key={`${res._index}-${res._id}`}>
-                    <FigaroDataViewer
-                      res={res}
-                      editCustomFilterId={this.props.editCustomFilterId}
-                    />
-                  </div>
-                )
-          }
-          render={
-            tableView
-              ? ({ data }) =>
-                  data.length > 0 ? (
-                    <DataTable
-                      data={data}
-                      columns={FIGARO_DISPLAY_COLUMNS}
-                      sortColumn={this.state.sortColumn}
-                      sortOrder={this.state.sortOrder}
-                      sortHandler={this.handleTableSort}
-                    />
-                  ) : null
-              : null
-          }
+          render={tableView ? this.renderTableResults : this.renderListResults}
           renderResultStats={(stats) => (
             <h3 className="figaro-result-stats">{`${stats.numberOfResults} results`}</h3>
           )}
           includeFields={FIELDS ? FIELDS : null}
-          onError={(e) => {
-            if (e.responses) alert(JSON.stringify(e.responses));
-          }}
+          onError={(e) => console.error("results query failed:", e)}
         />
       </div>
     );

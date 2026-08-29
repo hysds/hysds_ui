@@ -7,6 +7,7 @@ import { clickDatasetId, retrieveData } from "../../redux/actions";
 import { ReactiveList } from "@appbaseio/reactivesearch";
 import ToscaDataViewer from "../ToscaDataViewer";
 import DataTable from "../DataTable";
+import SearchStatusBar from "../SearchStatusBar";
 
 import {
   ToggleSlider,
@@ -48,6 +49,30 @@ class ResultsList extends React.Component {
       />
     </div>
   );
+
+  // Everything renders through `render` (rather than `renderItem`) because that is the
+  // only prop reactivesearch hands the live `loading` and `error` flags to, and the status
+  // bar has to report the real request state instead of inferring it.
+  //
+  // Two bound variants rather than one reading this.state: ReactiveList is `connect`ed and
+  // bails out of re-rendering when its props are shallow-equal, so the render prop's
+  // identity has to change when the table/list toggle does.
+  renderWithStatus = ({ data, loading, error, resultStats }, tableView) => (
+    <>
+      <SearchStatusBar
+        loading={loading}
+        error={error}
+        count={resultStats && resultStats.numberOfResults}
+        data={data}
+      />
+      <div className={loading ? "results-stale" : null}>
+        {tableView ? this.renderTable({ data }) : data.map(this.resultsListHandler)}
+      </div>
+    </>
+  );
+
+  renderListResults = (args) => this.renderWithStatus(args, false);
+  renderTableResults = (args) => this.renderWithStatus(args, true);
 
   handleTableToggle = () => {
     this.setState({ tableView: !this.state.tableView });
@@ -139,7 +164,6 @@ class ResultsList extends React.Component {
           dataField="tosca_reactive_list"
           size={pageSize}
           pages={7}
-          stream={true}
           pagination={true}
           scrollOnChange={false}
           paginationAt="both"
@@ -148,11 +172,8 @@ class ResultsList extends React.Component {
           renderResultStats={(stats) => (
             <h3 className="tosca-result-stats">{`${stats.numberOfResults} results`}</h3>
           )}
-          renderItem={tableView ? null : this.resultsListHandler}
-          render={tableView ? this.renderTable : null}
-          onError={(e) => {
-            if (e.responses) alert(JSON.stringify(e.responses));
-          }}
+          render={tableView ? this.renderTableResults : this.renderListResults}
+          onError={(e) => console.error("results query failed:", e)}
           sortOptions={sortOptions}
           includeFields={FIELDS ? FIELDS : null}
         />

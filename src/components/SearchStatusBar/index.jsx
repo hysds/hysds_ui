@@ -70,6 +70,14 @@ class SearchStatusBar extends React.Component {
     if (!loading && prevProps.loading) {
       this.finishedAt = Date.now();
       clearInterval(this.tickTimer);
+
+      // A failed search ends the interaction -- the error banner stands until the user
+      // tries again. Without releasing the flag here it stays set (the settle callback
+      // below, which normally clears it, is only scheduled on success), so the next
+      // search would never re-anchor: it would keep the failed search's start time and
+      // report a duration spanning the failure and however long the user waited before
+      // retrying, and would not restart the elapsed counter.
+      if (error) this.searching = false;
     }
 
     if (!loading && prevProps.loading && !error) {

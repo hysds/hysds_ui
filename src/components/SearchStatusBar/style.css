@@ -62,3 +62,7 @@
   background: #3a2f0b;
   color: #ffe9a8;
 }
+
+.search-status-timing {
+  opacity: 0.75;
+}

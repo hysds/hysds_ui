@@ -31,10 +31,13 @@ const SETTLE_MS = 500;
 class SearchStatusBar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { updatedAt: null, unchanged: false };
+    this.state = { updatedAt: null, unchanged: false, durationMs: null, elapsedMs: 0 };
     this.searching = false;
     this.signatureBeforeSearch = null;
     this.settleTimer = null;
+    this.tickTimer = null;
+    this.startedAt = null;
+    this.finishedAt = null;
   }
 
   componentDidUpdate(prevProps) {
@@ -47,9 +50,24 @@ class SearchStatusBar extends React.Component {
       if (!this.searching) {
         this.searching = true;
         this.signatureBeforeSearch = this.signature();
+        this.startedAt = Date.now();
+        // Queries can take anything from tens of milliseconds to tens of seconds
+        // depending on how much of the index is already cached, so count up while we
+        // wait: a slow search should look slow, not hung.
+        this.setState({ elapsedMs: 0, durationMs: null });
+        clearInterval(this.tickTimer);
+        this.tickTimer = setInterval(
+          () => this.setState({ elapsedMs: Date.now() - this.startedAt }),
+          1000
+        );
       }
       clearTimeout(this.settleTimer);
       return;
+    }
+
+    if (!loading && prevProps.loading) {
+      this.finishedAt = Date.now();
+      clearInterval(this.tickTimer);
     }
 
     if (!loading && prevProps.loading && !error) {
@@ -60,6 +78,9 @@ class SearchStatusBar extends React.Component {
         this.searching = false;
         this.setState({
           updatedAt: Date.now(),
+          // the settle delay is ours, so report the time the queries actually took
+          durationMs:
+            this.startedAt && this.finishedAt ? this.finishedAt - this.startedAt : null,
           unchanged:
             this.signatureBeforeSearch !== null &&
             signature === this.signatureBeforeSearch,
@@ -70,7 +91,16 @@ class SearchStatusBar extends React.Component {
 
   componentWillUnmount() {
     clearTimeout(this.settleTimer);
+    clearInterval(this.tickTimer);
   }
+
+  formatDuration = (ms) => {
+    if (ms === null || ms === undefined) return null;
+    if (ms < 1000) return `${ms}ms`;
+    if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
+    const m = Math.floor(ms / 60000);
+    return `${m}m ${Math.round((ms % 60000) / 1000)}s`;
+  };
 
   // The result *count* is not enough to tell two result sets apart: Elasticsearch caps
   // hits.total at 10,000 by default, so most queries here report the same number. Compare
@@ -82,13 +112,19 @@ class SearchStatusBar extends React.Component {
 
   render() {
     const { loading, error, count } = this.props;
-    const { updatedAt, unchanged } = this.state;
+    const { updatedAt, unchanged, durationMs, elapsedMs } = this.state;
 
     if (loading)
       return (
         <div className="search-status search-status-searching">
           <span className="search-status-spinner" />
           Updating results&hellip; the results below are the previous ones.
+          {elapsedMs >= 1000 ? (
+            <span className="search-status-timing">
+              {" "}
+              {this.formatDuration(elapsedMs)} so far
+            </span>
+          ) : null}
         </div>
       );
 
@@ -98,6 +134,7 @@ class SearchStatusBar extends React.Component {
 
     const time = new Date(updatedAt).toLocaleTimeString();
     const total = typeof count === "number" ? count.toLocaleString() : count;
+    const took = this.formatDuration(durationMs);
 
     return (
       <div
@@ -108,6 +145,7 @@ class SearchStatusBar extends React.Component {
         {unchanged
           ? `No change - the same ${total} results match your filters (checked ${time}).`
           : `Updated ${time} - showing ${total} results for your current filters.`}
+        {took ? <span className="search-status-timing"> Took {took}.</span> : null}
       </div>
     );
   }

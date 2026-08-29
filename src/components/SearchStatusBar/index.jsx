@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 
 import SearchErrorBanner from "../SearchErrorBanner";
 
+import { formatUtc } from "../../utils";
+
 import "./style.css";
 
 /**
@@ -132,7 +134,7 @@ class SearchStatusBar extends React.Component {
 
     if (!updatedAt) return null;
 
-    const time = new Date(updatedAt).toLocaleTimeString();
+    const time = formatUtc(updatedAt, true);
     const total = typeof count === "number" ? count.toLocaleString() : count;
     const took = this.formatDuration(durationMs);
 

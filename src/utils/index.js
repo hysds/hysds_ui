@@ -176,3 +176,21 @@ exports.parseFacetQuery = (body, componentId) => {
   // main query ran to get the data
   return JSON.stringify(query.query);
 };
+
+/**
+ * Render a UI-generated timestamp in UTC, labelled.
+ *
+ * Every timestamp that comes from Elasticsearch is displayed raw, and those are UTC
+ * (`2026-08-29T12:01:17.133420Z`). Times the UI produces itself must therefore be UTC too,
+ * otherwise a "last updated" line sits next to a job's queued/started times in a different
+ * zone and you cannot read an elapsed time off the screen without converting (HC-551).
+ *
+ * @param {number|Date} t epoch milliseconds, or a Date
+ * @param {boolean} timeOnly omit the date portion
+ */
+exports.formatUtc = (t, timeOnly = false) => {
+  if (t === null || t === undefined) return null;
+  const iso = new Date(t).toISOString(); // YYYY-MM-DDTHH:MM:SS.sssZ
+  const time = `${iso.slice(11, 19)} UTC`;
+  return timeOnly ? time : `${iso.slice(0, 10)} ${time}`;
+};

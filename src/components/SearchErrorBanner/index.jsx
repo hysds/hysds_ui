@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import { formatUtc } from "../../utils";
+
 import "./style.css";
 
 /**
@@ -48,9 +50,10 @@ function SearchErrorBanner({ error, staleSince }) {
       </div>
       <div className="search-error-banner-help">
         {staleSince
-          ? `The results below are the previous ones, from ${new Date(
-              staleSince
-            ).toLocaleTimeString()}. They do not match the filters shown above.`
+          ? `The results below are the previous ones, from ${formatUtc(
+              staleSince,
+              true
+            )}. They do not match the filters shown above.`
           : "The results below do not match the filters shown above."}{" "}
         Adjust a filter (or re-click the same one) to retry.
       </div>

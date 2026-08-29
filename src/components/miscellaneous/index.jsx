@@ -3,6 +3,8 @@ import React from "react";
 import { faInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { formatUtc } from "../../utils";
+
 import "./style.css";
 
 export function Border() {
@@ -38,15 +40,13 @@ export function HelperLink(props) {
 }
 
 // `time` is the epoch-ms of the last successful results response, so the banner tracks
-// when the data on screen actually arrived -- not when a request went out.
+// when the data on screen actually arrived -- not when a request went out. Shown in UTC to
+// match the job and dataset timestamps in the results (HC-551).
 export function LastUpdatedAtBanner({ time }) {
   if (!time) return null;
-  const d = new Date(time);
   return (
     <div className="last-updated-banner">
-      <span>
-        Last Updated: {`${d.toLocaleDateString()} ${d.toLocaleTimeString()}`}
-      </span>
+      <span>Last Updated: {formatUtc(time)}</span>
     </div>
   );
 }

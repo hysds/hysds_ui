@@ -134,6 +134,11 @@ class SearchStatusBar extends React.Component {
     const { loading, error, count } = this.props;
     const { updatedAt, unchanged, durationMs, elapsedMs } = this.state;
 
+    // A failure outranks everything: `searching` is only released in componentDidUpdate,
+    // which runs after this render and mutates an instance field, so testing it first
+    // would swallow the error banner until some later prop change forced a re-render.
+    if (error) return <SearchErrorBanner error={error} staleSince={updatedAt} />;
+
     // `searching` stays true through the settle window, so the bar keeps reporting work in
     // progress instead of briefly asserting the previous run's timestamp over new rows.
     if (loading || this.searching)
@@ -149,8 +154,6 @@ class SearchStatusBar extends React.Component {
           ) : null}
         </div>
       );
-
-    if (error) return <SearchErrorBanner error={error} staleSince={updatedAt} />;
 
     if (!updatedAt) return null;
 

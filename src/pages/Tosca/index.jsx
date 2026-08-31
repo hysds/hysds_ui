@@ -32,6 +32,7 @@ import {
 } from "../../config/tosca";
 
 import "./style.css";
+import { resetDataFreshness } from "../../redux/actions";
 import { parseFacetQuery } from "../../utils";
 import { appendClosedIndexParams } from "../../utils/esHelpers";
 
@@ -40,7 +41,6 @@ class Tosca extends React.Component {
     super(props);
     this.state = {
       tableView: GRQ_TABLE_VIEW_DEFAULT, // boolean
-      lastUpdatedAt: null,
       query: null,
     };
 
@@ -50,6 +50,10 @@ class Tosca extends React.Component {
     this.pageRef = React.createRef();
   }
 
+  componentDidMount() {
+    this.props.resetDataFreshness();
+  }
+
   componentDidUpdate() {
     // scrolls to top of page if the query region button is pressed
     if (this.props.queryRegion)
@@ -57,11 +61,6 @@ class Tosca extends React.Component {
   }
 
   handleTransformRequest = (e) => {
-    let d = new Date();
-    this.setState({
-      lastUpdatedAt: `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`,
-    });
-
     const query = parseFacetQuery(e.body, RESULTS_LIST_COMPONENT_ID);
     if (query) this.setState({ query });
 
@@ -71,7 +70,7 @@ class Tosca extends React.Component {
   };
 
   render() {
-    const { darkMode, data, dataCount } = this.props;
+    const { darkMode, data, dataCount, dataUpdatedAt } = this.props;
     const { query } = this.state;
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
@@ -109,7 +108,7 @@ class Tosca extends React.Component {
             </div>
 
             <div className="tosca-body" ref={this.pageRef}>
-              <LastUpdatedAtBanner time={this.state.lastUpdatedAt} />
+              <LastUpdatedAtBanner time={dataUpdatedAt} />
               <div className="top-bar-wrapper">
                 <SearchQuery
                   componentId={QUERY_SEARCH_COMPONENT_ID}
@@ -169,11 +168,16 @@ Tosca.defaultProps = {
   theme: "__theme-light",
 };
 
+const mapDispatchToProps = (dispatch) => ({
+  resetDataFreshness: () => dispatch(resetDataFreshness()),
+});
+
 const mapStateToProps = (state) => ({
   darkMode: state.themeReducer.darkMode,
   data: state.generalReducer.data,
   dataCount: state.generalReducer.dataCount,
+  dataUpdatedAt: state.generalReducer.dataUpdatedAt,
   queryRegion: state.reactivesearchReducer.queryRegion,
 });
 
-export default connect(mapStateToProps)(Tosca);
+export default connect(mapStateToProps, mapDispatchToProps)(Tosca);

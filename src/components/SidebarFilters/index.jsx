@@ -3,6 +3,14 @@ import PropTypes from "prop-types";
 
 import { SingleList, DateRange, MultiList } from "@appbaseio/reactivesearch";
 
+// NOTE: deliberately no renderError on these lists. reactivesearch returns it INSTEAD of
+// the control (MultiList/SingleList: `if (renderError && error) return renderError(error)`),
+// and `state.options` survives a failed refresh -- so a single transient aggregation
+// failure would replace a still-usable facet, checked boxes and all, with a notice, while
+// its selection carried on filtering the results. That leaves no way to clear the filter
+// short of reloading the page, which is the trap this whole change exists to remove.
+// Failures that matter (the results query) are reported by the status bar instead.
+
 import "./style.css";
 
 function Filter({

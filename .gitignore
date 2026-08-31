@@ -28,6 +28,7 @@ src/config/index.js
 src/config/tosca.js
 src/config/figaro.js
 dist/
+dist-*/
 
 # General
 .DS_Store

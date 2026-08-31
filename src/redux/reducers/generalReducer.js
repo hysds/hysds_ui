@@ -26,6 +26,7 @@ import {
   LOAD_USER_RULE,
   LOAD_USER_RULES,
   RETRIEVE_DATA,
+  DATA_SETTLED,
   TOGGLE_USER_RULE,
   USER_RULE_ACTION_LOADING,
   JOB_COUNTS,
@@ -50,6 +51,7 @@ let defaultUrlJobParams = extractJobParams(urlParams);
 const initialState = {
   // main page
   data: [],
+  dataUpdatedAt: null, // when the displayed results last came back from Elasticsearch
   dataCount: (() => {
     const total = urlParams.get("total");
     const parsed = total ? parseInt(total, 10) : 0;
@@ -139,6 +141,11 @@ const generalReducer = (state = initialState, action) => {
         ...state,
         data: action.payload.data,
         dataCount: action.payload.resultStats.numberOfResults,
+      };
+    case DATA_SETTLED:
+      return {
+        ...state,
+        dataUpdatedAt: action.payload,
       };
     case JOB_COUNTS:
       return {

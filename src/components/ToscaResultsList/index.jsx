@@ -2,11 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { connect } from "react-redux";
-import { clickDatasetId, retrieveData } from "../../redux/actions";
+import { clickDatasetId, retrieveData, dataSettled } from "../../redux/actions";
 
 import { ReactiveList } from "@appbaseio/reactivesearch";
 import ToscaDataViewer from "../ToscaDataViewer";
 import DataTable from "../DataTable";
+import ResultsBody from "../ResultsBody";
 
 import {
   ToggleSlider,
@@ -48,6 +49,20 @@ class ResultsList extends React.Component {
       />
     </div>
   );
+
+  // Rendered through `render` rather than `renderItem`: that is the only prop
+  // reactivesearch gives the live loading and error flags to, and the status bar has to
+  // report the real request state rather than infer it from what changed on screen.
+  renderBody = (args, tableView) => (
+    <ResultsBody
+      {...args}
+      tableView={tableView}
+      renderTable={this.renderTable}
+      renderItem={this.resultsListHandler}
+      onSettled={this.props.dataSettled}
+    />
+  );
+
 
   handleTableToggle = () => {
     this.setState({ tableView: !this.state.tableView });
@@ -139,20 +154,16 @@ class ResultsList extends React.Component {
           dataField="tosca_reactive_list"
           size={pageSize}
           pages={7}
-          stream={true}
           pagination={true}
           scrollOnChange={false}
           paginationAt="both"
           onData={this.props.retrieveData}
           react={queryParams}
+          render={(args) => this.renderBody(args, tableView)}
           renderResultStats={(stats) => (
             <h3 className="tosca-result-stats">{`${stats.numberOfResults} results`}</h3>
           )}
-          renderItem={tableView ? null : this.resultsListHandler}
-          render={tableView ? this.renderTable : null}
-          onError={(e) => {
-            if (e.responses) alert(JSON.stringify(e.responses));
-          }}
+          onError={(e) => console.error("results query failed:", e)}
           sortOptions={sortOptions}
           includeFields={FIELDS ? FIELDS : null}
         />
@@ -177,6 +188,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   clickDatasetId: (_id) => dispatch(clickDatasetId(_id)),
   retrieveData: (data) => dispatch(retrieveData(data)),
+  dataSettled: (t) => dispatch(dataSettled(t)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ResultsList);

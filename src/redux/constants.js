@@ -9,6 +9,7 @@ export const UNCLICK_QUERY_REGION = "UNCLICK_QUERY_REGION";
 
 // Tosca action names
 export const RETRIEVE_DATA = "RETRIEVE_DATA";
+export const DATA_SETTLED = "DATA_SETTLED";
 export const SET_QUERY = "SET_QUERY";
 
 // Tosca on demand + user rule actions

@@ -1,0 +1,40 @@
+.search-error-banner {
+  border: 1px solid #d93025;
+  border-left-width: 5px;
+  border-radius: 3px;
+  background: #fdecea;
+  color: #611a15;
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+
+.search-error-banner-label {
+  font-weight: bold;
+}
+
+.search-error-banner-help {
+  margin-top: 4px;
+}
+
+.search-error-banner-details {
+  margin-top: 6px;
+}
+
+.search-error-banner-details summary {
+  cursor: pointer;
+}
+
+.search-error-banner-details pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 150px;
+  overflow: auto;
+  margin: 6px 0 0 0;
+}
+
+.__theme-dark .search-error-banner {
+  background: #3b1513;
+  color: #f5c6c2;
+  border-color: #f16c60;
+}

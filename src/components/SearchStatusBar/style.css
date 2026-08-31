@@ -1,0 +1,68 @@
+.search-status {
+  padding: 8px 12px;
+  margin: 8px 0;
+  border-radius: 3px;
+  font-size: 13px;
+  border-left: 5px solid transparent;
+}
+
+.search-status-searching {
+  background: #e8f0fe;
+  color: #14395e;
+  border-left-color: #4387ff;
+}
+
+.search-status-updated {
+  background: #e8f5e9;
+  color: #1b5e20;
+  border-left-color: #19b519;
+}
+
+.search-status-unchanged {
+  background: #fff8e1;
+  color: #6b4b00;
+  border-left-color: #f0ad00;
+}
+
+.search-status-spinner {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  vertical-align: middle;
+  animation: search-status-spin 0.8s linear infinite;
+}
+
+@keyframes search-status-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* while a query is in flight the visible rows are last query's, so say so visually too */
+.results-stale {
+  opacity: 0.45;
+  transition: opacity 150ms linear;
+}
+
+.__theme-dark .search-status-searching {
+  background: #10263d;
+  color: #cfe2ff;
+}
+
+.__theme-dark .search-status-updated {
+  background: #10301a;
+  color: #c8e6c9;
+}
+
+.__theme-dark .search-status-unchanged {
+  background: #3a2f0b;
+  color: #ffe9a8;
+}
+
+.search-status-timing {
+  opacity: 0.75;
+}

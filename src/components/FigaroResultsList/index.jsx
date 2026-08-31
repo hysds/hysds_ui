@@ -2,11 +2,12 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { ReactiveList } from "@appbaseio/reactivesearch";
-import { retrieveData, editCustomFilterId } from "../../redux/actions";
+import { retrieveData, editCustomFilterId, dataSettled } from "../../redux/actions";
 
 import { FigaroDataViewer } from "../../components/FigaroDataViewer";
 
 import DataTable from "../../components/DataTable";
+import ResultsBody from "../../components/ResultsBody";
 
 import {
   ToggleSlider,
@@ -69,6 +70,38 @@ class FigaroResultsList extends React.Component {
     localStorage.setItem(SORT_DIRECTION_STORE, direction);
   };
 
+  resultsListHandler = (res) => (
+    <div key={`${res._index}-${res._id}`}>
+      <FigaroDataViewer
+        res={res}
+        editCustomFilterId={this.props.editCustomFilterId}
+      />
+    </div>
+  );
+
+  renderTableBody = ({ data }) =>
+    data.length > 0 ? (
+      <DataTable
+        data={data}
+        columns={FIGARO_DISPLAY_COLUMNS}
+        sortColumn={this.state.sortColumn}
+        sortOrder={this.state.sortOrder}
+        sortHandler={this.handleTableSort}
+      />
+    ) : null;
+
+  // See ToscaResultsList for why this goes through `render`.
+  renderBody = (args, tableView) => (
+    <ResultsBody
+      {...args}
+      tableView={tableView}
+      renderTable={this.renderTableBody}
+      renderItem={this.resultsListHandler}
+      onSettled={this.props.dataSettled}
+    />
+  );
+
+
   render() {
     const { pageSize, tableView, sortColumn, sortOrder } = this.state;
 
@@ -125,39 +158,12 @@ class FigaroResultsList extends React.Component {
           paginationAt="both"
           react={QUERY_LOGIC}
           onData={this.props.retrieveData}
-          renderItem={
-            tableView
-              ? null
-              : (res) => (
-                  <div key={`${res._index}-${res._id}`}>
-                    <FigaroDataViewer
-                      res={res}
-                      editCustomFilterId={this.props.editCustomFilterId}
-                    />
-                  </div>
-                )
-          }
-          render={
-            tableView
-              ? ({ data }) =>
-                  data.length > 0 ? (
-                    <DataTable
-                      data={data}
-                      columns={FIGARO_DISPLAY_COLUMNS}
-                      sortColumn={this.state.sortColumn}
-                      sortOrder={this.state.sortOrder}
-                      sortHandler={this.handleTableSort}
-                    />
-                  ) : null
-              : null
-          }
+          render={(args) => this.renderBody(args, tableView)}
           renderResultStats={(stats) => (
             <h3 className="figaro-result-stats">{`${stats.numberOfResults} results`}</h3>
           )}
           includeFields={FIELDS ? FIELDS : null}
-          onError={(e) => {
-            if (e.responses) alert(JSON.stringify(e.responses));
-          }}
+          onError={(e) => console.error("results query failed:", e)}
         />
       </div>
     );
@@ -166,6 +172,7 @@ class FigaroResultsList extends React.Component {
 
 const mapDispatchToProps = (dispatch) => ({
   retrieveData: (data) => dispatch(retrieveData(data)),
+  dataSettled: (t) => dispatch(dataSettled(t)),
   editCustomFilterId: (componentId, value) =>
     dispatch(editCustomFilterId(componentId, value)),
 });

@@ -1,0 +1,104 @@
+@import "../../style/global.css";
+
+/* run / step / job states share one palette */
+.wf-state-running,
+.wf-state-job-started {
+  --wf-color: var(--base-color);
+}
+.wf-state-completed,
+.wf-state-job-completed {
+  --wf-color: var(--success-color);
+}
+.wf-state-failed,
+.wf-state-job-failed {
+  --wf-color: var(--fail-color);
+}
+.wf-state-cancelled,
+.wf-state-job-revoked {
+  --wf-color: #e8890c;
+}
+.wf-state-pending,
+.wf-state-unknown {
+  --wf-color: #8a8a8a;
+}
+.wf-state-job-queued {
+  --wf-color: var(--queued-color);
+}
+.wf-state-job-offline {
+  --wf-color: var(--offline-color);
+}
+.wf-state-job-deduped {
+  --wf-color: var(--deduped-color);
+}
+
+.wf-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffff;
+  background-color: var(--wf-color);
+  letter-spacing: 0.3px;
+}
+
+.wf-section {
+  border: 1px solid var(--light-theme-title);
+  border-radius: 5px;
+  margin: 10px 0;
+}
+.wf-section-title {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 700;
+  user-select: none;
+}
+.wf-caret {
+  display: inline-block;
+  width: 16px;
+}
+.wf-section-count {
+  font-weight: 400;
+  opacity: 0.7;
+}
+.wf-section-body {
+  padding: 4px 14px 12px 14px;
+  overflow-x: auto;
+}
+
+.wf-tree {
+  list-style: none;
+  margin: 0;
+  padding-left: 18px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+}
+.wf-section-body > .wf-tree,
+.wf-section-body > span {
+  padding-left: 0;
+}
+.wf-tree li {
+  padding: 1px 0;
+  word-break: break-all;
+}
+.wf-key {
+  opacity: 0.75;
+}
+.wf-null {
+  opacity: 0.5;
+}
+a.wf-link {
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--link-color);
+}
+.wf-show-all {
+  font-size: 12px;
+}
+
+.__theme-dark .wf-section {
+  border-color: var(--dark-theme-light);
+}
+.__theme-dark a.wf-link {
+  color: #7fb2ff;
+}

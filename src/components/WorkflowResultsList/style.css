@@ -1,0 +1,47 @@
+@import "../../style/global.css";
+
+.wf-card {
+  word-break: normal;
+}
+
+.wf-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+}
+.wf-card-spec {
+  font-weight: 700;
+  font-size: 16px;
+}
+.wf-card-version {
+  font-weight: 400;
+  opacity: 0.8;
+}
+.wf-card-run {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+  word-break: break-all;
+}
+.wf-card-buffer {
+  flex: 1;
+}
+.wf-card-meta {
+  font-size: 13px;
+  opacity: 0.85;
+}
+.wf-card-error {
+  margin: 4px 0 6px 0;
+  font-size: 13px;
+  color: var(--fail-color);
+  word-break: break-word;
+}
+.wf-card-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.__theme-dark .wf-card-error {
+  color: #ff7b88;
+}

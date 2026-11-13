@@ -1,0 +1,11 @@
+.wf-counts .figaro-job-count {
+  cursor: pointer;
+}
+.wf-counts .wf-count {
+  color: #ffff;
+  background-color: var(--wf-color);
+}
+.wf-counts .wf-count:hover {
+  filter: brightness(0.85);
+  transition: all 0.2s;
+}

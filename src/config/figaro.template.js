@@ -114,6 +114,29 @@ exports.FILTERS = [
     title: "Endpoint ID",
     type: "single",
   },
+  // Workflow linkage. The Workflows pages deep-link here with
+  // ?workflow_run="<run_id>"&workflow_step="<step_id>"
+  {
+    componentId: "workflow_run",
+    dataField: "workflow.run_id",
+    title: "Workflow Run",
+    type: "single",
+    size: 1000,
+  },
+  {
+    componentId: "workflow_step",
+    dataField: "workflow.step_id",
+    title: "Workflow Step",
+    type: "single",
+    size: 1000,
+  },
+  {
+    componentId: "workflow_spec",
+    dataField: "workflow.spec_id",
+    title: "Workflow Spec",
+    type: "single",
+    size: 1000,
+  },
 ];
 
 // TODO: TRY ADDING .KEYWORD TO COMPONENTID
@@ -138,6 +161,9 @@ exports.QUERY_LOGIC = {
     "timestamp",
     "endpoint_id",
     "redelivered",
+    "workflow_run",
+    "workflow_step",
+    "workflow_spec",
   ],
 };
 
@@ -172,4 +198,5 @@ exports.FIELDS = [
   "user_tags",
   "dedup_job",
   "endpoint_id",
+  "workflow",
 ];

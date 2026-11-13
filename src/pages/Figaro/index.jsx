@@ -68,6 +68,7 @@ class Figaro extends React.Component {
         <HeaderBar title="HySDS" theme={classTheme}>
           <HeaderLink href="/tosca" title="Tosca" active={0} />
           <HeaderLink href="/figaro" title="Figaro" active={1} />
+          <HeaderLink href="/workflows" title="Workflows" active={0} />
           <DropdownSources />
         </HeaderBar>
 

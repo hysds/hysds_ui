@@ -93,6 +93,7 @@ class Tosca extends React.Component {
         <HeaderBar title="HySDS" theme={classTheme}>
           <HeaderLink href="/tosca" title="Tosca" active={1} />
           <HeaderLink href="/figaro" title="Figaro" active={0} />
+          <HeaderLink href="/workflows" title="Workflows" active={0} />
           <DropdownSources />
         </HeaderBar>
 

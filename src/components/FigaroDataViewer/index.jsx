@@ -138,6 +138,21 @@ export const FigaroDataViewer = (props) => {
       ) : null}
       <div>status: {res.status}</div>
       {res.resource ? <div>resource: {res.resource}</div> : null}
+      {res.workflow && res.workflow.run_id ? (
+        <div>
+          workflow:{" "}
+          <Link to={`/workflows/run/${res.workflow.run_id}`}>
+            {res.workflow.run_id}
+          </Link>
+          {res.workflow.step_id ? ` / step ${res.workflow.step_id}` : null}
+          {res.workflow.child_index !== null &&
+          res.workflow.child_index !== undefined
+            ? ` / child ${res.workflow.child_index}${
+                res.workflow.child_total ? `/${res.workflow.child_total}` : ""
+              }`
+            : null}
+        </div>
+      ) : null}
       <div>index: {res._index}</div>
       <div>
         <a

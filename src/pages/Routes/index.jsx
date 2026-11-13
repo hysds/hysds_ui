@@ -18,6 +18,9 @@ import FigaroOnDemand from "../FigaroOnDemand";
 import FigaroUserRules from "../FigaroUserRules";
 import FigaroRuleEditor from "../FigaroRuleEditor";
 
+import Workflows from "../Workflows";
+import WorkflowRun from "../WorkflowRun";
+
 import MetadataViewer from "../MetadataViewer";
 
 import NotFound from "../NotFound";
@@ -58,6 +61,9 @@ const Routes = (props) => {
             path="/figaro/user-rule/:rule"
             component={FigaroRuleEditor}
           />
+
+          <Route exact path="/workflows" component={Workflows} />
+          <Route exact path="/workflows/run/:run_id" component={WorkflowRun} />
           <Route component={NotFound} />
         </Switch>
       </Router>

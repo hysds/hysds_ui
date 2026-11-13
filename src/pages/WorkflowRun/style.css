@@ -1,0 +1,141 @@
+@import "../../style/global.css";
+
+.wfr-page {
+  min-height: calc(100vh - 45px);
+}
+.wfr-body {
+  padding: 15px 25px 60px 25px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.wfr-back {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+.wfr-loading,
+.wfr-empty {
+  padding: 12px 0;
+  opacity: 0.8;
+}
+.wfr-error {
+  padding: 40px;
+  text-align: center;
+  font-size: 22px;
+  color: var(--fail-color);
+}
+
+.wfr-header {
+  margin-bottom: 8px;
+}
+.wfr-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+}
+.wfr-run-id {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 20px;
+  font-weight: 700;
+  word-break: break-all;
+}
+.wfr-spec {
+  font-size: 16px;
+}
+.wfr-label {
+  opacity: 0.75;
+  font-style: italic;
+}
+.wfr-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  margin-top: 8px;
+  font-size: 14px;
+}
+.wfr-header-row .button-small {
+  margin: 0;
+}
+.wfr-buffer {
+  flex: 1;
+}
+.wfr-auto {
+  font-size: 12px;
+  opacity: 0.7;
+}
+.wfr-run-error {
+  margin: 8px 0 4px 0;
+  color: var(--fail-color);
+  font-size: 14px;
+  word-break: break-word;
+}
+.wfr-action-msg {
+  margin: 6px 0;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-left: 4px solid var(--base-color);
+  background: rgba(67, 135, 255, 0.12);
+}
+
+.wfr-tabs {
+  display: flex;
+  gap: 18px;
+  border-bottom: 1px solid var(--light-theme-title);
+  margin: 12px 0 8px 0;
+}
+.wfr-tab {
+  cursor: pointer;
+  padding: 4px 2px;
+  opacity: 0.7;
+}
+.wfr-tab-on {
+  opacity: 1;
+  font-weight: 700;
+  border-bottom: 3px solid var(--base-color);
+}
+
+.wfr-panel.figaro-data-component {
+  margin: 14px 0;
+  word-break: normal;
+}
+.wfr-panel .figaro-data-component {
+  margin: 10px 0;
+  word-break: break-all;
+}
+.wfr-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+}
+.wfr-kind {
+  font-size: 12px;
+  opacity: 0.75;
+}
+.wfr-step-times {
+  font-size: 13px;
+  margin: 4px 0;
+  opacity: 0.85;
+}
+.wfr-subtitle {
+  font-weight: 700;
+  margin: 10px 0 4px 0;
+  font-size: 13px;
+}
+.wfr-attempt {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.__theme-dark .wfr-run-error,
+.__theme-dark .wfr-error {
+  color: #ff7b88;
+}
+.__theme-dark .wfr-body {
+  color: var(--dark-theme-color);
+}
+.__theme-dark .wfr-tabs {
+  border-color: var(--dark-theme-light);
+}

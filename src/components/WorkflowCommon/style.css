@@ -21,6 +21,23 @@
 .wf-state-unknown {
   --wf-color: #8a8a8a;
 }
+/* skipped: an arm that was not taken. Terminal, never started. Muted, dotted outline,
+   hatched fill and struck-through text, so it cannot be mistaken for pending (solid grey) */
+.wf-state-skipped {
+  --wf-color: #9aa0a6;
+}
+.wf-step.wf-state-skipped {
+  border-style: dotted;
+  opacity: 0.6;
+  text-decoration: line-through;
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0,
+    transparent 4px,
+    rgba(154, 160, 166, 0.25) 4px,
+    rgba(154, 160, 166, 0.25) 6px
+  );
+}
 .wf-state-job-queued {
   --wf-color: var(--queued-color);
 }
@@ -40,6 +57,35 @@
   color: #ffff;
   background-color: var(--wf-color);
   letter-spacing: 0.3px;
+}
+
+.wf-badge.wf-state-skipped {
+  color: #5f6368;
+  background-color: transparent;
+  border: 1px dotted #9aa0a6;
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0,
+    transparent 4px,
+    rgba(154, 160, 166, 0.3) 4px,
+    rgba(154, 160, 166, 0.3) 6px
+  );
+}
+.__theme-dark .wf-badge.wf-state-skipped {
+  color: #b5bac0;
+}
+
+.wf-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin: 6px 0;
+  font-size: 12px;
+}
+.wf-legend .wf-step {
+  font-size: 11px;
+  padding: 0 7px;
 }
 
 .wf-section {

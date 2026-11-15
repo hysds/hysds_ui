@@ -139,3 +139,34 @@
 .__theme-dark .wfr-tabs {
   border-color: var(--dark-theme-light);
 }
+
+.wfr-halt-reason {
+  margin: 8px 0 4px 0;
+  font-size: 14px;
+  padding: 4px 10px;
+  border-left: 4px solid var(--success-color);
+}
+.wfr-arm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  font-size: 13px;
+  padding: 2px 6px;
+}
+.wfr-arm-label {
+  font-weight: 700;
+  min-width: 90px;
+}
+.wfr-arm-when {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  word-break: break-all;
+}
+.wfr-arm-taken {
+  background: rgba(67, 135, 255, 0.14);
+  border-left: 3px solid var(--base-color);
+}
+.wfr-arm-untaken {
+  opacity: 0.5;
+}

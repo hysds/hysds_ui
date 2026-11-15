@@ -104,3 +104,35 @@
   margin-left: 6px;
   font-size: 11px;
 }
+
+/* routing: switch/gate (fork), halt (terminal marker), skipped count */
+.wf-step-fork {
+  border-radius: 3px;
+  font-size: 11px;
+  padding: 1px 6px;
+}
+.wf-step-halt {
+  border-radius: 3px;
+  border-width: 2px;
+  font-weight: 700;
+  font-size: 11px;
+}
+.wf-step-halt-failed {
+  --wf-halt-color: var(--fail-color);
+}
+.wf-step-halt-completed {
+  --wf-halt-color: var(--success-color);
+}
+.wf-step-halt.wf-state-pending {
+  border-color: var(--wf-halt-color);
+  color: var(--wf-halt-color);
+}
+.wf-step-halt.wf-state-completed,
+.wf-step-halt.wf-state-failed {
+  background-color: var(--wf-color);
+  color: #ffff;
+}
+.wf-step-skipped-count {
+  font-size: 11px;
+  text-decoration: none !important;
+}

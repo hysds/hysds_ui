@@ -14,8 +14,14 @@ import { FigaroDataViewer } from "../../components/FigaroDataViewer";
 import WorkflowStepStrip, {
   stepsFor,
 } from "../../components/WorkflowStepStrip";
+import WorkflowGraph from "../../components/WorkflowGraph";
 import ScatterGrid from "../../components/ScatterGrid";
-import { StatusBadge, Section, ValueView } from "../../components/WorkflowCommon";
+import {
+  StatusBadge,
+  Section,
+  ValueView,
+  StateLegend,
+} from "../../components/WorkflowCommon";
 
 import {
   ensureSpec,
@@ -38,6 +44,10 @@ import {
   defaultStep,
   summarizeStatuses,
   shortTime,
+  hasRouting,
+  armsOf,
+  armCondition,
+  errorClassLabel,
 } from "../../utils/workflow";
 
 import "../Figaro/style.css";
@@ -122,6 +132,39 @@ function Attempts({ attempts }) {
           {a.error || ""} {a.job_id ? ` (${a.job_id})` : ""}
         </div>
       ))}
+    </div>
+  );
+}
+
+// switch / gate: every arm with its condition; the taken one is marked, from outputs.arm
+function RoutingDetail({ node, runNode }) {
+  const arms = armsOf(node);
+  if (arms.length === 0) return null;
+  const taken = (runNode.outputs || {}).arm;
+  return (
+    <div className="wfr-routing">
+      <div className="wfr-subtitle">
+        {node.kind === "gate" ? "Gate" : "Switch"}
+        {node.on ? ` on ${node.on}` : ""}
+      </div>
+      {arms.map((a, i) => (
+        <div
+          key={`${a.label}-${i}`}
+          className={`wfr-arm ${taken === a.label ? "wfr-arm-taken" : ""} ${
+            taken !== undefined && taken !== null && taken !== a.label ? "wfr-arm-untaken" : ""
+          }`}
+        >
+          <span className="wfr-arm-label">{a.label}</span>
+          <code className="wfr-arm-when">{armCondition(a)}</code>
+          <span>→ {a.target}</span>
+          {taken === a.label ? <b className="wfr-arm-mark">taken</b> : null}
+        </div>
+      ))}
+      {(runNode.outputs || {}).target ? (
+        <div className="wfr-step-times">
+          chose arm {taken} → {runNode.outputs.target}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -377,8 +420,15 @@ function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
           {run.error ? (
             <div className="wfr-run-error">
               {run.failed_node ? `[${run.failed_node}] ` : ""}
-              {run.error_class ? `(${run.error_class}) ` : ""}
+              {run.error_class ? (
+                <span title={errorClassLabel(run.error_class)}>({run.error_class}) </span>
+              ) : null}
               {run.error}
+            </div>
+          ) : null}
+          {run.halt_reason ? (
+            <div className="wfr-halt-reason">
+              Run ended early at a halt node: {run.halt_reason}
             </div>
           ) : null}
           {actionMsg ? <div className="wfr-action-msg">{actionMsg}</div> : null}
@@ -411,14 +461,36 @@ function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
           />
         ) : (
           <>
-            <WorkflowStepStrip
-              run={run}
-              spec={spec}
-              live={live}
-              selected={selectedStep}
-              onSelect={setSelectedStep}
-              extra={extra}
-            />
+            {hasRouting(spec) ? (
+              <>
+                <WorkflowGraph
+                  run={run}
+                  spec={spec}
+                  live={live}
+                  selected={selectedStep}
+                  onSelect={setSelectedStep}
+                />
+                {extra.length > 0 ? (
+                  <WorkflowStepStrip
+                    run={{ nodes: {} }}
+                    spec={{ nodes: {} }}
+                    selected={selectedStep}
+                    onSelect={setSelectedStep}
+                    extra={extra}
+                  />
+                ) : null}
+              </>
+            ) : (
+              <WorkflowStepStrip
+                run={run}
+                spec={spec}
+                live={live}
+                selected={selectedStep}
+                onSelect={setSelectedStep}
+                extra={extra}
+              />
+            )}
+            <StateLegend />
 
             {selectedStep ? (
               <div className="wfr-panel figaro-data-component">
@@ -443,6 +515,17 @@ function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
                       : ""}
                   </div>
                 ) : null}
+                {node && node.skipped_by ? (
+                  <div className="wfr-step-times">
+                    skipped: not on the arm taken by {node.skipped_by}
+                  </div>
+                ) : null}
+                {sel && sel.kind === "halt" ? (
+                  <div className="wfr-step-times">
+                    halt {sel.node.status}: {sel.node.reason}
+                  </div>
+                ) : null}
+                {sel && sel.node ? <RoutingDetail node={sel.node} runNode={node || {}} /> : null}
                 {node && node.error ? <div className="wfr-run-error">{node.error}</div> : null}
                 <Attempts attempts={node && node.attempts} />
 

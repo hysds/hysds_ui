@@ -1,0 +1,161 @@
+@import "../../style/global.css";
+
+.wfg-wrap {
+  overflow-x: auto;
+  margin: 8px 0;
+  padding-bottom: 4px;
+}
+.wfg {
+  display: block;
+}
+
+.wfg-shape {
+  fill: var(--wfg-bg, #ffff);
+  stroke: var(--wf-color);
+  stroke-width: 1.5;
+}
+.wfg-node {
+  --wfg-text: #222;
+}
+.wfg-id {
+  font-size: 12px;
+  font-weight: 700;
+  fill: var(--wf-color);
+}
+.wfg-sub {
+  font-size: 10px;
+  fill: var(--wfg-text);
+  opacity: 0.75;
+}
+.wfg-clickable {
+  cursor: pointer;
+}
+.wfg-clickable:hover .wfg-shape {
+  stroke-width: 2.5;
+}
+.wfg-selected .wfg-shape {
+  stroke-width: 3;
+  filter: drop-shadow(0 0 3px var(--wf-color));
+}
+.wfg-failed-node .wfg-id {
+  text-decoration: underline;
+}
+
+/* states: filled when the node ran, solid grey outline while pending */
+.wfg-node.wf-state-completed .wfg-shape,
+.wfg-node.wf-state-failed .wfg-shape,
+.wfg-node.wf-state-running .wfg-shape {
+  fill: var(--wf-color);
+}
+.wfg-node.wf-state-completed .wfg-id,
+.wfg-node.wf-state-failed .wfg-id,
+.wfg-node.wf-state-running .wfg-id,
+.wfg-node.wf-state-completed .wfg-sub,
+.wfg-node.wf-state-failed .wfg-sub,
+.wfg-node.wf-state-running .wfg-sub {
+  fill: #ffff;
+  opacity: 1;
+}
+
+/* skipped: dotted outline, hatch-like muted fill, dimmed, struck-through id */
+.wfg-node.wf-state-skipped {
+  opacity: 0.5;
+}
+.wfg-node.wf-state-skipped .wfg-shape {
+  stroke-dasharray: 2 3;
+  fill: rgba(154, 160, 166, 0.18);
+}
+.wfg-node.wf-state-skipped .wfg-id {
+  text-decoration: line-through;
+}
+
+/* pending connector-ish kinds */
+.wfg-kind-pass .wfg-shape {
+  stroke-dasharray: 6 3;
+}
+.wfg-node.wf-state-skipped.wfg-kind-pass .wfg-shape {
+  stroke-dasharray: 2 3;
+}
+
+/* halt: terminal marker, coloured by its status until it has a state of its own */
+.wfg-kind-halt .wfg-shape {
+  stroke-width: 3;
+}
+.wfg-halt-failed.wf-state-pending {
+  --wf-color: var(--fail-color);
+}
+.wfg-halt-completed.wf-state-pending {
+  --wf-color: var(--success-color);
+}
+.wfg-kind-switch .wfg-shape,
+.wfg-kind-gate .wfg-shape {
+  stroke-width: 2;
+}
+
+/* scatter child progress */
+.wfg-bar-bg {
+  fill: rgba(128, 128, 128, 0.3);
+}
+.wfg-bar-done {
+  fill: var(--success-color);
+}
+.wfg-bar-failed {
+  fill: var(--fail-color);
+}
+
+/* edges */
+.wfg-edge path {
+  fill: none;
+  stroke: #8a8a8a;
+  stroke-width: 1.4;
+}
+.wfg-edge-taken path {
+  stroke: var(--base-color);
+  stroke-width: 3;
+}
+.wfg-edge-untaken path {
+  stroke-dasharray: 3 4;
+  opacity: 0.45;
+}
+.wfg-edge-label {
+  font-size: 10px;
+  fill: #444;
+  paint-order: stroke;
+  stroke: var(--wfg-bg, #ffff);
+  stroke-width: 3px;
+}
+.wfg-edge-taken .wfg-edge-label {
+  font-weight: 700;
+  fill: var(--base-color);
+}
+.wfg-edge-untaken .wfg-edge-label {
+  opacity: 0.55;
+}
+.wfg-marker path {
+  fill: #8a8a8a;
+}
+.wfg-marker-taken path {
+  fill: var(--base-color);
+}
+.wfg-marker-untaken path {
+  opacity: 0.45;
+}
+
+.__theme-dark .wfg {
+  --wfg-bg: var(--dark-theme-background);
+}
+.__theme-dark .wfg-node {
+  --wfg-text: #ddd;
+}
+.__theme-dark .wfg-edge-label {
+  fill: #ccc;
+}
+.__theme-dark .wfg-edge-taken .wfg-edge-label {
+  fill: #7fb2ff;
+}
+.__theme-dark .wfg-edge-taken path {
+  stroke: #7fb2ff;
+}
+.__theme-dark .wfg-marker-taken path {
+  fill: #7fb2ff;
+}

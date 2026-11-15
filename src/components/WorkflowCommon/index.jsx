@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import { toLink, fileLocation } from "../../utils/workflow";
 
+import "../WorkflowStepStrip/style.css";
 import "./style.css";
 
 export function StatusBadge({ status }) {
@@ -10,6 +11,28 @@ export function StatusBadge({ status }) {
     <span className={`wf-badge wf-state-${status || "unknown"}`}>
       {(status || "unknown").toUpperCase()}
     </span>
+  );
+}
+
+const LEGEND = [
+  ["pending", "not started yet"],
+  ["running", "running"],
+  ["completed", "completed"],
+  ["failed", "failed"],
+  ["cancelled", "cancelled"],
+  ["skipped", "skipped: on an arm not taken, never started"],
+];
+
+/** Node-state legend (run page) */
+export function StateLegend() {
+  return (
+    <div className="wf-legend">
+      {LEGEND.map(([state, text]) => (
+        <span key={state} title={text}>
+          <span className={`wf-step wf-step-chip wf-state-${state}`}>{state}</span>
+        </span>
+      ))}
+    </div>
   );
 }
 

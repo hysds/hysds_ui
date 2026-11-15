@@ -45,6 +45,7 @@ exports.RESULT_FIELDS = [
   "duration_s",
   "error",
   "error_class",
+  "halt_reason",
   "failed_node",
   "current_nodes",
   "has_scatter",

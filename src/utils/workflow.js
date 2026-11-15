@@ -59,9 +59,106 @@ exports.formatDuration = (seconds) => {
 /** "2026-11-11T20:07:44.123Z" -> "11-11 20:07:44" (UTC, as everywhere else in the UI) */
 exports.shortTime = (t) => (t ? String(t).slice(5, 19).replace("T", " ") : "-");
 
+// ---------------------------------------------------------------------------------------
+// Routing (spec v1.2): switch / gate / halt
+// ---------------------------------------------------------------------------------------
+
+const ROUTING_KINDS = ["switch", "gate"];
+exports.isRouting = (node) => !!node && ROUTING_KINDS.includes(node.kind);
+
+/** True when a spec uses any v1.2 routing kind (graph view is only used for those) */
+exports.hasRouting = (spec) =>
+  !!spec &&
+  !!spec.nodes &&
+  Object.values(spec.nodes).some(
+    (n) => n && (ROUTING_KINDS.includes(n.kind) || n.kind === "halt")
+  );
+
+const asTargets = (v) => (Array.isArray(v) ? v.filter(Boolean) : v ? [v] : []);
+
 /**
- * Lay a spec's nodes out in reading order: from `entry`, following `next`; a scatter's
- * `child` comes straight after the scatter node. Unreachable nodes are appended.
+ * The arms of a switch/gate, in evaluation order: [{label, target, when?}].
+ * Labels: case name or case_<i>; the choices key; "default"; a gate's "true"/"false".
+ * Other node kinds have no arms.
+ */
+exports.armsOf = (node) => {
+  if (!node) return [];
+  const arms = [];
+  if (node.kind === "gate") {
+    asTargets(node.on_true).forEach((t) => arms.push({ label: "true", target: t, when: node.when }));
+    asTargets(node.on_false).forEach((t) => arms.push({ label: "false", target: t, when: node.when, negated: true }));
+    return arms;
+  }
+  if (node.kind !== "switch") return [];
+  if (Array.isArray(node.cases)) {
+    node.cases.forEach((c, i) =>
+      asTargets(c.next).forEach((t) =>
+        arms.push({ label: c.name || `case_${i}`, target: t, when: c.when })
+      )
+    );
+  } else if (node.choices && typeof node.choices === "object") {
+    Object.keys(node.choices).forEach((k) =>
+      asTargets(node.choices[k]).forEach((t) =>
+        arms.push({ label: k, target: t, choice: k, on: node.on })
+      )
+    );
+  }
+  asTargets(node.default).forEach((t) => arms.push({ label: "default", target: t }));
+  return arms;
+};
+
+/** `next` plus all arm targets, deduplicated (like hysds_commons successors()) */
+exports.successors = (node) => {
+  if (!node) return [];
+  const out = [];
+  asTargets(node.next)
+    .concat(exports.armsOf(node).map((a) => a.target))
+    .forEach((t) => {
+      if (!out.includes(t)) out.push(t);
+    });
+  return out;
+};
+
+const OP_SYMBOL = { eq: "==", ne: "!=", lt: "<", le: "<=", gt: ">", ge: ">=", in: "in" };
+
+const operand = (v) => (typeof v === "string" && v.startsWith("$") ? v : JSON.stringify(v));
+
+/** A `when` tree as one readable line, e.g. `$.L2SMP.qa_score < 0.3` */
+exports.formatWhen = (when, nested) => {
+  if (when === null || when === undefined) return "";
+  if (Array.isArray(when.all) || Array.isArray(when.any)) {
+    const isAll = Array.isArray(when.all);
+    const parts = (isAll ? when.all : when.any).map((w) => exports.formatWhen(w, true));
+    const text = parts.join(isAll ? " AND " : " OR ");
+    return nested && parts.length > 1 ? `(${text})` : text;
+  }
+  if (when.not) return `NOT (${exports.formatWhen(when.not)})`;
+  if ("left" in when) {
+    return `${operand(when.left)} ${OP_SYMBOL[when.op] || when.op} ${operand(when.right)}`;
+  }
+  return JSON.stringify(when);
+};
+
+/** One-line description of how an arm is chosen, for tooltips and the detail panel */
+exports.armCondition = (arm) => {
+  if (arm.label === "default") return "otherwise";
+  if (arm.choice !== undefined) return `${arm.on} == ${JSON.stringify(arm.choice)}`;
+  if (arm.negated) return `NOT (${exports.formatWhen(arm.when)})`;
+  return exports.formatWhen(arm.when);
+};
+
+/** Arm label -> readable error class for run headers and cards */
+exports.ERROR_CLASS_LABELS = {
+  halted: "halted (halt node)",
+  routing: "routing (switch could not be evaluated)",
+  input_resolution: "input resolution",
+};
+exports.errorClassLabel = (c) => (c ? exports.ERROR_CLASS_LABELS[c] || c : "");
+
+/**
+ * Lay a spec's nodes out in reading order: from `entry`, following `next` and switch/gate
+ * arms; a scatter's `child` comes straight after the scatter node. Unreachable nodes are
+ * appended.
  *
  * Returns [{id, kind, isChild, node}]. `isChild` marks a scatter child (drawn as a bar).
  */
@@ -82,12 +179,114 @@ exports.orderSpecNodes = (spec) => {
     const node = nodes[id];
     out.push({ id, kind: node.kind || "job", isChild: childIds.has(id), node });
     if (node.kind === "scatter" && node.child) visit(node.child);
-    (node.next || []).forEach(visit);
+    exports.successors(node).forEach(visit);
   };
 
   visit(spec.entry);
   Object.keys(nodes).forEach(visit);
   return out;
+};
+
+/**
+ * The strip for a run that may have branched: nodes on arms not taken (state `skipped`)
+ * are dropped from the path and counted. Returns {steps, skipped: [ids]}. A run without
+ * skipped nodes (every pre-1.2 run) gets its steps back unchanged.
+ */
+exports.pathSteps = (run, steps) => {
+  const nodes = (run && run.nodes) || {};
+  const skipped = [];
+  const kept = steps.filter((s) => {
+    if ((nodes[s.id] || {}).state === "skipped") {
+      skipped.push(s.id);
+      return false;
+    }
+    return true;
+  });
+  return { steps: kept, skipped };
+};
+
+/**
+ * Layered DAG layout from spec successors (simple longest-path layering), for the run
+ * page graph. A scatter is drawn as scatter -> child -> its `next` targets.
+ *
+ * Returns {nodes: [{id, kind, layer, row, isChild, node}], edges: [{from, to, label?, arm?}],
+ * layers: number, rows: number}. `label` is only set on switch/gate arms.
+ */
+exports.layoutGraph = (spec) => {
+  const ordered = exports.orderSpecNodes(spec);
+  const index = {};
+  ordered.forEach((o, i) => (index[o.id] = i));
+  const edges = [];
+  const addEdge = (from, to, arm) => {
+    if (!index.hasOwnProperty(to)) return;
+    edges.push(arm ? { from, to, label: arm.label, arm } : { from, to });
+  };
+  ordered.forEach((o) => {
+    const n = o.node;
+    if (n.kind === "scatter" && n.child && index.hasOwnProperty(n.child)) {
+      addEdge(o.id, n.child);
+      asTargets(n.next).forEach((t) => addEdge(n.child, t));
+    } else if (exports.isRouting(n)) {
+      exports.armsOf(n).forEach((a) => addEdge(o.id, a.target, a));
+    } else {
+      asTargets(n.next).forEach((t) => addEdge(o.id, t));
+    }
+  });
+
+  const preds = {};
+  edges.forEach((e) => (preds[e.to] = (preds[e.to] || []).concat(e.from)));
+  const layerOf = {};
+  const visiting = new Set();
+  const layer = (id) => {
+    if (layerOf[id] !== undefined) return layerOf[id];
+    if (visiting.has(id)) return 0; // cycle guard; validation rejects cycles
+    visiting.add(id);
+    const l = (preds[id] || []).reduce((m, p) => Math.max(m, layer(p) + 1), 0);
+    visiting.delete(id);
+    layerOf[id] = l;
+    return l;
+  };
+  ordered.forEach((o) => layer(o.id));
+
+  const nLayers = ordered.reduce((m, o) => Math.max(m, layerOf[o.id] + 1), 0);
+  const byLayer = Array.from({ length: nLayers }, () => []);
+  ordered.forEach((o) => byLayer[layerOf[o.id]].push(o));
+  const rowOf = {};
+  byLayer.forEach((col) => {
+    // barycenter of already placed predecessors, then spec order
+    const key = (o) => {
+      const ps = (preds[o.id] || []).filter((p) => rowOf[p] !== undefined);
+      return ps.length ? ps.reduce((a, p) => a + rowOf[p], 0) / ps.length : 0;
+    };
+    col.sort((a, b) => key(a) - key(b) || index[a.id] - index[b.id]);
+    col.forEach((o, r) => (rowOf[o.id] = r));
+  });
+
+  return {
+    nodes: ordered.map((o) => ({ ...o, layer: layerOf[o.id], row: rowOf[o.id] })),
+    edges,
+    layers: nLayers,
+    rows: byLayer.reduce((m, c) => Math.max(m, c.length), 0),
+  };
+};
+
+/**
+ * Is a graph edge on the path the run took? "taken" | "untaken" | "open" (not decided yet).
+ * Arm edges use the switch node's outputs.arm; plain edges follow their endpoint states.
+ */
+exports.edgeState = (run, edge) => {
+  const nodes = (run && run.nodes) || {};
+  const from = nodes[edge.from] || {};
+  const to = nodes[edge.to] || {};
+  if (edge.arm) {
+    const arm = (from.outputs || {}).arm;
+    if (arm === undefined || arm === null) return from.state === "skipped" ? "untaken" : "open";
+    return arm === edge.label ? "taken" : "untaken";
+  }
+  if (from.state === "skipped" || to.state === "skipped") return "untaken";
+  if (from.state === "completed" && ["running", "completed", "failed"].includes(to.state))
+    return "taken";
+  return "open";
 };
 
 /** Pick the facets to show: first candidate field with data, hide a facet with none. */

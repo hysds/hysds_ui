@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { orderSpecNodes } from "../../utils/workflow";
+import { orderSpecNodes, pathSteps } from "../../utils/workflow";
 
 import "../WorkflowCommon/style.css";
 import "./style.css";
@@ -12,6 +12,7 @@ const ICON = {
   running: "●",
   cancelled: "⊘",
   pending: "·",
+  skipped: "↷",
 };
 
 // steps: [{id, kind, isChild}] in spec order. Without a spec (still loading, or the fetch
@@ -64,9 +65,13 @@ function ScatterBar({ node, live, id, selected, onSelect, compact }) {
  * completed, failed}}, which beats the run doc's counts while a scatter is in flight.
  */
 function WorkflowStepStrip({ run, spec, live, selected, onSelect, compact, extra }) {
-  const steps = stepsFor(run, spec);
+  const allSteps = stepsFor(run, spec);
   const nodes = run.nodes || {};
   const items = [];
+  // card strip: show the path taken; steps on arms not taken collapse into "+N skipped"
+  const { steps, skipped } = compact
+    ? pathSteps(run, allSteps)
+    : { steps: allSteps, skipped: [] };
 
   steps.forEach((s, i) => {
     const node = nodes[s.id] || {};
@@ -102,6 +107,32 @@ function WorkflowStepStrip({ run, spec, live, selected, onSelect, compact, extra
           {s.id}
         </span>
       );
+    } else if (s.kind === "halt") {
+      const hs = (s.node || {}).status || "failed";
+      el = (
+        <span
+          key={s.id}
+          className={`wf-step wf-step-halt wf-step-halt-${hs} wf-state-${state} ${cls}`}
+          title={`${s.id} (halt ${hs}): ${state}${(s.node || {}).reason ? ` - ${s.node.reason}` : ""}`}
+          onClick={click}
+        >
+          <span className="wf-step-icon">■</span>
+          {compact ? `${s.id}` : `${s.id} halt ${hs}`}
+        </span>
+      );
+    } else if ((s.kind === "switch" || s.kind === "gate") && compact) {
+      const arm = (node.outputs || {}).arm;
+      el = (
+        <span
+          key={s.id}
+          className={`wf-step wf-step-fork wf-state-${state} ${cls}`}
+          title={`${s.id} (${s.kind}): ${state}${arm ? ` -> ${arm}` : ""}`}
+          onClick={click}
+        >
+          <span className="wf-step-icon">◆</span>
+          {arm || s.id}
+        </span>
+      );
     } else if (compact) {
       el = (
         <span
@@ -128,6 +159,19 @@ function WorkflowStepStrip({ run, spec, live, selected, onSelect, compact, extra
     if (i > 0) items.push(<span key={`sep-${s.id}`} className="wf-step-sep" />);
     items.push(el);
   });
+
+  if (skipped.length > 0) {
+    items.push(<span key="sep-skipped" className="wf-step-sep" />);
+    items.push(
+      <span
+        key="skipped"
+        className="wf-step wf-step-skipped-count wf-state-skipped"
+        title={`skipped (arms not taken): ${skipped.join(", ")}`}
+      >
+        +{skipped.length} skipped
+      </span>
+    );
+  }
 
   // steps that exist in job_status but not in the spec (e.g. _finalize, _halt)
   (extra || []).forEach((id) => {

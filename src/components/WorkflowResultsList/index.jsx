@@ -24,6 +24,7 @@ import {
   formatDuration,
   shortTime,
   jobsUrl,
+  errorClassLabel,
 } from "../../utils/workflow";
 
 import "../FigaroResultsList/style.css";
@@ -68,8 +69,14 @@ let WorkflowCard = ({ res, specEntry, ensureSpec }) => {
       {res.error ? (
         <div className="wf-card-error">
           {res.failed_node ? `[${res.failed_node}] ` : ""}
+          {res.error_class ? (
+            <span title={errorClassLabel(res.error_class)}>({res.error_class}) </span>
+          ) : null}
           {res.error}
         </div>
+      ) : null}
+      {res.halt_reason ? (
+        <div className="wf-card-halt">ended early at halt: {res.halt_reason}</div>
       ) : null}
 
       <div className="wf-card-buttons">

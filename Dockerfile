@@ -48,16 +48,24 @@ RUN npm ci --no-audit --no-fund
 
 COPY . .
 
-# Production config. src/config/index.js is excluded by .dockerignore so a
-# developer's localhost settings can never end up in a deployed bundle; this is
-# the only thing that supplies it.
-COPY deploy/config/index.prod.js src/config/index.js
-
-# tosca.js / figaro.js are gitignored but present in the build context. figaro.js
-# is required even though Figaro is unused -- src/pages/Figaro and
+# Production config, from the tracked copies under deploy/config/.
+#
+# All three src/config/*.js files are in .gitignore (upstream generates them
+# per-deployment) AND excluded by .dockerignore, so the image never picks up a
+# developer's local settings and the build does not depend on untracked files.
+# These COPYs are the only thing that supplies them, which means a fresh clone
+# of this branch can build the image with no manual setup.
+#
+# figaro.js is required even though Figaro is unused -- src/pages/Figaro and
 # src/components/FigaroResultsList import it, so webpack fails without it.
-RUN test -f src/config/tosca.js  || (echo "FATAL: src/config/tosca.js missing"  && exit 1) \
- && test -f src/config/figaro.js || (echo "FATAL: src/config/figaro.js missing" && exit 1)
+COPY deploy/config/index.prod.js  src/config/index.js
+COPY deploy/config/tosca.prod.js  src/config/tosca.js
+COPY deploy/config/figaro.prod.js src/config/figaro.js
+
+RUN for f in index tosca figaro; do \
+      test -s "src/config/$f.js" || { echo "FATAL: src/config/$f.js missing or empty" >&2; exit 1; }; \
+    done \
+ && echo "config present: index.js tosca.js figaro.js"
 
 # Guard against a credential reaching the bundle. .dockerignore should keep
 # local-proxy/ out entirely, but verify rather than trust -- this is the last

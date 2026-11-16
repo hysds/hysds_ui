@@ -1,0 +1,112 @@
+# nginx config template for hysds_ui on-prem.
+#
+# ${PLACEHOLDERS} are substituted at container start by entrypoint.sh using
+# envsubst, with values from a Kubernetes Secret. Substituting at startup
+# rather than build time means the image carries no credentials and no
+# environment-specific hostname -- the same image works in any venue.
+#
+# Deliberately NOT using an nginx variable in proxy_pass: that would force
+# runtime DNS resolution and require a `resolver` directive. envsubst writes a
+# literal hostname, so nginx resolves it the normal way at startup.
+
+server {
+    listen       8080;
+    server_name  _;
+
+    # The app builds its OpenSearch URL as `${window.origin}/${GRQ_ES_URL}`,
+    # which yields a double slash (//grq_es). This is on by default, but it is
+    # load-bearing here, so set it explicitly rather than trusting the default.
+    merge_slashes on;
+
+    # Footprint-heavy _msearch responses are large; don't buffer to disk.
+    proxy_buffers     16 32k;
+    proxy_buffer_size 32k;
+
+    client_max_body_size 2m;   # _msearch bodies with many facets
+
+    # ---------------------------------------------------------------------
+    # OpenSearch proxy -- READ-ONLY
+    #
+    # The browser queries OpenSearch directly (hysds_ui is a static SPA), so
+    # this proxy is reachable by anyone who can load the page. It attaches
+    # admin credentials to every request, which means an unrestricted proxy
+    # would let any visitor DELETE an index. Only the endpoints the UI
+    # actually reads are allowed; everything else under /grq_es/ is denied.
+    #
+    # Allowed, and who needs them:
+    #   _msearch  reactivesearch -- all facet and result queries
+    #   _search   direct searches
+    #   _count    src/redux/actions/tosca/index.js:30 (result counter)
+    #   _doc/<id> src/pages/MetadataViewer -- Full Metadata view
+    #   _mapping  not used by the UI; kept GET-only for debugging
+    #
+    # Notably denied by omission: _bulk, _update, _update_by_query,
+    # _delete_by_query, _reindex, _settings, _close, _snapshot, and any
+    # DELETE/PUT to an index.
+    # ---------------------------------------------------------------------
+
+    # _msearch / _search / _count -- GET or POST (the body carries the query)
+    location ~ ^/grq_es/[^/]+/(_msearch|_search|_count)$ {
+        limit_except GET POST HEAD OPTIONS { deny all; }
+        include /etc/nginx/opensearch_upstream.conf;
+    }
+
+    # Top-level _msearch / _search (no index in the path)
+    location ~ ^/grq_es/(_msearch|_search)$ {
+        limit_except GET POST HEAD OPTIONS { deny all; }
+        include /etc/nginx/opensearch_upstream.conf;
+    }
+
+    # Single-document fetch for the Full Metadata page. GET only -- the same
+    # path with POST/PUT/DELETE would write or delete the document.
+    location ~ ^/grq_es/[^/]+/_doc/.+$ {
+        limit_except GET HEAD { deny all; }
+        include /etc/nginx/opensearch_upstream.conf;
+    }
+
+    # Mapping introspection, read-only.
+    location ~ ^/grq_es/([^/]+/)?_mapping$ {
+        limit_except GET HEAD { deny all; }
+        include /etc/nginx/opensearch_upstream.conf;
+    }
+
+    # Anything else under /grq_es/ is refused. This is the catch-all that makes
+    # the allowlist above meaningful.
+    #
+    # MUST be a plain prefix location, NOT `^~`. With `^~`, nginx stops at the
+    # longest prefix match and never evaluates regex locations, which would
+    # make every allowlist entry above unreachable and 403 the whole UI.
+    # Plain prefix = remembered as fallback, regexes still get first refusal.
+    location /grq_es/ {
+        return 403 '{"error":"forbidden_by_proxy","message":"This endpoint is not in the read-only allowlist. See deploy/nginx/default.conf.template."}';
+        default_type application/json;
+    }
+
+    # Bare /grq_es with no trailing path
+    location = /grq_es {
+        return 403 '{"error":"forbidden_by_proxy","message":"No endpoint specified."}';
+        default_type application/json;
+    }
+
+    # ---------------------------------------------------------------------
+    # Static SPA
+    # ---------------------------------------------------------------------
+    location /healthz {
+        access_log off;
+        return 200 "ok\n";
+        default_type text/plain;
+    }
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html;
+        # react-router owns the client-side routes (/tosca, /figaro, ...), so
+        # unknown paths must return index.html rather than 404.
+        try_files $uri /index.html;
+    }
+
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}

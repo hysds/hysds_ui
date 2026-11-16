@@ -1,0 +1,40 @@
+# Shared upstream block for every allowed /grq_es/ endpoint.
+# Included from default.conf; both are rendered by entrypoint.sh at startup.
+
+# Strip the /grq_es prefix so /grq_es/products/_msearch -> /products/_msearch
+rewrite ^/grq_es/(.*)$ /$1 break;
+
+proxy_pass https://${OS_HOST}:443;
+
+# SNI and Host must be the real domain or AWS rejects the TLS handshake.
+proxy_ssl_server_name on;
+proxy_ssl_name        ${OS_HOST};
+proxy_set_header      Host ${OS_HOST};
+
+# The credential. proxy_set_header REPLACES whatever the client sent, so a
+# visitor cannot substitute their own Authorization header to escalate.
+proxy_set_header Authorization "Basic ${OS_AUTH_B64}";
+
+# Don't forward browser context upstream.
+proxy_set_header Origin        "";
+proxy_set_header Referer       "";
+proxy_set_header Cookie        "";
+proxy_set_header X-Forwarded-For  $proxy_add_x_forwarded_for;
+
+# Verify the AWS certificate chain. Set OS_SSL_VERIFY=off only to debug a
+# TLS interception problem, never as a permanent setting.
+proxy_ssl_verify       ${OS_SSL_VERIFY};
+proxy_ssl_verify_depth 3;
+proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
+
+proxy_http_version 1.1;
+proxy_set_header   Connection "";
+
+proxy_connect_timeout 10s;
+proxy_send_timeout    60s;
+proxy_read_timeout    60s;
+
+# Same origin as the page, so no CORS headers are needed -- and we actively
+# drop any the upstream sends so they cannot widen access.
+proxy_hide_header Access-Control-Allow-Origin;
+proxy_hide_header Access-Control-Allow-Credentials;

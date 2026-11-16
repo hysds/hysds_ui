@@ -1,0 +1,160 @@
+# Run this BEFORE deploying the UI.
+#
+# The OpenSearch domain is a `vpc-*.us-west-2.es.amazonaws.com` endpoint, which
+# resolves only inside that AWS VPC. For an on-prem pod to reach it you need
+# BOTH:
+#   1. IP routing to the VPC (DirectConnect or site-to-site VPN), and
+#   2. DNS resolution of the private AWS name -- usually a Route53 Resolver
+#      inbound endpoint, with the cluster's DNS forwarding that zone to it.
+#
+# Those fail independently and produce different errors, which is why this job
+# tests them separately. Without it, a failure shows up as a UI that loads but
+# returns no results, which is a much worse place to debug from.
+#
+# The `eagle` namespace is pre-existing and shared -- there is no namespace
+# manifest to apply, and creating one is likely outside your RBAC.
+#
+#   kubectl -n eagle create secret generic opensearch-credentials ...
+#   kubectl apply -f deploy/k8s/05-connectivity-check-job.yaml
+#   kubectl -n eagle logs -f job/opensearch-connectivity-check
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: opensearch-connectivity-check
+  namespace: eagle
+spec:
+  backoffLimit: 0        # one shot; rerunning on failure just hides the error
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        # Required by the restricted Pod Security Standard, which this
+        # namespace evaluates against. Without it the API server warns
+        # "seccompProfile (pod or container "check" must set ...)".
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: check
+          # Any image with curl + a DNS tool. Swap for an internal mirror.
+          image: curlimages/curl:8.11.1
+          envFrom:
+            - secretRef:
+                name: opensearch-credentials
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -u
+              fail=0
+              echo "=== target ==="
+              echo "  host: ${OS_HOST}"
+              echo "  user: ${OS_USER}"
+              echo
+
+              # Fail fast on an empty Secret. Without this, blank values
+              # produce "URL rejected: No host part in the URL" from every
+              # step below, which reads like a network fault instead of a
+              # missing value. Usually means the shell variables were unset
+              # when `kubectl create secret` ran.
+              missing=
+              [ -z "${OS_HOST}" ] && missing="${missing} OS_HOST"
+              [ -z "${OS_USER}" ] && missing="${missing} OS_USER"
+              [ -z "${OS_PASS}" ] && missing="${missing} OS_PASS"
+              if [ -n "${missing}" ]; then
+                echo "FATAL: empty value(s) in the opensearch-credentials Secret:${missing}"
+                echo
+                echo "Fix by recreating it with real values:"
+                echo "  set -a && source ./local-proxy/proxy.env && set +a"
+                echo "  kubectl -n eagle delete secret opensearch-credentials"
+                echo "  kubectl -n eagle create secret generic opensearch-credentials \\"
+                echo "      --from-literal=OS_HOST=\"\$OS_HOST\" \\"
+                echo "      --from-literal=OS_USER=\"\$OS_USER\" \\"
+                echo "      --from-literal=OS_PASS=\"\$OS_PASS\""
+                echo "Then: kubectl -n eagle delete job opensearch-connectivity-check"
+                echo "      kubectl apply -f deploy/k8s/05-connectivity-check-job.yaml"
+                exit 1
+              fi
+
+              echo "=== 1. DNS resolution ==="
+              # nslookup is in busybox; getent may not resolve via the cluster
+              # resolver in every image, so try both.
+              if nslookup "${OS_HOST}" 2>&1 | tail -n +3; then
+                echo "  -> resolved"
+              else
+                echo "  -> FAILED to resolve."
+                echo "     The cluster cannot resolve the AWS private DNS name."
+                echo "     Fix: a Route53 Resolver inbound endpoint reachable from"
+                echo "     on-prem, plus a CoreDNS forward rule for"
+                echo "     us-west-2.es.amazonaws.com pointing at it."
+                fail=1
+              fi
+              echo
+
+              echo "=== 2. TCP 443 reachability ==="
+              # -m is a hard timeout; a hang here means routing, not DNS.
+              if curl -sS -m 10 -o /dev/null "https://${OS_HOST}:443" 2>/tmp/e; then
+                echo "  -> connected"
+              else
+                echo "  -> $(cat /tmp/e)"
+                case "$(cat /tmp/e)" in
+                  *"Could not resolve"*)
+                    echo "     DNS problem -- see step 1." ;;
+                  *"Connection timed out"*|*"Failed to connect"*)
+                    echo "     Routing problem: the name resolved but packets are"
+                    echo "     not reaching the VPC. Check DirectConnect/VPN routes"
+                    echo "     and the domain's security group -- it must allow 443"
+                    echo "     from the on-prem CIDR." ;;
+                  *"certificate"*)
+                    echo "     TLS problem: likely a middlebox intercepting TLS."
+                    echo "     Confirm with OS_SSL_VERIFY=off, then fix properly by"
+                    echo "     trusting the interception CA, not by leaving it off." ;;
+                esac
+                fail=1
+              fi
+              echo
+
+              echo "=== 3. Authentication ==="
+              code=$(curl -sS -m 15 -o /tmp/body -w '%{http_code}' \
+                       -u "${OS_USER}:${OS_PASS}" "https://${OS_HOST}/" || true)
+              echo "  HTTP ${code}"
+              case "${code}" in
+                200) echo "  -> authenticated"; grep -o '"number"[^,]*' /tmp/body || true ;;
+                401) echo "  -> bad OS_USER/OS_PASS in the Secret."; fail=1 ;;
+                403) echo "  -> the DOMAIN ACCESS POLICY is denying this source IP,"
+                     echo "     not fine-grained access control. On-prem traffic"
+                     echo "     arrives with a different source than in-VPC traffic,"
+                     echo "     so a policy that works from EKS can still deny here."
+                     fail=1 ;;
+                000) echo "  -> no response; see steps 1-2."; fail=1 ;;
+                *)   echo "  -> unexpected:"; head -c 300 /tmp/body; fail=1 ;;
+              esac
+              echo
+
+              echo "=== 4. The actual query the UI will run ==="
+              code=$(curl -sS -m 20 -o /tmp/c -w '%{http_code}' \
+                       -u "${OS_USER}:${OS_PASS}" \
+                       "https://${OS_HOST}/products,scenes/_count" || true)
+              echo "  HTTP ${code}: $(head -c 200 /tmp/c)"
+              if [ "${code}" = "200" ]; then
+                echo "  -> catalog reachable."
+                echo "     NOTE: a count with _shards.total of 0 means the index"
+                echo "     names are wrong, not that the catalog is empty."
+              else
+                fail=1
+              fi
+              echo
+
+              if [ "${fail}" = "0" ]; then
+                echo "ALL CHECKS PASSED -- safe to deploy the UI."
+              else
+                echo "CHECKS FAILED -- deploying now would give you a UI that loads"
+                echo "but returns nothing. Resolve the above first."
+              fi
+              exit "${fail}"

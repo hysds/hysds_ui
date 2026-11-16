@@ -1,0 +1,41 @@
+# HTTP only, per the demo requirement. Anyone who can reach this host can query
+# the catalog -- the nginx proxy supplies the OpenSearch credential on their
+# behalf. It is restricted to read-only endpoints, but there is no user
+# authentication in front of the UI.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hysds-ui
+  namespace: eagle
+  annotations:
+    # _msearch responses carrying footprint geometry can be large.
+    nginx.ingress.kubernetes.io/proxy-body-size: "2m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+spec:
+  # ingressClassName is deliberately OMITTED.
+  #
+  # A namespace-scoped user cannot run `kubectl get ingressclass` (it is a
+  # cluster-scoped resource), so the available classes can't be discovered from
+  # here. Leaving this unset makes the cluster assign its default IngressClass
+  # -- the one annotated ingressclass.kubernetes.io/is-default-class: "true".
+  # That is more likely correct than guessing "nginx", since Rancher ships
+  # Traefik in some configurations.
+  #
+  # If the cluster has NO default class, the Ingress is created but never
+  # programmed, and `kubectl -n eagle get ingress hysds-ui` shows an empty
+  # ADDRESS. In that case ask for the class name and set it explicitly:
+  #   ingressClassName: <name>
+  # Very old controllers may instead need the deprecated annotation
+  #   kubernetes.io/ingress.class: <name>
+  rules:
+    # REPLACE with the hostname you want on the cluster.
+    - host: hysds-ui.airflowsds.jpl.nasa.gov
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hysds-ui
+                port:
+                  name: http

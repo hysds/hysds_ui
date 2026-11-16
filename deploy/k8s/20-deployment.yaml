@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hysds-ui
+  namespace: eagle
+  labels:
+    app.kubernetes.io/name: hysds-ui
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hysds-ui
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hysds-ui
+    spec:
+      # JPL Artifactory requires authentication to pull. Create with:
+      #   kubectl -n eagle create secret docker-registry artifactory \
+      #     --docker-server=artifactory.jpl.nasa.gov:16001 \
+      #     --docker-username=<user> --docker-password=<api-token>
+      # Use an Artifactory API token, not your password.
+      imagePullSecrets:
+        - name: artifactory
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: hysds-ui
+          # JPL Artifactory uses PORT-PER-REPOSITORY addressing:
+          #   artifactory.jpl.nasa.gov:16001  -> docker-develop-local
+          #   artifactory.jpl.nasa.gov:16002  -> docker-stage-local
+          #   artifactory.jpl.nasa.gov:16003  -> docker-release-local
+          #
+          # The port identifies the repository, so the repo key must NOT appear
+          # in the image path. Two things still have to be right:
+          #
+          #  1. The `gov/nasa/jpl/eagle/sds/` prefix is MANDATORY -- the
+          #     permission target's include pattern is
+          #     `gov/nasa/jpl/eagle/sds/**`, and a Docker image a/b/c:tag
+          #     occupies the Artifactory path a/b/c/tag/. An unprefixed image
+          #     is refused even with Deploy rights.
+          #  2. The port is part of the registry reference and must match what
+          #     was pushed and the pull Secret's --docker-server exactly;
+          #     containerd treats host, host:443 and host:16001 as different
+          #     registries.
+          #
+          # Note also: Artifactory masks unauthorized Docker paths as 404, not
+          # 403, so permission and path mistakes look like a missing registry.
+          #
+          # 16001 is the *development* repo -- images there are expected to be
+          # transient and deleted once promoted to stage/release. For anything
+          # longer-lived, rebuild into 16002/16003 rather than relying on this.
+          image: artifactory.jpl.nasa.gov:16001/gov/nasa/jpl/eagle/sds/hysds_ui:0.1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          # OS_HOST/OS_USER/OS_PASS are read by entrypoint.sh, which renders
+          # them into the nginx config at startup. They are never part of the
+          # JavaScript bundle.
+          envFrom:
+            - secretRef:
+                name: opensearch-credentials
+          env:
+            # Set to "off" ONLY to diagnose TLS interception. Leaving it off in
+            # normal operation means the pod would accept any certificate for
+            # the OpenSearch endpoint.
+            - name: OS_SSL_VERIFY
+              value: "on"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 25m
+              memory: 48Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false  # entrypoint writes rendered config
+            capabilities:
+              drop: ["ALL"]

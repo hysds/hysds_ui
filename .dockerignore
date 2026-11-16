@@ -21,10 +21,12 @@ dist/
 *.log
 npm-debug.log*
 
-# Local dev config. The image bakes deploy/config/index.prod.js over
-# src/config/index.js instead, so a developer's localhost settings cannot
-# leak into a deployed bundle.
+# Local dev config. The image bakes deploy/config/*.prod.js over these instead,
+# so a developer's localhost settings cannot leak into a deployed bundle and the
+# build does not depend on untracked files.
 src/config/index.js
+src/config/tosca.js
+src/config/figaro.js
 
 # Our own notes and scratch files
 HYSDS_UI_SETUP_NOTES.md

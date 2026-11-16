@@ -15,7 +15,11 @@ import {
   SortDirection,
   PageSizeOptions,
 } from "../../components/TableOptions";
-import { FIELDS, GRQ_DISPLAY_COLUMNS } from "../../config/tosca";
+import {
+  FIELDS,
+  GRQ_DISPLAY_COLUMNS,
+  DEFAULT_SORT_FIELD,
+} from "../../config/tosca";
 
 import "./style.css";
 
@@ -34,7 +38,11 @@ class ResultsList extends React.Component {
     this.state = {
       tableView: tableView === "true" ? true : false,
       pageSize: pageSize ? parseInt(pageSize) : props.pageSize,
-      sortColumn: localStorage.getItem(SORT_FIELD_STORE) || "@timestamp",
+      // DEFAULT_SORT_FIELD rather than a hardcoded "@timestamp": sorting on a
+      // field absent from the mapping makes OpenSearch reject the query, so a
+      // catalog without "@timestamp" failed to load any results at all.
+      sortColumn:
+        localStorage.getItem(SORT_FIELD_STORE) || DEFAULT_SORT_FIELD,
       sortOrder: localStorage.getItem(SORT_DIRECTION_STORE) || "desc",
     };
   }

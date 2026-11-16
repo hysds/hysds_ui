@@ -5,3 +5,26 @@
 *docker-compose*
 node_modules
 node_modules/
+
+# SECURITY: local-proxy/proxy.env holds the OpenSearch credentials. Without
+# this, `docker build` copies it into the build context and bakes it into an
+# image layer, where anyone with the image can recover it via `docker history`
+# or by extracting the layer. In production the credential comes from a
+# Kubernetes Secret at runtime instead -- see deploy/README.md.
+local-proxy/
+*.env
+!*.env.example
+
+# Local build output and editor noise -- never wanted in the image
+dist/
+.DS_Store
+*.log
+npm-debug.log*
+
+# Local dev config. The image bakes deploy/config/index.prod.js over
+# src/config/index.js instead, so a developer's localhost settings cannot
+# leak into a deployed bundle.
+src/config/index.js
+
+# Our own notes and scratch files
+HYSDS_UI_SETUP_NOTES.md

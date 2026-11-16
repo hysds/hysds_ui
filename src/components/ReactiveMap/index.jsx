@@ -24,6 +24,7 @@ import {
   BBOX_COLOR,
   BBOX_WEIGHT,
   BBOX_OPACITY,
+  GEO_FIELD,
 } from "../../config/tosca";
 
 import "./style.css";
@@ -141,12 +142,15 @@ let MapComponent = class extends React.Component {
     this.renderDatasets(); // rendering dataset panes
   }
 
+  // GEO_FIELD rather than a hardcoded "location": the geo_shape field name
+  // varies by catalog (EAGLE-VSWIR calls it "footprint"), and a bbox filter on
+  // a field that does not exist silently matches nothing.
   generateQuery = (polygon) => ({
     query: {
       bool: {
         filter: {
           geo_shape: {
-            location: {
+            [GEO_FIELD]: {
               shape: {
                 type: "polygon",
                 coordinates: [polygon],
@@ -288,12 +292,26 @@ let MapComponent = class extends React.Component {
     if (this.layerGroup) {
       this.layerGroup.clearLayers(); // clearing all the previous datasets
       data.map((row) => {
-        if (!row.location) return;
-        const { type, coordinates } = row.location;
+        // GEO_FIELD, not a hardcoded "location" -- this is what actually draws
+        // result geometry on the map, and it was silently skipping every row.
+        const geometry = row[GEO_FIELD];
+        if (!geometry) return;
+
+        // geo_shape can also be stored as a WKT string, in which case there is
+        // no .type to read. Bail out rather than letting mapGeoJsonType call
+        // .toLowerCase() on undefined, which throws and kills the whole render.
+        if (typeof geometry !== "object" || typeof geometry.type !== "string") {
+          console.warn(
+            `${GEO_FIELD} is not GeoJSON-shaped on ${row._id}; skipping`,
+            geometry
+          );
+          return;
+        }
+
+        const { type, coordinates } = geometry;
         const geoJsonType = this.mapGeoJsonType(type);
 
         if (!geoJsonType || !coordinates) return;
-        location.type = geoJsonType;
 
         const geoJson = {
           type: geoJsonType,

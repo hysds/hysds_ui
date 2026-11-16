@@ -10,6 +10,7 @@ import UserTags from "../UserTags";
 import { Button } from "../Buttons";
 
 import { GRQ_REST_API_V1 } from "../../config";
+import { GEO_FIELD, LAST_MODIFIED_FIELD } from "../../config/tosca";
 
 import "./style.css";
 
@@ -33,7 +34,8 @@ const ToscaDataViewer = (props) => {
   const hideBrowseLink = res.metadata && res.metadata.exists_in_object_store === false ? true : false;
   
   const clickQueryRegion = () => {
-    const bbox = JSON.stringify(res.location.coordinates[0]);
+    // GEO_FIELD, not a hardcoded "location" -- see src/config/tosca.js
+    const bbox = JSON.stringify(res[GEO_FIELD].coordinates[0]);
     props.clickQueryRegion(bbox);
   };
 
@@ -45,8 +47,8 @@ const ToscaDataViewer = (props) => {
       >
         id: {res._id}
       </a>
-      {res["@timestamp"] ? (
-        <div>last modified: {res["@timestamp"]}</div>
+      {res[LAST_MODIFIED_FIELD] ? (
+        <div>last modified: {res[LAST_MODIFIED_FIELD]}</div>
       ) : null}
       <UserTags
         tags={userTags}
@@ -70,9 +72,10 @@ const ToscaDataViewer = (props) => {
       >
         Full Metadata
       </Link>
-      {res.location &&
-      res.location.coordinates &&
-      (res.location.type === "polygon" || res.location.type === "Polygon") ? (
+      {res[GEO_FIELD] &&
+      res[GEO_FIELD].coordinates &&
+      (res[GEO_FIELD].type === "polygon" ||
+        res[GEO_FIELD].type === "Polygon") ? (
         <Button size="small" label="Query Region" onClick={clickQueryRegion} />
       ) : null}
       {viewData ? (

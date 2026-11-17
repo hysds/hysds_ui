@@ -17,6 +17,10 @@ assert.deepStrictEqual(w.runSpec(run), { name: "orbit-l2", version: "1.0.0" });
 assert.deepStrictEqual(w.runSpec({ spec_id: "x:1" }), { name: "x", version: "1" });
 assert.strictEqual(w.specKey(run), "orbit-l2:1.0.0");
 assert.strictEqual(w.cwlUrl("orbit-l2:1.0.0"), "/workflows/cwl/orbit-l2%3A1.0.0");
+assert.strictEqual(w.routeParam("orbit-l2%3A1.0.0"), "orbit-l2:1.0.0");
+assert.strictEqual(w.routeParam("orbit-l2:1.0.0"), "orbit-l2:1.0.0");
+assert.strictEqual(w.routeParam("bad%E0%A4%A"), "bad%E0%A4%A");
+assert.strictEqual(w.routeParam(undefined), undefined);
 assert.strictEqual(w.runUser(run), "tester");
 
 // ---- status

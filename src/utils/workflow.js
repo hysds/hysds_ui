@@ -33,6 +33,19 @@ exports.specKey = (run) => {
 
 exports.cwlUrl = (key) => `/workflows/cwl/${encodeURIComponent(key)}`;
 
+/**
+ * A route param as the user meant it. history 4 decodes the path with decodeURI, which leaves
+ * reserved characters such as ":" (%3A) encoded, so "/workflows/cwl/a%3A1.0.0" arrives as "a%3A1.0.0".
+ */
+exports.routeParam = (value) => {
+  if (!value) return value;
+  try {
+    return decodeURIComponent(value);
+  } catch (e) {
+    return value;
+  }
+};
+
 exports.runUser = (run) => run.username || run.user || "";
 
 const toMs = (t) => {

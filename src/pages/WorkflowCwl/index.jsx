@@ -17,6 +17,7 @@ import {
   layoutGraph,
   shortTime,
   cwlUrl,
+  routeParam,
 } from "../../utils/workflow";
 
 import "../Figaro/style.css";
@@ -251,7 +252,7 @@ function CwlList() {
 }
 
 function WorkflowCwl({ match, darkMode }) {
-  const specId = match.params.spec_id;
+  const specId = routeParam(match.params.spec_id);
   const history = useHistory();
   const classTheme = darkMode ? "__theme-dark" : "__theme-light";
   return (

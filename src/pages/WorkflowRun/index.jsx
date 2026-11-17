@@ -49,6 +49,7 @@ import {
   jobOutputs,
   cancelledByText,
   errorClassLabel,
+  routeParam,
 } from "../../utils/workflow";
 
 import "../Figaro/style.css";
@@ -289,7 +290,7 @@ export function StepPanel({ run, step, docs, tick, onSelect }) {
 }
 
 function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
-  const runId = match.params.run_id;
+  const runId = routeParam(match.params.run_id);
   const history = useHistory();
   const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 

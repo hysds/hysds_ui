@@ -21,6 +21,11 @@ import { LastUpdatedAtBanner } from "../../components/miscellaneous";
 
 import { parseFacetQuery } from "../../utils";
 import { appendClosedIndexParams } from "../../utils/esHelpers";
+import {
+  figaroFilters,
+  probeFieldCounts,
+  FIGARO_WORKFLOW_PROBE_FIELD,
+} from "../../utils/workflow";
 import { LOCAL_DEV, MOZART_ES_URL, MOZART_ES_INDICES } from "../../config";
 import { FILTERS, QUERY_LOGIC } from "../../config/figaro";
 
@@ -37,13 +42,37 @@ class Figaro extends React.Component {
 
     this.state = {
       query: null,
+      hasWorkflowJobs: false, // until the probe says so; a deep link shows the facets anyway
     };
+    // read once: clearing a deep-linked workflow filter must not unmount its facet
+    this.initialSearch = window.location.search;
   }
 
   componentDidMount() {
     this.props.resetDataFreshness();
     this.props.getJobCounts();
+    this.probeWorkflowJobs();
   }
+
+  componentWillUnmount() {
+    this.unmounted = true;
+  }
+
+  // a mission without workflows (or with only pre-workflow job_status indices) has no doc
+  // with a workflow.run_id: its workflow facets would only be empty boxes, so hide them
+  probeWorkflowJobs = () => {
+    const url = appendClosedIndexParams(
+      `${MOZART_ES_URL}/${MOZART_ES_INDICES}/_search`
+    );
+    probeFieldCounts(url, [FIGARO_WORKFLOW_PROBE_FIELD])
+      .then((counts) => {
+        if (this.unmounted) return;
+        this.setState({
+          hasWorkflowJobs: counts[FIGARO_WORKFLOW_PROBE_FIELD] > 0,
+        });
+      })
+      .catch((err) => console.error("workflow jobs probe failed:", err));
+  };
 
   handleTransformRequest = (e) => {
     const query = parseFacetQuery(e.body, "figaro-results");
@@ -56,7 +85,12 @@ class Figaro extends React.Component {
 
   render() {
     const { darkMode, dataCount, dataUpdatedAt } = this.props;
-    const { query } = this.state;
+    const { query, hasWorkflowJobs } = this.state;
+    const filters = figaroFilters(
+      FILTERS,
+      hasWorkflowJobs,
+      this.initialSearch
+    );
     const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
     return (
@@ -80,7 +114,7 @@ class Figaro extends React.Component {
           <div className="figaro-page-wrapper">
             <div className={`${classTheme} figaro-sidenav`}>
               <div className="sidenav-title">Filters</div>
-              <SidebarFilters filters={FILTERS} queryLogic={QUERY_LOGIC} />
+              <SidebarFilters filters={filters} queryLogic={QUERY_LOGIC} />
             </div>
 
             <div className="figaro-body" ref={this.pageRef}>

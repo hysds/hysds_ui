@@ -17,7 +17,7 @@ import { LastUpdatedAtBanner } from "../../components/miscellaneous";
 
 import { resetDataFreshness } from "../../redux/actions";
 import { appendClosedIndexParams } from "../../utils/esHelpers";
-import { resolveFilters, candidateFields } from "../../utils/workflow";
+import { resolveFilters, candidateFields, probeFieldCounts } from "../../utils/workflow";
 import { LOCAL_DEV, MOZART_ES_URL } from "../../config";
 import {
   WORKFLOW_ES_INDEX,
@@ -36,27 +36,7 @@ const PROBE_FIELDS = candidateFields(FILTER_CANDIDATES, SORT_CANDIDATES);
 // (failed_step, error_class, ended_at, ...) only exist once a run has failed or ended, and
 // a facet over a field nobody has is just an empty box. Facets switch on by themselves.
 const probeFields = (url) =>
-  fetch(`${url}/${WORKFLOW_ES_INDEX}/_search`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      size: 0,
-      aggs: PROBE_FIELDS.reduce(
-        (a, f, i) => ({ ...a, [`f${i}`]: { filter: { exists: { field: f } } } }),
-        {}
-      ),
-    }),
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json();
-    })
-    .then((data) =>
-      PROBE_FIELDS.reduce(
-        (a, f, i) => ({ ...a, [f]: data.aggregations[`f${i}`].doc_count }),
-        {}
-      )
-    );
+  probeFieldCounts(`${url}/${WORKFLOW_ES_INDEX}/_search`, PROBE_FIELDS);
 
 // used if the probe fails, so the page still works on the fields that always exist
 const FALLBACK_COUNTS = {

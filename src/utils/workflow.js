@@ -427,6 +427,40 @@ exports.candidateFields = (candidates, extra = []) => [
   ...new Set([...candidates.reduce((a, f) => a.concat(f.candidates), []), ...extra]),
 ];
 
+/** Search body counting, in one request, the docs that have each field (exists filter aggs) */
+exports.existsProbeBody = (fields) => ({
+  size: 0,
+  aggs: fields.reduce((a, f, i) => ({ ...a, [`f${i}`]: { filter: { exists: { field: f } } } }), {}),
+});
+
+/** POST the exists probe to a _search URL; resolves to {field: docCount}, rejects on HTTP errors */
+exports.probeFieldCounts = (searchUrl, fields) =>
+  fetch(searchUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(exports.existsProbeBody(fields)),
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    })
+    .then((data) => fields.reduce((a, f, i) => ({ ...a, [f]: data.aggregations[`f${i}`].doc_count }), {}));
+
+// The Jobs (Figaro) page's workflow facets: any facet on a workflow.* field. They are hidden on
+// a mission whose job_status has no workflow jobs (pre-workflow indices), where they could
+// only ever be empty boxes, unless the URL deep-links to one of them (see jobsUrl).
+exports.FIGARO_WORKFLOW_PROBE_FIELD = "workflow.run_id";
+
+const isWorkflowFacet = (f) => typeof f.dataField === "string" && f.dataField.startsWith("workflow.");
+
+/** The Figaro facets to show: the workflow ones only if there are workflow jobs or a deep link */
+exports.figaroFilters = (filters, hasWorkflowJobs, search = "") => {
+  const params = new URLSearchParams(search);
+  const linked = filters.some((f) => isWorkflowFacet(f) && params.has(f.componentId));
+  if (hasWorkflowJobs || linked) return filters;
+  return filters.filter((f) => !isWorkflowFacet(f));
+};
+
 /** s3://bucket/key -> browsable https URL; http(s) passes through; anything else null */
 exports.toLink = (value) => {
   if (typeof value !== "string") return null;

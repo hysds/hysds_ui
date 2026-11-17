@@ -245,4 +245,57 @@ const cands = [
 assert.deepStrictEqual(w.resolveFilters(cands, { x: 0, y: 4, z: 0 }), [{ componentId: "a", title: "A", dataField: "y" }]);
 assert.deepStrictEqual(w.candidateFields(cands, ["y", "q"]), ["x", "y", "z", "q"]);
 
-console.log("workflow-utils tests passed");
+// ---- exists probe (Workflows facets, Figaro workflow facets)
+assert.deepStrictEqual(w.existsProbeBody(["a", "b.c"]), {
+  size: 0,
+  aggs: { f0: { filter: { exists: { field: "a" } } }, f1: { filter: { exists: { field: "b.c" } } } },
+});
+
+// ---- Figaro: workflow facets hidden without workflow jobs, unless deep-linked
+const figFilters = [
+  { componentId: "status", dataField: "status" },
+  { componentId: "workflow_run", dataField: "workflow.run_id" },
+  { componentId: "workflow_step", dataField: "workflow.step_id" },
+  { componentId: "workflow_spec", dataField: "workflow.spec_id" },
+];
+const ids = (fs) => fs.map((f) => f.componentId);
+assert.deepStrictEqual(ids(w.figaroFilters(figFilters, false, "")), ["status"]);
+assert.deepStrictEqual(ids(w.figaroFilters(figFilters, false)), ["status"]);
+assert.deepStrictEqual(ids(w.figaroFilters(figFilters, false, "?status=%22job-failed%22")), ["status"]);
+assert.deepStrictEqual(ids(w.figaroFilters(figFilters, true, "")), ids(figFilters));
+assert.deepStrictEqual(ids(w.figaroFilters(figFilters, false, w.jobsUrl("run-1").split("/figaro")[1])), ids(figFilters));
+assert.deepStrictEqual(ids(w.figaroFilters(figFilters, false, "?workflow_step=%22s1%22")), ids(figFilters));
+// a deployment's own figaro.js without workflow facets is left as it is
+assert.deepStrictEqual(w.figaroFilters(figFilters.slice(0, 1), false, ""), figFilters.slice(0, 1));
+
+// ---- probeFieldCounts: one exists-agg request, counts per field; HTTP errors reject
+const probeTests = (() => {
+  const sent = [];
+  global.fetch = (url, opts) => {
+    sent.push({ url, body: JSON.parse(opts.body) });
+    return Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve({ aggregations: { f0: { doc_count: 0 }, f1: { doc_count: 7 } } }),
+    });
+  };
+  return w
+    .probeFieldCounts("/es/job_status/_search", ["workflow.run_id", "status"])
+    .then((counts) => {
+      assert.deepStrictEqual(counts, { "workflow.run_id": 0, status: 7 });
+      assert.strictEqual(sent[0].url, "/es/job_status/_search");
+      assert.deepStrictEqual(sent[0].body, w.existsProbeBody(["workflow.run_id", "status"]));
+      global.fetch = () => Promise.resolve({ ok: false, status: 404 });
+      return w.probeFieldCounts("/es/x/_search", ["a"]).then(
+        () => assert.fail("expected a rejection"),
+        (err) => assert.strictEqual(err.message, "HTTP 404")
+      );
+    })
+    .finally(() => delete global.fetch);
+})();
+
+probeTests
+  .then(() => console.log("workflow-utils tests passed"))
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });

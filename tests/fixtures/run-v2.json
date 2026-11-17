@@ -12,7 +12,7 @@
     "l1a": {"kind": "job", "state": "completed", "job_type": "job-l1a:v1", "job_id": null,
             "started_at": "2026-11-17T04:00:31Z", "ended_at": "2026-11-17T04:05:00Z", "attempts": [],
             "scatter": {"input": "f", "threshold": 0.9, "expected": 10, "n_completed": 9, "n_failed": 1,
-                        "children": ["c0", "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9"], "phase": "children", "connector": null}},
+                        "children": ["c0", "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9"], "phase": "children"}},
     "qa": {"kind": "job", "state": "completed", "job_type": "job-qa:v1", "job_id": "j-qa", "started_at": "2026-11-17T04:05:01Z",
            "ended_at": "2026-11-17T04:06:00Z", "attempts": []},
     "browse": {"kind": "job", "state": "running", "job_type": "job-browse:v1", "job_id": "j-browse", "started_at": "2026-11-17T04:05:01Z",

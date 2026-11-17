@@ -57,10 +57,6 @@
   font-size: 11px;
   opacity: 0.8;
 }
-.wf-step-connector {
-  border-style: dashed;
-  font-size: 11px;
-}
 .wf-step-system {
   --wf-color: #8a8a8a;
 }

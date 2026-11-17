@@ -183,7 +183,7 @@ function ScatterChildren({ runId, stepId, progress, stepState, refreshKey }) {
       ) : (
         <div className="wf-sc-threshold">
           threshold {pct(progress.threshold)}
-          {progress.phase === "connector" ? ": the scatter connector is listing the items" : ": not fanned out yet"}
+          {": not fanned out yet"}
         </div>
       )}
 

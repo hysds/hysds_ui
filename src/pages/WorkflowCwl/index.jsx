@@ -74,7 +74,7 @@ function StepsTable({ spec }) {
                 {sp.scatter
                   ? `${sp.scatter.input}${
                       sp.scatter.threshold !== undefined ? `, threshold ${sp.scatter.threshold}` : ""
-                    }${sp.scatter.connector ? `, ${sp.scatter.connector.job_type}` : ""}`
+                    }`
                   : "-"}
               </td>
               <td>{sp.max_retries ? `${sp.max_retries}` : "-"}</td>

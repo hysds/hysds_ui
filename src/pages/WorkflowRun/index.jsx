@@ -10,12 +10,8 @@ import HeaderBar, {
 } from "../../components/HeaderBar";
 import { Button, ButtonLink } from "../../components/Buttons";
 import ConfirmationModal from "../../components/ConfirmationModal";
-import { FigaroDataViewer } from "../../components/FigaroDataViewer";
-import WorkflowStepStrip, {
-  stepsFor,
-} from "../../components/WorkflowStepStrip";
 import WorkflowGraph from "../../components/WorkflowGraph";
-import ScatterGrid from "../../components/ScatterGrid";
+import ScatterChildren from "../../components/ScatterChildren";
 import {
   StatusBadge,
   Section,
@@ -27,143 +23,266 @@ import {
   ensureSpec,
   esSearch,
   workflowPost,
+  workflowGet,
 } from "../../redux/actions/workflows";
-import { FIELDS } from "../../config/figaro";
-import {
-  WORKFLOW_REST_API,
-  JOB_STATUS_INDEX,
-  AUTO_REFRESH_MS,
-} from "../../config/workflows";
+import { JOB_STATUS_INDEX, AUTO_REFRESH_MS } from "../../config/workflows";
 import {
   runSpec,
+  specKey,
+  cwlUrl,
   runUser,
+  runStart,
   runDurationSeconds,
+  spanSeconds,
   formatDuration,
-  isTerminal,
+  isLive,
   jobsUrl,
+  jobUrl,
   defaultStep,
-  summarizeStatuses,
+  mergeSteps,
   shortTime,
-  hasRouting,
-  armsOf,
-  armCondition,
+  haltedBy,
+  stepReasons,
+  inputRows,
+  scatterProgress,
+  resolvedInputs,
+  jobOutputs,
+  cancelledByText,
   errorClassLabel,
 } from "../../utils/workflow";
 
 import "../Figaro/style.css";
-import "../../components/FigaroDataViewer/style.css";
 import "./style.css";
 
-const MAX_GRID = 10000;
+const MAX_ATTEMPT_DOCS = 50;
 
-// job counts per step, from the job_status index: {step: {total, completed, failed, byStatus}}
-const loadStepCounts = (runId) =>
+// job_status docs by id: the job doc of each attempt holds the step's resolved inputs
+// (job.params) and outputs (job.job_info.workflow_outputs); the run doc keeps neither
+const loadJobDocs = (ids) =>
   esSearch(JOB_STATUS_INDEX, {
-    size: 0,
-    query: { term: { "workflow.run_id": runId } },
-    aggs: {
-      steps: {
-        terms: { field: "workflow.step_id", size: 500 },
-        aggs: { st: { terms: { field: "status", size: 20 } } },
-      },
-    },
+    size: Math.min(ids.length, MAX_ATTEMPT_DOCS),
+    query: { ids: { values: ids.slice(0, MAX_ATTEMPT_DOCS) } },
+    _source: ["status", "short_error", "job.params", "job.job_info.workflow_outputs", "@timestamp"],
   }).then((data) => {
-    const out = {};
-    data.aggregations.steps.buckets.forEach((b) => {
-      const byStatus = {};
-      b.st.buckets.forEach((s) => (byStatus[s.key] = s.doc_count));
-      out[b.key] = { ...summarizeStatuses(byStatus), byStatus };
-    });
-    return out;
+    const byId = {};
+    data.hits.hits.forEach((h) => (byId[h._id] = h._source));
+    return byId;
   });
 
-// one doc per child_index of a scatter step (retries overwrite the same doc)
-const loadGrid = (runId, stepId, size) =>
-  esSearch(JOB_STATUS_INDEX, {
-    size: Math.min(Math.max(size, 1), MAX_GRID),
-    query: {
-      bool: {
-        filter: [
-          { term: { "workflow.run_id": runId } },
-          { term: { "workflow.step_id": stepId } },
-        ],
-      },
-    },
-    _source: ["workflow.child_index", "status", "job.retry_count"],
-  }).then((data) => {
-    const cells = {};
-    data.hits.hits.forEach((h) => {
-      const w = h._source.workflow || {};
-      if (w.child_index === null || w.child_index === undefined) return;
-      cells[w.child_index] = {
-        status: h._source.status,
-        retries: ((h._source.job || {}).retry_count || 0) | 0,
-        id: h._id,
-      };
-    });
-    return cells;
-  });
-
-const loadStepJobs = (runId, stepId, childIndex) => {
-  const filter = [
-    { term: { "workflow.run_id": runId } },
-    { term: { "workflow.step_id": stepId } },
-  ];
-  if (childIndex !== null && childIndex !== undefined)
-    filter.push({ term: { "workflow.child_index": childIndex } });
-  return esSearch(JOB_STATUS_INDEX, {
-    size: 20,
-    query: { bool: { filter } },
-    sort: [{ "@timestamp": "desc" }],
-    _source: FIELDS.filter((f) => f !== "_index" && f !== "_id"),
-  }).then((data) =>
-    data.hits.hits.map((h) => ({ _index: h._index, _id: h._id, ...h._source }))
-  );
+const attemptIds = (rs) => {
+  const ids = ((rs && rs.attempts) || []).map((a) => a.job_id).filter(Boolean);
+  if (ids.length === 0 && rs && rs.job_id) ids.push(rs.job_id);
+  return [...new Set(ids)];
 };
 
-function Attempts({ attempts }) {
+function JobLink({ id }) {
+  if (!id) return <span className="wf-null">-</span>;
+  return (
+    <Link className="wf-link wfr-jobid" to={jobUrl(id)} title="open this job in Figaro">
+      {id}
+    </Link>
+  );
+}
+
+function Attempts({ attempts, docs }) {
   if (!attempts || attempts.length === 0) return null;
   return (
     <div className="wfr-attempts">
       <div className="wfr-subtitle">Attempts ({attempts.length})</div>
-      {attempts.map((a, i) => (
-        <div key={i} className="wfr-attempt">
-          #{i + 1} {a.status || ""} {a.error_class ? `[${a.error_class}] ` : ""}
-          {a.error || ""} {a.job_id ? ` (${a.job_id})` : ""}
-        </div>
-      ))}
+      <table className="wfr-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>status</th>
+            <th>job</th>
+            <th>started</th>
+            <th>ended</th>
+            <th>took</th>
+            <th>error</th>
+          </tr>
+        </thead>
+        <tbody>
+          {attempts.map((a, i) => {
+            const full = (docs && docs[a.job_id] && docs[a.job_id].short_error) || null;
+            return (
+              <tr key={i}>
+                <td>{a.attempt || i + 1}</td>
+                <td>
+                  <StatusBadge status={a.status} />
+                </td>
+                <td>
+                  <JobLink id={a.job_id} />
+                </td>
+                <td>{shortTime(a.started_at)}</td>
+                <td>{shortTime(a.ended_at)}</td>
+                <td>{formatDuration(spanSeconds(a.started_at, a.ended_at))}</td>
+                <td className="wfr-attempt-error">{a.error || full || ""}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
 
-// switch / gate: every arm with its condition; the taken one is marked, from outputs.arm
-function RoutingDetail({ node, runNode }) {
-  const arms = armsOf(node);
-  if (arms.length === 0) return null;
-  const taken = (runNode.outputs || {}).arm;
+// what the compiled spec says goes into each input, next to what the job really got
+function InputWiring({ specStep }) {
+  const rows = inputRows(specStep);
+  if (rows.length === 0) return null;
   return (
-    <div className="wfr-routing">
-      <div className="wfr-subtitle">
-        {node.kind === "gate" ? "Gate" : "Switch"}
-        {node.on ? ` on ${node.on}` : ""}
+    <table className="wfr-table">
+      <thead>
+        <tr>
+          <th>input</th>
+          <th>from</th>
+          <th>link_merge</th>
+          <th>pick</th>
+          <th>default</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr key={r.name}>
+            <td>
+              <b>{r.name}</b>
+            </td>
+            <td className="wfr-code">{r.sources.length ? r.sources.join(", ") : "-"}</td>
+            <td>{r.link_merge || "-"}</td>
+            <td>{r.pick || "-"}</td>
+            <td className="wfr-code">{r.hasDefault ? JSON.stringify(r.default) : "-"}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function StepPanel({ run, step, docs, tick, onSelect }) {
+  const rs = step.run || {};
+  const sp = step.spec || {};
+  const reasons = stepReasons(rs);
+  const progress = scatterProgress(rs);
+  const attempts = rs.attempts || [];
+  const last = attempts.length ? attempts[attempts.length - 1] : null;
+  const lastDoc = docs && last ? docs[last.job_id] : null;
+  const jobDoc = lastDoc || (docs && rs.job_id ? docs[rs.job_id] : null);
+  const inputs = jobDoc ? resolvedInputs(jobDoc) : null;
+  const outputs = jobDoc ? jobOutputs(jobDoc) : null;
+  const halt = rs.halt || sp.halt;
+  const dur = spanSeconds(rs.started_at, rs.ended_at);
+
+  return (
+    <div className="wfr-panel figaro-data-component">
+      <div className="wfr-panel-head">
+        <b>Step {step.id}</b>
+        <StatusBadge status={step.state} />
+        <span className="wfr-kind">{step.kind === "halt" ? "halt step" : step.scatter ? "job step, scattered" : "job step"}</span>
+        {step.jobType ? <span className="wfr-kind wfr-code">{step.jobType}</span> : null}
+        {sp.queue ? <span className="wfr-kind">queue {sp.queue}</span> : null}
+        {sp.max_retries ? <span className="wfr-kind">max_retries {sp.max_retries}</span> : null}
+        <span className="wfr-buffer" />
+        <Link className="wf-link" to={jobsUrl(run.run_id, step.id)}>
+          jobs in Figaro
+        </Link>
       </div>
-      {arms.map((a, i) => (
-        <div
-          key={`${a.label}-${i}`}
-          className={`wfr-arm ${taken === a.label ? "wfr-arm-taken" : ""} ${
-            taken !== undefined && taken !== null && taken !== a.label ? "wfr-arm-untaken" : ""
-          }`}
-        >
-          <span className="wfr-arm-label">{a.label}</span>
-          <code className="wfr-arm-when">{armCondition(a)}</code>
-          <span>→ {a.target}</span>
-          {taken === a.label ? <b className="wfr-arm-mark">taken</b> : null}
+
+      {step.when ? (
+        <div className="wfr-step-line">
+          <span className="wf-when-tag">when</span> <code>{step.when}</code>
+          {rs.skipped_by ? (
+            <b> was {JSON.stringify(rs.skipped_by.value)}: skipped</b>
+          ) : step.state === "pending" ? (
+            " (evaluated once its dependencies have settled)"
+          ) : (
+            " was true"
+          )}
+        </div>
+      ) : null}
+      {step.deps.length ? (
+        <div className="wfr-step-line">
+          depends on{" "}
+          {step.deps.map((d, i) => (
+            <span key={d}>
+              {i ? ", " : ""}
+              <a className="wf-link" onClick={() => onSelect(d)}>
+                {d}
+              </a>
+            </span>
+          ))}
+        </div>
+      ) : null}
+      <div className="wfr-step-line wfr-times">
+        {rs.started_at ? `started ${shortTime(rs.started_at)}` : "not started"}
+        {rs.ended_at ? ` · ended ${shortTime(rs.ended_at)}` : ""}
+        {dur !== null && rs.started_at ? ` · ${formatDuration(dur)}` : ""}
+      </div>
+
+      {reasons.map((r, i) => (
+        <div key={i} className={`wfr-reason wfr-reason-${r.kind}`}>
+          {r.text}
         </div>
       ))}
-      {(runNode.outputs || {}).target ? (
-        <div className="wfr-step-times">
-          chose arm {taken} → {runNode.outputs.target}
+      {halt && !rs.halt ? (
+        <div className="wfr-reason wfr-reason-halt">
+          halt (run {halt.status}): {halt.reason || "no reason given"}
         </div>
+      ) : null}
+
+      {progress ? (
+        <>
+          <div className="wfr-subtitle">
+            Scatter over <code>{progress.input}</code>
+          </div>
+          <ScatterChildren
+            runId={run.run_id}
+            stepId={step.id}
+            progress={progress}
+            stepState={step.state}
+            refreshKey={tick}
+          />
+        </>
+      ) : null}
+
+      <Attempts attempts={attempts} docs={docs} />
+
+      {step.kind === "job" ? (
+        <>
+          <div className="wfr-subtitle">Inputs</div>
+          <InputWiring specStep={sp} />
+          {!progress ? (
+            <div className="wfr-resolved">
+              <div className="wfr-sublabel">resolved (as submitted)</div>
+              {inputs ? (
+                Object.keys(inputs).length ? (
+                  <ValueView value={inputs} />
+                ) : (
+                  <span className="wf-null">none</span>
+                )
+              ) : (
+                <span className="wf-null">
+                  {last || rs.job_id ? (docs ? "job document not found" : "loading…") : "not submitted yet"}
+                </span>
+              )}
+            </div>
+          ) : (
+            <div className="wfr-sublabel">
+              resolved inputs are per child: open a child job, or see the children table above
+            </div>
+          )}
+          {!progress ? (
+            <>
+              <div className="wfr-subtitle">Outputs</div>
+              {outputs && Object.keys(outputs).length ? (
+                <ValueView value={outputs} />
+              ) : (
+                <span className="wf-null">
+                  {step.state === "completed" ? "(none)" : "none yet: only a completed job writes outputs"}
+                </span>
+              )}
+            </>
+          ) : null}
+        </>
       ) : null}
     </div>
   );
@@ -175,41 +294,32 @@ function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
   const classTheme = darkMode ? "__theme-dark" : "__theme-light";
 
   const [run, setRun] = useState(null);
+  const [source, setSource] = useState(null);
   const [error, setError] = useState(null);
-  const [stepCounts, setStepCounts] = useState({});
-  const [cells, setCells] = useState({});
-  const [selectedStep, setSelectedStep] = useState(null);
-  const [selectedChild, setSelectedChild] = useState(null);
-  const [gridFilter, setGridFilter] = useState("all");
-  const [jobs, setJobs] = useState(null);
-  const [tab, setTab] = useState("details");
+  const [selected, setSelected] = useState(null);
+  const [docs, setDocs] = useState(null);
+  const [tick, setTick] = useState(0);
+  const [tab, setTab] = useState("steps");
   const [modal, setModal] = useState(null); // "rerun" | "cancel"
   const [acting, setActing] = useState(false);
   const [actionMsg, setActionMsg] = useState(null);
 
-  const specEntry = run ? specs[run.spec_id] : null;
-  const spec = specEntry && specEntry.status === "loaded" ? specEntry.spec : null;
-  const steps = run ? stepsFor(run, spec) : [];
-  const stepIds = steps.map((s) => s.id);
-  const sel = steps.find((s) => s.id === selectedStep);
-  const childStep = sel && sel.isChild;
-
-  // refs so the polling closure always sees the latest selection
-  const selRef = useRef({});
-  selRef.current = { selectedStep, selectedChild, childStep, run };
+  const key = run ? specKey(run) : null;
+  const specEntry = key ? specs[key] : null;
+  const registered = specEntry && specEntry.status === "loaded" ? specEntry.spec : null;
+  const spec = registered ? registered.spec : null;
+  const merged = run ? mergeSteps(run, spec) : [];
+  const step = merged.find((s) => s.id === selected) || null;
 
   const loadRun = useCallback(
     () =>
-      fetch(`${WORKFLOW_REST_API}/runs/${encodeURIComponent(runId)}`)
-        .then((res) => {
-          if (res.status === 404) throw new Error(`Run ${runId} was not found`);
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then((data) => {
-          setRun(data.result);
+      workflowGet(`/runs/${encodeURIComponent(runId)}`)
+        .then((r) => {
+          if (r.status === 404) throw new Error(`Run ${runId} was not found`);
+          if (!r.ok) throw new Error(r.body.message || `HTTP ${r.status}`);
+          setRun(r.body.result);
+          setSource(r.body.source || null);
           setError(null);
-          return data.result;
         })
         .catch((err) => {
           console.error(err);
@@ -218,87 +328,69 @@ function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
     [runId]
   );
 
-  const loadLive = useCallback(() => {
-    loadStepCounts(runId)
-      .then(setStepCounts)
-      .catch((err) => console.error("step counts failed:", err));
-    const { selectedStep: step, childStep: isChild, run: r } = selRef.current;
-    if (step && isChild) {
-      const node = ((r || {}).nodes || {})[step] || {};
-      loadGrid(runId, step, node.expected || 1000)
-        .then(setCells)
-        .catch((err) => console.error("grid failed:", err));
-    }
-  }, [runId]);
-
-  const refresh = useCallback(() => {
-    loadRun();
-    loadLive();
-    const { selectedStep: step, selectedChild: child, childStep: isChild } = selRef.current;
-    if (step && (!isChild || child !== null)) {
-      loadStepJobs(runId, step, isChild ? child : null)
-        .then(setJobs)
-        .catch((err) => console.error("step jobs failed:", err));
-    }
-  }, [runId, loadRun, loadLive]);
-
-  // initial load
   useEffect(() => {
     setRun(null);
-    setSelectedStep(null);
-    setSelectedChild(null);
-    setCells({});
-    setJobs(null);
+    setSelected(null);
+    setDocs(null);
     loadRun();
   }, [runId]);
 
   useEffect(() => {
-    if (run) ensureSpec(run.spec_id);
-  }, [run && run.spec_id]);
+    if (key) ensureSpec(key);
+  }, [key]);
 
-  // choose the first step to show once both the run and its spec are known
+  // choose the first step to show once the run and the spec fetch have settled
   useEffect(() => {
-    if (run && selectedStep === null && (spec || (specEntry && specEntry.status === "failed")))
-      setSelectedStep(defaultStep(run, steps));
-  }, [run, spec, specEntry]);
+    if (run && selected === null && specEntry && specEntry.status !== "loading")
+      setSelected(defaultStep(run, merged));
+  }, [run, specEntry]);
 
-  // step counts + grid + step jobs when the selection changes
+  // the selected step's job docs (resolved inputs / outputs); re-read on every poll
+  const stepRun = step && step.run;
+  const ids = stepRun ? attemptIds(stepRun) : [];
+  const idsKey = ids.join(",");
   useEffect(() => {
-    if (!run) return;
-    setJobs(null);
-    setSelectedChild(null);
-    setCells({});
-    loadLive();
-  }, [runId, selectedStep, !!run]);
-
-  // for a scatter step, pick the first failed child (else child 0) once the grid is in
+    setDocs(null);
+  }, [selected]);
   useEffect(() => {
-    if (!childStep || selectedChild !== null) return;
-    const idx = Object.keys(cells).map(Number).sort((a, b) => a - b);
-    if (idx.length === 0) return;
-    const failed = idx.find((i) => cells[i].status === "job-failed");
-    setSelectedChild(failed !== undefined ? failed : idx[0]);
-  }, [cells, childStep, selectedChild]);
+    if (!idsKey) {
+      setDocs({});
+      return undefined;
+    }
+    let cancelled = false;
+    loadJobDocs(idsKey.split(","))
+      .then((d) => !cancelled && setDocs(d))
+      .catch((err) => {
+        console.error("job docs failed:", err);
+        if (!cancelled) setDocs({});
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selected, idsKey, stepRun && stepRun.state, tick]);
 
-  useEffect(() => {
-    if (!selectedStep || !run) return;
-    if (childStep && selectedChild === null) return;
-    loadStepJobs(runId, selectedStep, childStep ? selectedChild : null)
-      .then(setJobs)
-      .catch((err) => console.error("step jobs failed:", err));
-  }, [selectedStep, selectedChild, childStep, !!run]);
-
-  // auto-refresh only while running
+  // auto-refresh while the run can still change (running, or halting for a drain)
   const status = run && run.status;
+  const refreshRef = useRef();
+  refreshRef.current = () => {
+    loadRun();
+    setTick((t) => t + 1);
+  };
   useEffect(() => {
-    if (status !== "running") return undefined;
-    const timer = setInterval(refresh, AUTO_REFRESH_MS);
+    if (!isLive(status)) return undefined;
+    const timer = setInterval(() => refreshRef.current(), AUTO_REFRESH_MS);
     return () => clearInterval(timer);
-  }, [status, refresh]);
+  }, [status]);
+
+  const fail = (what) => (err) => {
+    setActing(false);
+    setModal(null);
+    setActionMsg(`${what} failed: ${err.message}`);
+  };
 
   const doRerun = () => {
     setActing(true);
-    const body = { spec_id: run.spec_id, inputs: run.inputs || {} };
+    const body = { spec_id: specKey(run), inputs: run.inputs || {} };
     if (run.tags && run.tags.length) body.tags = run.tags;
     workflowPost("/runs", body)
       .then((r) => {
@@ -308,13 +400,11 @@ function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
         if (r.ok && newId) history.push(`/workflows/run/${newId}`);
         else setActionMsg(`Rerun failed: ${r.body.message || `HTTP ${r.status}`}`);
       })
-      .catch((err) => {
-        setActing(false);
-        setModal(null);
-        setActionMsg(`Rerun failed: ${err.message}`);
-      });
+      .catch(fail("Rerun"));
   };
 
+  // POST /workflow/runs/<id>/cancel: 202 = requested (the engine cancels and revokes jobs),
+  // 200 = already cancelled, 404 / 409 = unknown run / already completed or failed
   const doCancel = () => {
     setActing(true);
     workflowPost(`/runs/${encodeURIComponent(runId)}/cancel`, {})
@@ -323,18 +413,15 @@ function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
         setModal(null);
         if (r.ok) {
           setActionMsg(
-            `Run cancelled${
-              r.body.revoked !== undefined ? ` (${r.body.revoked} jobs revoked)` : ""
-            }.`
+            r.status === 202
+              ? "Cancel requested. The engine cancels the run and revokes its jobs; this page updates as it does."
+              : r.body.message || "Run is already cancelled."
           );
-          refresh();
+          loadRun();
+          setTick((t) => t + 1);
         } else setActionMsg(`Cancel failed: ${r.body.message || `HTTP ${r.status}`}`);
       })
-      .catch((err) => {
-        setActing(false);
-        setModal(null);
-        setActionMsg(`Cancel failed: ${err.message}`);
-      });
+      .catch(fail("Cancel"));
   };
 
   const goBack = () => (history.length > 1 ? history.goBack() : history.push("/workflows"));
@@ -346,29 +433,11 @@ function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
     content = <div className="wfr-loading">Loading...</div>;
   } else {
     const { name, version } = runSpec(run);
-    const nodes = run.nodes || {};
-    const node = selectedStep ? nodes[selectedStep] || {} : null;
-    const counts = selectedStep ? stepCounts[selectedStep] : null;
-    const stepOutputs = Object.keys(nodes).filter(
-      (k) => nodes[k].outputs && Object.keys(nodes[k].outputs).length > 0
-    );
-    const extra = Object.keys(stepCounts).filter((id) => !stepIds.includes(id));
-    // live counts per step for the chain bar: the job_status aggregation beats the run doc
-    const live = {};
-    steps.forEach((s) => {
-      const c = stepCounts[s.id];
-      if (s.isChild && c)
-        live[s.id] = {
-          total: Math.max((nodes[s.id] || {}).expected || 0, c.total),
-          completed: c.completed,
-          failed: c.failed,
-        };
-    });
-    const gridTotal = childStep
-      ? Math.max(node.expected || 0, (counts && counts.total) || 0)
-      : 0;
-    const specLabel = spec && spec.label;
-    const canCancel = run.status === "running";
+    const halted = haltedBy(run);
+    const canCancel = isLive(run.status);
+    const label = registered && registered.label;
+    const noSpec = specEntry && specEntry.status === "failed";
+    const frozen = run.job_definitions ? Object.keys(run.job_definitions) : [];
 
     content = (
       <div className="wfr-body">
@@ -382,34 +451,36 @@ function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
           <div className="wfr-title">
             <span className="wfr-run-id">{run.run_id}</span>
             <span className="wfr-spec">
-              {name}
-              {version ? ` v${version}` : ""}
+              <Link className="wf-link" to={cwlUrl(key)} title="CWL source and compiled spec">
+                {name}
+                {version ? ` v${version}` : ""}
+              </Link>
             </span>
-            {specLabel ? <span className="wfr-label">{specLabel}</span> : null}
+            {label && label !== name ? <span className="wfr-label">{label}</span> : null}
           </div>
           <div className="wfr-header-row">
             <StatusBadge status={run.status} />
-            <span>submitted {shortTime(run.submitted_at)}</span>
+            <span title="what happens to the rest of the run when a step fails">
+              on_error <b>{run.on_error || "kill"}</b>
+            </span>
+            <span>created {shortTime(run.created_at)}</span>
+            {runStart(run) !== run.created_at ? <span>started {shortTime(runStart(run))}</span> : null}
             {run.ended_at ? <span>ended {shortTime(run.ended_at)}</span> : null}
             <span>duration {formatDuration(runDurationSeconds(run))}</span>
             {runUser(run) ? <span>user {runUser(run)}</span> : null}
             {run.tags && run.tags.length ? <span>tags {run.tags.join(", ")}</span> : null}
-            {run.current_nodes && run.current_nodes.length ? (
-              <span>current {run.current_nodes.join(", ")}</span>
-            ) : null}
             <span className="wfr-buffer" />
-            {status === "running" ? (
-              <span className="wfr-auto">auto-refresh {AUTO_REFRESH_MS / 1000}s</span>
+            {isLive(status) ? <span className="wfr-auto">auto-refresh {AUTO_REFRESH_MS / 1000}s</span> : null}
+            {source ? (
+              <span className="wfr-auto" title="live runs are read from Redis, finished ones from OpenSearch">
+                from {source}
+              </span>
             ) : null}
-            <ButtonLink
-              label="Jobs in Figaro"
-              size="small"
-              color="success"
-              href={jobsUrl(run.run_id)}
-            />
+            <ButtonLink label="Jobs in Figaro" size="small" color="success" href={jobsUrl(run.run_id)} />
+            <ButtonLink label="CWL" size="small" href={cwlUrl(key)} />
             <Button label="Rerun" size="small" onClick={() => setModal("rerun")} />
             <Button
-              label="Cancel"
+              label="Cancel run"
               size="small"
               color="fail"
               disabled={!canCancel}
@@ -417,31 +488,55 @@ function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
               onClick={() => setModal("cancel")}
             />
           </div>
-          {run.error ? (
+          {run.status === "halting" ? (
+            <div className="wfr-halting">
+              Halting: a step failed or a halt step fired and on_error is <b>{run.on_error}</b>. Queued jobs
+              were revoked; the run ends when the jobs that are still running finish.
+            </div>
+          ) : null}
+          {run.error_class || run.reason || run.failed_step ? (
             <div className="wfr-run-error">
-              {run.failed_node ? `[${run.failed_node}] ` : ""}
-              {run.error_class ? (
-                <span title={errorClassLabel(run.error_class)}>({run.error_class}) </span>
+              {run.failed_step ? (
+                <>
+                  [
+                  <a className="wf-link" onClick={() => setSelected(run.failed_step)}>
+                    {run.failed_step}
+                  </a>
+                  ]{" "}
+                </>
               ) : null}
-              {run.error}
+              {run.error_class ? <span title={errorClassLabel(run.error_class)}>({run.error_class}) </span> : null}
+              {run.reason || ""}
             </div>
           ) : null}
-          {run.halt_reason ? (
+          {halted ? (
             <div className="wfr-halt-reason">
-              Run ended early at a halt node: {run.halt_reason}
+              Halt step{" "}
+              <a className="wf-link" onClick={() => setSelected(halted.step)}>
+                {halted.step}
+              </a>{" "}
+              fired: the run ends {halted.status}
+              {halted.reason ? `: ${halted.reason}` : ""}
             </div>
           ) : null}
+          {run.cancelled_by ? <div className="wfr-step-line">cancelled by {cancelledByText(run.cancelled_by)}</div> : null}
           {actionMsg ? <div className="wfr-action-msg">{actionMsg}</div> : null}
+          {noSpec ? (
+            <div className="wfr-action-msg">
+              {specEntry.notFound
+                ? `The workflow ${key} is not registered on this server, so the dependency graph is not available. Steps are listed from the run document.`
+                : `Could not load the workflow ${key}: ${specEntry.message || "error"}. Steps are listed from the run document.`}
+            </div>
+          ) : null}
         </div>
 
         <div className="wfr-tabs">
-          {["details", "json"].map((t) => (
-            <a
-              key={t}
-              className={`wfr-tab ${tab === t ? "wfr-tab-on" : ""}`}
-              onClick={() => setTab(t)}
-            >
-              {t === "json" ? "JSON" : "Steps"}
+          {[
+            ["steps", "Steps"],
+            ["json", "JSON"],
+          ].map(([t, text]) => (
+            <a key={t} className={`wfr-tab ${tab === t ? "wfr-tab-on" : ""}`} onClick={() => setTab(t)}>
+              {text}
             </a>
           ))}
         </div>
@@ -452,139 +547,33 @@ function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
             displayDataTypes={false}
             theme={darkMode ? "monokai" : "rjv-default"}
             style={{
-              backgroundColor: darkMode
-                ? "var(--dark-theme-background)"
-                : "var(--light-theme-background)",
+              backgroundColor: darkMode ? "var(--dark-theme-background)" : "var(--light-theme-background)",
             }}
             displayObjectSize={false}
             collapsed={2}
           />
         ) : (
           <>
-            {hasRouting(spec) ? (
-              <>
-                <WorkflowGraph
-                  run={run}
-                  spec={spec}
-                  live={live}
-                  selected={selectedStep}
-                  onSelect={setSelectedStep}
-                />
-                {extra.length > 0 ? (
-                  <WorkflowStepStrip
-                    run={{ nodes: {} }}
-                    spec={{ nodes: {} }}
-                    selected={selectedStep}
-                    onSelect={setSelectedStep}
-                    extra={extra}
-                  />
-                ) : null}
-              </>
-            ) : (
-              <WorkflowStepStrip
-                run={run}
-                spec={spec}
-                live={live}
-                selected={selectedStep}
-                onSelect={setSelectedStep}
-                extra={extra}
-              />
-            )}
+            <WorkflowGraph run={run} merged={merged} selected={selected} onSelect={setSelected} />
             <StateLegend />
 
-            {selectedStep ? (
-              <div className="wfr-panel figaro-data-component">
-                <div className="wfr-panel-head">
-                  <b>Step {selectedStep}</b>
-                  {sel ? <span className="wfr-kind">{sel.kind}{sel.isChild ? " (scatter child)" : ""}</span> : null}
-                  {sel && sel.node && sel.node.run ? <span className="wfr-kind">{sel.node.run}</span> : null}
-                  {node && node.state ? <StatusBadge status={node.state} /> : null}
-                  {sel && sel.node && sel.node.completion ? (
-                    <span className="wfr-kind">threshold {sel.node.completion.threshold}</span>
-                  ) : null}
-                  <span className="wfr-buffer" />
-                  <Link className="wf-link" to={jobsUrl(runId, selectedStep)}>
-                    open in Figaro
-                  </Link>
-                </div>
-                {node && (node.started_at || node.ended_at || node.completed_at) ? (
-                  <div className="wfr-step-times">
-                    {node.started_at ? `started ${shortTime(node.started_at)} ` : ""}
-                    {node.ended_at || node.completed_at
-                      ? `ended ${shortTime(node.ended_at || node.completed_at)}`
-                      : ""}
-                  </div>
-                ) : null}
-                {node && node.skipped_by ? (
-                  <div className="wfr-step-times">
-                    skipped: not on the arm taken by {node.skipped_by}
-                  </div>
-                ) : null}
-                {sel && sel.kind === "halt" ? (
-                  <div className="wfr-step-times">
-                    halt {sel.node.status}: {sel.node.reason}
-                  </div>
-                ) : null}
-                {sel && sel.node ? <RoutingDetail node={sel.node} runNode={node || {}} /> : null}
-                {node && node.error ? <div className="wfr-run-error">{node.error}</div> : null}
-                <Attempts attempts={node && node.attempts} />
+            {step ? <StepPanel run={run} step={step} docs={docs} tick={tick} onSelect={setSelected} /> : null}
 
-                {childStep ? (
-                  <ScatterGrid
-                    cells={cells}
-                    total={gridTotal}
-                    filter={gridFilter}
-                    onFilter={setGridFilter}
-                    selected={selectedChild}
-                    onSelect={setSelectedChild}
-                  />
-                ) : counts ? (
-                  <div className="wfr-step-times">
-                    {counts.total} job{counts.total === 1 ? "" : "s"}: {counts.completed} completed, {counts.failed} failed
-                  </div>
-                ) : null}
-
-                {childStep && selectedChild !== null ? (
-                  <div className="wfr-subtitle">Child #{selectedChild}</div>
-                ) : null}
-                {jobs === null && (!childStep || selectedChild !== null) ? (
-                  <div className="wfr-loading">Loading jobs...</div>
-                ) : null}
-                {jobs && jobs.length === 0 ? (
-                  <div className="wfr-empty">No job submitted for this step yet.</div>
-                ) : null}
-                {jobs
-                  ? jobs.map((job) => (
-                      <FigaroDataViewer
-                        key={`${job._index}-${job._id}`}
-                        res={job}
-                        editCustomFilterId={(id, value) =>
-                          history.push(`/figaro?${id}=${encodeURIComponent(JSON.stringify(value))}`)
-                        }
-                      />
-                    ))
-                  : null}
-              </div>
-            ) : null}
-
-            <Section title="Inputs" count={Object.keys(run.inputs || {}).length} defaultOpen>
+            <Section title="Run inputs" count={Object.keys(run.inputs || {}).length} defaultOpen>
               <ValueView value={run.inputs || {}} />
             </Section>
-            <Section title="Outputs" count={run.outputs ? Object.keys(run.outputs).length : 0}>
-              {run.outputs ? <ValueView value={run.outputs} /> : <span className="wf-null">none yet</span>}
-            </Section>
-            <Section title="Step outputs" count={stepOutputs.length}>
-              {stepOutputs.length === 0 ? (
-                <span className="wf-null">none</span>
+            <Section title="Run outputs" count={run.outputs ? Object.keys(run.outputs).length : 0} defaultOpen={!!run.outputs}>
+              {run.outputs ? (
+                <ValueView value={run.outputs} />
               ) : (
-                stepOutputs.map((k) => (
-                  <div key={k}>
-                    <div className="wfr-subtitle">{k}</div>
-                    <ValueView value={nodes[k].outputs} />
-                  </div>
-                ))
+                <span className="wf-null">{isLive(run.status) ? "none yet: written when the run completes" : "none"}</span>
               )}
             </Section>
+            {frozen.length ? (
+              <Section title="Frozen job definitions" count={frozen.length}>
+                <ValueView value={run.job_definitions} />
+              </Section>
+            ) : null}
           </>
         )}
 
@@ -593,7 +582,7 @@ function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
           onClose={() => setModal(null)}
           onConfirm={doRerun}
           title="Rerun workflow"
-          message={`Start a NEW run of ${run.spec_id} with the same inputs as ${run.run_id}? This run is not changed.`}
+          message={`Start a NEW run of ${key} with the same inputs as ${run.run_id}? This run is not changed.`}
           confirmText="Rerun"
           loading={acting}
         />
@@ -602,7 +591,7 @@ function WorkflowRun({ match, darkMode, specs, ensureSpec }) {
           onClose={() => setModal(null)}
           onConfirm={doCancel}
           title="Cancel workflow run"
-          message={`Cancel ${run.run_id} and revoke its queued and running jobs? This cannot be undone.`}
+          message={`Cancel ${run.run_id}? Its queued and running jobs are revoked and the steps that have not started are cancelled. This cannot be undone.`}
           confirmText="Cancel run"
           confirmColor="fail"
           cancelText="Keep running"

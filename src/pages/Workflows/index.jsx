@@ -1,6 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import { ReactiveBase, SelectedFilters } from "@appbaseio/reactivesearch";
 
 import SidebarFilters from "../../components/SidebarFilters";
@@ -23,6 +24,7 @@ import {
   FILTER_CANDIDATES,
   EXTRA_QUERY_COMPONENTS,
   SORT_CANDIDATES,
+  DEFAULT_SORT,
 } from "../../config/workflows";
 
 import "../Figaro/style.css";
@@ -30,9 +32,9 @@ import "./style.css";
 
 const PROBE_FIELDS = candidateFields(FILTER_CANDIDATES, SORT_CANDIDATES);
 
-// One cheap query up front: how many runs have each field the facets could use? The
-// backend is adding fields (spec_name, failed_node, ended_at, ...) over time, and a facet
-// over a field nobody writes is just an empty box. Facets switch on by themselves.
+// One cheap query up front: how many runs have each field the facets could use? Some
+// (failed_step, error_class, ended_at, ...) only exist once a run has failed or ended, and
+// a facet over a field nobody has is just an empty box. Facets switch on by themselves.
 const probeFields = (url) =>
   fetch(`${url}/${WORKFLOW_ES_INDEX}/_search`, {
     method: "POST",
@@ -60,8 +62,9 @@ const probeFields = (url) =>
 const FALLBACK_COUNTS = {
   status: 1,
   spec_id: 1,
-  "user.keyword": 1,
-  submitted_at: 1,
+  spec_version: 1,
+  username: 1,
+  created_at: 1,
   updated_at: 1,
 };
 
@@ -102,7 +105,7 @@ class Workflows extends React.Component {
         and: [...filters.map((f) => f.componentId), ...EXTRA_QUERY_COMPONENTS],
       };
       const sortFields = SORT_CANDIDATES.filter((f) => fieldCounts[f] > 0);
-      if (!sortFields.includes("submitted_at")) sortFields.unshift("submitted_at");
+      if (!sortFields.includes(DEFAULT_SORT)) sortFields.unshift(DEFAULT_SORT);
 
       body = (
         <ReactiveBase
@@ -119,6 +122,11 @@ class Workflows extends React.Component {
             <div className="figaro-body" ref={this.pageRef}>
               <LastUpdatedAtBanner time={dataUpdatedAt} />
               <WorkflowCounts />
+              <div className="wf-page-links">
+                <Link className="wf-link" to="/workflows/cwl">
+                  Registered workflows (CWL)
+                </Link>
+              </div>
 
               <div className="top-bar-wrapper">
                 <SearchQuery componentId="query_string" theme={classTheme} />

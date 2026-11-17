@@ -20,6 +20,7 @@ import FigaroRuleEditor from "../FigaroRuleEditor";
 
 import Workflows from "../Workflows";
 import WorkflowRun from "../WorkflowRun";
+import WorkflowCwl from "../WorkflowCwl";
 
 import MetadataViewer from "../MetadataViewer";
 
@@ -64,6 +65,8 @@ const Routes = (props) => {
 
           <Route exact path="/workflows" component={Workflows} />
           <Route exact path="/workflows/run/:run_id" component={WorkflowRun} />
+          <Route exact path="/workflows/cwl" component={WorkflowCwl} />
+          <Route exact path="/workflows/cwl/:spec_id" component={WorkflowCwl} />
           <Route component={NotFound} />
         </Switch>
       </Router>

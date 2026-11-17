@@ -146,27 +146,84 @@
   padding: 4px 10px;
   border-left: 4px solid var(--success-color);
 }
-.wfr-arm {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 12px;
+.wfr-halting {
+  margin: 8px 0 4px 0;
+  font-size: 14px;
+  padding: 4px 10px;
+  border-left: 4px solid #c58b00;
+  background: rgba(197, 139, 0, 0.12);
+}
+.wfr-step-line {
   font-size: 13px;
-  padding: 2px 6px;
+  margin: 4px 0;
 }
-.wfr-arm-label {
-  font-weight: 700;
-  min-width: 90px;
+.wfr-times {
+  opacity: 0.85;
 }
-.wfr-arm-when {
+.wfr-code {
   font-family: "Courier New", Courier, monospace;
   font-size: 12px;
   word-break: break-all;
 }
-.wfr-arm-taken {
-  background: rgba(67, 135, 255, 0.14);
-  border-left: 3px solid var(--base-color);
+.wfr-jobid {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  word-break: break-all;
 }
-.wfr-arm-untaken {
-  opacity: 0.5;
+.wfr-reason {
+  margin: 4px 0;
+  padding: 3px 10px;
+  font-size: 13px;
+  border-left: 4px solid #8a8a8a;
+  word-break: break-word;
+}
+.wfr-reason-skipped {
+  border-left-style: dotted;
+  border-left-color: #9aa0a6;
+}
+.wfr-reason-cancelled {
+  border-left-color: #e8890c;
+}
+.wfr-reason-error {
+  border-left-color: var(--fail-color);
+  color: var(--fail-color);
+}
+.wfr-reason-halt-fired {
+  border-left-color: var(--fail-color);
+}
+.wfr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 4px 0;
+}
+.wfr-table th {
+  text-align: left;
+  padding: 3px 8px;
+  border-bottom: 2px solid var(--light-theme-title);
+}
+.wfr-table td {
+  padding: 3px 8px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+  vertical-align: top;
+}
+.wfr-attempt-error {
+  color: var(--fail-color);
+  word-break: break-word;
+}
+.wfr-sublabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  opacity: 0.65;
+  margin: 6px 0 2px 0;
+}
+.wfr-resolved {
+  margin: 4px 0;
+}
+.__theme-dark .wfr-reason-error,
+.__theme-dark .wfr-attempt-error {
+  color: #ff7b88;
+}
+.__theme-dark .wfr-table th {
+  border-color: var(--dark-theme-light);
 }

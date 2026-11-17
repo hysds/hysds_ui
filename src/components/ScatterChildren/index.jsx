@@ -66,7 +66,12 @@ const queryPage = (runId, stepId, filter, page, start, end, clientPaged) => {
     from: clientPaged ? 0 : page * PAGE_SIZE,
     track_total_hits: true,
     query: { bool: { filter: [...base(runId, stepId), { terms: { status: statuses } }] } },
-    sort: [{ "workflow.child_index": "asc" }, { "@timestamp": "desc" }],
+    // unmapped_type: a pre-workflow job_status index has no workflow.* mapping, and a sort on
+    // an unmapped field fails (HTTP 400 alone, a shard failure behind the job_status alias)
+    sort: [
+      { "workflow.child_index": { order: "asc", unmapped_type: "integer" } },
+      { "@timestamp": "desc" },
+    ],
     _source: SOURCE,
   });
 };

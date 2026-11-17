@@ -28,7 +28,7 @@ const workflowReducer = (state = initialState, action) => {
     case WORKFLOW_SPEC_FAILED:
       return {
         ...state,
-        specs: { ...state.specs, [action.id]: { status: "failed" } },
+        specs: { ...state.specs, [action.id]: { status: "failed", notFound: !!action.notFound, message: action.message } },
       };
     default:
       return state;

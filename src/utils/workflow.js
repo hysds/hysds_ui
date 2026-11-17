@@ -1,9 +1,15 @@
-// Pure helpers for the Workflows pages. Everything here tolerates fields that the
-// backend has not written yet (spec_name, duration_s, username, ended_at, ...).
+// Pure helpers for the Workflows pages (workflow run documents 2.0 and compiled specs 2.0).
+// Everything here tolerates fields that a run does not have (yet): a freshly created run has
+// no outputs, a step that never started has no attempts, and so on.
 
 const TERMINAL = ["completed", "failed", "cancelled"];
+const LIVE = ["running", "halting"];
+const SETTLED_STEP = ["completed", "failed", "skipped", "cancelled"];
 
 exports.isTerminal = (status) => TERMINAL.includes(status);
+/** running or halting (a drain is waiting for running jobs): the run can still change */
+exports.isLive = (status) => LIVE.includes(status);
+exports.isSettledStep = (state) => SETTLED_STEP.includes(state);
 
 /** "name:version" -> {name, version}. Splits on the LAST colon; no colon -> no version. */
 exports.parseSpecId = (specId) => {
@@ -13,14 +19,19 @@ exports.parseSpecId = (specId) => {
   return { name: specId.slice(0, i), version: specId.slice(i + 1) };
 };
 
-/** spec name/version from the run doc, falling back to spec_id */
+/** name/version of the run's workflow. v2 run docs carry spec_id (the name) and spec_version. */
 exports.runSpec = (run) => {
-  const parsed = exports.parseSpecId(run.spec_id);
-  return {
-    name: run.spec_name || parsed.name,
-    version: run.spec_version || parsed.version,
-  };
+  if (run.spec_version) return { name: run.spec_id || "", version: String(run.spec_version) };
+  return exports.parseSpecId(run.spec_id);
 };
+
+/** The id the CWL endpoint knows the workflow by: "<name>:<version>" */
+exports.specKey = (run) => {
+  const { name, version } = exports.runSpec(run);
+  return version ? `${name}:${version}` : name;
+};
+
+exports.cwlUrl = (key) => `/workflows/cwl/${encodeURIComponent(key)}`;
 
 exports.runUser = (run) => run.username || run.user || "";
 
@@ -31,13 +42,11 @@ const toMs = (t) => {
 };
 exports.toMs = toMs;
 
-/**
- * Run duration in seconds. duration_s when the backend writes it, otherwise derived from
- * the timestamps: ended_at, else updated_at for a terminal run, else now (running).
- */
+exports.runStart = (run) => run.started_at || run.created_at || null;
+
+/** Run duration in seconds: start -> ended_at, else updated_at for a terminal run, else now. */
 exports.runDurationSeconds = (run, now = Date.now()) => {
-  if (typeof run.duration_s === "number") return run.duration_s;
-  const start = toMs(run.submitted_at);
+  const start = toMs(exports.runStart(run));
   if (start === null) return null;
   let end = toMs(run.ended_at);
   if (end === null) end = exports.isTerminal(run.status) ? toMs(run.updated_at) : now;
@@ -59,211 +68,149 @@ exports.formatDuration = (seconds) => {
 /** "2026-11-11T20:07:44.123Z" -> "11-11 20:07:44" (UTC, as everywhere else in the UI) */
 exports.shortTime = (t) => (t ? String(t).slice(5, 19).replace("T", " ") : "-");
 
+/** Duration between two timestamps (a step or an attempt), "-" when the start is unknown */
+exports.spanSeconds = (start, end, now = Date.now()) => {
+  const a = toMs(start);
+  if (a === null) return null;
+  const b = toMs(end);
+  return Math.max(0, ((b === null ? now : b) - a) / 1000);
+};
+
+/** cancelled_by is a user name in the run doc, but tolerate an object */
+exports.cancelledByText = (v) => {
+  if (!v) return "";
+  if (typeof v === "string") return v;
+  return v.username || v.user || v.name || JSON.stringify(v);
+};
+
+const ERROR_CLASS_LABELS = {
+  input_resolution: "input resolution (a step input could not be resolved)",
+  output_resolution: "output resolution (a workflow output could not be resolved)",
+  scatter_threshold: "scatter threshold (too many children failed)",
+  halted: "halted (halt step)",
+  timeout: "timeout",
+  worker: "worker error",
+  offline: "worker went offline",
+  signal: "signal",
+};
+exports.errorClassLabel = (c) => (c ? ERROR_CLASS_LABELS[c] || c : "");
+
 // ---------------------------------------------------------------------------------------
-// Routing (spec v1.2): switch / gate / halt
+// Steps and the dependency graph
 // ---------------------------------------------------------------------------------------
 
-const ROUTING_KINDS = ["switch", "gate"];
-exports.isRouting = (node) => !!node && ROUTING_KINDS.includes(node.kind);
+const REF = /^\$\.([A-Za-z0-9_-]+)\./;
 
-/** True when a spec uses any v1.2 routing kind (graph view is only used for those) */
-exports.hasRouting = (spec) =>
-  !!spec &&
-  !!spec.nodes &&
-  Object.values(spec.nodes).some(
-    (n) => n && (ROUTING_KINDS.includes(n.kind) || n.kind === "halt")
-  );
-
-const asTargets = (v) => (Array.isArray(v) ? v.filter(Boolean) : v ? [v] : []);
-
-/**
- * The arms of a switch/gate, in evaluation order: [{label, target, when?}].
- * Labels: case name or case_<i>; the choices key; "default"; a gate's "true"/"false".
- * Other node kinds have no arms.
- */
-exports.armsOf = (node) => {
-  if (!node) return [];
-  const arms = [];
-  if (node.kind === "gate") {
-    asTargets(node.on_true).forEach((t) => arms.push({ label: "true", target: t, when: node.when }));
-    asTargets(node.on_false).forEach((t) => arms.push({ label: "false", target: t, when: node.when, negated: true }));
-    return arms;
-  }
-  if (node.kind !== "switch") return [];
-  if (Array.isArray(node.cases)) {
-    node.cases.forEach((c, i) =>
-      asTargets(c.next).forEach((t) =>
-        arms.push({ label: c.name || `case_${i}`, target: t, when: c.when })
-      )
-    );
-  } else if (node.choices && typeof node.choices === "object") {
-    Object.keys(node.choices).forEach((k) =>
-      asTargets(node.choices[k]).forEach((t) =>
-        arms.push({ label: k, target: t, choice: k, on: node.on })
-      )
-    );
-  }
-  asTargets(node.default).forEach((t) => arms.push({ label: "default", target: t }));
-  return arms;
+/** Step id named by a `$.step.output` ref, or null for `$.inputs.*` and non-refs */
+exports.refStep = (ref) => {
+  if (typeof ref !== "string") return null;
+  const m = REF.exec(ref);
+  return m && m[1] !== "inputs" ? m[1] : null;
 };
 
-/** `next` plus all arm targets, deduplicated (like hysds_commons successors()) */
-exports.successors = (node) => {
-  if (!node) return [];
+/** deps of a compiled step: the stored list, else derived from its `in` sources and `when` */
+exports.stepDeps = (step) => {
+  if (!step) return [];
+  if (Array.isArray(step.deps)) return step.deps;
   const out = [];
-  asTargets(node.next)
-    .concat(exports.armsOf(node).map((a) => a.target))
-    .forEach((t) => {
-      if (!out.includes(t)) out.push(t);
-    });
-  return out;
-};
-
-const OP_SYMBOL = { eq: "==", ne: "!=", lt: "<", le: "<=", gt: ">", ge: ">=", in: "in" };
-
-const operand = (v) => (typeof v === "string" && v.startsWith("$") ? v : JSON.stringify(v));
-
-/** A `when` tree as one readable line, e.g. `$.L2SMP.qa_score < 0.3` */
-exports.formatWhen = (when, nested) => {
-  if (when === null || when === undefined) return "";
-  if (Array.isArray(when.all) || Array.isArray(when.any)) {
-    const isAll = Array.isArray(when.all);
-    const parts = (isAll ? when.all : when.any).map((w) => exports.formatWhen(w, true));
-    const text = parts.join(isAll ? " AND " : " OR ");
-    return nested && parts.length > 1 ? `(${text})` : text;
-  }
-  if (when.not) return `NOT (${exports.formatWhen(when.not)})`;
-  if ("left" in when) {
-    return `${operand(when.left)} ${OP_SYMBOL[when.op] || when.op} ${operand(when.right)}`;
-  }
-  return JSON.stringify(when);
-};
-
-/** One-line description of how an arm is chosen, for tooltips and the detail panel */
-exports.armCondition = (arm) => {
-  if (arm.label === "default") return "otherwise";
-  if (arm.choice !== undefined) return `${arm.on} == ${JSON.stringify(arm.choice)}`;
-  if (arm.negated) return `NOT (${exports.formatWhen(arm.when)})`;
-  return exports.formatWhen(arm.when);
-};
-
-/** Arm label -> readable error class for run headers and cards */
-exports.ERROR_CLASS_LABELS = {
-  halted: "halted (halt node)",
-  routing: "routing (switch could not be evaluated)",
-  input_resolution: "input resolution",
-};
-exports.errorClassLabel = (c) => (c ? exports.ERROR_CLASS_LABELS[c] || c : "");
-
-/**
- * Lay a spec's nodes out in reading order: from `entry`, following `next` and switch/gate
- * arms; a scatter's `child` comes straight after the scatter node. Unreachable nodes are
- * appended.
- *
- * Returns [{id, kind, isChild, node}]. `isChild` marks a scatter child (drawn as a bar).
- */
-exports.orderSpecNodes = (spec) => {
-  if (!spec || !spec.nodes) return [];
-  const nodes = spec.nodes;
-  const out = [];
-  const seen = new Set();
-  const childIds = new Set(
-    Object.values(nodes)
-      .filter((n) => n && n.kind === "scatter" && n.child)
-      .map((n) => n.child)
-  );
-
-  const visit = (id) => {
-    if (!id || seen.has(id) || !nodes[id]) return;
-    seen.add(id);
-    const node = nodes[id];
-    out.push({ id, kind: node.kind || "job", isChild: childIds.has(id), node });
-    if (node.kind === "scatter" && node.child) visit(node.child);
-    exports.successors(node).forEach(visit);
+  const add = (r) => {
+    const s = exports.refStep(r);
+    if (s && !out.includes(s)) out.push(s);
   };
-
-  visit(spec.entry);
-  Object.keys(nodes).forEach(visit);
+  Object.values(step.in || {}).forEach((i) => ((i && i.source) || []).forEach(add));
+  add(step.when);
   return out;
 };
 
-/**
- * The strip for a run that may have branched: nodes on arms not taken (state `skipped`)
- * are dropped from the path and counted. Returns {steps, skipped: [ids]}. A run without
- * skipped nodes (every pre-1.2 run) gets its steps back unchanged.
- */
-exports.pathSteps = (run, steps) => {
-  const nodes = (run && run.nodes) || {};
-  const skipped = [];
-  const kept = steps.filter((s) => {
-    if ((nodes[s.id] || {}).state === "skipped") {
-      skipped.push(s.id);
-      return false;
-    }
-    return true;
-  });
-  return { steps: kept, skipped };
+/** "job" or "halt" */
+exports.stepKind = (specStep, runStep) =>
+  (specStep && specStep.halt) || (runStep && runStep.kind === "halt") ? "halt" : "job";
+
+/** State to show: the run doc's `waiting` is shown as `pending` */
+exports.displayState = (runStep) => {
+  const s = (runStep || {}).state;
+  return !s || s === "waiting" ? "pending" : s;
 };
 
 /**
- * Layered DAG layout from spec successors (simple longest-path layering), for the run
- * page graph. A scatter is drawn as scatter -> child -> its `next` targets.
- *
- * Returns {nodes: [{id, kind, layer, row, isChild, node}], edges: [{from, to, label?, arm?}],
- * layers: number, rows: number}. `label` is only set on switch/gate arms.
+ * Steps in spec order with everything the graph and panel need, merging the compiled spec
+ * (deps, when, in, scatter) with the run doc's step state. Works without the spec too (still
+ * loading, or the run's workflow is not registered here): then only the run doc's steps are
+ * known and there are no edges.
  */
-exports.layoutGraph = (spec) => {
-  const ordered = exports.orderSpecNodes(spec);
-  const index = {};
-  ordered.forEach((o, i) => (index[o.id] = i));
+exports.mergeSteps = (run, spec) => {
+  const runSteps = (run && run.steps) || {};
+  const specSteps = (spec && spec.steps) || {};
+  const ids = Object.keys(specSteps);
+  Object.keys(runSteps).forEach((id) => {
+    if (!ids.includes(id)) ids.push(id);
+  });
+  return ids.map((id) => {
+    const sp = specSteps[id] || null;
+    const rs = runSteps[id] || null;
+    return {
+      id,
+      kind: exports.stepKind(sp, rs),
+      spec: sp,
+      run: rs,
+      deps: sp ? exports.stepDeps(sp) : [],
+      when: (sp && sp.when) || null,
+      scatter: !!((sp && sp.scatter) || (rs && rs.scatter)),
+      jobType: (sp && sp.job_type) || (rs && rs.job_type) || null,
+      state: exports.displayState(rs),
+    };
+  });
+};
+
+/**
+ * Layered DAG layout from `deps` (longest-path layering), with rows ordered by the average
+ * row of the already-placed predecessors so parallel branches sit side by side.
+ *
+ * Returns {nodes: [{id, layer, row, ...merged step}], edges: [{from, to, gate}], layers, rows}.
+ * An edge is a `gate` edge when `from` supplies the `when` flag of `to`.
+ */
+exports.layoutGraph = (merged) => {
+  const byId = {};
+  merged.forEach((s) => (byId[s.id] = s));
   const edges = [];
-  const addEdge = (from, to, arm) => {
-    if (!index.hasOwnProperty(to)) return;
-    edges.push(arm ? { from, to, label: arm.label, arm } : { from, to });
-  };
-  ordered.forEach((o) => {
-    const n = o.node;
-    if (n.kind === "scatter" && n.child && index.hasOwnProperty(n.child)) {
-      addEdge(o.id, n.child);
-      asTargets(n.next).forEach((t) => addEdge(n.child, t));
-    } else if (exports.isRouting(n)) {
-      exports.armsOf(n).forEach((a) => addEdge(o.id, a.target, a));
-    } else {
-      asTargets(n.next).forEach((t) => addEdge(o.id, t));
-    }
-  });
-
+  merged.forEach((s) =>
+    s.deps.forEach((d) => {
+      if (byId[d]) edges.push({ from: d, to: s.id, gate: exports.refStep(s.when) === d });
+    })
+  );
   const preds = {};
   edges.forEach((e) => (preds[e.to] = (preds[e.to] || []).concat(e.from)));
+  const index = {};
+  merged.forEach((s, i) => (index[s.id] = i));
+
   const layerOf = {};
   const visiting = new Set();
   const layer = (id) => {
     if (layerOf[id] !== undefined) return layerOf[id];
-    if (visiting.has(id)) return 0; // cycle guard; validation rejects cycles
+    if (visiting.has(id)) return 0; // cycle guard; the compiler rejects cycles
     visiting.add(id);
     const l = (preds[id] || []).reduce((m, p) => Math.max(m, layer(p) + 1), 0);
     visiting.delete(id);
     layerOf[id] = l;
     return l;
   };
-  ordered.forEach((o) => layer(o.id));
+  merged.forEach((s) => layer(s.id));
 
-  const nLayers = ordered.reduce((m, o) => Math.max(m, layerOf[o.id] + 1), 0);
+  const nLayers = merged.reduce((m, s) => Math.max(m, layerOf[s.id] + 1), 0);
   const byLayer = Array.from({ length: nLayers }, () => []);
-  ordered.forEach((o) => byLayer[layerOf[o.id]].push(o));
+  merged.forEach((s) => byLayer[layerOf[s.id]].push(s));
   const rowOf = {};
   byLayer.forEach((col) => {
-    // barycenter of already placed predecessors, then spec order
-    const key = (o) => {
-      const ps = (preds[o.id] || []).filter((p) => rowOf[p] !== undefined);
+    const key = (s) => {
+      const ps = (preds[s.id] || []).filter((p) => rowOf[p] !== undefined);
       return ps.length ? ps.reduce((a, p) => a + rowOf[p], 0) / ps.length : 0;
     };
     col.sort((a, b) => key(a) - key(b) || index[a.id] - index[b.id]);
-    col.forEach((o, r) => (rowOf[o.id] = r));
+    col.forEach((s, r) => (rowOf[s.id] = r));
   });
 
   return {
-    nodes: ordered.map((o) => ({ ...o, layer: layerOf[o.id], row: rowOf[o.id] })),
+    nodes: merged.map((s) => ({ ...s, layer: layerOf[s.id], row: rowOf[s.id] })),
     edges,
     layers: nLayers,
     rows: byLayer.reduce((m, c) => Math.max(m, c.length), 0),
@@ -271,23 +218,198 @@ exports.layoutGraph = (spec) => {
 };
 
 /**
- * Is a graph edge on the path the run took? "taken" | "untaken" | "open" (not decided yet).
- * Arm edges use the switch node's outputs.arm; plain edges follow their endpoint states.
+ * Did data flow along this edge? "taken" | "untaken" | "open".
+ * A skipped or cancelled endpoint means nothing flowed; a completed source whose dependent
+ * has started (or finished) means it did. A dependent of a skipped step still runs (it gets
+ * null for that source), so the edge is untaken but the node is not.
  */
 exports.edgeState = (run, edge) => {
-  const nodes = (run && run.nodes) || {};
-  const from = nodes[edge.from] || {};
-  const to = nodes[edge.to] || {};
-  if (edge.arm) {
-    const arm = (from.outputs || {}).arm;
-    if (arm === undefined || arm === null) return from.state === "skipped" ? "untaken" : "open";
-    return arm === edge.label ? "taken" : "untaken";
-  }
-  if (from.state === "skipped" || to.state === "skipped") return "untaken";
-  if (from.state === "completed" && ["running", "completed", "failed"].includes(to.state))
-    return "taken";
+  const steps = (run && run.steps) || {};
+  const from = (steps[edge.from] || {}).state;
+  const to = (steps[edge.to] || {}).state;
+  if (["skipped", "cancelled"].includes(from) || ["skipped", "cancelled"].includes(to)) return "untaken";
+  if (from === "completed" && ["queued", "running", "completed", "failed"].includes(to)) return "taken";
   return "open";
 };
+
+/** Which step to select first on the run page */
+exports.defaultStep = (run, merged) => {
+  if (!run || merged.length === 0) return null;
+  if (run.failed_step && merged.some((s) => s.id === run.failed_step)) return run.failed_step;
+  const find = (state) => merged.find((s) => s.run && s.run.state === state);
+  const hit = find("failed") || find("running") || find("queued");
+  if (hit) return hit.id;
+  const halted = exports.haltedBy(run);
+  if (halted) return halted.step;
+  const done = [...merged].reverse().find((s) => s.run && s.run.state === "completed");
+  return (done || merged[0]).id;
+};
+
+/** The halt step that fired, as {step, status, reason}, or null */
+exports.haltedBy = (run) => {
+  const steps = (run && run.steps) || {};
+  const id = Object.keys(steps).find((k) => steps[k].kind === "halt" && (steps[k].halt || {}).fired);
+  if (!id) return null;
+  const h = steps[id].halt;
+  return { step: id, status: h.status, reason: h.reason || "" };
+};
+
+/** Why a step is in its state: [{kind, text}] from skipped_by / cancelled_by / halt / error */
+exports.stepReasons = (runStep) => {
+  const st = runStep || {};
+  const out = [];
+  if (st.skipped_by) {
+    out.push({
+      kind: "skipped",
+      text: `skipped: when ${st.skipped_by.flag} was ${JSON.stringify(st.skipped_by.value)}`,
+    });
+  }
+  if (st.cancelled_by) {
+    const c = st.cancelled_by;
+    const tail = c.reason ? `: ${c.reason}` : "";
+    const text =
+      {
+        failure: `cancelled because step ${c.step} failed${tail}`,
+        halt: `cancelled by the halt in step ${c.step}${tail}`,
+        user: `cancelled by the user${tail}`,
+        upstream_failed: `not started: it depends on failed step ${c.step}${tail}`,
+      }[c.kind] || `cancelled (${c.kind || "unknown"})${tail}`;
+    out.push({ kind: "cancelled", text });
+  }
+  if (st.halt) {
+    out.push({
+      kind: st.halt.fired ? "halt-fired" : "halt",
+      text: st.halt.fired
+        ? `halt fired (run ${st.halt.status}): ${st.halt.reason || "no reason given"}`
+        : `halt (run ${st.halt.status}): ${st.halt.reason || "no reason given"}; not fired`,
+    });
+  }
+  if (st.error || st.error_class) {
+    out.push({
+      kind: "error",
+      text: `${st.error_class ? `(${st.error_class}) ` : ""}${st.error || ""}`.trim(),
+    });
+  }
+  return out;
+};
+
+/** A step's compiled `in` as rows: {name, sources, link_merge, pick, default, hasDefault} */
+exports.inputRows = (specStep) =>
+  Object.entries((specStep && specStep.in) || {}).map(([name, i]) => ({
+    name,
+    sources: (i && i.source) || [],
+    link_merge: (i && i.link_merge) || null,
+    pick: (i && i.pick) || null,
+    hasDefault: !!i && Object.prototype.hasOwnProperty.call(i, "default"),
+    default: i && i.default,
+  }));
+
+// ---------------------------------------------------------------------------------------
+// Scatter
+// ---------------------------------------------------------------------------------------
+
+/** Counters of a scattered step: {expected, completed, failed, active, threshold, phase} */
+exports.scatterProgress = (runStep) => {
+  const sc = (runStep || {}).scatter;
+  if (!sc) return null;
+  const expected = typeof sc.expected === "number" ? sc.expected : null;
+  const completed = sc.n_completed || 0;
+  const failed = sc.n_failed || 0;
+  return {
+    expected,
+    completed,
+    failed,
+    active: expected === null ? 0 : Math.max(0, expected - completed - failed),
+    threshold: typeof sc.threshold === "number" ? sc.threshold : 1,
+    phase: sc.phase || null,
+    input: sc.input || null,
+    children: Array.isArray(sc.children) ? sc.children : null,
+  };
+};
+
+/**
+ * Did the scatter meet its completion threshold? Mirrors the engine: n == 0 passes, else
+ * completed / n >= threshold. `settled` is false until every child has finished, and then
+ * `passed` is only the outlook so far. Returns null before the fan-out is known.
+ */
+exports.thresholdResult = (progress) => {
+  if (!progress || progress.expected === null) return null;
+  const { expected, completed, failed, threshold } = progress;
+  const need = Math.ceil(threshold * expected - 1e-9);
+  const settled = completed + failed >= expected;
+  const ratio = expected === 0 ? 1 : completed / expected;
+  const passed = expected === 0 || ratio >= threshold - 1e-9;
+  // can no longer be met even if every remaining child completes
+  const lost = !passed && completed + (expected - completed - failed) < need;
+  return { need, ratio, threshold, settled, passed, lost };
+};
+
+exports.pct = (v, digits = 1) => `${(v * 100).toFixed(digits).replace(/\.0+$/, "")}%`;
+
+/** Rows of one page of children: [{index, jobId}] (jobId from the run doc when it keeps them) */
+exports.childPage = (total, page, size, children) => {
+  const start = page * size;
+  const end = Math.min(total, start + size);
+  const rows = [];
+  for (let i = start; i < end; i++) rows.push({ index: i, jobId: children ? children[i] || null : null });
+  return { start, end, rows, pages: Math.max(1, Math.ceil(total / size)) };
+};
+
+/**
+ * One job_status doc per child index from search hits. A retried child has one doc per
+ * attempt: take the one the run doc names, else the newest.
+ */
+exports.pickChildDocs = (hits, children) => {
+  const byIndex = {};
+  (hits || []).forEach((h) => {
+    const src = h._source || {};
+    const idx = (src.workflow || {}).child_index;
+    if (idx === null || idx === undefined) return;
+    const cur = byIndex[idx];
+    const isNamed = (doc) => !!children && children[idx] === doc._id;
+    if (!cur) byIndex[idx] = h;
+    else if (isNamed(cur)) return;
+    else if (isNamed(h) || (src["@timestamp"] || "") >= (cur._source["@timestamp"] || "")) byIndex[idx] = h;
+  });
+  return byIndex;
+};
+
+// ---------------------------------------------------------------------------------------
+// Job documents: resolved inputs and outputs of a step
+// ---------------------------------------------------------------------------------------
+
+/** workflow_outputs [{name, value_s|value_d|value_b, class?}] -> {name: value} (File/Directory kept as objects) */
+exports.outputsToDict = (list) => {
+  const out = {};
+  (Array.isArray(list) ? list : []).forEach((o) => {
+    if (!o || !o.name) return;
+    const slot = ["value_s", "value_d", "value_b"].find((k) => k in o);
+    const v = slot ? o[slot] : null;
+    out[o.name] = o.class && typeof v === "string" ? { class: o.class, location: v } : v;
+  });
+  return out;
+};
+
+const INTERNAL_PARAMS = ["container_specification", "job_specification", "localize_urls"];
+
+/** The step's resolved inputs from a job doc's job.params (the params the job spec declares) */
+exports.resolvedInputs = (jobDoc) => {
+  const params = ((jobDoc || {}).job || {}).params || {};
+  const declared = (((params.job_specification || {}).params) || []).map((p) => p.name);
+  const out = {};
+  Object.keys(params).forEach((k) => {
+    if (declared.length ? !declared.includes(k) : k.startsWith("_") || INTERNAL_PARAMS.includes(k)) return;
+    out[k] = params[k];
+  });
+  return out;
+};
+
+exports.jobOutputs = (jobDoc) =>
+  exports.outputsToDict((((jobDoc || {}).job || {}).job_info || {}).workflow_outputs);
+
+// ---------------------------------------------------------------------------------------
+// Facets and values
+// ---------------------------------------------------------------------------------------
 
 /** Pick the facets to show: first candidate field with data, hide a facet with none. */
 exports.resolveFilters = (candidates, fieldCounts) =>
@@ -321,7 +443,7 @@ exports.fileLocation = (value) => {
   return value.location || value.path || value.url || null;
 };
 
-/** Counts of job_status docs by status for one step, from a terms agg bucket list */
+/** Counts of job_status docs by status, from a terms agg bucket map */
 exports.summarizeStatuses = (byStatus) => {
   const s = byStatus || {};
   const total = Object.values(s).reduce((a, b) => a + b, 0);
@@ -334,25 +456,12 @@ exports.summarizeStatuses = (byStatus) => {
   };
 };
 
-/** URL for a deep link to the Jobs page, filtered by run (and step). */
+/** Link to the Jobs page, filtered by run (and step). */
 exports.jobsUrl = (runId, stepId) => {
   const p = [`workflow_run=${encodeURIComponent(JSON.stringify(runId))}`];
   if (stepId) p.push(`workflow_step=${encodeURIComponent(JSON.stringify(stepId))}`);
   return `/figaro?${p.join("&")}`;
 };
 
-/** Which step to select first on the run page */
-exports.defaultStep = (run, ordered) => {
-  if (!run) return null;
-  if (run.failed_node) return run.failed_node;
-  const nodes = run.nodes || {};
-  const failed = ordered.find((o) => (nodes[o.id] || {}).state === "failed");
-  if (failed) return failed.id;
-  const running = ordered.find((o) => (nodes[o.id] || {}).state === "running");
-  if (running) return running.id;
-  const child = ordered.find((o) => o.isChild);
-  if (child) return child.id;
-  const jobs = ordered.filter((o) => o.kind === "job");
-  const last = [...jobs].reverse().find((o) => (nodes[o.id] || {}).state === "completed");
-  return (last || jobs[0] || ordered[0] || {}).id || null;
-};
+/** Link to one job on the Jobs page (a job_status doc id is the job's payload id) */
+exports.jobUrl = (jobId) => `/figaro?_id=${encodeURIComponent(JSON.stringify(jobId))}`;

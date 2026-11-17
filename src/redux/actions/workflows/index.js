@@ -8,8 +8,10 @@ import { MOZART_ES_URL } from "../../../config";
 import { WORKFLOW_REST_API } from "../../../config/workflows";
 
 /**
- * Fetch a workflow spec once per spec_id. Specs are immutable per id:version, so a loaded
- * (or in-flight) spec is never fetched again. A failed fetch is retried on the next call.
+ * Fetch a registered workflow (CWL source + compiled spec) once per "<name>:<version>". A
+ * registered workflow is immutable, so a loaded (or in-flight) one is never fetched again.
+ * A failed fetch is retried on the next call. The entry holds the whole registry document:
+ * {id, version, label, sha256, cwl, cwl_normalized, spec, username, creation_time, ...}.
  */
 export const ensureSpec = (specId) => (dispatch, getState) => {
   if (!specId) return Promise.resolve();
@@ -17,17 +19,22 @@ export const ensureSpec = (specId) => (dispatch, getState) => {
   if (existing && existing.status !== "failed") return Promise.resolve();
 
   dispatch({ type: WORKFLOW_SPEC_LOADING, id: specId });
-  return fetch(`${WORKFLOW_REST_API}/specs/${encodeURIComponent(specId)}`)
+  return fetch(`${WORKFLOW_REST_API}/cwl/${encodeURIComponent(specId)}`)
     .then((res) => {
-      if (!res.ok) throw new Error(`spec ${specId}: HTTP ${res.status}`);
+      if (res.status === 404) {
+        const err = new Error(`workflow ${specId} is not registered`);
+        err.notFound = true;
+        throw err;
+      }
+      if (!res.ok) throw new Error(`workflow ${specId}: HTTP ${res.status}`);
       return res.json();
     })
     .then((data) =>
       dispatch({ type: WORKFLOW_SPEC_LOADED, id: specId, payload: data.result })
     )
     .catch((err) => {
-      console.error(err);
-      dispatch({ type: WORKFLOW_SPEC_FAILED, id: specId });
+      if (!err.notFound) console.error(err);
+      dispatch({ type: WORKFLOW_SPEC_FAILED, id: specId, notFound: !!err.notFound, message: err.message });
     });
 };
 
@@ -51,6 +58,15 @@ export const workflowPost = (path, body) =>
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body || {}),
   }).then((res) =>
+    res
+      .json()
+      .catch(() => ({}))
+      .then((json) => ({ ok: res.ok, status: res.status, body: json }))
+  );
+
+/** GET from the workflow REST API; resolves to {ok, status, body} and never throws on HTTP errors */
+export const workflowGet = (path) =>
+  fetch(`${WORKFLOW_REST_API}${path}`).then((res) =>
     res
       .json()
       .catch(() => ({}))

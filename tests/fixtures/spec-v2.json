@@ -1,0 +1,15 @@
+{
+  "schema_version": "2.0", "id": "orbit-l2", "version": "1.0.0", "on_error": "drain",
+  "inputs": {"orbit_id": {"type": "string"}},
+  "steps": {
+    "find": {"job_type": "job-find:v1", "deps": [], "in": {"orbit": {"source": ["$.inputs.orbit_id"]}}, "out": ["files"]},
+    "l1a": {"job_type": "job-l1a:v1", "deps": ["find"], "in": {"f": {"source": ["$.find.files"]}},
+            "scatter": {"input": "f", "threshold": 0.9}, "out": ["l1a_file"]},
+    "qa": {"job_type": "job-qa:v1", "deps": ["l1a"], "in": {"x": {"source": ["$.l1a.l1a_file"], "link_merge": "merge_flattened", "pick": "all_non_null"}}, "out": ["deliver", "reject"]},
+    "browse": {"job_type": "job-browse:v1", "deps": ["l1a"], "in": {"x": {"source": ["$.l1a.l1a_file"]}}, "out": ["png"]},
+    "deliver": {"job_type": "job-deliver:v1", "deps": ["qa", "browse"], "when": "$.qa.deliver",
+               "in": {"png": {"source": ["$.browse.png"]}, "prio": {"default": "normal"}}, "out": ["receipt"]},
+    "reject": {"halt": {"status": "failed", "reason": "failed QA"}, "deps": ["qa"], "when": "$.qa.reject"}
+  },
+  "outputs": {"receipt": {"source": ["$.deliver.receipt"]}}
+}

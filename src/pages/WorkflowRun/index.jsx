@@ -158,7 +158,7 @@ function InputWiring({ specStep }) {
   );
 }
 
-function StepPanel({ run, step, docs, tick, onSelect }) {
+export function StepPanel({ run, step, docs, tick, onSelect }) {
   const rs = step.run || {};
   const sp = step.spec || {};
   const reasons = stepReasons(rs);

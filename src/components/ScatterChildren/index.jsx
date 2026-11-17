@@ -18,6 +18,7 @@ import "../WorkflowCommon/style.css";
 import "./style.css";
 
 export const PAGE_SIZE = 25;
+const CLIENT_PAGED_MAX = 1000;
 const FETCH_CAP = 200; // docs per page query (a retried child has one doc per attempt)
 
 // server-side filters: a status filter pages over the matching docs, `all` over index ranges
@@ -44,7 +45,7 @@ const base = (runId, stepId) => [
 ];
 
 // `all`: the children with index in [start, end); a filter: the nth page of the matching docs
-const queryPage = (runId, stepId, filter, page, start, end) => {
+const queryPage = (runId, stepId, filter, page, start, end, clientPaged) => {
   const statuses = FILTERS[filter];
   if (!statuses) {
     return esSearch(JOB_STATUS_INDEX, {
@@ -58,9 +59,11 @@ const queryPage = (runId, stepId, filter, page, start, end) => {
       _source: SOURCE,
     });
   }
+  // clientPaged: the run doc names every child's current job (small scatters), so all matching
+  // docs are read and the ones of superseded attempts (a retried child's earlier failure) dropped
   return esSearch(JOB_STATUS_INDEX, {
-    size: PAGE_SIZE,
-    from: page * PAGE_SIZE,
+    size: clientPaged ? CLIENT_PAGED_MAX : PAGE_SIZE,
+    from: clientPaged ? 0 : page * PAGE_SIZE,
     track_total_hits: true,
     query: { bool: { filter: [...base(runId, stepId), { terms: { status: statuses } }] } },
     sort: [{ "workflow.child_index": "asc" }, { "@timestamp": "desc" }],
@@ -84,6 +87,7 @@ function ScatterChildren({ runId, stepId, progress, stepState, refreshKey }) {
   const n = progress.expected;
   const known = n !== null && n !== undefined;
   const filtered = filter !== "all";
+  const clientPaged = filtered && !!progress.children;
   const idxTotal = known ? n : 0;
   const rowsTotal = filtered ? (total === null ? 0 : total) : idxTotal;
   const pg = childPage(rowsTotal, page, PAGE_SIZE, filtered ? null : progress.children);
@@ -97,11 +101,17 @@ function ScatterChildren({ runId, stepId, progress, stepState, refreshKey }) {
     if (!known) return undefined;
     let cancelled = false;
     const start = page * PAGE_SIZE;
-    queryPage(runId, stepId, filter, page, start, start + PAGE_SIZE)
+    queryPage(runId, stepId, filter, page, start, start + PAGE_SIZE, clientPaged)
       .then((data) => {
         if (cancelled) return;
         setError(null);
-        if (filtered) {
+        if (clientPaged) {
+          const current = data.hits.hits.filter(
+            (h) => progress.children[(h._source.workflow || {}).child_index] === h._id
+          );
+          setTotal(current.length);
+          setDocs(current);
+        } else if (filtered) {
           const t = data.hits.total;
           setTotal(t && typeof t === "object" ? t.value : t || 0);
           setDocs(data.hits.hits);
@@ -115,7 +125,7 @@ function ScatterChildren({ runId, stepId, progress, stepState, refreshKey }) {
     return () => {
       cancelled = true;
     };
-  }, [runId, stepId, filter, page, known, refreshKey]);
+  }, [runId, stepId, filter, page, known, clientPaged, refreshKey]);
 
   const changeFilter = (f) => {
     setFilter(f);
@@ -133,11 +143,12 @@ function ScatterChildren({ runId, stepId, progress, stepState, refreshKey }) {
   let rows = [];
   if (docs) {
     if (filtered) {
-      const byIndex = pickChildDocs(docs, null);
+      const byIndex = pickChildDocs(docs, progress.children);
       rows = Object.keys(byIndex)
         .map(Number)
         .sort((a, b) => a - b)
         .map((i) => ({ index: i, doc: byIndex[i] }));
+      if (clientPaged) rows = rows.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
     } else {
       const byIndex = pickChildDocs(docs, progress.children);
       rows = pg.rows.map((r) => ({ index: r.index, doc: byIndex[r.index] || null, jobId: r.jobId }));
@@ -210,6 +221,11 @@ function ScatterChildren({ runId, stepId, progress, stepState, refreshKey }) {
               </button>
             </span>
           </div>
+          {filtered && !clientPaged ? (
+            <div className="wf-null wf-sc-note">
+              a child that was retried can show its earlier failed attempt here
+            </div>
+          ) : null}
           {error ? <div className="wf-sc-error">could not load children: {error}</div> : null}
           <table className="wf-sc-table">
             <thead>
@@ -245,7 +261,7 @@ function ScatterChildren({ runId, stepId, progress, stepState, refreshKey }) {
   );
 }
 
-function ChildRow({ row }) {
+export function ChildRow({ row }) {
   const { index, doc } = row;
   const src = (doc && doc._source) || {};
   const status = src.status;

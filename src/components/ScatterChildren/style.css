@@ -107,3 +107,7 @@
 .__theme-dark .wf-sc-error {
   color: #ff7b88;
 }
+.wf-sc-note {
+  font-size: 12px;
+  margin: 2px 0;
+}

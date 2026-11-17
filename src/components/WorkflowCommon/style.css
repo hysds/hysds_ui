@@ -17,11 +17,18 @@
 .wf-state-job-revoked {
   --wf-color: #e8890c;
 }
+.wf-state-queued {
+  --wf-color: var(--queued-color);
+}
+/* halting: a drain is waiting for running jobs to finish before the run ends */
+.wf-state-halting {
+  --wf-color: #c58b00;
+}
 .wf-state-pending,
 .wf-state-unknown {
   --wf-color: #8a8a8a;
 }
-/* skipped: an arm that was not taken. Terminal, never started. Muted, dotted outline,
+/* skipped: `when` was false. Terminal, never started. Muted, dotted outline,
    hatched fill and struck-through text, so it cannot be mistaken for pending (solid grey) */
 .wf-state-skipped {
   --wf-color: #9aa0a6;
@@ -147,4 +154,18 @@ a.wf-link {
 }
 .__theme-dark a.wf-link {
   color: #7fb2ff;
+}
+
+.wf-legend-note {
+  font-size: 12px;
+  opacity: 0.85;
+}
+.wf-when-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 0 5px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  text-transform: uppercase;
 }

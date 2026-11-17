@@ -52,3 +52,10 @@
   border-left: 3px solid var(--success-color);
   padding-left: 8px;
 }
+
+.wf-card-halting {
+  margin: 4px 0;
+  font-size: 13px;
+  border-left: 3px solid #c58b00;
+  padding-left: 8px;
+}

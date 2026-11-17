@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { orderSpecNodes, pathSteps } from "../../utils/workflow";
+import { displayState, scatterProgress } from "../../utils/workflow";
 
 import "../WorkflowCommon/style.css";
 import "./style.css";
@@ -10,196 +10,93 @@ const ICON = {
   completed: "✓",
   failed: "✗",
   running: "●",
+  queued: "○",
   cancelled: "⊘",
   pending: "·",
   skipped: "↷",
 };
 
-// steps: [{id, kind, isChild}] in spec order. Without a spec (still loading, or the fetch
-// failed) fall back to the run's own node keys so the strip is never empty.
-export const stepsFor = (run, spec) => {
-  const ordered = orderSpecNodes(spec);
-  if (ordered.length > 0) return ordered;
-  return Object.keys(run.nodes || {}).map((id) => ({
-    id,
-    kind: "job",
-    isChild: false,
-  }));
-};
-
-function ScatterBar({ node, live, id, selected, onSelect, compact }) {
-  node = node || {};
-  const total = (live && live.total) || node.expected || 0;
-  const done = live ? live.completed : node.completed || 0;
-  const failed = live ? live.failed : node.failed || 0;
+function ScatterBar({ id, runStep, state, cls, onClick }) {
+  const p = scatterProgress(runStep);
+  const total = p.expected || 0;
   const pct = (n) => (total ? `${Math.min(100, (n / total) * 100)}%` : "0%");
-  const state = node.state || "pending";
   return (
     <span
-      className={`wf-step wf-step-bar wf-state-${state} ${
-        selected ? "wf-step-selected" : ""
-      } ${onSelect ? "wf-step-clickable" : ""}`}
-      title={`${id}: ${state}, ${done} done, ${failed} failed, ${total} total`}
-      onClick={onSelect ? () => onSelect(id) : undefined}
+      className={`wf-step wf-step-bar wf-state-${state} ${cls}`}
+      title={`${id}: ${state}, ${p.completed} done, ${p.failed} failed of ${total || "?"}`}
+      onClick={onClick}
     >
       <span className="wf-step-label">{id}</span>
       <span className="wf-bar">
-        <span className="wf-bar-done" style={{ width: pct(done) }} />
-        <span className="wf-bar-failed" style={{ width: pct(failed) }} />
+        <span className="wf-bar-done" style={{ width: pct(p.completed) }} />
+        <span className="wf-bar-failed" style={{ width: pct(p.failed) }} />
       </span>
-      {total || done || failed ? (
+      {total ? (
         <span className="wf-bar-text">
-          {done}✓{failed ? ` ${failed}✗` : ""} /{total || "?"}
+          {p.completed}/{total}
+          {p.failed ? ` ${p.failed}✗` : ""}
         </span>
       ) : null}
-      {compact ? null : <span className="wf-step-state">{state}</span>}
     </span>
   );
 }
 
 /**
- * One chip per spec node in spec order. Job steps are chips, connector nodes (pass, scatter,
- * gather) small dots, a scatter's child a done/failed/total bar.
- *
- * `live` is optional per-step counts from a job_status aggregation, {[step]: {total,
- * completed, failed}}, which beats the run doc's counts while a scatter is in flight.
+ * One chip per step of a run document, in the order the run doc lists them (the spec's
+ * order). Skipped steps are dotted and struck through, halt steps square, a scattered step
+ * a done/failed bar. Used on the list cards, where no spec is loaded: the run doc is enough.
  */
-function WorkflowStepStrip({ run, spec, live, selected, onSelect, compact, extra }) {
-  const allSteps = stepsFor(run, spec);
-  const nodes = run.nodes || {};
+function WorkflowStepStrip({ run, selected, onSelect }) {
+  const steps = (run && run.steps) || {};
   const items = [];
-  // card strip: show the path taken; steps on arms not taken collapse into "+N skipped"
-  const { steps, skipped } = compact
-    ? pathSteps(run, allSteps)
-    : { steps: allSteps, skipped: [] };
-
-  steps.forEach((s, i) => {
-    const node = nodes[s.id] || {};
-    const state = node.state || "pending";
-    const isSel = selected === s.id;
-    const click = onSelect ? () => onSelect(s.id) : undefined;
-    const cls = `${isSel ? "wf-step-selected" : ""} ${
-      onSelect ? "wf-step-clickable" : ""
-    } ${run.failed_node === s.id ? "wf-step-failed-node" : ""}`;
+  Object.keys(steps).forEach((id, i) => {
+    const rs = steps[id];
+    const state = displayState(rs);
+    const cls = `${selected === id ? "wf-step-selected" : ""} ${onSelect ? "wf-step-clickable" : ""} ${
+      run.failed_step === id ? "wf-step-failed-node" : ""
+    }`;
+    const click = onSelect ? () => onSelect(id) : undefined;
     let el;
-
-    if (s.isChild) {
-      el = (
-        <ScatterBar
-          key={s.id}
-          id={s.id}
-          node={node}
-          live={live && live[s.id]}
-          selected={isSel}
-          onSelect={onSelect}
-          compact={compact}
-        />
-      );
-    } else if (s.kind === "job") {
+    if (rs.scatter) {
+      el = <ScatterBar key={id} id={id} runStep={rs} state={state} cls={cls} onClick={click} />;
+    } else if (rs.kind === "halt") {
+      const hs = (rs.halt || {}).status || "failed";
       el = (
         <span
-          key={s.id}
-          className={`wf-step wf-step-chip wf-state-${state} ${cls}`}
-          title={`${s.id}: ${state}${node.error ? ` - ${node.error}` : ""}`}
-          onClick={click}
-        >
-          <span className="wf-step-icon">{ICON[state] || "·"}</span>
-          {s.id}
-        </span>
-      );
-    } else if (s.kind === "halt") {
-      const hs = (s.node || {}).status || "failed";
-      el = (
-        <span
-          key={s.id}
+          key={id}
           className={`wf-step wf-step-halt wf-step-halt-${hs} wf-state-${state} ${cls}`}
-          title={`${s.id} (halt ${hs}): ${state}${(s.node || {}).reason ? ` - ${s.node.reason}` : ""}`}
+          title={`${id} (halt ${hs}${(rs.halt || {}).fired ? ", fired" : ", not fired"})${
+            (rs.halt || {}).reason ? `: ${rs.halt.reason}` : ""
+          }`}
           onClick={click}
         >
           <span className="wf-step-icon">■</span>
-          {compact ? `${s.id}` : `${s.id} halt ${hs}`}
+          {id}
         </span>
-      );
-    } else if ((s.kind === "switch" || s.kind === "gate") && compact) {
-      const arm = (node.outputs || {}).arm;
-      el = (
-        <span
-          key={s.id}
-          className={`wf-step wf-step-fork wf-state-${state} ${cls}`}
-          title={`${s.id} (${s.kind}): ${state}${arm ? ` -> ${arm}` : ""}`}
-          onClick={click}
-        >
-          <span className="wf-step-icon">◆</span>
-          {arm || s.id}
-        </span>
-      );
-    } else if (compact) {
-      el = (
-        <span
-          key={s.id}
-          className={`wf-step wf-step-dot wf-state-${state} ${cls}`}
-          title={`${s.id} (${s.kind}): ${state}`}
-          onClick={click}
-        />
       );
     } else {
       el = (
         <span
-          key={s.id}
-          className={`wf-step wf-step-connector wf-state-${state} ${cls}`}
-          title={`${s.id} (${s.kind}): ${state}${node.error ? ` - ${node.error}` : ""}`}
+          key={id}
+          className={`wf-step wf-step-chip wf-state-${state} ${cls}`}
+          title={`${id}: ${state}${rs.error ? ` - ${rs.error}` : ""}`}
           onClick={click}
         >
           <span className="wf-step-icon">{ICON[state] || "·"}</span>
-          {s.id}
-          <span className="wf-step-kind">{s.kind}</span>
+          {id}
         </span>
       );
     }
-    if (i > 0) items.push(<span key={`sep-${s.id}`} className="wf-step-sep" />);
+    if (i > 0) items.push(<span key={`sep-${id}`} className="wf-step-sep" />);
     items.push(el);
   });
-
-  if (skipped.length > 0) {
-    items.push(<span key="sep-skipped" className="wf-step-sep" />);
-    items.push(
-      <span
-        key="skipped"
-        className="wf-step wf-step-skipped-count wf-state-skipped"
-        title={`skipped (arms not taken): ${skipped.join(", ")}`}
-      >
-        +{skipped.length} skipped
-      </span>
-    );
-  }
-
-  // steps that exist in job_status but not in the spec (e.g. _finalize, _halt)
-  (extra || []).forEach((id) => {
-    items.push(<span key={`sep-${id}`} className="wf-step-sep" />);
-    items.push(
-      <span
-        key={id}
-        className={`wf-step wf-step-connector wf-step-system ${
-          selected === id ? "wf-step-selected" : ""
-        } ${onSelect ? "wf-step-clickable" : ""}`}
-        onClick={onSelect ? () => onSelect(id) : undefined}
-      >
-        {id}
-      </span>
-    );
-  });
-
-  return <div className={`wf-strip ${compact ? "wf-strip-compact" : ""}`}>{items}</div>;
+  return <div className="wf-strip wf-strip-compact">{items}</div>;
 }
 
 WorkflowStepStrip.propTypes = {
   run: PropTypes.object.isRequired,
-  spec: PropTypes.object,
-  live: PropTypes.object,
   selected: PropTypes.string,
   onSelect: PropTypes.func,
-  compact: PropTypes.bool,
-  extra: PropTypes.array,
 };
 
 export default WorkflowStepStrip;

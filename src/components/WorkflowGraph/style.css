@@ -41,7 +41,7 @@
   text-decoration: underline;
 }
 
-/* states: filled when the node ran, solid grey outline while pending */
+/* states: filled when the node ran, solid grey outline while pending; queued outlined in its colour */
 .wfg-node.wf-state-completed .wfg-shape,
 .wfg-node.wf-state-failed .wfg-shape,
 .wfg-node.wf-state-running .wfg-shape {
@@ -57,7 +57,7 @@
   opacity: 1;
 }
 
-/* skipped: dotted outline, hatch-like muted fill, dimmed, struck-through id */
+/* skipped (`when` was false): dotted outline, muted fill, dimmed, struck-through id */
 .wfg-node.wf-state-skipped {
   opacity: 0.5;
 }
@@ -67,14 +67,6 @@
 }
 .wfg-node.wf-state-skipped .wfg-id {
   text-decoration: line-through;
-}
-
-/* pending connector-ish kinds */
-.wfg-kind-pass .wfg-shape {
-  stroke-dasharray: 6 3;
-}
-.wfg-node.wf-state-skipped.wfg-kind-pass .wfg-shape {
-  stroke-dasharray: 2 3;
 }
 
 /* halt: terminal marker, coloured by its status until it has a state of its own */
@@ -87,9 +79,56 @@
 .wfg-halt-completed.wf-state-pending {
   --wf-color: var(--success-color);
 }
-.wfg-kind-switch .wfg-shape,
-.wfg-kind-gate .wfg-shape {
-  stroke-width: 2;
+.wfg-halt-fired .wfg-shape {
+  fill: var(--wfg-halt, var(--wf-color));
+}
+.wfg-halt-fired .wfg-id,
+.wfg-halt-fired .wfg-sub {
+  fill: #ffff;
+  opacity: 1;
+}
+.wfg-halt-fired.wfg-halt-failed {
+  --wfg-halt: var(--fail-color);
+}
+.wfg-halt-fired.wfg-halt-completed {
+  --wfg-halt: var(--success-color);
+}
+
+/* gated by a `when` flag */
+.wfg-when {
+  font-size: 9px;
+  font-family: "Courier New", Courier, monospace;
+  fill: var(--wfg-text);
+  opacity: 0.8;
+}
+.wfg-node.wf-state-completed .wfg-when,
+.wfg-node.wf-state-failed .wfg-when,
+.wfg-node.wf-state-running .wfg-when {
+  fill: #ffff;
+  opacity: 0.95;
+}
+.wfg-when-tag rect {
+  fill: none;
+  stroke: var(--wf-color);
+  stroke-width: 1;
+}
+.wfg-when-tag text {
+  font-size: 8px;
+  font-weight: 700;
+  fill: var(--wf-color);
+}
+.wfg-node.wf-state-completed .wfg-when-tag rect,
+.wfg-node.wf-state-failed .wfg-when-tag rect,
+.wfg-node.wf-state-running .wfg-when-tag rect {
+  stroke: #ffff;
+}
+.wfg-node.wf-state-completed .wfg-when-tag text,
+.wfg-node.wf-state-failed .wfg-when-tag text,
+.wfg-node.wf-state-running .wfg-when-tag text {
+  fill: #ffff;
+}
+.wfg-edge-gate path {
+  stroke-dasharray: 6 3;
 }
 
 /* scatter child progress */
@@ -117,21 +156,7 @@
   stroke-dasharray: 3 4;
   opacity: 0.45;
 }
-.wfg-edge-label {
-  font-size: 10px;
-  fill: #444;
-  paint-order: stroke;
-  stroke: var(--wfg-bg, #ffff);
-  stroke-width: 3px;
-}
-.wfg-edge-taken .wfg-edge-label {
-  font-weight: 700;
-  fill: var(--base-color);
-}
-.wfg-edge-untaken .wfg-edge-label {
-  opacity: 0.55;
-}
-.wfg-marker path {
+.wfg-edge-taken .wfg-edge-untaken .wfg-marker path {
   fill: #8a8a8a;
 }
 .wfg-marker-taken path {
@@ -147,13 +172,7 @@
 .__theme-dark .wfg-node {
   --wfg-text: #ddd;
 }
-.__theme-dark .wfg-edge-label {
-  fill: #ccc;
-}
-.__theme-dark .wfg-edge-taken .wfg-edge-label {
-  fill: #7fb2ff;
-}
-.__theme-dark .wfg-edge-taken path {
+.__theme-dark .__theme-dark .wfg-edge-taken .__theme-dark .wfg-edge-taken path {
   stroke: #7fb2ff;
 }
 .__theme-dark .wfg-marker-taken path {

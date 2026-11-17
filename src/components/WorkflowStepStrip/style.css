@@ -38,6 +38,7 @@
   background-color: var(--wf-color);
   color: #ffff;
 }
+.wf-step-chip.wf-state-queued,
 .wf-step-chip.wf-state-cancelled {
   background-color: var(--wf-color);
   color: #ffff;
@@ -105,12 +106,7 @@
   font-size: 11px;
 }
 
-/* routing: switch/gate (fork), halt (terminal marker), skipped count */
-.wf-step-fork {
-  border-radius: 3px;
-  font-size: 11px;
-  padding: 1px 6px;
-}
+/* halt steps: square, coloured by the status they end the run with until they fire */
 .wf-step-halt {
   border-radius: 3px;
   border-width: 2px;
@@ -123,16 +119,14 @@
 .wf-step-halt-completed {
   --wf-halt-color: var(--success-color);
 }
-.wf-step-halt.wf-state-pending {
+.wf-step-halt.wf-state-pending,
+.wf-step-halt.wf-state-skipped {
   border-color: var(--wf-halt-color);
   color: var(--wf-halt-color);
 }
 .wf-step-halt.wf-state-completed,
 .wf-step-halt.wf-state-failed {
-  background-color: var(--wf-color);
+  background-color: var(--wf-halt-color, var(--wf-color));
+  border-color: var(--wf-halt-color, var(--wf-color));
   color: #ffff;
-}
-.wf-step-skipped-count {
-  font-size: 11px;
-  text-decoration: none !important;
 }

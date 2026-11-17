@@ -1,0 +1,109 @@
+@import "../../style/global.css";
+
+.wf-sc {
+  margin: 8px 0;
+}
+.wf-sc-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.wf-sc-bar {
+  width: 160px;
+}
+.wf-sc-threshold {
+  margin: 4px 0 8px 0;
+  font-size: 13px;
+  padding: 3px 8px;
+  border-left: 3px solid #8a8a8a;
+}
+.wf-sc-pass {
+  border-left-color: var(--success-color);
+}
+.wf-sc-fail {
+  border-left-color: var(--fail-color);
+}
+.wf-sc-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+  margin: 6px 0;
+  font-size: 13px;
+}
+.wf-sc-filter {
+  margin: 0 3px;
+  padding: 2px 9px;
+  border: 1px solid var(--light-theme-title);
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 12px;
+}
+.wf-sc-filter-on {
+  background-color: var(--base-color);
+  border-color: var(--base-color);
+  color: #ffff;
+}
+.wf-sc-pager button {
+  margin: 0 3px;
+  padding: 0 8px;
+  border: 1px solid var(--light-theme-title);
+  border-radius: 3px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.wf-sc-pager button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.wf-sc-pager span {
+  margin: 0 8px;
+}
+.wf-sc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.wf-sc-table th {
+  text-align: left;
+  padding: 4px 8px;
+  border-bottom: 2px solid var(--light-theme-title);
+}
+.wf-sc-table td {
+  padding: 3px 8px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+  vertical-align: top;
+}
+.wf-sc-job {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  word-break: break-all;
+}
+.wf-sc-retry {
+  font-size: 11px;
+  opacity: 0.8;
+}
+.wf-sc-err {
+  font-size: 12px;
+  color: var(--fail-color);
+  word-break: break-word;
+}
+.wf-sc-error {
+  color: var(--fail-color);
+  font-size: 13px;
+}
+.__theme-dark .wf-sc-table th,
+.__theme-dark .wf-sc-filter,
+.__theme-dark .wf-sc-pager button {
+  border-color: var(--dark-theme-light);
+}
+.__theme-dark .wf-sc-err,
+.__theme-dark .wf-sc-error {
+  color: #ff7b88;
+}

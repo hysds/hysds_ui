@@ -9,21 +9,22 @@ import "./style.css";
 export function StatusBadge({ status }) {
   return (
     <span className={`wf-badge wf-state-${status || "unknown"}`}>
-      {(status || "unknown").toUpperCase()}
+      {(status || "unknown").replace(/^job-/, "").toUpperCase()}
     </span>
   );
 }
 
 const LEGEND = [
-  ["pending", "not started yet"],
+  ["pending", "waiting: its dependencies have not all settled yet"],
+  ["queued", "job submitted, not started"],
   ["running", "running"],
   ["completed", "completed"],
   ["failed", "failed"],
-  ["cancelled", "cancelled"],
-  ["skipped", "skipped: on an arm not taken, never started"],
+  ["skipped", "skipped: its `when` flag was false, so it never started"],
+  ["cancelled", "cancelled: by the user, a failure, a halt or a failed dependency"],
 ];
 
-/** Node-state legend (run page) */
+/** Step-state legend (run page). Dotted and struck through = skipped; "when" = gated by a flag. */
 export function StateLegend() {
   return (
     <div className="wf-legend">
@@ -32,6 +33,12 @@ export function StateLegend() {
           <span className={`wf-step wf-step-chip wf-state-${state}`}>{state}</span>
         </span>
       ))}
+      <span title="a step with a `when` flag only runs when the flag is true" className="wf-legend-note">
+        <span className="wf-when-tag">when</span> gated by a flag
+      </span>
+      <span title="a halt step ends the run when its `when` flag is true" className="wf-legend-note">
+        ■ halt step
+      </span>
     </div>
   );
 }

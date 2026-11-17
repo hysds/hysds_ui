@@ -7,10 +7,12 @@ kind: Ingress
 metadata:
   name: hysds-ui
   namespace: eagle
-  annotations:
-    # _msearch responses carrying footprint geometry can be large.
-    nginx.ingress.kubernetes.io/proxy-body-size: "2m"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+  # No annotations. This cluster's default IngressClass is TRAEFIK, which
+  # ignores nginx.ingress.kubernetes.io/* annotations entirely -- they were
+  # misleading rather than harmful. Traefik imposes no request body limit by
+  # default and its timeouts are adequate for _msearch responses carrying
+  # footprint geometry, so nothing equivalent is needed. If limits ever do
+  # need tuning under Traefik it is done with Middleware CRDs, not annotations.
 spec:
   # ingressClassName is deliberately OMITTED.
   #
@@ -28,8 +30,20 @@ spec:
   # Very old controllers may instead need the deprecated annotation
   #   kubernetes.io/ingress.class: <name>
   rules:
-    # REPLACE with the hostname you want on the cluster.
-    - host: hysds-ui.airflowsds.jpl.nasa.gov
+    # Host-scoped, at the platform SA's request. This was briefly hostless to
+    # get a shareable URL before the entry point was known -- do NOT go back to
+    # that: a hostless rule is a catch-all on this Traefik instance, and Eagle
+    # and Skyfall share the cluster, so it would absorb requests meant for
+    # Skyfall workloads whose hostnames match no other Ingress.
+    #
+    # Entry path: airflowsds-gw runs HAProxy and forwards all HTTPS to Traefik
+    # on airflowsds-node1, which is why the Ingress ADDRESS field stays empty
+    # (there is no LoadBalancer pool) even though the route works.
+    # Moved from airflowsds.jpl.nasa.gov (the platform's own hostname) to a
+    # dedicated name for this app, 2026-11-17. Requires HAProxy on
+    # airflowsds-gw to forward this hostname to Traefik as well -- a DNS record
+    # alone is not sufficient.
+    - host: eaglesds.jpl.nasa.gov
       http:
         paths:
           - path: /

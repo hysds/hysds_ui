@@ -43,7 +43,7 @@ import {
   shortTime,
   haltedBy,
   stepReasons,
-  inputRows,
+  mergedInputRows,
   scatterProgress,
   resolvedInputs,
   jobOutputs,
@@ -127,19 +127,16 @@ function Attempts({ attempts, docs }) {
   );
 }
 
-// what the compiled spec says goes into each input, next to what the job really got
-function InputWiring({ specStep }) {
-  const rows = inputRows(specStep);
-  if (rows.length === 0) return null;
+// each input: what it resolved to (from the job doc) and what the compiled spec wires into it
+function InputsTable({ rows, stepIds, onSelect }) {
+  if (rows.length === 0) return <span className="wf-null">none</span>;
   return (
     <table className="wfr-table">
       <thead>
         <tr>
           <th>input</th>
+          <th>value</th>
           <th>from</th>
-          <th>link_merge</th>
-          <th>pick</th>
-          <th>default</th>
         </tr>
       </thead>
       <tbody>
@@ -148,10 +145,46 @@ function InputWiring({ specStep }) {
             <td>
               <b>{r.name}</b>
             </td>
-            <td className="wfr-code">{r.sources.length ? r.sources.join(", ") : "-"}</td>
-            <td>{r.link_merge || "-"}</td>
-            <td>{r.pick || "-"}</td>
-            <td className="wfr-code">{r.hasDefault ? JSON.stringify(r.default) : "-"}</td>
+            <td>
+              {r.value.kind === "value" ? (
+                <ValueView value={r.value.value} />
+              ) : (
+                <span className="wf-null">{r.value.text}</span>
+              )}
+            </td>
+            <td>
+              {r.sources.length ? (
+                <span className="wfr-code">
+                  {r.sources.map((s, i) => (
+                    <span key={i}>
+                      {i ? ", " : ""}
+                      {s.step && stepIds.includes(s.step) ? (
+                        <>
+                          {"$."}
+                          <a className="wf-link" onClick={() => onSelect(s.step)}>
+                            {s.step}
+                          </a>
+                          {s.text.slice(2 + s.step.length)}
+                        </>
+                      ) : (
+                        s.text
+                      )}
+                    </span>
+                  ))}
+                </span>
+              ) : (
+                "-"
+              )}
+              {r.tags.length ? (
+                <div className="wfr-tags">
+                  {r.tags.map((t) => (
+                    <span key={t} className="wfr-tag">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+            </td>
           </tr>
         ))}
       </tbody>
@@ -250,27 +283,17 @@ export function StepPanel({ run, step, docs, tick, onSelect }) {
       {step.kind === "job" ? (
         <>
           <div className="wfr-subtitle">Inputs</div>
-          <InputWiring specStep={sp} />
-          {!progress ? (
-            <div className="wfr-resolved">
-              <div className="wfr-sublabel">resolved (as submitted)</div>
-              {inputs ? (
-                Object.keys(inputs).length ? (
-                  <ValueView value={inputs} />
-                ) : (
-                  <span className="wf-null">none</span>
-                )
-              ) : (
-                <span className="wf-null">
-                  {last || rs.job_id ? (docs ? "job document not found" : "loading…") : "not submitted yet"}
-                </span>
-              )}
-            </div>
-          ) : (
-            <div className="wfr-sublabel">
-              resolved inputs are per child: open a child job, or see the children table above
-            </div>
-          )}
+          <InputsTable
+            rows={mergedInputRows(sp, {
+              inputs,
+              state: step.state,
+              hasAttempt: !!(last || rs.job_id),
+              docsLoaded: !!docs,
+              scatterInput: progress ? progress.input || "" : null,
+            })}
+            stepIds={run.steps ? Object.keys(run.steps) : []}
+            onSelect={onSelect}
+          />
           {!progress ? (
             <>
               <div className="wfr-subtitle">Outputs</div>

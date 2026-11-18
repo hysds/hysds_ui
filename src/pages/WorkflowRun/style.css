@@ -220,6 +220,16 @@
 .wfr-resolved {
   margin: 4px 0;
 }
+.wfr-tags {
+  margin-top: 2px;
+}
+.wfr-tag {
+  display: inline-block;
+  margin: 0 6px 0 0;
+  font-size: 11px;
+  opacity: 0.65;
+  word-break: break-all;
+}
 .__theme-dark .wfr-reason-error,
 .__theme-dark .wfr-attempt-error {
   color: #ff7b88;

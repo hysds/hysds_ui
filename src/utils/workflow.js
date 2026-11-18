@@ -417,6 +417,55 @@ exports.resolvedInputs = (jobDoc) => {
   return out;
 };
 
+/**
+ * One table for a job step's inputs: the compiled wiring (spec) plus what each input resolved to.
+ * ctx: {inputs: resolvedInputs(jobDoc) or null, state, hasAttempt, docsLoaded, scatterInput}
+ * Rows: {name, value: {kind: "value"|"placeholder", value?, text?},
+ *        sources: [{text, step}] (step is the producing step id, null for workflow inputs),
+ *        tags: ["pick: x", "link_merge: y", "default: json"]}
+ * Resolved params the spec does not declare are appended with no sources.
+ */
+exports.mergedInputRows = (specStep, ctx) => {
+  const c = ctx || {};
+  const inputs = c.inputs || null;
+  const ph = (text) => ({ kind: "placeholder", text });
+  const noValue = () => {
+    if (c.state === "skipped") return ph("skipped");
+    if (!c.hasAttempt) return ph(c.state === "cancelled" ? "not submitted" : "pending");
+    return ph(c.docsLoaded ? "job document not found" : "loading…");
+  };
+  const rows = exports.inputRows(specStep).map((r) => {
+    let value;
+    if (c.scatterInput !== undefined && c.scatterInput !== null) {
+      if (r.name === c.scatterInput) value = ph("per child (see children above)");
+      else if (r.hasDefault) value = { kind: "value", value: r.default };
+      else value = ph("per child");
+    } else if (inputs) {
+      value = Object.prototype.hasOwnProperty.call(inputs, r.name)
+        ? { kind: "value", value: inputs[r.name] }
+        : ph("not set");
+    } else {
+      value = noValue();
+    }
+    const tags = [];
+    if (r.pick) tags.push(`pick: ${r.pick}`);
+    if (r.link_merge) tags.push(`link_merge: ${r.link_merge}`);
+    if (r.hasDefault) tags.push(`default: ${JSON.stringify(r.default)}`);
+    const sources = r.sources.map((s) => {
+      const m = /^\$\.([^.]+)\.(.+)$/.exec(s);
+      return { text: s, step: m && m[1] !== "inputs" ? m[1] : null };
+    });
+    return { name: r.name, value, sources, tags };
+  });
+  if (inputs && !(c.scatterInput)) {
+    const known = rows.map((r) => r.name);
+    Object.keys(inputs).forEach((k) => {
+      if (!known.includes(k)) rows.push({ name: k, value: { kind: "value", value: inputs[k] }, sources: [], tags: [] });
+    });
+  }
+  return rows;
+};
+
 exports.jobOutputs = (jobDoc) =>
   exports.outputsToDict((((jobDoc || {}).job || {}).job_info || {}).workflow_outputs);
 

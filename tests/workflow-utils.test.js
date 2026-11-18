@@ -225,6 +225,38 @@ assert.deepStrictEqual(w.jobOutputs(jobDoc), { result: "A" });
 assert.deepStrictEqual(w.resolvedInputs({ job: { params: { a: 1, _x: 2, job_specification: {}, localize_urls: [] } } }), { a: 1 });
 assert.deepStrictEqual(w.resolvedInputs(null), {});
 
+// ---- merged input table
+{
+  const sp = spec.steps;
+  const ctx = (o) => Object.assign({ inputs: null, state: "pending", hasAttempt: false, docsLoaded: false, scatterInput: null }, o);
+  // completed: resolved values, step links, tags
+  let r = w.mergedInputRows(sp.qa, ctx({ state: "completed", hasAttempt: true, docsLoaded: true, inputs: { x: ["a"], extra: 1 } }));
+  assert.deepStrictEqual(r[0].value, { kind: "value", value: ["a"] });
+  assert.deepStrictEqual(r[0].sources, [{ text: "$.l1a.l1a_file", step: "l1a" }]);
+  assert.deepStrictEqual(r[0].tags, ["pick: all_non_null", "link_merge: merge_flattened"]);
+  // extra resolved param is kept, no sources
+  assert.deepStrictEqual(r[1], { name: "extra", value: { kind: "value", value: 1 }, sources: [], tags: [] });
+  // workflow input source has no step; default tag
+  r = w.mergedInputRows(sp.find, ctx({}));
+  assert.strictEqual(r[0].sources[0].step, null);
+  r = w.mergedInputRows(sp.deliver, ctx({}));
+  assert.deepStrictEqual(r[1].tags, ['default: "normal"']);
+  // placeholders
+  const txt = (o) => w.mergedInputRows(sp.qa, ctx(o))[0].value.text;
+  assert.strictEqual(txt({}), "pending");
+  assert.strictEqual(txt({ state: "skipped" }), "skipped");
+  assert.strictEqual(txt({ state: "cancelled" }), "not submitted");
+  assert.strictEqual(txt({ state: "running", hasAttempt: true }), "loading…");
+  assert.strictEqual(txt({ state: "running", hasAttempt: true, docsLoaded: true }), "job document not found");
+  // scattered: scatter input per child, others default or per child
+  r = w.mergedInputRows({ in: { f: { source: ["$.find.files"] }, k: { default: 2 }, z: { source: ["$.inputs.z"] } } },
+    ctx({ state: "running", hasAttempt: true, scatterInput: "f" }));
+  assert.strictEqual(r[0].value.text, "per child (see children above)");
+  assert.deepStrictEqual(r[1].value, { kind: "value", value: 2 });
+  assert.strictEqual(r[2].value.text, "per child");
+  assert.deepStrictEqual(w.mergedInputRows(null, ctx({})), []);
+}
+
 // ---- links and values
 assert.strictEqual(w.toLink("s3://bkt/a/b.h5"), "https://bkt.s3.amazonaws.com/a/b.h5");
 assert.strictEqual(w.toLink("https://x.org/y"), "https://x.org/y");
